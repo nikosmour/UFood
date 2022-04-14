@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('meals', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->text('description');
-            $table->enum('category',['breakfast','meal','salad','extra']);
+            $table->enum('category',config('constants.meal.category'));
             $table->timestamps();
         });
     }

@@ -14,12 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('meal_plans', function (Blueprint $table) {
-            $table->date('date')->primary();
-            $table->enum('period',['breakfast','lunch','dinner']);
-            $table->smallIncrements('meal_id');
+            $table->id();
+            $table->date('date')->index();
+            $table->enum('period',config('constants.meal.plan.period'));
+            $table->unsignedSmallInteger('meal_id');
             $table->foreign('meal_id')->references('id')->on('meals')->onDelete('cascade')->onUpdate('cascade');
-            $table->index('date');
-
         });
     }
 
