@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('coupon_owners', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('academic_id')->primary();
+            $table->foreign('academic_id')->references('academic_id')->on('academic_citizens')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('money')->unsigned()->default(0);
+            $table->integer('breakfast')->unsigned()->default(0);
+            $table->integer('lunch')->unsigned()->default(0);
+            $table->integer('dinner')->unsigned()->default(0);
             $table->timestamps();
         });
     }

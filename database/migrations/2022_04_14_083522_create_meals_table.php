@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('meals', function (Blueprint $table) {
-            $table->id();
+            $table->smallIncrements('id');
+            $table->text('description');
+            $table->enum('category',['breakfast','meal','salad','extra']);
             $table->timestamps();
         });
     }

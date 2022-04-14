@@ -15,7 +15,11 @@ return new class extends Migration
     {
         Schema::create('card_application_documents', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('card_application_id');
+            $table->enum('status',['submitted','accepted','rejected','incomplete'])->default('submitted');
+            $table->char('name',27);
             $table->timestamps();
+            $table->foreign('card_application_id')->references('id')->on('card_applications')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

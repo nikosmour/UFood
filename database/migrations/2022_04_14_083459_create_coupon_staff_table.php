@@ -14,8 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('coupon_staff', function (Blueprint $table) {
-            $table->id();
+            $table->tinyIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

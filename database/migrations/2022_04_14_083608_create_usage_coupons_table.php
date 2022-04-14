@@ -15,7 +15,14 @@ return new class extends Migration
     {
         Schema::create('usage_coupons', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('academic_id');
+            $table->unsignedTinyInteger('entry_staff_id');
+            $table->enum('type',['breakfast','lunch','dinner']);
+            $table->timestamp('created_at');
+            $table->foreign('academic_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('entry_staff_id')->references('id')->on('entry_staff')->onDelete('cascade')->onUpdate('cascade');
+
+
         });
     }
 

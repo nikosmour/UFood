@@ -14,8 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('card_applicants', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('academic_id')->primary();
+            $table->char('department',60);
+            $table->year('first_year');
+            $table->date('expiration_date');
+            $table->char('permanent_address',60);
+            $table->unsignedBigInteger('permanent_address_phone');
+            $table->char('temporary_address',60)->nullable();
+            $table->unsignedBigInteger('temporary_address__phone')->nullable();
+            $table->unsignedBigInteger('cellphone')->nullable();
             $table->timestamps();
+            $table->foreign('academic_id')->references('academic_id')->on('academic_citizens')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

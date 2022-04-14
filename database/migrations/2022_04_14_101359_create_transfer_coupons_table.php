@@ -13,17 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_coupons', function (Blueprint $table) {
+        Schema::create('transfer_coupons', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('academic_id');
-            $table->unsignedTinyInteger('coupon_staff_id');
-            $table->tinyInteger('money')->unsigned()->default(0);
+            $table->unsignedBigInteger('sender_id');
+            $table->unsignedBigInteger('receiver_id');
             $table->tinyInteger('breakfast')->unsigned()->default(0);
             $table->tinyInteger('lunch')->unsigned()->default(0);
             $table->tinyInteger('dinner')->unsigned()->default(0);
             $table->timestamp('created_at');
-            $table->foreign('academic_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('coupon_staff_id')->references('id')->on('coupon_staff')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('sender_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('receiver_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
+            $table->unique(['created_at','sender_id','receiver_id']);
         });
     }
 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_coupons');
+        Schema::dropIfExists('transfer_coupons');
     }
 };

@@ -14,8 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('academic_citizens', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('academic_id')->primary();
+            $table->unsignedMediumInteger('a_m')->unique();
+            $table->boolean('active');
+            $table->unsignedBigInteger('user_id')->unique();
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
