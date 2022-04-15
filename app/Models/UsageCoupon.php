@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class UsageCoupon extends Model
 {
     use HasFactory;
+
+    public function couponOwner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(CouponOwner::class,'academic_id');
+    }
+    public function entryStaff(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(EntryStaff::class);
+    }
 }

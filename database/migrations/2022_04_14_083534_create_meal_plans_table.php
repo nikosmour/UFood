@@ -17,8 +17,7 @@ return new class extends Migration
             $table->id();
             $table->date('date')->index();
             $table->enum('period',config('constants.meal.plan.period'));
-            $table->unsignedSmallInteger('meal_id');
-            $table->foreign('meal_id')->references('id')->on('meals')->onDelete('cascade')->onUpdate('cascade');
+            $table->unique(['date','period']);
         });
     }
 

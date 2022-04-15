@@ -41,4 +41,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function academic(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Academic::class);
+    }
+    public function cardApplicationStaff(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CardApplicationStaff::class);
+    }
+    public function couponStaff(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CouponStaff::class);
+    }
+    public function entryStaff(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(EntryStaff::class);
+    }
 }

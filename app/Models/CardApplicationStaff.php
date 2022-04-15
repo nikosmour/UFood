@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class CardApplicationStaff extends Model
 {
     use HasFactory;
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function cardApplication(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CardApplication::class);
+    }
 }
