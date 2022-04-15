@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('temporary_address__phone')->nullable();
             $table->unsignedBigInteger('cellphone')->nullable();
             $table->timestamps();
-            $table->foreign('academic_id')->references('academic_id')->on('academic_citizens')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('academic_id')->references('academic_id')->on('academics')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

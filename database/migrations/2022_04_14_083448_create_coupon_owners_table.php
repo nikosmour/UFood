@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('coupon_owners', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_id')->primary();
-            $table->foreign('academic_id')->references('academic_id')->on('academic_citizens')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('academic_id')->references('academic_id')->on('academics')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('money')->unsigned()->default(0);
             $table->integer('breakfast')->unsigned()->default(0);
             $table->integer('lunch')->unsigned()->default(0);
