@@ -17,7 +17,8 @@ class UsageCouponFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'status' => array_rand(config('constants.meal.plan.period')),
+            'create_at' => $this->faker->dateTime(),
         ];
     }
 }

@@ -17,7 +17,9 @@ class CardApplicationFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'student_comments' => 'student_comments',
+            'card_application_staff_comments' => 'card_application_staff_comments',
+            'status' => array_rand(config('constants.card.application.status')),
         ];
     }
 }

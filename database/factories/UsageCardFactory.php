@@ -17,7 +17,9 @@ class UsageCardFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'date' => $this->faker->date(),
+            'status' => array_rand(config('constants.meal.plan.period')),
+            'time'=> $this->faker->time(),
         ];
     }
 }

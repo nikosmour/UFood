@@ -17,7 +17,14 @@ class CardApplicantFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'department' => $this->faker->company(),
+            'first_year' => $this->faker->year(),
+            'expiration_date' => $this->faker->dateTimeBetween('-2 years'.'+5 years'),
+            'permanent_address' => $this->faker->address(),
+            'permanent_address_phone' => $this->faker->e164PhoneNumber(),
+            'temporary_address' => $this->faker->streetAddress(),
+            'temporary_address_phone' => $this->faker->e164PhoneNumber(),
+            'cellphone' => $this->faker->phoneNumber(),
         ];
     }
 }

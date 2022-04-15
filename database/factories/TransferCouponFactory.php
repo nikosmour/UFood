@@ -17,7 +17,9 @@ class TransferCouponFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'breakfast'=>$this->faker->numberBetween(0,255),
+            'lunch'=>$this->faker->numberBetween(0,255),
+            'dinner'=>$this->faker->numberBetween(0,255),
         ];
     }
 }

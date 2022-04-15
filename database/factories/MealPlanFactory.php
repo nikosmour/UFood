@@ -17,7 +17,8 @@ class MealPlanFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'date' => $this->faker->date(),
+            'period' => array_rand(config('constants.meal.plan.period')),
         ];
     }
 }
