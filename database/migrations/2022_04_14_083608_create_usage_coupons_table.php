@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('academic_id');
             $table->unsignedTinyInteger('entry_staff_id');
-            $table->enum('type',['breakfast','lunch','dinner']);
+            $table->enum('type',config('constants.meal.plan.period'));
             $table->timestamp('created_at');
             $table->foreign('academic_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('entry_staff_id')->references('id')->on('entry_staff')->onDelete('cascade')->onUpdate('cascade');

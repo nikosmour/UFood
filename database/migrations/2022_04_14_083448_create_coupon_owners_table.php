@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('coupon_owners', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_id')->primary();
             $table->foreign('academic_id')->references('academic_id')->on('academics')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('money')->unsigned()->default(0);
-            $table->integer('breakfast')->unsigned()->default(0);
-            $table->integer('lunch')->unsigned()->default(0);
-            $table->integer('dinner')->unsigned()->default(0);
+            $table->unsignedInteger('money')->default(0);
+            foreach(config('constants.meal.plan.period') as $period)
+            {
+                $table->unsignedInteger($period)->default(0);
+            }
             $table->timestamps();
         });
     }

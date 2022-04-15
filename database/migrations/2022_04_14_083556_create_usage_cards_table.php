@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('usage_cards', function (Blueprint $table) {
             $table->date('date');
             $table->unsignedBigInteger('academic_id');
-            $table->enum('type',['breakfast','lunch','dinner']);
+            $table->enum('type',config('constants.meal.plan.period'));
             $table->time('time');
             $table->unsignedTinyInteger('entry_staff_id');
             $table->foreign('academic_id')->references('academic_id')->on('card_applicants')->onDelete('cascade')->onUpdate('cascade');

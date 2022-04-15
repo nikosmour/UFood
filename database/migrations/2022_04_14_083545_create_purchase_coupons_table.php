@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('academic_id');
             $table->unsignedTinyInteger('coupon_staff_id');
-            $table->tinyInteger('money')->unsigned()->default(0);
-            $table->tinyInteger('breakfast')->unsigned()->default(0);
-            $table->tinyInteger('lunch')->unsigned()->default(0);
-            $table->tinyInteger('dinner')->unsigned()->default(0);
+            $table->unsignedtinyInteger('money')->default(0);
+            foreach(config('constants.meal.plan.period') as $period)
+            {
+                $table->unsignedTinyInteger($period)->default(0);
+            }
             $table->timestamp('created_at');
             $table->foreign('academic_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('coupon_staff_id')->references('id')->on('coupon_staff')->onDelete('cascade')->onUpdate('cascade');
