@@ -35,6 +35,10 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+//           routers for testing
+            if(config('app.env')=='local' && file_exists(base_path('routes/test.php')))
+                Route::middleware('web')
+                    ->group(base_path('routes/test.php'));
         });
     }
 
