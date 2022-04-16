@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\MealPlan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class MealPlanFactory extends Factory
     public function definition()
     {
         return [
-            'date' => $this->faker->date(),
+            'date' => $this->faker->dateTimeBetween('now', '30 days'),
             'period' => array_rand(config('constants.meal.plan.period')),
         ];
     }

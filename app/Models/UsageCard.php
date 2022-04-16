@@ -20,4 +20,8 @@ class UsageCard extends Model
     {
         return $this->belongsTo(EntryStaff::class);
     }
+    protected $casts = [
+        'date'=>'date:Y-m-d',
+//        'time'=>'time',  todo
+    ];
 }

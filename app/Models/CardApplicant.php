@@ -23,4 +23,8 @@ class CardApplicant extends Model
     {
         return $this->hasMany(UsageCard::class,'academic_id');
     }
+    protected $casts = [
+        'year'=>'date:Y',
+        'expiration_date'=>'date:Y-m-d',
+    ];
 }

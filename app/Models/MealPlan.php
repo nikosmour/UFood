@@ -11,8 +11,11 @@ class MealPlan extends Model
     public $timestamps = false;
     protected $dateFormat = 'y-m-d';
 
-    public function meal(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function meal(): \Illuminate\Database\Eloquent\Relations\belongsToMany
     {
         return $this->belongsToMany(Meal::class);
     }
+    protected $casts = [
+        'date'=>'date:Y-m-d',
+    ];
 }
