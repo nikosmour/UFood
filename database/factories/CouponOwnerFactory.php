@@ -17,7 +17,7 @@ class CouponOwnerFactory extends Factory
     public function definition()
     {
         return [
-            'money'=>$this->faker->numberBetween(0,9999),
+            'money'=>$this->faker->numberBetween(0,9999)/100,
             'breakfast'=>$this->faker->numberBetween(0,255),
             'lunch'=>$this->faker->numberBetween(0,255),
             'dinner'=>$this->faker->numberBetween(0,255),
