@@ -72,6 +72,19 @@ return [
     'timezone' => 'UTC',
 
     /*
+   |--------------------------------------------------------------------------
+   | Application Available Locales Configuration
+   |--------------------------------------------------------------------------
+   |
+   | The application available locales determines the locales that can be used
+   | by the translation service provider. If you add a file in the lang folder
+   | it will find it and auto-add it.
+   |
+   */
+
+    'available_locales' => array_values(array_diff(scandir(base_path("lang")), array('.', '..'))),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
