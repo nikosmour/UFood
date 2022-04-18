@@ -16,7 +16,7 @@ class CouponOwner extends Model
         return $money / 100;
     }
 
-    public function setMoneyAttribute($money): float|int
+    public function setMoneyAttribute($money)
     {
         $this->attributes['money'] = $money * 100;
     }

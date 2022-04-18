@@ -10,9 +10,14 @@ class PurchaseCoupon extends Model
     use HasFactory;
     public $guarded=[];
     public $timestamps = ['create_at'];//todo false if not work only one
-    public function setUpdatedAt($value)
+    public function getMoneyAttribute($money): float|int
     {
-        return;
+        return $money / 100;
+    }
+
+    public function setMoneyAttribute($money)
+    {
+        $this->attributes['money'] = $money * 100;
     }
     public function couponOwner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

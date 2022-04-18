@@ -17,9 +17,10 @@ class MealPlanFactory extends Factory
      */
     public function definition()
     {
+        $periods=config('constants.meal.plan.period');
         return [
             'date' => $this->faker->dateTimeBetween('now', '30 days'),
-            'period' => array_rand(config('constants.meal.plan.period')),
+            'period' => $periods[array_rand($periods)],
         ];
     }
 }

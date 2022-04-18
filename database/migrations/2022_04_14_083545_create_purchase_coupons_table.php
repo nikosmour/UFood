@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('academic_id');
             $table->unsignedTinyInteger('coupon_staff_id');
-            $table->unsignedtinyInteger('money')->default(0);
+            $table->unsignedInteger('money')->default(0);
             foreach(config('constants.meal.plan.period') as $period)
             {
                 $table->unsignedTinyInteger($period)->default(0);

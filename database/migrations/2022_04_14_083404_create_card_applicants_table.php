@@ -18,10 +18,10 @@ return new class extends Migration
             $table->char('department',60);
             $table->year('first_year');
             $table->date('expiration_date');
-            $table->char('permanent_address',60);
+            $table->char('permanent_address',99);
             $table->unsignedBigInteger('permanent_address_phone');
-            $table->char('temporary_address',60)->nullable();
-            $table->unsignedBigInteger('temporary_address__phone')->nullable();
+            $table->char('temporary_address',50)->nullable();
+            $table->unsignedBigInteger('temporary_address_phone')->nullable();
             $table->unsignedBigInteger('cellphone')->nullable();
             $table->timestamps();
             $table->foreign('academic_id')->references('academic_id')->on('academics')->onDelete('cascade')->onUpdate('cascade');

@@ -16,9 +16,10 @@ class MealFactory extends Factory
      */
     public function definition()
     {
+        $category=config('constants.meal.category');
         return [
-            'category' => array_rand(config('constants.meal.category')),
-            'description' => 'fake' + now()->toDateTimeString(),
+            'category' => $category[array_rand($category)],
+            'description' => 'fake'. now()->toDateTimeString(),
         ];
     }
 }
