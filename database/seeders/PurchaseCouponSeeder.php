@@ -14,6 +14,13 @@ class PurchaseCouponSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $length=5;
+        $couponOwners=\App\Models\CouponOwner::all();
+        $couponStaffs=\App\Models\CouponStaff::all();
+        foreach ( $couponOwners as $buyer){
+            for ($i = $length ; $i >0 ;$i--)
+                \App\Models\PurchaseCoupon::factory()->for(
+                    $buyer)->for($couponStaffs->random())->create();
+        }
     }
 }
