@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UsageCoupon extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     public function couponOwner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

@@ -16,9 +16,10 @@ class UsageCardFactory extends Factory
      */
     public function definition()
     {
+        $periods=config('constants.meal.plan.period');
         return [
             'date' => $this->faker->date(),
-            'status' => array_rand(config('constants.meal.plan.period')),
+            'status' => $periods[array_rand($periods)],
             'time'=> $this->faker->time(),
         ];
     }

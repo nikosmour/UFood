@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class TransferCoupon extends Model
+class TransferCoupon extends Pivot
 {
     use HasFactory;
     public $guarded=[];
-    public $timestamps = ['create_at'];
+    public $timestamps = false ;
     public function sender(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo('App\CouponOwner','sender_id');

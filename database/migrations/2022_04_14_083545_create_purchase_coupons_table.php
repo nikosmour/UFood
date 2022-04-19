@@ -22,7 +22,7 @@ return new class extends Migration
             {
                 $table->unsignedTinyInteger($period)->default(0);
             }
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
             $table->foreign('academic_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('coupon_staff_id')->references('id')->on('coupon_staff')->onDelete('cascade')->onUpdate('cascade');
         });

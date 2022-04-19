@@ -28,13 +28,15 @@ class CouponOwner extends Model
     {
         return $this->hasMany(PurchaseCoupon::class, 'academic_id');
     }
-    public function sendingCoupon(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function sendingCoupon(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(TransferCoupon::class,'sender_id');
+        return $this->belongsToMany(CouponOwner::class,TransferCoupon::class,
+            'sender_id','receiver_id')->using(TransferCoupon::class);
     }
-    public function receivingCoupon(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function receivingCoupon(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(TransferCoupon::class, 'receiver_id');
+        return $this->belongsToMany(CouponOwner::class,TransferCoupon::class,
+            'receiver_id','sender_id')->using(TransferCoupon::class);
     }
     public function usageCoupon(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

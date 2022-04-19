@@ -9,7 +9,7 @@ class PurchaseCoupon extends Model
 {
     use HasFactory;
     public $guarded=[];
-    public $timestamps = ['create_at'];//todo false if not work only one
+    public $timestamps = false;
     public function getMoneyAttribute($money): float|int
     {
         return $money / 100;
