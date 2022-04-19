@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             elseif (str_contains($status, 'coupon'))
                 \App\Models\CouponStaff::factory()->for($user)->create();
             elseif (str_contains($status, 'card'))
-                \App\Models\CardApplicationStaff::factory()->for($user)->create();  #todo fix staff card application
+                \App\Models\CardApplicationStaff::factory()->for($user)->create();
             else // same as elseif ($status='staff entry')
                 \App\Models\EntryStaff::factory()->for($user)->create();
         });
