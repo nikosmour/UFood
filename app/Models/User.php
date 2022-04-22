@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PhpOption\None;
 
 class User extends Authenticatable
 {
@@ -41,7 +42,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function academic(): \Illuminate\Database\Eloquent\Relations\HasOne
+    /**
+     * Get the academic model associate with the user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne | null
+     */
+    public function academic()
     {
         return $this->hasOne(Academic::class);
     }

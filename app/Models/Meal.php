@@ -9,7 +9,7 @@ class Meal extends Model
 {
     use HasFactory;
 
-    public function meal(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function meal(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(MealPlan::class);
     }
