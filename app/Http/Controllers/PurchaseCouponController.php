@@ -3,84 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePurchaseCouponRequest;
-use App\Http\Requests\UpdatePurchaseCouponRequest;
+use App\Models\CouponOwner;
 use App\Models\PurchaseCoupon;
+use App\Traits\CouponOwnerTrait;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseCouponController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    use CouponOwnerTrait;
+    public function __construct()
     {
-        //
+        $this->middleware('auth');
     }
-
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
     public function create()
     {
-        //
+        return view('purchaseCoupon');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePurchaseCouponRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return String
      */
     public function store(StorePurchaseCouponRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\PurchaseCoupon  $purchaseCoupon
-     * @return \Illuminate\Http\Response
-     */
-    public function show(PurchaseCoupon $purchaseCoupon)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\PurchaseCoupon  $purchaseCoupon
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(PurchaseCoupon $purchaseCoupon)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdatePurchaseCouponRequest  $request
-     * @param  \App\Models\PurchaseCoupon  $purchaseCoupon
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdatePurchaseCouponRequest $request, PurchaseCoupon $purchaseCoupon)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PurchaseCoupon  $purchaseCoupon
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(PurchaseCoupon $purchaseCoupon)
-    {
-        //
+        $data = $request->validated();
+        DB::transaction(function () use ($data) {
+            /** @noinspection PhpUndefinedFieldInspection */
+            Auth::user()->couponStaff->purchaseCoupon()->save(new PurchaseCoupon($data));
+            $couponOwner=CouponOwner::find($data['academic_id']);
+            unset($data['academic_id']);
+            $this->addCoupons($couponOwner, $data);
+        });
+        return  "Επιτυχής πώληση";
     }
 }

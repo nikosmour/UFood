@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AtLeastOneNoZero;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StorePurchaseCouponRequest extends FormRequest
 {
@@ -13,7 +15,22 @@ class StorePurchaseCouponRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        // if the user is staff coupon
+        return str_contains(Auth::user()->status, 'coupon');
+    }
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+//        $validator->after(function ($validator) {
+//            if (new AtLeastOneNoZero(...config('constants.meal.plan.period'))) {
+//                $validator->errors()->add('meals', 'Something is wrong with this field!');
+//            }
+//        });
     }
 
     /**
@@ -23,8 +40,18 @@ class StorePurchaseCouponRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $rules=[];
+        $rules['academic_id']='required|integer|exists:coupon_owners,academic_id';
+        $periods=config('constants.meal.plan.period');
+        foreach($periods as $period)
+        {
+            $rules[$period]= ['required',
+                'integer','min:0'
+                ];
+        }
+        $rules[$periods[0]][]=new AtLeastOneNoZero(...$periods);
+        return $rules;
     }
+
+
 }
