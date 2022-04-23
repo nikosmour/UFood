@@ -15,12 +15,13 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
+    <link rel = "icon" href =  "{{asset('/img/logo_Upatras.png')}}" type = "image/x-icon">
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @yield('Styles')
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="my_full_screen">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -33,7 +34,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-
+                        @yield('nav_list')
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -41,23 +42,26 @@
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
-                                <li class="nav-item">
+                                <li class="nav-item {{ Route::is('login') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link {{ Route::is('register') ? 'active' : '' }}" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item  {{ Route::is('myInfo') ? 'active' : '' }}" href="{{route('myInfo')}}">
+                                        {{ __('My Info') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -75,9 +79,15 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="py-4 my_flex_height">
             @yield('content')
         </main>
+        <footer class="text-center ">
+            <div> © {{ __("UNIVERSITY OF PATRAS").' '. \Carbon\Carbon::now()->year }} </div>
+            <div>{{ __("Food Department") }} </div>
+            <!-- <img src= style="max-height: 100px" >-->
+            <img src="{{asset('img/big_logo_Upatras.png')}}" alt='logo'/>
+        </footer>
     </div>
 </body>
 </html>

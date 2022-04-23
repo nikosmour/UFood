@@ -1,0 +1,28 @@
+* {
+    border-radius: 0 !important;
+}
+.active {
+    background-color: white;
+
+    a {
+        color: DarkOrange !important; //	#FF8801 ->  #FF8C00
+        background-color: white !important;
+    }
+}
+@media screen and (max-width:576px) {
+    .table-col-to-row-sm {
+        tr > * {
+            display: block;
+        }
+
+        tr {
+            display: table-cell;
+        }
+        thead,tbody{
+            display:inline-block;
+            th{
+                border-bottom: 0px;
+            }
+        }
+    }
+}

@@ -1,0 +1,70 @@
+.student_content {
+    input{
+        text-align:center;
+    }
+
+    #map {
+        height: 400px;
+        /*width: 100%;*/
+    }
+
+    .navbar-header {
+        float: left;
+        padding: 5px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .navbar-brand {
+        float:none;
+    }
+
+    h2 {
+        color: black;
+    }
+    .navbar-default {
+        background-color: #F6F27A;
+    }
+
+    #op{
+        position:absolute;
+        left:0;
+        top:10px;
+    }
+
+    #myNavbar {
+        text-align:center;
+    }
+
+    .flex-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spc {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+
+}
