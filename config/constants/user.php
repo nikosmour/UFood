@@ -10,14 +10,5 @@ return [
    | it is important to change also the values in the database.
    |
    */
-    'status'=>[
-        'undergraduate',
-        'postgraduate',
-        'phd',
-        'erasmus',
-        'researcher',
-        'staff coupon',
-        'staff card application',
-        'staff entry',
-    ]
+    'status'=>\App\Enum\UserStatusEnum::values()
 ];

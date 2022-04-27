@@ -13,15 +13,7 @@ return [
        |
        */
 
-        'status'=>[
-            'temporary saved',
-            'submitted',
-            'checking',
-            'temporary checked',
-            'accepted',
-            'rejected',
-            'incomplete',
-        ],
+        'status'=>\App\Enum\CardStatusEnum::values(),
 
         /*
        |--------------------------------------------------------------------------
@@ -36,12 +28,7 @@ return [
        */
 
         'document' =>[
-            'status'=>[
-                'submitted',
-                'accepted',
-                'rejected',
-                'incomplete',
-            ]
+            'status'=>\App\Enum\CardDocumentStatusEnum::values(),
         ]
     ]
 ];

@@ -10,16 +10,8 @@ return [
    | it is important to change also the values in the database.
    |
    */
-    'category'=>[
-        'breakfast',
-        'meal',
-        'salad',
-        'extra',
-    ],
+    'category'=>\App\Enum\MealCategoryEnum::values(),
     'plan'=>[
-        'period'=> [
-            'breakfast',
-            'lunch',
-            'dinner']
+        'period'=> \App\Enum\MealPlanPeriodEnum::values(),
     ]
 ];
