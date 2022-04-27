@@ -3,45 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePurchaseCouponRequest;
-use App\Models\CouponOwner;
-use App\Models\PurchaseCoupon;
-use App\Traits\CouponOwnerTrait;
+use App\Traits\PurchaseCouponTrait;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class PurchaseCouponController extends Controller
 {
-    use CouponOwnerTrait;
+    use PurchaseCouponTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View /Application|Factory|\Illuminate\Contracts\View\View|View
      */
     public function create()
     {
-        return view('purchaseCoupon');
+        $statistics = json_encode($this->statisticsStartValues());
+        return view('purchaseCoupon', compact('statistics'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePurchaseCouponRequest  $request
-     * @return String
+     * @param StorePurchaseCouponRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StorePurchaseCouponRequest $request)
     {
         $data = $request->validated();
-        DB::transaction(function () use ($data) {
-            /** @noinspection PhpUndefinedFieldInspection */
-            Auth::user()->couponStaff->purchaseCoupon()->save(new PurchaseCoupon($data));
-            $couponOwner=CouponOwner::find($data['academic_id']);
-            unset($data['academic_id']);
-            $this->addCoupons($couponOwner, $data);
-        });
-        return  "Επιτυχής πώληση";
+        return response()->json(
+            DB::transaction(function () use ($data) {
+                return $this->canBuy($data);
+            })
+        );
     }
 }

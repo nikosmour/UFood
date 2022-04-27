@@ -16,11 +16,16 @@ window.Vue = require('vue').default;
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+const files = require.context('./', true, /\.vue$/i)
+files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('coupons-purchase-form', require('./components/CouponsPurchaseForm.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('coupons-purchase-form', require('./components/CouponsPurchaseForm').default);
+// Vue.component('entry-checking-form', require('./components/EntryCheckingForm').default);
+// Vue.component('export-statistics-form', require('./components/ExportStatisticsForm').default);
+// Vue.component('entry-checking', require('./Pages/EntryChecking').default);
+// Vue.component('coupon-purchase', require('./Pages/CouponPurchase').default);
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
