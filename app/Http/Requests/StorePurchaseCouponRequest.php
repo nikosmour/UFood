@@ -11,47 +11,29 @@ class StorePurchaseCouponRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
+     * If the user has the ability to sell coupons.
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // if the user is staff coupon
-        /** @noinspection PhpUndefinedFieldInspection */
-        return Auth::user()->status->hasAbility(UserAbilityEnum::COUPON_SELL);
-    }
-    /**
-     * Configure the validator instance.
-     *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
-    public function withValidator($validator)
-    {
-//        $validator->after(function ($validator) {
-//            if (new AtLeastOneNoZero(...config('constants.meal.plan.period'))) {
-//                $validator->errors()->add('meals', 'Something is wrong with this field!');
-//            }
-//        });
+        return Auth::user()->hasAbility(UserAbilityEnum::COUPON_SELL);
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
+     * @return array<string,array>
      */
-    public function rules()
+    public function rules(): array
     {
-        $rules=[];
-        $rules['academic_id']='required|integer|exists:coupon_owners,academic_id';
-        $periods=config('constants.meal.plan.period');
-        foreach($periods as $period)
-        {
-            $rules[$period]= ['required',
-                'integer','min:0'
-                ];
+        $rules = [];
+        $rules['academic_id'] = ["required","integer","exists:coupon_owners,academic_id"];
+        $periods = config("constants.meal.plan.period");
+        foreach ($periods as $period) {
+            $rules[$period] = ['required',
+                'integer', 'min:0'
+            ];
         }
-        $rules[$periods[0]][]=new AtLeastOneNoZero(...$periods);
+        $rules[$periods[0]][] = new AtLeastOneNoZero(...$periods);
         return $rules;
     }
 
