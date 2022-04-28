@@ -17,7 +17,31 @@ enum UserStatusEnum: string
     case STAFF_CARD = 'staff card application';
     case STAFF_ENTRY = 'staff entry';
 
-    public function role(): UserRoleEnum
+    /**
+     * determine if the user has the specific $role
+     * @param UserRoleEnum $role
+     * @return bool
+     */
+    public function hasRole(UserRoleEnum $role): bool
+    {
+        return $this->hasAnyRole([$role]);
+    }
+
+    /**
+     * determine if the user has any of the specific $roles
+     * @param array $roles
+     * array of UserRoleEnum
+     * @return bool
+     */
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role(), $roles);
+    }
+
+    /**
+     * @return UserRoleEnum
+     */
+    private function role(): UserRoleEnum
     {
         return match ($this) {
             UserStatusEnum::STAFF_CARD => UserRoleEnum::STAFF_CARD,
@@ -29,6 +53,16 @@ enum UserStatusEnum: string
             UserStatusEnum::ERASMUS => UserRoleEnum::STUDENT,
             UserStatusEnum::RESEARCHER => UserRoleEnum::RESEARCHER,
         };
+    }
+
+    /**
+     * determine if the user status has the specific $ability
+     * @param UserAbilityEnum $ability
+     * @return bool
+     */
+    public function hasAbility(UserAbilityEnum $ability): bool
+    {
+        return $this->hasAnyRole($ability->whoHas());
     }
 
 
