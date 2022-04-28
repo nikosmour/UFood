@@ -29,8 +29,7 @@ enum UserStatusEnum: string
 
     /**
      * determine if the user has any of the specific $roles
-     * @param array $roles
-     * array of UserRoleEnum
+     * @param UserRoleEnum[] $roles
      * @return bool
      */
     public function hasAnyRole(array $roles): bool
@@ -63,6 +62,18 @@ enum UserStatusEnum: string
     public function hasAbility(UserAbilityEnum $ability): bool
     {
         return $this->hasAnyRole($ability->whoHas());
+    }
+    /**
+     * determine if the user status has any of the specifics $abilities
+     * @param UserAbilityEnum[] $abilities
+     * @return bool
+     */
+    public function hasAnyAbility(array $abilities): bool
+    {
+        foreach ($abilities as $ability)
+            if($this->hasAbility($ability))
+                return true;
+        return false;
     }
 
 

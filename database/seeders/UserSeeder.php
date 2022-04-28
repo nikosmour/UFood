@@ -2,31 +2,35 @@
 
 namespace Database\Seeders;
 
+use App\Enum\UserAbilityEnum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
+    use WithoutModelEvents;
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $users_length=50;
         \App\Models\User::factory()->count($users_length)->create()->each(function ($user){
-            $status=$user->status;
-            if (str_contains($status, 'staff') ==0) {
+            if ($user->hasAnyAbility([
+                UserAbilityEnum::CARD_OWNERSHIP,
+                UserAbilityEnum::COUPON_OWNERSHIP]))
                 \App\Models\Academic::factory()->for($user)->create();
-                \App\Models\CouponOwner::factory()->for($user->academic)->create();
+            if ($user->hasAbility(UserAbilityEnum::CARD_OWNERSHIP))
                 \App\Models\CardApplicant::factory()->for($user->academic)->create();
-            }
-            elseif (str_contains($status, 'coupon'))
+            if ($user->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP))
+                \App\Models\CouponOwner::factory()->for($user->academic)->create();
+            if ($user->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP))
                 \App\Models\CouponStaff::factory()->for($user)->create();
-            elseif (str_contains($status, 'card'))
+            if ($user->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK))
                 \App\Models\CardApplicationStaff::factory()->for($user)->create();
-            else // same as elseif ($status='staff entry')
+            if ($user->hasAbility(UserAbilityEnum::ENTRY_CHECK))
                 \App\Models\EntryStaff::factory()->for($user)->create();
         });
         $this->call([

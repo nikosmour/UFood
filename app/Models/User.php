@@ -90,4 +90,13 @@ class User extends Authenticatable
     {
         return $this->status->hasAbility($ability);
     }
+    /**
+     * check if the instance has an ability
+     * @param UserAbilityEnum[] $abilities
+     * @return bool
+     */
+    public function hasAnyAbility(array $abilities): bool
+    {
+        return $this->status->hasAnyAbility($abilities);
+    }
 }
