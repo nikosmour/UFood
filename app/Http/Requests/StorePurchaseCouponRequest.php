@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\UserAbilityEnum;
 use App\Rules\AtLeastOneNoZero;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,8 @@ class StorePurchaseCouponRequest extends FormRequest
     public function authorize()
     {
         // if the user is staff coupon
-        return str_contains(Auth::user()->status, 'coupon');
+        /** @noinspection PhpUndefinedFieldInspection */
+        return Auth::user()->status->hasAbility(UserAbilityEnum::COUPON_SELL);
     }
     /**
      * Configure the validator instance.
