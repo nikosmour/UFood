@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enum\UserStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use PhpOption\None;
 
 class User extends Authenticatable
 {
@@ -34,32 +34,37 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * @var string[]
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'status' => UserStatusEnum::class,
     ];
+
     /**
      * Get the academic model associate with the user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne | null
+     * @return HasOne | null
      */
     public function academic()
     {
         return $this->hasOne(Academic::class);
     }
-    public function cardApplicationStaff(): \Illuminate\Database\Eloquent\Relations\HasOne
+
+    public function cardApplicationStaff(): HasOne
     {
         return $this->hasOne(CardApplicationStaff::class);
     }
-    public function couponStaff(): \Illuminate\Database\Eloquent\Relations\HasOne
+
+    public function couponStaff(): HasOne
     {
         return $this->hasOne(CouponStaff::class);
     }
-    public function entryStaff(): \Illuminate\Database\Eloquent\Relations\HasOne
+
+    public function entryStaff(): HasOne
     {
         return $this->hasOne(EntryStaff::class);
     }
