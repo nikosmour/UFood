@@ -19,7 +19,7 @@ class AcademicFactory extends Factory
         return [
             'academic_id'=>$this->faker->unique()->creditCardNumber,
             'a_m'=>$this->faker->unique()->numberBetween('1000000','9999999'),
-            'active'=>$this->faker->boolean
+            'is_active'=>$this->faker->boolean
         ];
     }
 }

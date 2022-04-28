@@ -28,8 +28,8 @@ class UsageCoupon extends Model
          * @return void
          */
             callback: function ($model): void {
-            if ($model->isClean('status'))
-                $model->status = MealPlanPeriodEnum::getCurrentMealPeriod();
+            if ($model->isClean('period'))
+                $model->period = MealPlanPeriodEnum::getCurrentMealPeriod();
             if ($model->isClean('entry_staff_id'))
                 /** @noinspection PhpUndefinedFieldInspection */ $model->entry_staff_id = auth()->user()->entryStaff->id;
             $model->couponOwner->decrement($model->status);

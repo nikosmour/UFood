@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('academics', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_id')->primary();
             $table->unsignedMediumInteger('a_m')->unique();
-            $table->boolean('active');
+            $table->boolean('is_active');
             $table->unsignedBigInteger('user_id')->unique();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');

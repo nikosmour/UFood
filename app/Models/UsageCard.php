@@ -49,8 +49,8 @@ class UsageCard extends Model
                     $model->date = now();
                 if ($model->isClean('time'))
                     $model->time = now();
-                if ($model->isClean('status'))
-                    $model->status = MealPlanPeriodEnum::getCurrentMealPeriod();
+                if ($model->isClean('period'))
+                    $model->period = MealPlanPeriodEnum::getCurrentMealPeriod();
                 if ($model->isClean('entry_staff_id'))
                     /** @noinspection PhpUndefinedFieldInspection */ $model->entry_staff_id = auth()->user()->entryStaff->id;
 

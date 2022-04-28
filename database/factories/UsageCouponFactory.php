@@ -18,7 +18,7 @@ class UsageCouponFactory extends Factory
     {
         $periods=config('constants.meal.plan.period');
         return [
-            'status' => $periods[array_rand($periods)],
+            'period' => $periods[array_rand($periods)],
         ];
     }
 }
