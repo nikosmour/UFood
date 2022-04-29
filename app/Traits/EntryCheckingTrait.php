@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enum\MealPlanPeriodEnum;
 use App\Models\CardApplicant;
 use App\Models\CouponOwner;
 use App\Models\UsageCard;
@@ -13,8 +14,6 @@ use Throwable;
 
 trait EntryCheckingTrait
 {
-    use MealPlanTrait;
-
     /**
      * Check if the user can pass the entry point
      * @param array $data
@@ -57,8 +56,6 @@ trait EntryCheckingTrait
         } catch (Throwable $e) {
             return $json + ['coupon' => $e];
         }
-
-
     }
 
     /**
@@ -100,7 +97,7 @@ trait EntryCheckingTrait
     #[ArrayShape(['coupons' => "int", 'cards' => "int"])]
     private function statisticsStartValues(): array
     {
-        $currentMeal = $this->getCurrentMealPeriod();
+        $currentMeal = MealPlanPeriodEnum::getCurrentMealPeriod();
         $currentDate = now()->format('Y-m-d');
         return [
             'coupons' => UsageCoupon::all()->where('created_at', '>', $currentDate)->where('status', $currentMeal)->count(),
