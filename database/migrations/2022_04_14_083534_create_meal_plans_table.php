@@ -1,11 +1,11 @@
 <?php
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('meal_plans', function (Blueprint $table) {
             $table->id();
             $table->date('date')->index();
-            $table->enum('period',config('constants.meal.plan.period'));
-            $table->unique(['date','period']);
+            $table->enum('period', MealPlanPeriodEnum::values()->toArray());
+            $table->unique(['date', 'period']);
         });
     }
 

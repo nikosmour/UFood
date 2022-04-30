@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enum\CardStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CardApplication>
+ * @extends Factory
  */
 class CardApplicationFactory extends Factory
 {
@@ -19,7 +20,7 @@ class CardApplicationFactory extends Factory
         return [
             'student_comments' => 'student_comments',
             'card_application_staff_comments' => 'card_application_staff_comments',
-            'status' => array_rand(config('constants.card.application.status')),
+            'status' => CardStatusEnum::values()->random(),
         ];
     }
 }

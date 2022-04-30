@@ -1,11 +1,11 @@
 <?php
 
+use App\Enum\CardStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('student_comments')->nullable();
             $table->string('card_application_staff_comments')->nullable();
-            $table->enum('status',config('constants.card.application.status'));
+            $table->enum('status', CardStatusEnum::values()->toArray());
             $table->unsignedBigInteger('academic_id');
             $table->unsignedTinyInteger('card_application_staff_id')->nullable();
             $table->timestamps();

@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UsageCoupon>
+ * @extends Factory
  */
 class UsageCouponFactory extends Factory
 {
@@ -16,9 +17,8 @@ class UsageCouponFactory extends Factory
      */
     public function definition()
     {
-        $periods=config('constants.meal.plan.period');
         return [
-            'period' => $periods[array_rand($periods)],
+            'period' => MealPlanPeriodEnum::values()->random(),
         ];
     }
 }

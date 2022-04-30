@@ -1,11 +1,11 @@
 <?php
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,8 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('academic_id');
             $table->unsignedTinyInteger('coupon_staff_id');
             $table->unsignedInteger('money')->default(0);
-            foreach(config('constants.meal.plan.period') as $period)
-            {
+            foreach (MealPlanPeriodEnum::names() as $period) {
                 $table->unsignedTinyInteger($period)->default(0);
             }
             $table->timestamp('created_at')->useCurrent();

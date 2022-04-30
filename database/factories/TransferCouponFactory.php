@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TransferCoupon>
+ * @extends Factory
  */
 class TransferCouponFactory extends Factory
 {
@@ -16,10 +17,10 @@ class TransferCouponFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'breakfast'=>$this->faker->numberBetween(0,255),
-            'lunch'=>$this->faker->numberBetween(0,255),
-            'dinner'=>$this->faker->numberBetween(0,255),
-        ];
+        $array = [];
+        foreach (MealPlanPeriodEnum::names() as $period) {
+            $array[$period] = $this->faker->numberBetween(0, 255);
+        }
+        return $array;
     }
 }

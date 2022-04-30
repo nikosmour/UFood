@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\MealPlan;
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MealPlan>
+ * @extends Factory
  */
 class MealPlanFactory extends Factory
 {
@@ -17,10 +17,9 @@ class MealPlanFactory extends Factory
      */
     public function definition()
     {
-        $periods=config('constants.meal.plan.period');
         return [
             'date' => $this->faker->dateTimeBetween('now', '30 days'),
-            'period' => $periods[array_rand($periods)],
+            'period' => MealPlanPeriodEnum::values()->random(),
         ];
     }
 }

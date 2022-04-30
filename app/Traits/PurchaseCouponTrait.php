@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enum\MealPlanPeriodEnum;
 use App\Models\CouponOwner;
 use App\Models\PurchaseCoupon;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,7 @@ trait PurchaseCouponTrait
     {
         $currentDate = now()->format('Y-m-d');
         $array = [];
-        foreach (config('constants.meal.plan.period') as $period)
+        foreach (MealPlanPeriodEnum::names() as $period)
             $array[$period] = PurchaseCoupon::all()->where('created_at', '>', $currentDate)->sum($period);
         return $array;
     }

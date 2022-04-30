@@ -1,11 +1,11 @@
 <?php
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('academic_id');
             $table->unsignedTinyInteger('entry_staff_id');
-            $table->enum('period',config('constants.meal.plan.period'));
+            $table->enum('period', MealPlanPeriodEnum::values()->toArray());
             $table->timestamp('created_at')->useCurrent();
             $table->foreign('academic_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('entry_staff_id')->references('id')->on('entry_staff')->onDelete('cascade')->onUpdate('cascade');

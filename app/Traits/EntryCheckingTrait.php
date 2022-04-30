@@ -97,11 +97,11 @@ trait EntryCheckingTrait
     #[ArrayShape(['coupons' => "int", 'cards' => "int"])]
     private function statisticsStartValues(): array
     {
-        $currentMeal = MealPlanPeriodEnum::getCurrentMealPeriod();
+        $currentMeal = MealPlanPeriodEnum::getCurrentMealPeriod()->value;
         $currentDate = now()->format('Y-m-d');
         return [
-            'coupons' => UsageCoupon::all()->where('created_at', '>', $currentDate)->where('status', $currentMeal)->count(),
-            'cards' => UsageCard::all()->where('date', '>', $currentDate)->where('status', $currentMeal)->count()
+            'coupons' => UsageCoupon::all()->where('created_at', '>', $currentDate)->where('period', $currentMeal)->count(),
+            'cards' => UsageCard::all()->where('date', '>', $currentDate)->where('period', $currentMeal)->count()
         ];
     }
 

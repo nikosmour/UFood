@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PurchaseCoupon>
+ * @extends Factory
  */
 class PurchaseCouponFactory extends Factory
 {
@@ -16,11 +17,10 @@ class PurchaseCouponFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'money'=>$this->faker->numberBetween(0,9999)/100,
-            'breakfast'=>$this->faker->numberBetween(0,255),
-            'lunch'=>$this->faker->numberBetween(0,255),
-            'dinner'=>$this->faker->numberBetween(0,255),
-        ];
+        $array = ['money' => $this->faker->numberBetween(0, 9999) / 100];
+        foreach (MealPlanPeriodEnum::names() as $period) {
+            $array[$period] = $this->faker->numberBetween(0, 255);
+        }
+        return $array;
     }
 }

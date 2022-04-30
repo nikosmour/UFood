@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enum\MealCategoryEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Meal>
+ * @extends Factory
  */
 class MealFactory extends Factory
 {
@@ -16,10 +17,9 @@ class MealFactory extends Factory
      */
     public function definition()
     {
-        $category=config('constants.meal.category');
         return [
-            'category' => $category[array_rand($category)],
-            'description' => 'fake'. now()->toDateTimeString(),
+            'category' => MealCategoryEnum::values()->random(),
+            'description' => 'fake' . now()->toDateTimeString(),
         ];
     }
 }
