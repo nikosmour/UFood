@@ -6,6 +6,7 @@ use App\Http\Requests\StorePurchaseCouponRequest;
 use App\Traits\PurchaseCouponTrait;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -15,7 +16,7 @@ class PurchaseCouponController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth','can:create,App\Models\PurchaseCoupon']);
+        $this->middleware(['auth', 'can:create,App\Models\PurchaseCoupon']);
     }
 
     /**
@@ -23,19 +24,19 @@ class PurchaseCouponController extends Controller
      *
      * @return Application|Factory|\Illuminate\Contracts\View\View|View /Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function create()
+    public function create(): \Illuminate\Contracts\View\View|Factory|View|Application
     {
         $statistics = json_encode($this->statisticsStartValues());
-        return view('purchaseCoupon', compact('statistics'));
+        return view('purchaseCoupon.create', compact('statistics'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param StorePurchaseCouponRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function store(StorePurchaseCouponRequest $request)
+    public function store(StorePurchaseCouponRequest $request): JsonResponse
     {
         $data = $request->validated();
         return response()->json(

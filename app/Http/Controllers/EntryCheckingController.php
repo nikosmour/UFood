@@ -4,33 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEntryCheckingRequest;
 use App\Traits\EntryCheckingTrait;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class EntryCheckingController extends Controller
 {
     use EntryCheckingTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function create()
+    public function create(): \Illuminate\Contracts\View\View|Factory|View|Application
     {
-        $statistics=json_encode($this->statisticsStartValues());
-        return view('entryChecking' , compact('statistics'));
+        $statistics = json_encode($this->statisticsStartValues());
+        return view('entryChecking.create', compact('statistics'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreEntryCheckingRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreEntryCheckingRequest $request
+     * @return JsonResponse
      */
-    public function store(StoreEntryCheckingRequest $request)
+    public function store(StoreEntryCheckingRequest $request): JsonResponse
     {
         $data = $request->validated();
         return response()->json(
