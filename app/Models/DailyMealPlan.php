@@ -18,6 +18,8 @@ class DailyMealPlan extends Model
 
     protected $table = 'meal_plans';
     protected $with = ['breakfast', 'lunch', 'dinner'];
+    protected $primaryKey ='date';
+    protected $keyType = 'string';
 
     protected static function booted()
     {
@@ -49,6 +51,9 @@ class DailyMealPlan extends Model
     {
         return static::withoutGlobalScopes()->where('date', '<=', now()->subDay());
     }
+    protected $casts = [
+        'date' => 'date:Y-m-d',
+    ];
 
 
 }

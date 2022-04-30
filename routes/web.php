@@ -20,7 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('mealPlan', \App\Http\Controllers\DailyMealPlanController::class)->only('index');
+Route::resource('mealPlan', \App\Http\Controllers\DailyMealPlanController::class)->parameter('mealPlan','dailyMealPlan')->only('index','show');
 Route::get('myInfo', \App\Http\Controllers\UserInfoController::class)->name('myInfo');
 Route::redirect('coupons/purchase','/coupons/purchase/create');
 Route::resource('coupons/purchase', \App\Http\Controllers\PurchaseCouponController::class,['as'=>'coupons'])->only('create','store');

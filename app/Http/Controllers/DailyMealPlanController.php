@@ -23,13 +23,12 @@ class DailyMealPlanController extends Controller
      *
      * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function index()
+    public function index(): \Illuminate\Contracts\View\View|Factory|View|Application
     {
         $relation1s = ['breakfast', 'lunch', 'dinner'];
         $models = DailyMealPlan::all();
         foreach ($relation1s as $relation1)
             $relations[] = explode('.', $relation1);
-
         return view('test', compact('models', 'relations'));
     }
 
@@ -58,11 +57,16 @@ class DailyMealPlanController extends Controller
      * Display the specified resource.
      *
      * @param DailyMealPlan $dailyMealPlan
-     * @return Response
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function show(DailyMealPlan $dailyMealPlan)
+    public function show(DailyMealPlan $dailyMealPlan): \Illuminate\Contracts\View\View|Factory|View|Application
     {
-        //
+        $relation1s = ['breakfast', 'lunch', 'dinner'];
+        $models = [$dailyMealPlan];
+        foreach ($relation1s as $relation1)
+            $relations[] = explode('.', $relation1);
+
+        return view('test', compact('models', 'relations'));
     }
 
     /**
