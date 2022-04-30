@@ -2,28 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class UserInfoController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
     public function __invoke()
     {
-        $user=Auth::user();
-        $academic=$user->academic;
-        $relations=null;
+        $user = Auth::user();
+        $academic = $user->academic;
+        $relations = null;
         if ($academic)
-            if($academic->cardApplicant)
-                $relations=[['academic','cardApplicant']];
+            if ($academic->cardApplicant)
+                $relations = [['academic', 'cardApplicant']];
             else
-                $relations=[['academic']];
-        $models=[$user];
-        return view('test',compact('models','relations'));
+                $relations = [['academic']];
+        $models = [$user];
+        return view('test', compact('models', 'relations'));
 
     }
 }
