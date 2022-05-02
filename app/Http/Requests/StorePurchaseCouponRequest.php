@@ -28,7 +28,7 @@ class StorePurchaseCouponRequest extends FormRequest
     {
         $rules = [];
         $rules['academic_id'] = ["required", "integer", "exists:coupon_owners,academic_id"];
-        $periods = MealPlanPeriodEnum::values();
+        $periods = MealPlanPeriodEnum::names();
         foreach ($periods as $period) {
             $rules[$period] = ['required',
                 'integer', 'min:0'
