@@ -27,7 +27,7 @@ trait CouponOwnerTrait
      */
     static public function removeCoupons(int $couponOwner_id, array $coupons): void
     {
-        foreach (MealPlanPeriodEnum::values() as $meal)
+        foreach (MealPlanPeriodEnum::names() as $meal)
             if ($coupons[$meal])
                 CouponOwner::where('academic_id', '=', $couponOwner_id)->decrement($meal, $coupons[$meal]);
     }

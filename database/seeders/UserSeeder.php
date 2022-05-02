@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 \App\Models\CardApplicant::factory()->for($user->academic)->create();
             if ($user->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP))
                 \App\Models\CouponOwner::factory()->for($user->academic)->create();
-            if ($user->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP))
+            if ($user->hasAbility(UserAbilityEnum::COUPON_SELL))
                 \App\Models\CouponStaff::factory()->for($user)->create();
             if ($user->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK))
                 \App\Models\CardApplicationStaff::factory()->for($user)->create();
