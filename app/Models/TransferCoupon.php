@@ -3,21 +3,41 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class TransferCoupon extends Pivot
 {
     use HasFactory;
-    public $guarded=[];
-    public $timestamps = false ;
-    public function sender(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+
+    public $guarded = [];
+    public $timestamps = false;
+
+    protected static function boot()
     {
-        return $this->belongsTo('App\CouponOwner','sender_id');
+        parent::boot();
+        static::creating(
+        /**
+         * define default sender_id when model is created
+         * @param $model
+         * @return void
+         */
+            function ($model) {
+                if ($model->isClean('sender_id'))
+                    $model->sender_id = auth()->user()->academic->academic_id;
+                CouponOwner::addCoupons($model['receiver_id'], $model->attributes);
+                CouponOwner::removeCoupons($model['sender_id'], $model->attributes);
+            });
     }
-    public function receiver(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+
+    public function sender(): BelongsTo
     {
-        return $this->belongsTo('App\CouponOwner','receiver_id');
+        return $this->belongsTo('App\CouponOwner', 'sender_id');
+    }
+
+    public function receiver(): BelongsTo
+    {
+        return $this->belongsTo('App\CouponOwner', 'receiver_id');
     }
 
 }
