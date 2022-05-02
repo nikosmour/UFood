@@ -54,7 +54,7 @@
                     else
                         thiss.result=json;
                 }).catch(function (errors) {
-                    this.success = false;
+                    thiss.success = false;
                     console.log(errors.response.data.errors)
                     thiss.result = "Request failed:";
                     for( let error in errors.response.data.errors) {
