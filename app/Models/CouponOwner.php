@@ -36,16 +36,14 @@ class CouponOwner extends Model
         return $this->hasMany(PurchaseCoupon::class, 'academic_id');
     }
 
-    public function sendingCoupon(): BelongsToMany
+    public function sendingCoupon(): HasMany
     {
-        return $this->belongsToMany(CouponOwner::class, TransferCoupon::class,
-            'sender_id', 'receiver_id')->using(TransferCoupon::class);
+        return $this->hasMany(TransferCoupon::class,'sender_id');
     }
 
-    public function receivingCoupon(): BelongsToMany
+    public function receivingCoupon(): HasMany
     {
-        return $this->belongsToMany(CouponOwner::class, TransferCoupon::class,
-            'receiver_id', 'sender_id')->using(TransferCoupon::class);
+        return $this->hasMany(TransferCoupon::class, 'receiver_id');
     }
 
     public function usageCoupon(): HasMany
