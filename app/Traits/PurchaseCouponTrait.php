@@ -3,14 +3,11 @@
 namespace App\Traits;
 
 use App\Enum\MealPlanPeriodEnum;
-use App\Models\CouponOwner;
 use App\Models\PurchaseCoupon;
-use Illuminate\Support\Facades\Auth;
 use JetBrains\PhpStorm\ArrayShape;
 
 trait PurchaseCouponTrait
 {
-    use CouponOwnerTrait;
 
     /**
      * Check if the user can pass the entry point
@@ -23,11 +20,7 @@ trait PurchaseCouponTrait
     #[ArrayShape(['sold' => "bool"])]
     private function canBuy(array $data): array
     {
-        /** @noinspection PhpUndefinedFieldInspection */
-        Auth::user()->couponStaff->purchaseCoupon()->save(new PurchaseCoupon($data));
-        $couponOwner = CouponOwner::find($data['academic_id']);
-        unset($data['academic_id']);
-        $this->addCoupons($couponOwner, $data);
+        PurchaseCoupon::create($data);
         return ['sold' => true];
     }
 

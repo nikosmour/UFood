@@ -3,21 +3,32 @@
 
 namespace App\Traits;
 
+use App\Enum\MealPlanPeriodEnum;
 use App\Models\CouponOwner;
 
 trait CouponOwnerTrait
 {
-    private function addCoupons(CouponOwner $couponOwner, Array $coupons)
+    /**
+     * @param int $couponOwner_id
+     * @param array $coupons
+     * @return void
+     */
+    static public function addCoupons(int $couponOwner_id, array $coupons): void
     {
-        foreach ($coupons as $key => $value)
-            $couponOwner->increment($key, $value);
-        $couponOwner->saveOrFail();
+        foreach (MealPlanPeriodEnum::values() as $meal)
+            if ($coupons[$meal])
+                CouponOwner::where('academic_id', '=', $couponOwner_id)->increment($meal, $coupons[$meal]);
     }
 
-    private function removeCoupons(CouponOwner $couponOwner, Array $coupons)
+    /**
+     * @param int $couponOwner_id
+     * @param array $coupons
+     * @return void
+     */
+    static public function removeCoupons(int $couponOwner_id, array $coupons): void
     {
-        foreach ($coupons as $key => $value)
-            $couponOwner->decrement($key, $value);
-        $couponOwner->saveOrFail();
+        foreach (MealPlanPeriodEnum::values() as $meal)
+            if ($coupons[$meal])
+                CouponOwner::where('academic_id', '=', $couponOwner_id)->decrement($meal, $coupons[$meal]);
     }
 }
