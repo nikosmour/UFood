@@ -23,11 +23,11 @@ class CouponOwnerController extends Controller
     {
         /** @noinspection PhpUndefinedFieldInspection */
         $couponOwner=Auth::user()->academic->couponOwner;
-        $sending=$couponOwner->sendingCoupon()->select(DB::raw( '"sending" as transaction, receiver_id as academic_id'),'created_at',...MealPlanPeriodEnum::names());
-        $receiving=$couponOwner->receivingCoupon()->select(DB::raw( ' "receiving" as transaction,sender_id as academic_id'),'created_at',...MealPlanPeriodEnum::names());
-        $buying=$couponOwner->purchaseCoupon()->select(DB::raw( ' "buying" as transaction,"0" as academic_id'),'created_at',...MealPlanPeriodEnum::names());
-        #todo $using
-        $transactions=$sending->union($receiving)->union($buying)->orderByDesc('created_at')->get();
+        $sending=$couponOwner->sendingCoupon()->select(DB::raw( '"sending" as transaction, receiver_id as academic_id,0 as money'),'created_at',...MealPlanPeriodEnum::names());
+        $receiving=$couponOwner->receivingCoupon()->select(DB::raw( ' "receiving" as transaction,sender_id as academic_id,0 as money'),'created_at',...MealPlanPeriodEnum::names());
+        $buying=$couponOwner->purchaseCoupon()->select(DB::raw( ' "buying" as transaction,0 as academic_id,money/100 as money'),'created_at',...MealPlanPeriodEnum::names());
+        $using=$couponOwner->usageCoupon()->select(DB::raw('"using" as transaction,period as academic_id,0 as money'),'created_at',DB::raw('0 as BREAKFAST,0 as `LUNCH`,0 as `DINNER`'));
+        $transactions=$sending->union($receiving)->union($buying)->union($using)->orderByDesc('created_at')->get();
         return view('couponOwner.index',compact('couponOwner','transactions'));
 
     }

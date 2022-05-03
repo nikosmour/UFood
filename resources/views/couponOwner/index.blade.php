@@ -25,8 +25,9 @@
                             {{__($transaction->transaction)}}
                         </th>
                         <td>{{ $transaction->money ? : ''}}
-                            @foreach(\App\Enum\MealPlanPeriodEnum::names() as $meal)
-                                {{__($meal)}}: {{$transaction[$meal]}}
+                            @foreach(\App\Enum\MealPlanPeriodEnum::toArray() as $meal=>$value)
+{{--                                check if transaction is using in academic_id has a $value --}}
+                                {{__($meal)}}: {{($transaction->academic_id==$value)?1:$transaction[$meal]}}
                             @endforeach
                             @if($transaction->transaction=='receiving')
                                 {{__('Sender').': '.$transaction->academic_id}}</td>
@@ -46,6 +47,12 @@
                                 @foreach(\App\Enum\MealPlanPeriodEnum::names() as $meal)
                                     <td>{{$temp[$meal]}}{{($temp[$meal]-=$transaction[$meal])?'':''}}</td>
                                 @endforeach
+                            @elseif($transaction->transaction=='using')
+                                    </td>
+                                    <td>{{ $temp->money}} € </td>
+                                    @foreach(\App\Enum\MealPlanPeriodEnum::toArray() as $meal=>$value)
+                                        <td>{{$temp[$meal]}}{{($temp[$meal]-=($value==$transaction->academic_id)?1:0)?'':''}}</td>
+                                    @endforeach
                             @endif
                         <td>{{$transaction->created_at}}</td>
                     </tr>
