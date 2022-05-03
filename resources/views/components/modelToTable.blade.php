@@ -1,11 +1,11 @@
 <div>
-    <table>
-        <thead>
-        <tr>
-            @foreach ($models[0]->getAttributes() as $key=> $value)
-                <td>{{$key}}</td>
-            @endforeach
-        </tr>
+    <table class="table text-center  table-hover table-col-to-row-sm">
+        <thead  class="thead-dark">
+            <tr>
+                @foreach ($models[0]->getAttributes() as $key=> $value)
+                    <th scope="col">{{$key}}</th>
+                @endforeach
+            </tr>
         </thead>
         <tbody>
         @foreach ($models as $model)
