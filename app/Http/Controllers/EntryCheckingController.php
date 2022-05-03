@@ -16,7 +16,7 @@ class EntryCheckingController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'can:all,App\Models\EntryStaff']);
     }
 
     /**

@@ -17,7 +17,7 @@ class StorePurchaseCouponRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->hasAbility(UserAbilityEnum::COUPON_SELL);
+        return true;
     }
 
     /**
