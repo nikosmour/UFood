@@ -21,7 +21,7 @@ class CardApplicant extends Model
     }
     public function usageCard(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(UsageCard::class,'academic_id');
+        return $this->hasMany(UsageCard::class,'academic_id')->orderByDesc('date',);
     }
     protected $casts = [
         'year'=>'date:Y',
