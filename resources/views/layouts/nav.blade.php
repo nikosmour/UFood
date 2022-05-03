@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('title')
+    {{ config('app.name', 'Laravel') }}
+@endsection
 {{--@section('nav_list')
     @auth
         <li class="nav-item dropdown">

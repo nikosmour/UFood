@@ -29,3 +29,4 @@ Route::redirect('entryChecking','/entryChecking/create');
 Route::resource('entryChecking', \App\Http\Controllers\EntryCheckingController::class)->only('create','store');
 Route::redirect('coupons/transfer','/coupons/transfer/create');
 Route::resource('coupons/transfer', \App\Http\Controllers\TransferCouponController::class,['as'=>'coupons'])->parameter('transfer','transferCoupon')->only('create','store','show');
+Route::get('card/history',\App\Http\Controllers\CardHistoryController::class);// invoke

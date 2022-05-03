@@ -29,7 +29,8 @@ class DailyMealPlanController extends Controller
         $models = DailyMealPlan::all();
         foreach ($relation1s as $relation1)
             $relations[] = explode('.', $relation1);
-        return view('test', compact('models', 'relations'));
+        $caption='DailyMealPlan';
+        return view('test', compact('models', 'relations','caption'));
     }
 
     /**

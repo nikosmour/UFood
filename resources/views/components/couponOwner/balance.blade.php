@@ -1,6 +1,6 @@
 <div>
-    <table class="table text-center  table-hover table-col-to-row-sm">
-        <caption>{{ __('student.nav.Coupons') }}</caption>
+    <table class="table text-center  table-hover table-col-to-row-sm caption-top">
+        <caption>{{ __('balance') }}</caption>
         <thead class="thead-dark">
         <tr>
             <th scope="col"> &nbsp</th> {{-- to do same size --}}

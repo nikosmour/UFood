@@ -1,5 +1,7 @@
 @extends('layouts.nav')
-
+@section('title')
+    coupon transfer
+@endsection
 @section('content')
     <div class="container">
         @include('components.couponOwner.balance')

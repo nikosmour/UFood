@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('title')
+    purchase coupons
+@endsection
 @section('content')
     <div class="container-fluid my_flex_height">
         <purchase-coupon

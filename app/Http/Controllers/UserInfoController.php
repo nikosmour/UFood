@@ -35,7 +35,8 @@ class UserInfoController extends Controller
             else
                 $relations = [['academic']];
         $models = [$user];
-        return view('test', compact('models', 'relations'));
+        $caption='User info';
+        return view('test', compact('models', 'relations','caption'));
 
     }
 }

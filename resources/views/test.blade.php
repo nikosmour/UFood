@@ -1,5 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.nav')
+@section('title')
+    {{ $caption}}
+@endsection
 
 @section('content')
-    @include('components.modelToTable',compact('models','relations'))
+    <div class="container">
+        @include('components.modelToTable',compact('models','relations','caption'))
+    </div>
 @endsection
