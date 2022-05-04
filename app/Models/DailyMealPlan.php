@@ -8,18 +8,28 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
+ * @property int $breakfast_id
+ * @property int $lunch_id
+ * @property int $dinner_id
+ * @property Carbon $date;
  * @method static withoutGlobalScopes()
  */
 class DailyMealPlan extends Model
 {
     use MassPrunable;
 
+    public $timestamps = false;
     protected $table = 'meal_plans';
     protected $with = ['breakfast', 'lunch', 'dinner'];
-    protected $primaryKey ='date';
+    protected $primaryKey = 'date';
     protected $keyType = 'string';
+    protected $fillable = ['date'];
+    protected $casts = [
+        'date' => 'datetime:Y-m-d',
+    ];
 
     protected static function booted()
     {
@@ -51,9 +61,6 @@ class DailyMealPlan extends Model
     {
         return static::withoutGlobalScopes()->where('date', '<=', now()->subDay());
     }
-    protected $casts = [
-        'date' => 'date:Y-m-d',
-    ];
 
 
 }

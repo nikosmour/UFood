@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDailyMealPlanRequest extends FormRequest
@@ -23,8 +24,11 @@ class UpdateDailyMealPlanRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $array = [];
+        foreach (MealPlanPeriodEnum::names() as $period) {
+            $array[$period] = ["sometimes", "array", "min:1"];
+            $array[$period . '.*'] = ["sometimes", "string", "exists:meals,description"];
+        }
+        return $array;
     }
 }

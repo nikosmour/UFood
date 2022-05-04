@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDailyMealPlanRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreDailyMealPlanRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,10 +22,13 @@ class StoreDailyMealPlanRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        return [
-            //
-        ];
+        $array=['date'=>["required", "date", "unique:meal_plans,date"] ];
+        foreach (MealPlanPeriodEnum::names() as $period){
+            $array[$period]=["sometimes", "array", "min:1"];
+            $array[$period.'.*']=["sometimes", "string", "exists:meals,description"];
+        }
+        return $array ;
     }
 }

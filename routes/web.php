@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\CardHistoryController;
+use App\Http\Controllers\CouponOwnerController;
+use App\Http\Controllers\DailyMealPlanController;
+use App\Http\Controllers\EntryCheckingController;
+use App\Http\Controllers\PurchaseCouponController;
+use App\Http\Controllers\TransferCouponController;
+use App\Http\Controllers\UserInfoController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,13 +28,13 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('coupons/history',\App\Http\Controllers\CouponOwnerController::class)->name('coupons.history');// invoke
-Route::get('myInfo', \App\Http\Controllers\UserInfoController::class)->name('myInfo');
-Route::resource('mealPlan', \App\Http\Controllers\DailyMealPlanController::class)->parameter('mealPlan','dailyMealPlan')->only('index','show');
-Route::redirect('coupons/purchase','/coupons/purchase/create');
-Route::resource('coupons/purchase', \App\Http\Controllers\PurchaseCouponController::class,['as'=>'coupons'])->only('create','store');
-Route::redirect('entryChecking','/entryChecking/create');
-Route::resource('entryChecking', \App\Http\Controllers\EntryCheckingController::class)->only('create','store');
-Route::redirect('coupons/transfer','/coupons/transfer/create');
-Route::resource('coupons/transfer', \App\Http\Controllers\TransferCouponController::class,['as'=>'coupons'])->parameter('transfer','transferCoupon')->only('create','store','show');
-Route::get('card/history',\App\Http\Controllers\CardHistoryController::class);// invoke
+Route::get('coupons/history', CouponOwnerController::class)->name('coupons.history');// invoke
+Route::get('myInfo', UserInfoController::class)->name('myInfo');
+Route::resource('mealPlan', DailyMealPlanController::class)->parameter('mealPlan', 'dailyMealPlan');
+Route::redirect('coupons/purchase', '/coupons/purchase/create');
+Route::resource('coupons/purchase', PurchaseCouponController::class)->only('create', 'store');
+Route::redirect('entryChecking', '/entryChecking/create');
+Route::resource('entryChecking', EntryCheckingController::class)->only('create', 'store');
+Route::redirect('coupons/transfer', '/coupons/transfer/create');
+Route::resource('coupons/transfer', TransferCouponController::class)->parameter('transfer', 'transferCoupon')->only('create', 'store', 'show');
+Route::get('card/history', CardHistoryController::class);// invoke
