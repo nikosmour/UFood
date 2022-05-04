@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Models\Scopes\DailyMealScope;
 use App\Models\Scopes\FromTodayScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class DailyMealPlan extends Model
 {
-    use Prunable;
+    use MassPrunable;
 
     protected $table = 'meal_plans';
     protected $with = ['breakfast', 'lunch', 'dinner'];
@@ -29,17 +29,17 @@ class DailyMealPlan extends Model
 
     public function breakfast(): BelongsToMany
     {
-        return $this->belongsToMany(Meal::class, 'meal_meal_plan', 'meal_plan_id', parentKey: 'breakfast_id');
+        return $this->belongsToMany(Meal::class, 'meal_meal_plan', 'meal_plan_id', parentKey: 'breakfast_id')->orderBy('category')->orderBy('id');
     }
 
     public function lunch(): BelongsToMany
     {
-        return $this->belongsToMany(Meal::class, 'meal_meal_plan', 'meal_plan_id', parentKey: 'lunch_id');
+        return $this->belongsToMany(Meal::class, 'meal_meal_plan', 'meal_plan_id', parentKey: 'lunch_id')->orderBy('category')->orderBy('id');
     }
 
     public function dinner(): BelongsToMany
     {
-        return $this->belongsToMany(Meal::class, 'meal_meal_plan', 'meal_plan_id', parentKey: 'dinner_id');
+        return $this->belongsToMany(Meal::class, 'meal_meal_plan', 'meal_plan_id', parentKey: 'dinner_id')->orderBy('category')->orderBy('id');
     }
 
     /**
