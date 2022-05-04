@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+/**
+ * @mixin IdeHelperTransferCoupon
+ */
 class TransferCoupon extends Pivot
 {
     use HasFactory;
@@ -32,12 +35,12 @@ class TransferCoupon extends Pivot
 
     public function sender(): BelongsTo
     {
-        return $this->belongsTo('App\CouponOwner', 'sender_id');
+        return $this->belongsTo(CouponOwner::class, 'sender_id');
     }
 
     public function receiver(): BelongsTo
     {
-        return $this->belongsTo('App\CouponOwner', 'receiver_id');
+        return $this->belongsTo(CouponOwner::class, 'receiver_id');
     }
 
 }

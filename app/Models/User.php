@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * @property UserStatusEnum $status
+ * @mixin IdeHelperUser
  */
 class User extends Authenticatable
 {

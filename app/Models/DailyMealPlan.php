@@ -11,11 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $breakfast_id
- * @property int $lunch_id
- * @property int $dinner_id
- * @property Carbon $date;
- * @method static withoutGlobalScopes()
+ * @mixin IdeHelperDailyMealPlan
  */
 class DailyMealPlan extends Model
 {
