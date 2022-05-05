@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property int $lunch_id
+ * @property int $dinner_id
+ * @property int $breakfast_id
  * @mixin IdeHelperDailyMealPlan
  */
 class DailyMealPlan extends Model

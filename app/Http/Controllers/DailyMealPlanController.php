@@ -127,6 +127,7 @@ class DailyMealPlanController extends Controller
      * @param UpdateDailyMealPlanRequest $request
      * @param DailyMealPlan $dailyMealPlan
      * @return RedirectResponse|Redirector|Application
+     * @throws Throwable
      */
     public function update(UpdateDailyMealPlanRequest $request, DailyMealPlan $dailyMealPlan): Application|RedirectResponse|Redirector
     {
