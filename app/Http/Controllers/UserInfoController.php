@@ -27,16 +27,10 @@ class UserInfoController extends Controller
     public function __invoke()
     {
         $user = Auth::user();
-        $academic = $user->academic;
-        $relations = null;
-        if ($academic)
-            if ($academic->cardApplicant)
-                $relations = [['academic', 'cardApplicant']];
-            else
-                $relations = [['academic']];
+        $user->academic?->cardApplicant;
         $models = [$user];
-        $caption='User info';
-        return view('test', compact('models', 'relations','caption'));
+        $caption = 'User info';
+        return view('test', compact('models', 'caption'));
 
     }
 }

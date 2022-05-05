@@ -31,21 +31,18 @@ class DailyMealPlanController extends Controller
      * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
     public function index(): \Illuminate\Contracts\View\View|Factory|View|Application
-    {;
-        $relation1s = ['breakfast', 'lunch', 'dinner'];
+    {
         $models = DailyMealPlan::all();
-        foreach ($relation1s as $relation1)
-            $relations[] = explode('.', $relation1);
         $caption = 'DailyMealPlan';
-        return view('test', compact('models', 'relations', 'caption'));
+        return view('test', compact('models', 'caption'));
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\View|Factory|View|Application
      */
-    public function create(Request $request)
+    public function create(Request $request): \Illuminate\Contracts\View\View|Factory|View|Application
     {
 
         $root_name = "store";
@@ -160,9 +157,4 @@ class DailyMealPlanController extends Controller
         DailyMealPlan::withoutGlobalScopes()->whereIn('id', $ids)->delete();
         return redirect(route('mealPlan.index'));
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
-     */
 }

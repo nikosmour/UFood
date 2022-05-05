@@ -1,10 +1,9 @@
 @extends('layouts.nav')
 @section('title')
-        cardApplicant
+    cardApplicant
 @endsection
 @section('content')
     <div class="container">
-        @include('components.cardApplicant.info',['models'=>[$cardApplicant],'relations'=>[['usageCard']],'caption'=>'cardApplicant'])
+        @include('components.cardApplicant.info',['models'=>[$cardApplicant],'caption'=>'cardApplicant'])
     </div>
-
 @endsection

@@ -5,6 +5,6 @@
 
 @section('content')
     <div class="container">
-        @include('components.modelToTable',compact('models','relations','caption'))
+        @include('components.modelToTable',compact('models','caption'))
     </div>
 @endsection
