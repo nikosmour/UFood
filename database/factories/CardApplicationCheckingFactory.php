@@ -2,26 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Enum\CardStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @extends Factory
  */
-class CardApplicationFactory extends Factory
+class CardApplicationCheckingFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-    #[ArrayShape(['expiration_date' => "\DateTime", 'status' => "mixed"])]
+    #[ArrayShape(['card_application_staff_comment' => "string"])]
     public function definition(): array
     {
         return [
-            'expiration_date' => $this->faker->dateTimeBetween('-1 years', '+1 years'),
-            'status' => CardStatusEnum::values()->random(),
+            'card_application_staff_comment' => 'card_application_staff_comment',
         ];
     }
 }

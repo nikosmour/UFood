@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin IdeHelperCardApplicant
@@ -11,23 +13,34 @@ use Illuminate\Database\Eloquent\Model;
 class CardApplicant extends Model
 {
     use HasFactory;
+
     public $incrementing = false;
     protected $primaryKey = 'academic_id';
-
-    public function academic(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Academic::class,'academic_id');
-    }
-    public function cardApplication(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(CardApplication::class,'academic_id');
-    }
-    public function usageCard(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(UsageCard::class,'academic_id')->orderByDesc('date',);
-    }
+    /**
+     * The attributes that should be cast.
+     * @var string[]
+     */
     protected $casts = [
-        'year'=>'date:Y',
-        'expiration_date'=>'date:Y-m-d',
+        'year' => 'date:Y',
     ];
+
+    public function academic(): BelongsTo
+    {
+        return $this->belongsTo(Academic::class);
+    }
+
+    public function cardApplication(): HasMany
+    {
+        return $this->hasMany(CardApplication::class);
+    }
+
+    public function usageCard(): HasMany
+    {
+        return $this->hasMany(UsageCard::class)->orderByDesc('date',);
+    }
+
+    public function address(): HasMany
+    {
+        return $this->hasMany(Address::class)->orderByDesc('created_at');
+    }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @mixin IdeHelperCardApplicationStaff
@@ -11,12 +13,14 @@ use Illuminate\Database\Eloquent\Model;
 class CardApplicationStaff extends Model
 {
     use HasFactory;
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    public function cardApplication(): \Illuminate\Database\Eloquent\Relations\HasMany
+
+    public function cardApplication(): BelongsToMany
     {
-        return $this->hasMany(CardApplication::class);
+        return $this->belongsToMany(CardApplication::class)->using(CardApplicationChecking::class);
     }
 }

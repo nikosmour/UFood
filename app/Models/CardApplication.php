@@ -6,6 +6,7 @@ use App\Enum\CardStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -21,6 +22,7 @@ class CardApplication extends Model
      */
     protected $casts = [
         'status' => CardStatusEnum::class,
+        'expiration_date' => 'date:Y-m-d',
     ];
 
     public function cardApplicant(): BelongsTo
@@ -33,8 +35,18 @@ class CardApplication extends Model
         return $this->hasMany(CardApplicationDocument::class);
     }
 
-    public function cardApplicationStaff(): BelongsTo
+    public function cardApplicationStaff(): BelongsToMany
     {
-        return $this->belongsTo(CardApplicationStaff::class);
+        return $this->belongsToMany(CardApplicationStaff::class)->using(CardApplicationChecking::class);
+    }
+
+    public function staffComments(): HasMany
+    {
+        return $this->hasMany(CardApplicationChecking::class);
+    }
+
+    public function applicantComments(): HasMany
+    {
+        return $this->hasMany(HasCardApplicantComment::class);
     }
 }

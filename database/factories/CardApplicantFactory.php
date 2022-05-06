@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CardApplicant>
@@ -14,17 +15,13 @@ class CardApplicantFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    #[ArrayShape(['department' => "string", 'first_year' => "string", 'cellphone' => "int"])]
+    public function definition(): array
     {
         return [
             'department' => $this->faker->company(),
-            'first_year' => $this->faker->year(),
-            'expiration_date' => $this->faker->dateTimeBetween('-2 years','+5 years'),
-            'permanent_address' => $this->faker->address(),
-            'permanent_address_phone' => $this->faker->e164PhoneNumber(),
-            'temporary_address' => $this->faker->streetAddress(),
-            'temporary_address_phone' => $this->faker->e164PhoneNumber(),
-            'cellphone' => $this->faker->e164PhoneNumber(),
+            'first_year' => $this->faker->dateTimeBetween('-10 years','now')->format('Y'),
+            'cellphone' =>(int) $this->faker->e164PhoneNumber(),
         ];
     }
 }
