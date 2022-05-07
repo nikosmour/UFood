@@ -16,7 +16,8 @@ class PurchaseCouponController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth', 'can:all,App\Models\CouponStaff']);
+        $this->middleware('auth:couponStaffs');
+
     }
 
     /**

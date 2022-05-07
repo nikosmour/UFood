@@ -16,7 +16,7 @@ class UserInfoController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
     }
 
     /**
@@ -27,7 +27,7 @@ class UserInfoController extends Controller
     public function __invoke()
     {
         $user = Auth::user();
-        $user->academic?->cardApplicant;
+        $user->cardApplicant;
         $models = [$user];
         $caption = 'User info';
         return view('test', compact('models', 'caption'));

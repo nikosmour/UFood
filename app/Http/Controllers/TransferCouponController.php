@@ -18,7 +18,7 @@ class TransferCouponController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth', 'can:all,App\Models\CouponOwner']);
+        $this->middleware('auth:academics');
     }
 
     /**
@@ -43,7 +43,7 @@ class TransferCouponController extends Controller
      */
     public function create(): \Illuminate\Contracts\View\View|Factory|View|Application
     {
-        $couponOwner = auth()->user()->academic->couponOwner;
+        $couponOwner = auth()->user()->couponOwner;
         return view('couponOwner.send', compact('couponOwner'));
     }
 }

@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'academics',
+        'passwords' => 'academics',
     ],
 
     /*
@@ -36,9 +36,25 @@ return [
     */
 
     'guards' => [
-        'web' => [
+//        'web' => [
+//            'driver' => 'session',
+//            'provider' => 'users',
+//        ],
+        'academics' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'academics',
+        ],
+        'entryStaffs' => [
+            'driver' => 'session',
+            'provider' => 'entryStaffs',
+        ],
+        'couponStaffs' => [
+            'driver' => 'session',
+            'provider' => 'couponStaffs',
+        ],
+        'cardApplicationStaffs' => [
+            'driver' => 'session',
+            'provider' => 'cardApplicationStaffs',
         ],
     ],
 
@@ -63,6 +79,22 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'academics' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Academic::class,
+        ],
+        'entryStaffs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\EntryStaff::class,
+        ],
+        'couponStaffs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CouponStaff::class,
+        ],
+        'cardApplicationStaffs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CardApplicationStaff::class,
         ],
 
         // 'users' => [
@@ -89,6 +121,30 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'academics' => [
+            'provider' => 'academics',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'entryStaffs' => [
+            'provider' => 'entryStaffs',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'couponStaffs' => [
+            'provider' => 'couponStaffs',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'cardApplicationStaffs' => [
+            'provider' => 'cardApplicationStaffs',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

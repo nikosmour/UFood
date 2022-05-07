@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplicationChecking;
+use Illuminate\Http\Response;
 
 class CardApplicationCheckingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'can:all,'.CardApplicationChecking::class]);
+        $this->middleware('auth:cardApplicationStaffs');
     }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -25,7 +27,7 @@ class CardApplicationCheckingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -35,8 +37,8 @@ class CardApplicationCheckingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreCardApplicationCheckingRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreCardApplicationCheckingRequest $request
+     * @return Response
      */
     public function store(StoreCardApplicationCheckingRequest $request)
     {
@@ -46,8 +48,8 @@ class CardApplicationCheckingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CardApplicationChecking  $cardApplicationChecking
-     * @return \Illuminate\Http\Response
+     * @param CardApplicationChecking $cardApplicationChecking
+     * @return Response
      */
     public function show(CardApplicationChecking $cardApplicationChecking)
     {
@@ -57,8 +59,8 @@ class CardApplicationCheckingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CardApplicationChecking  $cardApplicationChecking
-     * @return \Illuminate\Http\Response
+     * @param CardApplicationChecking $cardApplicationChecking
+     * @return Response
      */
     public function edit(CardApplicationChecking $cardApplicationChecking)
     {
@@ -68,9 +70,9 @@ class CardApplicationCheckingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateCardApplicationCheckingRequest  $request
-     * @param  \App\Models\CardApplicationChecking  $cardApplicationChecking
-     * @return \Illuminate\Http\Response
+     * @param UpdateCardApplicationCheckingRequest $request
+     * @param CardApplicationChecking $cardApplicationChecking
+     * @return Response
      */
     public function update(UpdateCardApplicationCheckingRequest $request, CardApplicationChecking $cardApplicationChecking)
     {
@@ -80,8 +82,8 @@ class CardApplicationCheckingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CardApplicationChecking  $cardApplicationChecking
-     * @return \Illuminate\Http\Response
+     * @param CardApplicationChecking $cardApplicationChecking
+     * @return Response
      */
     public function destroy(CardApplicationChecking $cardApplicationChecking)
     {

@@ -21,7 +21,7 @@ class DailyMealPlanController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth:entryStaffs,couponStaffs')->except(['index', 'show']);
         $this->authorizeResource(DailyMealPlan::class, 'dailyMealPlan');
     }
 

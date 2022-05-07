@@ -28,13 +28,14 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('card/history', CardHistoryController::class)->name('card.history');// invoke
 Route::get('coupons/history', CouponOwnerController::class)->name('coupons.history');// invoke
 Route::get('myInfo', UserInfoController::class)->name('myInfo');
 Route::resource('mealPlan', DailyMealPlanController::class)->parameter('mealPlan', 'dailyMealPlan');
 Route::redirect('coupons/purchase', '/coupons/purchase/create');
-Route::resource('coupons/purchase', PurchaseCouponController::class)->only('create', 'store');
+Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('create', 'store');
 Route::redirect('entryChecking', '/entryChecking/create');
 Route::resource('entryChecking', EntryCheckingController::class)->only('create', 'store');
 Route::redirect('coupons/transfer', '/coupons/transfer/create');
-Route::resource('coupons/transfer', TransferCouponController::class)->parameter('transfer', 'transferCoupon')->only('create', 'store', 'show');
-Route::get('card/history', CardHistoryController::class);// invoke
+Route::resource('coupons/transfer', TransferCouponController::class, ['as' => 'coupons'])->parameter(
+    'transfer', 'transferCoupon')->only('create', 'store', 'show');

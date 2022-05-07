@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
+use Illuminate\Http\Response;
 
 class CardApplicationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'can:all,'.CardApplication::class ]);
+        $this->middleware('auth:academics');
+        $this->middleware('can:all,' . CardApplication::class);
     }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -25,7 +28,7 @@ class CardApplicationController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -35,8 +38,8 @@ class CardApplicationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreCardApplicationRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreCardApplicationRequest $request
+     * @return Response
      */
     public function store(StoreCardApplicationRequest $request)
     {
@@ -46,8 +49,8 @@ class CardApplicationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CardApplication  $cardApplication
-     * @return \Illuminate\Http\Response
+     * @param CardApplication $cardApplication
+     * @return Response
      */
     public function show(CardApplication $cardApplication)
     {
@@ -57,8 +60,8 @@ class CardApplicationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CardApplication  $cardApplication
-     * @return \Illuminate\Http\Response
+     * @param CardApplication $cardApplication
+     * @return Response
      */
     public function edit(CardApplication $cardApplication)
     {
@@ -68,9 +71,9 @@ class CardApplicationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateCardApplicationRequest  $request
-     * @param  \App\Models\CardApplication  $cardApplication
-     * @return \Illuminate\Http\Response
+     * @param UpdateCardApplicationRequest $request
+     * @param CardApplication $cardApplication
+     * @return Response
      */
     public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication)
     {
@@ -80,8 +83,8 @@ class CardApplicationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CardApplication  $cardApplication
-     * @return \Illuminate\Http\Response
+     * @param CardApplication $cardApplication
+     * @return Response
      */
     public function destroy(CardApplication $cardApplication)
     {
