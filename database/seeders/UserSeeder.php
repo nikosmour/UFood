@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enum\UserAbilityEnum;
+use App\Enum\UserStatusEnum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,22 +18,31 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $users_length=50;
-        \App\Models\User::factory()->count($users_length)->create()->each(function ($user){
-            if ($user->hasAnyAbility([
+        for( $i=$users_length;$i>0;$i--){
+            $user_status=collect(UserStatusEnum::cases())->random();
+
+            if ($user_status->hasAnyAbility([
                 UserAbilityEnum::CARD_OWNERSHIP,
-                UserAbilityEnum::COUPON_OWNERSHIP]))
-                \App\Models\Academic::factory()->for($user)->create();
-            if ($user->hasAbility(UserAbilityEnum::CARD_OWNERSHIP))
-                \App\Models\CardApplicant::factory()->for($user->academic)->create();
-            if ($user->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP))
-                \App\Models\CouponOwner::factory()->for($user->academic)->create();
-            if ($user->hasAbility(UserAbilityEnum::COUPON_SELL))
-                \App\Models\CouponStaff::factory()->for($user)->create();
-            if ($user->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK))
-                \App\Models\CardApplicationStaff::factory()->for($user)->create();
-            if ($user->hasAbility(UserAbilityEnum::ENTRY_CHECK))
-                \App\Models\EntryStaff::factory()->for($user)->create();
-        });
+                UserAbilityEnum::COUPON_OWNERSHIP])) {
+                $academic = \App\Models\Academic::factory()->create([
+                    'status' => $user_status->value
+                ]);
+                if ($user_status->hasAbility(UserAbilityEnum::CARD_OWNERSHIP))
+                    \App\Models\CardApplicant::factory()->for($academic)->create();
+                if ($user_status->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP))
+                    \App\Models\CouponOwner::factory()->for($academic)->create();
+            }
+            elseif ($user_status->hasAbility(UserAbilityEnum::COUPON_SELL))
+                    \App\Models\CouponStaff::factory()->create();
+            elseif ($user_status->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK))
+                \App\Models\CardApplicationStaff::factory()->create([
+                    'status'=>$user_status->value
+                ]);
+            elseif ($user_status->hasAbility(UserAbilityEnum::ENTRY_CHECK))
+                \App\Models\EntryStaff::factory()->create([
+                    'status'=>$user_status->value
+                ]);
+        };
         $this->call([
             TransferCouponSeeder::class,
             PurchaseCouponSeeder::class,

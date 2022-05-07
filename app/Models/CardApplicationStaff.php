@@ -10,15 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @mixin IdeHelperCardApplicationStaff
  */
-class CardApplicationStaff extends Model
+class CardApplicationStaff extends User
 {
-    use HasFactory;
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function cardApplication(): BelongsToMany
     {
         return $this->belongsToMany(CardApplication::class)->using(CardApplicationChecking::class);

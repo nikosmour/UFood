@@ -26,7 +26,7 @@ class CardApplicant extends Model
 
     public function academic(): BelongsTo
     {
-        return $this->belongsTo(Academic::class);
+        return $this->belongsTo(Academic::class,'academic_id');
     }
 
     public function cardApplication(): HasMany

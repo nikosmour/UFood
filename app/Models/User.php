@@ -25,7 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-    ];
+        'status',
+        ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,48 +45,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'status' => UserStatusEnum::class,
     ];
-
-    /**
-     * Get the academic model associate with the user
-     * @return HasOne | null
-     */
-    public function academic(): ?HasOne
-    {
-        return $this->hasOne(Academic::class);
-    }
-
-    /**
-     * Get the cardApplicationStaff model associate with the user
-     * @return HasOne|null
-     */
-    public function cardApplicationStaff(): ?HasOne
-    {
-        return $this->hasOne(CardApplicationStaff::class);
-    }
-
-    /**
-     * Get the entryStaff model associate with the user
-     * @return HasOne|null
-     */
-    public function couponStaff(): ?HasOne
-    {
-        return $this->hasOne(CouponStaff::class);
-    }
-
-    /**
-     * Get the entryStaff model associate with the user
-     * @return HasOne|null
-     */
-    public function entryStaff(): ?HasOne
-    {
-        return $this->hasOne(EntryStaff::class);
-    }
-
-    /**
-     * check if the instance has an ability
-     * @param UserAbilityEnum $ability
-     * @return bool
-     */
     public function hasAbility(UserAbilityEnum $ability): bool
     {
         return $this->status->hasAbility($ability);

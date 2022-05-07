@@ -8,16 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @mixin IdeHelperAcademic
  */
-class Academic extends Model
+class Academic extends User
 {
-    use HasFactory;
     public $incrementing = false;
     protected $primaryKey = 'academic_id';
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
     public function cardApplicant(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(CardApplicant::class,'academic_id');

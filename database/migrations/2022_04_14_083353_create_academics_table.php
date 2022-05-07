@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\UserStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,11 +16,15 @@ return new class extends Migration
     {
         Schema::create('academics', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_id')->primary();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->enum('status', UserStatusEnum::values()->toArray());
+            $table->rememberToken();
             $table->unsignedMediumInteger('a_m')->unique();
             $table->boolean('is_active');
-            $table->unsignedBigInteger('user_id')->unique();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
