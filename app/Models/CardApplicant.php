@@ -31,16 +31,16 @@ class CardApplicant extends Model
 
     public function cardApplication(): HasMany
     {
-        return $this->hasMany(CardApplication::class);
+        return $this->hasMany(CardApplication::class, 'academic_id');
     }
 
     public function usageCard(): HasMany
     {
-        return $this->hasMany(UsageCard::class)->orderByDesc('date',);
+        return $this->hasMany(UsageCard::class, 'academic_id')->orderByDesc('date',);
     }
 
     public function address(): HasMany
     {
-        return $this->hasMany(Address::class)->orderByDesc('created_at');
+        return $this->hasMany(Address::class, 'academic_id')->orderByDesc('created_at');
     }
 }
