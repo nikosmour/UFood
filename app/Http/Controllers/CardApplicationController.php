@@ -6,7 +6,12 @@ use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 
 class CardApplicationController extends Controller
@@ -18,18 +23,21 @@ class CardApplicationController extends Controller
 
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return Response
+     * @return Application|Factory|View|RedirectResponse|Redirector
      */
     public function index()
     {
         $user = Auth::user();
+        if($user->cardApplicant->currentCardApplication()->count() > 0)
+            return redirect(route('cardApplication.show', [
+                "cardApplication"=>$user->cardApplicant->currentCardApplication
+            ]));
         $user->cardApplicant->address;
         $models = [$user];
         $caption = 'User info';
-        return view('cardApplicant/index', compact('models', 'caption'));
+        return view('cardApplication/index', compact('models', 'caption'));
     }
 
     /**
@@ -42,11 +50,10 @@ class CardApplicationController extends Controller
         //
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
      * @param StoreCardApplicationRequest $request
-     * @return Response
+     * @return Application|RedirectResponse|Redirector
      */
     public function store(StoreCardApplicationRequest $request)
     {

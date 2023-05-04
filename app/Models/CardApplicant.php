@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @mixin IdeHelperCardApplicant
@@ -29,9 +30,13 @@ class CardApplicant extends Model
         return $this->belongsTo(Academic::class,'academic_id');
     }
 
-    public function cardApplication(): HasMany
+    public function cardApplications(): HasMany
     {
         return $this->hasMany(CardApplication::class, 'academic_id');
+    }
+    public function currentCardApplication(): HasOne
+    {
+        return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at','>',strtotime('-15 months'));
     }
 
     public function usageCard(): HasMany
