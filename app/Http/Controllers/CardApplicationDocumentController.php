@@ -5,18 +5,16 @@ namespace App\Http\Controllers;
 use App\Enum\CardDocumentStatusEnum;
 use App\Http\Requests\StoreCardApplicationDocumentRequest;
 use App\Http\Requests\UpdateCardApplicationDocumentRequest;
-use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
 use App\Traits\DocumentTrait;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class CardApplicationDocumentController extends Controller
 {
@@ -31,7 +29,8 @@ class CardApplicationDocumentController extends Controller
 
 
     /**
-     * @return Application|Factory|View|RedirectResponse|Redirector
+     * @return CardApplicationDocument[]|Builder[]|Collection
+     * @throws AuthorizationException
      */
     public function index($cardApplication)
     {
@@ -40,7 +39,7 @@ class CardApplicationDocumentController extends Controller
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function store(StoreCardApplicationDocumentRequest $request, CardApplication $cardApplication): array
     {
@@ -52,28 +51,15 @@ class CardApplicationDocumentController extends Controller
         $id = DB::transaction(callback: function () use ($request, $cardApplication) {
             $file = $request->file('file');
             $description = $request['description'];
-            $id = $request['id'];
             if ($file->isValid() && $file->extension() == 'pdf') {
                 $filename = $file->getClientOriginalName();
-                $cardApplicationDocument = $cardApplication->cardApplicationDocument()->create([
-                        'file_name' => $filename,
-                        'description' => $description,
-                        'status' => CardDocumentStatusEnum::SUBMITTED]
-                );
+                $cardApplicationDocument = $cardApplication->cardApplicationDocument()->create(['file_name' => $filename, 'description' => $description, 'status' => CardDocumentStatusEnum::SUBMITTED]);
                 $file->storeAs(...$this::storePositionData($cardApplication->academic_id, $cardApplicationDocument));
                 return $cardApplicationDocument->id;
-            } else // the file is not valid
-                return 0;
+            } else  return 0; // the file is not valid
         });
-        if (0 != $id)
-            return ['success' => true,
-                'message' => 'File is uploaded successfully!',
-                'id' => $id,
-            ];
-        return ['success' => false,
-            'message' => 'File is not valid please retry',
-            'id' => 0,
-        ];
+        if (0 != $id) return ['success' => true, 'message' => 'File is uploaded successfully!', 'id' => $id,];
+        return ['success' => false, 'message' => 'File is not valid please retry', 'id' => 0,];
 
 
     }
@@ -83,17 +69,18 @@ class CardApplicationDocumentController extends Controller
      *
      * @return Response
      */
-    public function create(CardApplication $cardApplication)
+    /*public function create(CardApplication $cardApplication)
     {
-        //
+        return ;
 
-    }
+    }*/
 
     /**
      * Display the specified resource.
      *
      * @param CardApplication $cardApplication
      * @return Response
+     * @throws AuthorizationException
      */
     public function show(CardApplication $cardApplication, CardApplicationDocument $document)
     {
@@ -112,8 +99,7 @@ class CardApplicationDocumentController extends Controller
             $mimeType = Storage::disk($disk)->mimeType($filePath);
 
             // Return the file response
-            return response($fileContents)->header('Content-Type', $mimeType)->
-            header('Content-Disposition', "inline; filename=$document->file_name");
+            return response($fileContents)->header('Content-Type', $mimeType)->header('Content-Disposition', "inline; filename=$document->file_name");
         }
 
         // If the file doesn't exist, return a 404 response or handle it as per your requirements
@@ -126,21 +112,21 @@ class CardApplicationDocumentController extends Controller
      * @param CardApplication $cardApplication
      * @return Response
      */
-    public function edit(CardApplication $cardApplication)
+    /*public function edit(CardApplication $cardApplication)
     {
-    }
+    }*/
 
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateCardApplicationRequest $request
+     * @param UpdateCardApplicationDocumentRequest $request
      * @param int $cardApplication
-     * @return array
-     * @throws \Throwable
+     * @param int $document
+     * @return bool|int
      */
-    public function update(UpdateCardApplicationDocumentRequest $request, int $cardApplication, int $cardApplicationDocument)
+    public function update(UpdateCardApplicationDocumentRequest $request, int $cardApplication, int $document)
     {
-        return CardApplicationDocument::whereId($cardApplicationDocument)->update($request->validated());
+        return CardApplicationDocument::whereId($document)->update($request->validated());
     }
 
     /**
@@ -149,8 +135,8 @@ class CardApplicationDocumentController extends Controller
      * @param CardApplication $cardApplication
      * @return Response
      */
-    public function destroy(CardApplication $cardApplication)
+    /*public function destroy(CardApplication $cardApplication)
     {
         //
-    }
+    }*/
 }
