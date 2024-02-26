@@ -27,16 +27,17 @@ class CardApplicant extends Model
 
     public function academic(): BelongsTo
     {
-        return $this->belongsTo(Academic::class,'academic_id');
+        return $this->belongsTo(Academic::class, 'academic_id');
     }
 
     public function cardApplications(): HasMany
     {
         return $this->hasMany(CardApplication::class, 'academic_id');
     }
+
     public function currentCardApplication(): HasOne
     {
-        return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at','>',strtotime('-15 months'));
+        return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at', '>', strtotime('-15 months'));
     }
 
     public function usageCard(): HasMany

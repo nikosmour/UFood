@@ -34,10 +34,10 @@ class StoreTransferCouponRequest extends FormRequest
             ];
         }
         $rules[$periods[0]][] = new AtLeastOneNoZero(...$periods);
-        $couponOwner= \App\Models\CouponOwner::find(auth()->user()->academic_id);
+        $couponOwner = \App\Models\CouponOwner::find(auth()->user()->academic_id);
         foreach ($periods as $period) {
             $rules[$period] = ['required',
-                'integer', 'max:'.$couponOwner[$period]
+                'integer', 'max:' . $couponOwner[$period]
             ];
         }
         return $rules;

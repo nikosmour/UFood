@@ -1,6 +1,7 @@
 * {
     border-radius: 0 !important;
 }
+
 .active {
     background-color: white;
 
@@ -9,7 +10,8 @@
         background-color: white !important;
     }
 }
-@media screen and (max-width:576px) {
+
+@media screen and (max-width: 576px) {
     .table-col-to-row-sm {
         tr > * {
             display: block;
@@ -18,9 +20,11 @@
         tr {
             display: table-cell;
         }
-        thead,tbody{
-            display:inline-block;
-            th{
+
+        thead, tbody {
+            display: inline-block;
+
+            th {
                 border-bottom: 0px;
             }
         }

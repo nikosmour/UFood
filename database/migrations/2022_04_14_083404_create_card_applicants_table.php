@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('card_applicants', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_id')->primary();
-            $table->char('department',60);
+            $table->char('department', 60);
             $table->year('first_year');
             $table->date('expiration_date');
-            $table->char('permanent_address',99);
+            $table->char('permanent_address', 99);
             $table->unsignedBigInteger('permanent_address_phone');
-            $table->char('temporary_address',50)->nullable();
+            $table->char('temporary_address', 50)->nullable();
             $table->unsignedBigInteger('temporary_address_phone')->nullable();
             $table->unsignedBigInteger('cellphone')->nullable();
             $table->timestamps();

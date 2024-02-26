@@ -11,5 +11,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealMealPlan extends Pivot
 {
     use HasFactory;
-    public $timestamps=false;
+
+    public $timestamps = false;
 }

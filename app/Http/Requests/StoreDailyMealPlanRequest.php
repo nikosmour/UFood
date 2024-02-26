@@ -24,11 +24,11 @@ class StoreDailyMealPlanRequest extends FormRequest
      */
     public function rules(): array
     {
-        $array=['date'=>["required", "date", "unique:meal_plans,date"] ];
-        foreach (MealPlanPeriodEnum::names() as $period){
-            $array[$period]=["sometimes", "array", "min:1"];
-            $array[$period.'.*']=["sometimes", "string", "exists:meals,description"];
+        $array = ['date' => ["required", "date", "unique:meal_plans,date"]];
+        foreach (MealPlanPeriodEnum::names() as $period) {
+            $array[$period] = ["sometimes", "array", "min:1"];
+            $array[$period . '.*'] = ["sometimes", "string", "exists:meals,description"];
         }
-        return $array ;
+        return $array;
     }
 }

@@ -66,17 +66,17 @@ export default {
         },
         updateStatus(file) {
             let params = new FormData();
-            params.append('_method','PUT')
+            params.append('_method', 'PUT')
             // params.append(`id`, file.id);
             params.append(`status`, file.status);
             console.log(params);
             return axios.post(this.urlDoc + '/' + file.id, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
-               // file.success = json['success'];
-               //  file.message = json['message'];
+                // file.success = json['success'];
+                //  file.message = json['message'];
                 //file.message='the file is not exist or is ureadable please upload a new one';
-                return json==1;
+                return json == 1;
             }).catch(function (errors) {
                 file.success = false;
                 console.log(errors.response.data.errors)
@@ -96,7 +96,7 @@ export default {
             if (oldValue)
                 if (oldValue.status != this.currentStatus)
                     if (!this.updateStatus(oldValue))
-                        oldValue.status=this.currentStatus;
+                        oldValue.status = this.currentStatus;
             this.currentStatus = newValue.status;
         }
     },

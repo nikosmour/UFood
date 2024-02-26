@@ -1,8 +1,8 @@
 <?php
 
 namespace Database\Seeders;
+
 use Database\Seeders\Classes\ManyToManySeeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UsageCouponSeeder extends ManyToManySeeder
 {
@@ -16,6 +16,6 @@ class UsageCouponSeeder extends ManyToManySeeder
         $this->make_connection(
             \App\Models\CouponOwner::all(),
             \App\Models\EntryStaff::all(),
-            \App\Models\UsageCoupon::class,5);
+            \App\Models\UsageCoupon::class, 5);
     }
 }

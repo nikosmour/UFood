@@ -3,10 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Enum\MealPlanPeriodEnum;
-use App\Enum\UserAbilityEnum;
 use App\Rules\AtLeastOneNoZero;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StorePurchaseCouponRequest extends FormRequest
 {

@@ -14,7 +14,13 @@ class AtLeastOneNoZero implements Rule, DataAwareRule
      */
     protected $data = [];
 
-    private array $params=[];
+    private array $params = [];
+
+    public function __construct(...$params)
+    {
+        $this->params = $params;
+    }
+
     /**
      * Create a new rule instance.
      *
@@ -27,22 +33,18 @@ class AtLeastOneNoZero implements Rule, DataAwareRule
 
         return $this;
     }
-    public function __construct( ...$params)
-    {
-        $this->params = $params;
-    }
 
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        foreach( $this->params as $param)
-            if(0<$this->data[$param])
+        foreach ($this->params as $param)
+            if (0 < $this->data[$param])
                 return true;
         return false;
     }

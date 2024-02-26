@@ -27,9 +27,9 @@ class CardApplicationCheckingController extends Controller
      */
     public function index(CardStatusEnum $category)
     {
-        $cardApplications =CardApplication::whereStatus($category)->select('id','status')->get();
+        $cardApplications = CardApplication::whereStatus($category)->select('id', 'status')->get();
         $models = $cardApplications;
-        $caption = 'Card Applications -> '.$category->value;
+        $caption = 'Card Applications -> ' . $category->value;
         return view('cardApplicationChecking.index', compact('models', 'caption'));
     }
 
@@ -51,15 +51,15 @@ class CardApplicationCheckingController extends Controller
      */
     public function store(StoreCardApplicationCheckingRequest $request)
     {
-        $vData=$request->validated();
+        $vData = $request->validated();
         DB::transaction(function () use ($vData) {
             $data = isset($vData['card_application_staff_comment']) ? [
                 'card_application_staff_comment' => $vData['card_application_staff_comment']
             ] : [];
-            Auth::user()->cardApplication()->attach($vData['card_application_id'],$data);
-            $data = ['status'=>$vData['status']];
-            if (isset($vData['expiration_date']) )
-                $data['expiration_date']=$vData['expiration_date'] ;
+            Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
+            $data = ['status' => $vData['status']];
+            if (isset($vData['expiration_date']))
+                $data['expiration_date'] = $vData['expiration_date'];
             CardApplication::whereId($vData['card_application_id'])->update($data);
         });
     }

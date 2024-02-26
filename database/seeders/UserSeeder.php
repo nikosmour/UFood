@@ -10,6 +10,7 @@ use Illuminate\Database\Seeder;
 class UserSeeder extends Seeder
 {
     use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      *
@@ -17,9 +18,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $users_length=50;
-        for( $i=$users_length;$i>0;$i--){
-            $user_status=collect(UserStatusEnum::cases())->random();
+        $users_length = 50;
+        for ($i = $users_length; $i > 0; $i--) {
+            $user_status = collect(UserStatusEnum::cases())->random();
 
             if ($user_status->canAny([
                 UserAbilityEnum::CARD_OWNERSHIP,

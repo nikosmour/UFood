@@ -20,8 +20,8 @@ class CardApplicantFactory extends Factory
     {
         return [
             'department' => $this->faker->company(),
-            'first_year' => $this->faker->dateTimeBetween('-10 years','now')->format('Y'),
-            'cellphone' =>(int) $this->faker->e164PhoneNumber(),
+            'first_year' => $this->faker->dateTimeBetween('-10 years', 'now')->format('Y'),
+            'cellphone' => (int)$this->faker->e164PhoneNumber(),
         ];
     }
 }

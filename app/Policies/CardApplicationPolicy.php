@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Enum\UserAbilityEnum;
-use App\Models\User;
 use App\Models\CardApplication;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CardApplicationPolicy

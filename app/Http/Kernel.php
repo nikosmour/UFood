@@ -75,6 +75,6 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
-       // \App\Http\Middleware\SelectLanguage::class,
+        // \App\Http\Middleware\SelectLanguage::class,
     ];
 }

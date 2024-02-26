@@ -1,6 +1,6 @@
 <?php
 return [
-    'application' =>[
+    'application' => [
 
         /*
        |--------------------------------------------------------------------------
@@ -13,7 +13,7 @@ return [
        |
        */
 
-        'status'=>\App\Enum\CardStatusEnum::values(),
+        'status' => \App\Enum\CardStatusEnum::values(),
 
         /*
        |--------------------------------------------------------------------------
@@ -27,8 +27,8 @@ return [
        |
        */
 
-        'document' =>[
-            'status'=>\App\Enum\CardDocumentStatusEnum::values(),
+        'document' => [
+            'status' => \App\Enum\CardDocumentStatusEnum::values(),
         ]
     ]
 ];

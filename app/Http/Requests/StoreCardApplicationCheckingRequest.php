@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enum\CardDocumentStatusEnum;
 use App\Enum\CardStatusEnum;
 use App\Models\CardApplication;
 use App\Rules\InArray;
@@ -30,13 +29,13 @@ class StoreCardApplicationCheckingRequest extends FormRequest
     {
         return [
             'status' => ['required', new InArray(CardStatusEnum::values()->toArray())],
-            'card_application_id' => ['required',"exists:card_applications,id"],
-            'expiration_date'=>['date',
+            'card_application_id' => ['required', "exists:card_applications,id"],
+            'expiration_date' => ['date',
                 Rule::requiredIf($this->input('status') == CardStatusEnum::ACCEPTED->value),
-                'after_or_equal:'. CardApplication::whereId($this->input('card_application_id'))
+                'after_or_equal:' . CardApplication::whereId($this->input('card_application_id'))
                     ->select('expiration_date')->value('expiration_date')
             ],
-            'card_application_staff_comment'=>Rule::requiredIf($this->input('status') != CardStatusEnum::ACCEPTED->value)
+            'card_application_staff_comment' => Rule::requiredIf($this->input('status') != CardStatusEnum::ACCEPTED->value)
 
 
         ];

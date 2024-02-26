@@ -24,8 +24,8 @@ class StoreCardApplicationDocumentRequest extends FormRequest
     public function rules()
     {
         return [
-            'file'=> 'required',
-            'description'=> 'required',
+            'file' => 'required',
+            'description' => 'required',
 //            'id' => '' //if i want to also give the option to update
         ];
     }

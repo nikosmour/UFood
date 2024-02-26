@@ -48,7 +48,8 @@
     @elseauth('cardApplicationStaffs')
         @foreach(\App\Enum\CardStatusEnum::values() as $cardStatus )
             <li class="nav-item {{ Route::is('cardApplication.checking.index', ['category'=>$cardStatus]) ? 'active' : '' }}">
-                <a class="nav-link " href="{{ route('cardApplication.checking.index', ['category'=>$cardStatus])}}">{{ __($cardStatus) }}</a>
+                <a class="nav-link "
+                   href="{{ route('cardApplication.checking.index', ['category'=>$cardStatus])}}">{{ __($cardStatus) }}</a>
             </li>
         @endforeach
     @endauth

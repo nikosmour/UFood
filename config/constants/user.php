@@ -10,5 +10,5 @@ return [
    | it is important to change also the values in the database.
    |
    */
-    'status'=>\App\Enum\UserStatusEnum::values()
+    'status' => \App\Enum\UserStatusEnum::values()
 ];

@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\CardDocumentStatusEnum;
 use App\Enum\CardStatusEnum;
-use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
-use App\Models\CardApplicationDocument;
 use App\Traits\DocumentTrait;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -17,10 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
-use function PHPUnit\Framework\isNull;
 
 class CardApplicationController extends Controller
 {

@@ -6,7 +6,7 @@
                 <h4>Στατιστικά γεύματος</h4>
             </header>
             <br/>
-            <div class="row" v-for="(value, category) in statistics" :key="'statistics.'+category">
+            <div v-for="(value, category) in statistics" :key="'statistics.'+category" class="row">
                 <label class="col-9 col-lg-7">{{ category }} => {{ value }}</label>
             </div>
         </div>
@@ -16,25 +16,25 @@
                 <h4>Εξαγωγή στατιστικών</h4>
             </header>
             <br/>
-            <form v-bind:action=url target="_blank" method="GET">
+            <form method="GET" target="_blank" v-bind:action=url>
                 <div class="mx-auto" style=" min-width: 70%; max-width:80%;">
-                    <select onchange="adaptedCheck(this);" name="eidos_geymatos" id="eidos_geymatos" class=" col-12 ">
+                    <select id="eidos_geymatos" class=" col-12 " name="eidos_geymatos" onchange="adaptedCheck(this);">
                         <option value="meal">Γεύμα</option>
                         <option value="today">Σήμερα</option>
                         <option value="adapted">Προσαρμοσμένο</option>
                     </select>
-                    <div name="choose_meals" id="choose_meals" class="invisible ">
-                        <label class="checkbox-inline "><input type="checkbox" name="breakfast" value="breakfast"
-                                                               checked>Πρωινό</label>
-                        <label class="checkbox-inline "><input type="checkbox" name="lunch" value="lunch" checked>Μεσημεριανό</label>
-                        <label class="checkbox-inline "><input type="checkbox" name="dinner" value="dinner" checked>Βραδινό</label>
+                    <div id="choose_meals" class="invisible " name="choose_meals">
+                        <label class="checkbox-inline "><input checked name="breakfast" type="checkbox"
+                                                               value="breakfast">Πρωινό</label>
+                        <label class="checkbox-inline "><input checked name="lunch" type="checkbox" value="lunch">Μεσημεριανό</label>
+                        <label class="checkbox-inline "><input checked name="dinner" type="checkbox" value="dinner">Βραδινό</label>
                     </div>
                 </div>
-                <div name="choose_days_period" id="choose_days_period" class="text-center">
-                    <label class=" ">Από:<input type="date" name="from_day" id="from_day" value=""></label>
-                    <label class=" ">Μέχρι:<input type="date" name="to_day" id="to_day" value=""></label>
+                <div id="choose_days_period" class="text-center" name="choose_days_period">
+                    <label class=" ">Από:<input id="from_day" name="from_day" type="date" value=""></label>
+                    <label class=" ">Μέχρι:<input id="to_day" name="to_day" type="date" value=""></label>
                 </div>
-                <button type="submit" class="  btn-primary col-12 ">Υποβολή</button>
+                <button class="  btn-primary col-12 " type="submit">Υποβολή</button>
             </form>
         </div>
     </div>

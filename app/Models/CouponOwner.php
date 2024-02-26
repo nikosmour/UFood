@@ -6,7 +6,6 @@ use App\Traits\CouponOwnerTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -41,7 +40,7 @@ class CouponOwner extends Model
 
     public function sendingCoupon(): HasMany
     {
-        return $this->hasMany(TransferCoupon::class,'sender_id');
+        return $this->hasMany(TransferCoupon::class, 'sender_id');
     }
 
     public function receivingCoupon(): HasMany

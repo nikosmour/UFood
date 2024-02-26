@@ -12,15 +12,15 @@
             </tr>
             </tbody>
         </table>
-        <div class = 'col-auto row' v-if="selectedItem !== null" >
+        <div v-if="selectedItem !== null" class='col-auto row'>
             <CardApplicationShowData :url='url' v-bind:applicationId="selectedItem.id"/>
             <div class="col-auto">
                 <h4>Application Status</h4>
                 <div>
                     <label for="commentStaff">Enter text:</label>
-                    <input type="text" id="commentStaff" v-model="commentChecking">
+                    <input id="commentStaff" v-model="commentChecking" type="text">
                     <label for="expiration_date">Enter text:</label>
-                    <input type="date" id="expiration_date" v-model="expirationDate">
+                    <input id="expiration_date" v-model="expirationDate" type="date">
 
                 </div>
                 <select v-model="selectedItem.status" v-on:change="updateStatus(selectedItem)">
@@ -61,12 +61,12 @@ export default {
             //params.append('_method','PUT')
             // params.append(`id`, application.id);
             params.append(`status`, application.status);
-            params.append('card_application_id',application.id)
+            params.append('card_application_id', application.id)
             if (this.expirationDate) {
                 params.append('expiration_date', this.expirationDate)
             }
-            if ( this.commentChecking) {
-                params.append('card_application_staff_comment',this.commentChecking)
+            if (this.commentChecking) {
+                params.append('card_application_staff_comment', this.commentChecking)
             }
             console.log(params);
             return axios.post(window.location.href, params
@@ -75,7 +75,7 @@ export default {
                 // application.success = json['success'];
                 //  application.message = json['message'];
                 //application.message='the application is not exist or is ureadable please upload a new one';
-                return json==1;
+                return json == 1;
             }).catch(function (errors) {
                 application.success = false;
                 console.log(errors.response.data.errors)
