@@ -16,7 +16,7 @@
                     <label v-if="file.message || file.status">{{ file.status + '  ' + file.message }}</label>
                 </div>
                 <br/>
-                <label v-bind:class="getClass"> {{ result }}</label>
+                <message v-bind="result"></message>
                 <br/>
                 <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">Submit
                 </button>
@@ -40,20 +40,18 @@ export default {
     data() {
         return {
             // files: [{file: null, description:'academic_card',link:'',id:0,message:null,success:null}],
-            success: true,
-            result: '',
+            result: {
+                message: this.url,
+                success: true,
+                hide: false,
+                errors: []
+            },
             docLink: '',
             files: [],
             urlDoc: this.url + '/document'
         }
     },
     computed: {
-        getClass: function () {
-            return {
-                'text-success': this.success,
-                'text-danger': !this.success
-            }
-        },
         canEditDocument: function () {
             return this.files.map((file, index) => {
                 return this.applicationEdit && ['incomplete', null, 'submitted'].includes(file.status)
@@ -126,26 +124,22 @@ export default {
             reader.readAsDataURL(file.file);
         },
         submit_form() {
+            let vue = this;
+            vue.result.message = ''; //#todo more clever way to show if the value is the same
             this.files.forEach((file, index) => {
                 this.fileUpload(file);
             });
             let params = new FormData();
             params.append('_method', 'PUT');
-            let form = this;
-            axios.post(form.url, params
+            axios.post(vue.url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
-                form.success = json['success'];
-                form.result = json['message'];
-                console.log(form.result);
+                vue.result.success = json['success'];
+                vue.result.message = json['message'];
             }).catch(function (errors) {
-                form.success = false;
-                console.log(errors.response.data.errors)
-                form.result = "Request failed:";
-                for (let error in errors.response.data.errors) {
-                    form.result = form.result + ' ' + error + ' => ' + errors.response.data.errors[error];
-                    console.log(errors.response.data.errors[error])
-                }
+                vue.result.success = false;
+                vue.result.errors = errors.response.data.errors;
+                vue.result.message = "Request failed:";
             });
         }
     },

@@ -28,6 +28,7 @@
                     <option v-for="status in ['accepted','rejected','incomplete']" :value="status"> {{ status }}
                     </option>
                 </select>
+                <message v-bind="result"></message>
             </div>
         </div>
     </div>
@@ -47,7 +48,13 @@ export default {
         return {
             selectedItem: null,
             commentChecking: null,
-            expirationDate: null
+            expirationDate: null,
+            result: {
+                message: '',
+                success: true,
+                hide: false,
+                errors: ['']
+            },
         };
 
     },
@@ -58,6 +65,7 @@ export default {
         },
         updateStatus(application) {
             let params = new FormData();
+            let vue = this;
             //params.append('_method','PUT')
             // params.append(`id`, application.id);
             params.append(`status`, application.status);
@@ -69,22 +77,26 @@ export default {
                 params.append('card_application_staff_comment', this.commentChecking)
             }
             console.log(params);
-            return axios.post(window.location.href, params
+            axios.post(window.location.href, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 // application.success = json['success'];
                 //  application.message = json['message'];
                 //application.message='the application is not exist or is ureadable please upload a new one';
-                return json == 1;
+                vue.result.success = json == 1;
+                vue.result.errors = [];
             }).catch(function (errors) {
-                application.success = false;
-                console.log(errors.response.data.errors)
-                application.message = "Request failed:";
-                for (let error in errors.response.data.errors) {
-                    console.log(errors.response.data.errors[error])
+                vue.result.errors = errors.response.data.errors;
+                vue.result.success = false
+            }).finally(() => {
+                if (vue.result.success) {
+                    vue.result.message = "Change from " + vue.currentStatus + ' to ' + application.status;
+                    return;
+                }//else
+                vue.result.message = "Request failed:";
                 }
-                return false
-            });
+            );
+
         }
     },
 
