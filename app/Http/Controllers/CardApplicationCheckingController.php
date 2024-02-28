@@ -62,6 +62,7 @@ class CardApplicationCheckingController extends Controller
                 $data['expiration_date'] = $vData['expiration_date'];
             CardApplication::whereId($vData['card_application_id'])->update($data);
         });
+        return 1;//true
     }
 
     /**

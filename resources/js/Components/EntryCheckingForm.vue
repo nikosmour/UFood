@@ -9,61 +9,54 @@
                 <label> <strong class="text-center">Αριθμός κάρτας</strong></label>
                 <input id="academic_id" v-model.number="academic_id" autofocus name="academic_id"
                        placeholder="Καταχωρίστε τον αριθμό της κάρτας" required type="number" v-bind:class="getClass"/>
-                <label v-if="show" v-bind:class="getClass"> {{ result }}</label>
+                <message v-bind="result"></message>
             </div>
         </form>
     </div>
 </template>
 
 <script>
+
 export default {
     props: {url: String},
     data: function () {
         return {
             academic_id: '',
             success: true,
-            result: this.url,
-            show: false
-        }
-    },
-    computed: {
-        getClass: function () {
-            return {
-                'text-success': this.success,
-                'text-danger': !this.success
-            }
+            result: {
+                message: this.url,
+                success: true,
+                hide: true,
+                errors: ['']
+            },
         }
     },
     methods: {
-        hideResult() {
-            setTimeout(() => this.show = false, 2000)
-        },
         check_id() {
             if (0 === this.academic_id)
                 return;
+            let vue = this;
             let params = new FormData();
             params.append('academic_id', this.academic_id);
-            let thiss = this;
-            axios.post(this.url, params
+            vue.result.message = ''; //#todo more clever way to show if the value is the same
+            axios.post(vue.url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
-                thiss.success = json['pass'];
+                vue.result.success = json['pass'];
                 if (json['pass']) {
-                    thiss.result = json['passWith'];
-                    thiss.$emit('newEntry', json['passWith'] + 's');
+                    vue.result.message = json['passWith'];
+                    vue.$emit('newEntry', json['passWith'] + 's');
+                    vue.result.errors = [];
                 } else
-                    thiss.result = json;
+                    vue.result.message = "Request failed:";
+                vue.result.errors = json;
             }).catch(function (errors) {
-                thiss.success = false;
+                vue.result.success = false;
+                vue.result.errors = errors.response.data.errors;
                 console.log(errors.response.data.errors)
-                thiss.result = "Request failed:";
-                for (let error in errors.response.data.errors) {
-                    thiss.result = thiss.result + ' ' + error + ' => ' + errors.response.data.errors[error];
-                    console.log(errors.response.data.errors[error])
-                }
+                vue.result.message = "Request failed:";
+
             });
-            this.show = true;
-            this.hideResult()
         }
     }
 }
