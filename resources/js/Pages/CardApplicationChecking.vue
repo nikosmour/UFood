@@ -49,6 +49,7 @@ export default {
             selectedItem: null,
             commentChecking: null,
             expirationDate: null,
+            currentStatus: null,
             result: {
                 message: '',
                 success: true,
@@ -62,6 +63,7 @@ export default {
         showSecondTable(item) {
             console.log('showSecondTable');
             this.selectedItem = item;
+            this.currentStatus = item.status;
         },
         updateStatus(application) {
             let params = new FormData();
@@ -91,8 +93,10 @@ export default {
             }).finally(() => {
                 if (vue.result.success) {
                     vue.result.message = "Change from " + vue.currentStatus + ' to ' + application.status;
+                    vue.currentStatus = application.status;
                     return;
                 }//else
+                application.status = vue.currentStatus;
                 vue.result.message = "Request failed:";
                 }
             );
