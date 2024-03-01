@@ -13,7 +13,8 @@
                     <input v-model="file.description" placeholder="Description" type="text"
                            v-bind:disabled="!canEditDocument[index]">
                     <button @click="previewFile($event,index)">preview {{ file.id }}</button>
-                    <label v-if="file.message || file.status">{{ file.status + '  ' + file.message }}</label>
+                    <message v-bind="file.result"></message>
+                    <!--                    <label v-if="file.result.message || file.status">{{ file.status + '  ' + file.result.message }}</label>-->
                 </div>
                 <br/>
                 <message v-bind="result"></message>
@@ -76,8 +77,12 @@ export default {
                 description: description,
                 link: link,
                 status: status,
-                message: message,
-                success: success
+                result: {
+                    message: message,
+                    success: success,
+                    hide: false,
+                    errors: []
+                },
             });
         },
         onFileChange(event, index) {
@@ -87,6 +92,7 @@ export default {
                 return file.message = 'there isn\'t any file or description';
             this.fileUpload(file);
         },
+        fileUpload: function (file) {
         fileUpload(file) {
             let params = new FormData();
             //params.append('_method','PUT')
@@ -97,20 +103,18 @@ export default {
                 ).then(function (responseJson) {
                     let json = responseJson['data'];
                     file.id = json['id'];
-                    file.success = json['success'];
-                    file.message = json['message'];
-                    //file.message='the file is not exist or is ureadable please upload a new one';
-                    console.log(file.message);
+                    file.result.success = json['success'];
+                    file.result.message = json['message'];
+                    file.result.errors = [];
                 }).catch(function (errors) {
-                    file.success = false;
-                    console.log(errors.response.data.errors)
-                    file.message = "Request failed:";
-                    for (let error in errors.response.data.errors) {
-                        console.log(errors.response.data.errors[error])
-                    }
+                    file.result.errors = errors.response.data.errors;
+                    file.result.success = false;
+                    file.result.message = "Request failed:";
+                }).finally(function () {
+                    file.link = '';
+                    file.status = file.result.success ? 'submitted' : 'not uploaded';
+                    file.result.message += file.status;
                 });
-                file.link = '';
-                file.status = 'submitted';
             }
         },
         previewFile(event, index) {
