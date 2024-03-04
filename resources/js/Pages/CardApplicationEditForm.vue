@@ -90,32 +90,34 @@ export default {
             file.file = event.target.files[0];
             if (!file.file || !file.description)
                 return file.message = 'there isn\'t any file or description';
+            file.id = 0; //so the upload will know that has been added a new file
             this.fileUpload(file);
         },
-        fileUpload: function (file) {
         fileUpload(file) {
+            if (0 > file.id) {
+                file.success = true;
+                file.message = 'the file has already uploaded';
+                return;
+            }
             let params = new FormData();
-            //params.append('_method','PUT')
             params.append(`file`, file.file);
             params.append(`description`, file.description);
-            if (0 == file.id) {
-                axios.post(this.urlDoc, params
-                ).then(function (responseJson) {
-                    let json = responseJson['data'];
-                    file.id = json['id'];
-                    file.result.success = json['success'];
-                    file.result.message = json['message'];
-                    file.result.errors = [];
-                }).catch(function (errors) {
-                    file.result.errors = errors.response.data.errors;
-                    file.result.success = false;
-                    file.result.message = "Request failed:";
-                }).finally(function () {
-                    file.link = '';
-                    file.status = file.result.success ? 'submitted' : 'not uploaded';
-                    file.result.message += file.status;
-                });
-            }
+            axios.post(this.urlDoc, params
+            ).then(function (responseJson) {
+                let json = responseJson['data'];
+                file.id = json['id'];
+                file.result.success = json['success'];
+                file.result.message = json['message'];
+                file.result.errors = [];
+            }).catch(function (errors) {
+                file.result.errors = errors.response.data.errors;
+                file.result.success = false;
+                file.result.message = "Request failed:";
+            }).finally(function () {
+                file.link = '';
+                file.status = file.result.success ? 'submitted' : 'not uploaded';
+                file.result.message += file.status;
+            });
         },
         previewFile(event, index) {
             const file = this.files[index];

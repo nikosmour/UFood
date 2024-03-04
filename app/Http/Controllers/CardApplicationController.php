@@ -106,7 +106,7 @@ class CardApplicationController extends Controller
     public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication): array
     {
         $this->authorize('update', $cardApplication);
-        if ($cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0) return ['success' => false, 'message' => 'You don\'t have update the wrong documents ',];
+        if ($cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0) return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents ',];
         $cardApplication->status = CardStatusEnum::SUBMITTED;
         if ($cardApplication->saveOrFail()) return ['success' => true, 'message' => 'Application has been saved',];
         return ['success' => false, 'message' => 'Application didn\'t saved',];
