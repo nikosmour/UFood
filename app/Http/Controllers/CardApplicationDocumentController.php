@@ -122,11 +122,14 @@ class CardApplicationDocumentController extends Controller
      * @param UpdateCardApplicationDocumentRequest $request
      * @param int $cardApplication
      * @param int $document
-     * @return bool|int
+     * @return array
      */
     public function update(UpdateCardApplicationDocumentRequest $request, int $cardApplication, int $document)
     {
-        return CardApplicationDocument::whereId($document)->update($request->validated());
+        if (CardApplicationDocument::whereId($document)->update($request->validated()))
+            return ['success' => true, 'message' => 'File has updated successfully!', 'id' => $document];
+
+        return ['success' => false, 'message' => 'File has not updated successfully retry', 'id' => 0,];
     }
 
     /**

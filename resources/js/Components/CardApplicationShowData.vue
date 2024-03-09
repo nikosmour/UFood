@@ -14,6 +14,7 @@
             <option v-for="status in ['submitted','accepted','rejected','incomplete']" :value="status"> {{ status }}
             </option>
         </select>
+        <message v-bind="result"></message>
         <object v-if="selectFile" class='col' height="500px" type="application/pdf"
                 v-bind:data="urlDoc + '/' + selectFile.id" width="100%"/>
     </div>
@@ -22,16 +23,18 @@
 
 <script>
 export default {
-
-
     props: {
         url: String,
         applicationId: Number
     },
     data() {
         return {
-            success: true,
-            result: '',
+            result: {
+                message: '',
+                success: null,
+                hide: true,
+                errors: []
+            },
             currentStatus: null,
             selectFile: '',
             files: [],
@@ -45,7 +48,7 @@ export default {
     },
     methods: {
         startingData() {
-            let thiss = this;
+            let vue = this;
             console.log('startingData');
             console.log(this.applicationId);
             console.log(this.urlDoc);
@@ -53,9 +56,11 @@ export default {
             axios.get(this.urlDoc
             ).then(function (responseJson) {
                 let json = responseJson['data'];
-                thiss.files = json;
+                vue.files = json;
             }).catch(function (errors) {
-                console.log(errors.response.data.errors)
+                vue.result.success = false;
+                vue.result.message = 'Retrieving files of this application has failed :'
+                vue.result.errors = errors.response.data.errors;
 
                 /*for (let error in errors.response.data.errors) {
                     form.result = form.result + ' ' + error + ' => ' + errors.response.data.errors[error];
@@ -66,25 +71,21 @@ export default {
         },
         updateStatus(file) {
             let params = new FormData();
+            let vue = this;
+            vue.result.message = ''; //#todo more clever way to show if the value is the same
             params.append('_method', 'PUT')
             // params.append(`id`, file.id);
             params.append(`status`, file.status);
-            console.log(params);
-            return axios.post(this.urlDoc + '/' + file.id, params
+            axios.post(vue.urlDoc + '/' + file.id, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
-                // file.success = json['success'];
-                //  file.message = json['message'];
-                //file.message='the file is not exist or is ureadable please upload a new one';
-                return json == 1;
+                vue.result.success = json['success'];
+                vue.result.message = json['message'];
+                vue.result.errors = []
             }).catch(function (errors) {
-                file.success = false;
-                console.log(errors.response.data.errors)
-                file.message = "Request failed:";
-                for (let error in errors.response.data.errors) {
-                    console.log(errors.response.data.errors[error])
-                }
-                return false
+                vue.result.success = false;
+                vue.result.errors = errors.response.data.errors
+                vue.result.message = "Request failed:";
             });
         }
     },
