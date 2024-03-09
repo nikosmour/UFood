@@ -41,6 +41,6 @@ Route::redirect('coupons/transfer', '/coupons/transfer/create');
 Route::resource('coupons/transfer', TransferCouponController::class, ['as' => 'coupons'])->parameter(
     'transfer', 'transferCoupon')->only('create', 'store', 'show');
 Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->except(['create', 'destroy']);
-Route::resource('cardApplication/{cardApplication}/document', \App\Http\Controllers\CardApplicationDocumentController::class)->only('index','store', 'show','update');
+Route::resource('cardApplication/{cardApplication}/document', \App\Http\Controllers\CardApplicationDocumentController::class)->only('index', 'store', 'show', 'update', 'destroy');
 Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
     ->whereIn('category', CardStatusEnum::values()->toArray())->only('index','store');

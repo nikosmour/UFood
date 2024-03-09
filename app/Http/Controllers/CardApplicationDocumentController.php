@@ -137,9 +137,13 @@ class CardApplicationDocumentController extends Controller
      *
      * @param CardApplication $cardApplication
      * @return Response
+     * @throws Throwable
      */
-    /*public function destroy(CardApplication $cardApplication)
+    public function destroy(CardApplication $cardApplication, int $document)
     {
-        //
-    }*/
+        if (!CardApplicationDocument::whereId($document)->delete())
+            return ['success' => false, 'message' => 'File has not be destoyed successfully retry', 'id' => $document];
+        return ['success' => true, 'message' => 'File has destroyed successfully!', 'id' => 0];
+
+    }
 }

@@ -25,6 +25,6 @@ class UpdateCardApplicationDocumentRequest extends FormRequest
      */
     public function rules()
     {
-        return isset(auth('academics')->user) ? ['files' => 'required', 'descriptions' => 'required', 'ids' => 'required'] : ['status' => ['required', new InArray(CardDocumentStatusEnum::values()->toArray())]];
+        return isset(auth('academics')->user) ? ['description' => 'required'] : ['status' => ['required', new InArray(CardDocumentStatusEnum::values()->toArray())]];
     }
 }

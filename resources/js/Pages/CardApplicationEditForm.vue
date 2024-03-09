@@ -5,7 +5,7 @@
                 <br/>
                 <h4 class="text-left">card edit</h4>
             </header>
-            <form id="card_application_form" v-on:submit.prevent="">
+            <form v-if="applicationEdit" id="card_application_form" v-on:submit.prevent="">
                 <button @click="addFileUpload()">Add File</button>
                 <div v-for="(file, index) in files" :key="index">
                     <input v-if="canEditDocument[index]" accept="application/pdf" type="file"
@@ -13,15 +13,27 @@
                     <input v-model="file.description" placeholder="Description" type="text"
                            v-bind:disabled="!canEditDocument[index]">
                     <button @click="previewFile($event,index)">preview {{ file.id }}</button>
+                    <button v-if="0 !=file.id" @click="file.status = 'to delete'">delete {{ file.id }}</button>
+                    <button v-else @click="files.splice(index, 1);">cancel adding file</button>
                     <message v-bind="file.result"></message>
                     <!--                    <label v-if="file.result.message || file.status">{{ file.status + '  ' + file.result.message }}</label>-->
                 </div>
-                <br/>
-                <message v-bind="result"></message>
-                <br/>
+
                 <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">Submit
                 </button>
             </form>
+            <div v-else>
+                <div v-for="(file, index) in files" :key="index">
+                    <input v-model="file.description" placeholder="Description" type="text"
+                           v-bind:disabled="!canEditDocument[index]">
+                    <button @click="previewFile($event,index)">preview {{ file.id }}</button>
+                    <message v-bind="file.result"></message>
+                    <!--                    <label v-if="file.result.message || file.status">{{ file.status + '  ' + file.result.message }}</label>-->
+                </div>
+            </div>
+            <br/>
+            <message v-bind="result"></message>
+            <br/>
         </div>
         <object class='col' height="500px" type="application/pdf" v-bind:data="docLink" width="100%"/>
 
@@ -55,7 +67,7 @@ export default {
     computed: {
         canEditDocument: function () {
             return this.files.map((file, index) => {
-                return this.applicationEdit && ['incomplete', null, 'submitted'].includes(file.status)
+                return ['incomplete', null, 'submitted'].includes(file.status)
             });
 
         }
@@ -63,15 +75,15 @@ export default {
     methods: {
         startingData() {
             this.docFiles.forEach((file, index) => {
-                this.addFileUpload(null, file.id, file.description, this.urlDoc + '/' + file.id, file.status);
+                this.addFileUpload(null, file.status, file.description, file.id, this.urlDoc + '/' + file.id);
             });
             if (0 == this.files.length)
                 this.addFileUpload();
             console.log(this.files);
 
         },
-        addFileUpload(file = null, id = 0, description = '', link = '', status = null, message = '', success = null) {
-            this.files.push({
+        addFileUpload(file = null, status = null, description = '', id = 0, link = '', message = '', success = null) {
+            return this.files.push({
                 file: file,
                 id: id,
                 description: description,
@@ -90,19 +102,42 @@ export default {
             file.file = event.target.files[0];
             if (!file.file || !file.description)
                 return file.message = 'there isn\'t any file or description';
-            file.id = 0; //so the upload will know that has been added a new file
-            this.fileUpload(file);
-        },
-        fileUpload(file) {
-            if (0 > file.id) {
-                file.success = true;
-                file.message = 'the file has already uploaded';
+
+            if (0 == file.id)
                 return;
-            }
+            file.id = 0;
+            this.files.push(file);// has been added the new file
+            let oldFile = this.files[index] = this.docFiles[index]; //restore the old file
+            oldFile.status = (!confirm('would you like to keep the old file? if yes you will see the new file on the end')) ? "to delete" : (oldFile.status != 'incomplete') ? oldFile.status : 'submitted';
+
+
+        },
+        fileUpload(file, index) {
             let params = new FormData();
-            params.append(`file`, file.file);
-            params.append(`description`, file.description);
-            axios.post(this.urlDoc, params
+            let url = this.urlDoc;
+            console.log(index, file.id, 0 > file.id);
+            file.result.message = ''; //#todo more clever way to show if the value is the same
+            //is it need to delete the file;
+            if ('to delete' == file.status) {
+                url += '/' + file.id;
+                params.append('_method', 'DELETE');
+            } else if (0 == file.id) {// submit a new  file
+                if (file.file != null) {
+                    params.append(`file`, file.file);
+                    params.append(`description`, file.description)
+                } else {
+                    file.result.message = 'there is not file to upload';
+                    return file.result.success = true;
+                }
+            } else if (file.description != this.docFiles[index].description) { //update existing file description
+                url += '/' + file.id;
+                params.append(`description`, file.description);
+                params.append('_method', 'PUT');
+            } else { // there is a file but nothing changed
+                file.result.message = 'the file has already uploaded';
+                return file.result.success = true;
+            }
+            return axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 file.id = json['id'];
@@ -115,8 +150,9 @@ export default {
                 file.result.message = "Request failed:";
             }).finally(function () {
                 file.link = '';
-                file.status = file.result.success ? 'submitted' : 'not uploaded';
+                file.status = file.result.success ? 'submitted/deleted' : 'not uploaded';
                 file.result.message += file.status;
+                return file.result.success;
             });
         },
         previewFile(event, index) {
@@ -132,9 +168,17 @@ export default {
         submit_form() {
             let vue = this;
             vue.result.message = ''; //#todo more clever way to show if the value is the same
+            let successFilesUpload = true;
             this.files.forEach((file, index) => {
-                this.fileUpload(file);
+                this.fileUpload(file, index);
+                successFilesUpload = successFilesUpload && file.result.success;
+
             });
+            if (!successFilesUpload) {
+                vue.result.success = false;
+                vue.result.message = 'some files has not uploaded or delete on the server your application status will not change'
+                return;
+            }
             let params = new FormData();
             params.append('_method', 'PUT');
             axios.post(vue.url, params
@@ -145,10 +189,19 @@ export default {
             }).catch(function (errors) {
                 vue.result.success = false;
                 vue.result.errors = errors.response.data.errors;
-                vue.result.message = "Request failed:";
-            });
+                vue.result.message = "Request failed: your status hasn't change";
+            }).finally(function () {
+                    if (vue.result.success) {
+                        let time = 3000;
+                        setTimeout(() => location.reload(true), time);
+                        vue.result.message += "and the page will reload in " + time + 'ms';
+                    }
+
+                }
+            )
         }
-    },
+    }
+    ,
     created() {
         this.startingData();
     }
