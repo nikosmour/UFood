@@ -23,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
+//        $this->registerPolicies();
 //        foreach (config('auth.guards') as $guard=>$value) {
 //            Auth::extend($guard, function ($app, $name, array $config) {
 //                // Return an instance of Illuminate\Contracts\Auth\Guard...
