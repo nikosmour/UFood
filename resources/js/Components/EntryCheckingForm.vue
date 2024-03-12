@@ -18,13 +18,13 @@
 <script>
 
 export default {
-    props: {url: String},
     data: function () {
         return {
             academic_id: '',
             success: true,
+            url: route('entryChecking.store'),
             result: {
-                message: this.url,
+                message: 'ready',
                 success: true,
                 hide: true,
                 errors: ['']
