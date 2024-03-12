@@ -1,6 +1,6 @@
 <template>
     <div class="row my_flex_height">
-        <purchase-coupon-form v-bind:url="urls.form" v-on:newPurchase="newPurchase($event)"></purchase-coupon-form>
+        <purchase-coupon-form v-on:newPurchase="newPurchase($event)"></purchase-coupon-form>
         <export-statistics-form v-bind:show_free_food="false" v-bind:statistics="statistics"
                                 v-bind:url="urls.statistics"></export-statistics-form>
     </div>
@@ -9,11 +9,6 @@
 <script>
 export default {
     props: {
-        urls: {
-            type: Object,
-            form: String,
-            statistics: String
-        },
         statisticsServer: {
             type: Object,
             breakfast: 0,
@@ -24,7 +19,10 @@ export default {
     },
     data: function () {
         return {
-            statistics: this.statisticsServer
+            statistics: this.statisticsServer,
+            urls: {
+                statistics: route('home'),
+            },
         }
     },
     methods: {

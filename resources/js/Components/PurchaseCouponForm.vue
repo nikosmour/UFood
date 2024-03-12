@@ -27,7 +27,7 @@
 
 <script>
 export default {
-    props: {url: String},
+    //props: {url: String},
     data: function () {
         return {
             form_data: {
@@ -36,8 +36,9 @@ export default {
                 LUNCH: 0,
                 DINNER: 0,
             },
+            url: route('coupons.purchase.store'),
             result: {
-                message: this.url,
+                message: 'ready',
                 success: true,
                 hide: true,
                 errors: []
