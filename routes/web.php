@@ -34,13 +34,14 @@ Route::get('coupons/history', CouponOwnerController::class)->name('coupons.histo
 Route::get('myInfo', UserInfoController::class)->name('myInfo');
 Route::resource('mealPlan', DailyMealPlanController::class)->parameter('mealPlan', 'dailyMealPlan');
 Route::redirect('coupons/purchase', '/coupons/purchase/create');
-Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('create', 'store');
+Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('create');
 Route::redirect('entryChecking', '/entryChecking/create');
-Route::resource('entryChecking', EntryCheckingController::class)->only('create', 'store');
+Route::resource('entryChecking', EntryCheckingController::class)->only('create');
 Route::redirect('coupons/transfer', '/coupons/transfer/create');
 Route::resource('coupons/transfer', TransferCouponController::class, ['as' => 'coupons'])->parameter(
     'transfer', 'transferCoupon')->only('create', 'store', 'show');
-Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->except(['create', 'destroy']);
-Route::resource('cardApplication/{cardApplication}/document', \App\Http\Controllers\CardApplicationDocumentController::class)->only('index', 'store', 'show', 'update', 'destroy');
+Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->except(['create', 'update', 'destroy']);
+//Route::resource('cardApplication/{cardApplication}/document', \App\Http\Controllers\CardApplicationDocumentController::class)->only('show');
+
 Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
-    ->whereIn('category', CardStatusEnum::values()->toArray())->only('index','store');
+    ->whereIn('category', CardStatusEnum::values()->toArray())->only('index');
