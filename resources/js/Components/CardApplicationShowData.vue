@@ -16,7 +16,7 @@
         </select>
         <message v-bind="result"></message>
         <object v-if="selectFile" class='col' height="500px" type="application/pdf"
-                v-bind:data="urlDoc + '/' + selectFile.id" width="100%"/>
+                v-bind:data="selectedFileUrl" width="100%"/>
     </div>
 
 </template>
@@ -24,7 +24,6 @@
 <script>
 export default {
     props: {
-        url: String,
         applicationId: Number
     },
     data() {
@@ -38,22 +37,15 @@ export default {
             currentStatus: null,
             selectFile: '',
             files: [],
-            //urlDoc: "/img/getbill-7.pdf"
-        }
-    },
-    computed: {
-        urlDoc() {
-            return this.url + '/' + this.applicationId + '/document';
         }
     },
     methods: {
         startingData() {
             let vue = this;
+            let url = route('document.index', {'cardApplication': this.applicationId});
             console.log('startingData');
-            console.log(this.applicationId);
-            console.log(this.urlDoc);
 
-            axios.get(this.urlDoc
+            axios.get(url
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 vue.files = json;
@@ -72,11 +64,12 @@ export default {
         updateStatus(file) {
             let params = new FormData();
             let vue = this;
+            let url = route('document.update', {'cardApplication': this.applicationId, 'document': file.id});
             vue.result.message = ''; //#todo more clever way to show if the value is the same
             params.append('_method', 'PUT')
             // params.append(`id`, file.id);
             params.append(`status`, file.status);
-            axios.post(vue.urlDoc + '/' + file.id, params
+            axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 vue.result.success = json['success'];
@@ -87,6 +80,11 @@ export default {
                 vue.result.errors = errors.response.data.errors
                 vue.result.message = "Request failed:";
             });
+        }
+    },
+    computed: {
+        selectedFileUrl() {
+            return route('document.show', {'cardApplication': this.applicationId, 'document': this.selectFile.id});
         }
     },
     watch: {
