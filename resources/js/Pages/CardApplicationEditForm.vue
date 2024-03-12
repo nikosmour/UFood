@@ -45,8 +45,8 @@
 <script>
 export default {
     props: {
+        cardApplication: Object,
         url: String,
-        // urlDoc:String,
         docFiles: Array,
         applicationEdit: Boolean
     },
@@ -54,14 +54,13 @@ export default {
         return {
             // files: [{file: null, description:'academic_card',link:'',id:0,message:null,success:null}],
             result: {
-                message: this.url,
+                message: 'ready',
                 success: true,
                 hide: false,
                 errors: []
             },
             docLink: '',
             files: [],
-            urlDoc: this.url + '/document'
         }
     },
     computed: {
@@ -75,7 +74,10 @@ export default {
     methods: {
         startingData() {
             this.docFiles.forEach((file, index) => {
-                this.addFileUpload(null, file.status, file.description, file.id, this.urlDoc + '/' + file.id);
+                this.addFileUpload(null, file.status, file.description, file.id, route('document.show', {
+                    'cardApplication': this.cardApplication,
+                    'document': file.id
+                }));
             });
             if (0 == this.files.length)
                 this.addFileUpload();
@@ -114,23 +116,24 @@ export default {
         },
         fileUpload(file, index) {
             let params = new FormData();
-            let url = this.urlDoc;
+            let url;
             console.log(index, file.id, 0 > file.id);
             file.result.message = ''; //#todo more clever way to show if the value is the same
             //is it need to delete the file;
             if ('to delete' == file.status) {
-                url += '/' + file.id;
+                url = route('document.destroy', {'cardApplication': this.cardApplication, 'document': file.id})
                 params.append('_method', 'DELETE');
             } else if (0 == file.id) {// submit a new  file
                 if (file.file != null) {
                     params.append(`file`, file.file);
                     params.append(`description`, file.description)
+                    url = route('document.store', {'cardApplication': this.cardApplication})
                 } else {
                     file.result.message = 'there is not file to upload';
                     return file.result.success = true;
                 }
             } else if (file.description != this.docFiles[index].description) { //update existing file description
-                url += '/' + file.id;
+                url = route('document.update', {'cardApplication': this.cardApplication, 'document': file.id})
                 params.append(`description`, file.description);
                 params.append('_method', 'PUT');
             } else { // there is a file but nothing changed
