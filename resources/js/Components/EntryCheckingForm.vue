@@ -8,7 +8,7 @@
             <div class="form-group mx-auto " style="max-width:20em">
                 <label> <strong class="text-center">Αριθμός κάρτας</strong></label>
                 <input id="academic_id" v-model.number="academic_id" autofocus name="academic_id"
-                       placeholder="Καταχωρίστε τον αριθμό της κάρτας" required type="number" v-bind:class="getClass"/>
+                       placeholder="Καταχωρίστε τον αριθμό της κάρτας" required type="number"/>
                 <message v-bind="result"></message>
             </div>
         </form>
