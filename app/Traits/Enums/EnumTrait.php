@@ -41,9 +41,9 @@ trait EnumTrait
 
     /**
      * @param string $name
-     * @return static
+     * @return Enum
      */
-    public static function fromName(string $name): static
+    public static function fromName(string $name): Enum
     {
         return self::enumByName()[$name];
     }
