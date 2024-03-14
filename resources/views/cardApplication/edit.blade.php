@@ -18,7 +18,7 @@
                 {{--                                    v-bind:url-doc="'{{route('document.store',$cardApplication)}}'",--}}
                 v-bind:card-application="{{$cardApplication}}"
                 {{--                                    v-bind:doc-files="{{$files}}"--}}
-                v-bind:application-edit='{{in_array($cardApplication->status,[CardStatusEnum::TEMPORARY_SAVED, \App\Enum\CardStatusEnum::INCOMPLETE])? 'true' : 'false'}}'
+                v-bind:application-edit='{{in_array($cardApplication->status,[CardStatusEnum::TEMPORARY_SAVED, CardStatusEnum::INCOMPLETE, CardStatusEnum::SUBMITTED])}}'
         >
         </card-application-edit-form>
     </div>
