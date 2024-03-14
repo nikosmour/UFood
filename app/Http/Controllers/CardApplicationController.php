@@ -88,10 +88,7 @@ class CardApplicationController extends Controller
     public function edit(CardApplication $cardApplication)
     {
         $this->authorize('update', $cardApplication);
-        $files = $cardApplication->cardApplicationDocument()->get(['id', 'description', 'status']);
-
-
-        return view('cardApplication/edit', compact('cardApplication', 'files'));
+        return view('cardApplication/edit', compact('cardApplication'));
 
     }
 

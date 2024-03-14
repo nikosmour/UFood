@@ -46,8 +46,6 @@
 export default {
     props: {
         cardApplication: Object,
-        url: String,
-        docFiles: Array,
         applicationEdit: Boolean
     },
     data() {
@@ -57,9 +55,14 @@ export default {
                 message: 'ready',
                 success: true,
                 hide: false,
-                errors: []
+                errors: {
+                    default: function () {
+                        return [];
+                    }
+                }
             },
             docLink: '',
+            docFiles: [],
             files: [],
         }
     },
@@ -73,15 +76,27 @@ export default {
     },
     methods: {
         startingData() {
-            this.docFiles.forEach((file, index) => {
-                this.addFileUpload(null, file.status, file.description, file.id, route('document.show', {
-                    'cardApplication': this.cardApplication,
-                    'document': file.id
-                }));
-            });
-            if (0 == this.files.length)
-                this.addFileUpload();
-            console.log(this.files);
+            let vue = this;
+            let url = route('document.index', {'cardApplication': this.cardApplication.id});
+            console.log('startingData');
+            axios.get(url
+            ).then(function (responseJson) {
+                let json = responseJson['data'];
+                vue.docFiles = json;
+                json.forEach((file, index) => {
+                    vue.addFileUpload(null, file.status, file.description, file.id, route('document.show', {
+                        'cardApplication': vue.cardApplication,
+                        'document': file.id
+                    }));
+                });
+                if (0 == json.length)
+                    vue.addFileUpload();
+                console.log(vue.files);
+            }).catch(function (errors) {
+                vue.result.success = false;
+                vue.result.message = 'Retrieving files of this application has failed :'
+                vue.result.errors = errors.response.data.errors;
+            })
 
         },
         addFileUpload(file = null, status = null, description = '', id = 0, link = '', message = '', success = null) {
@@ -170,8 +185,10 @@ export default {
         },
         submit_form() {
             let vue = this;
-            vue.result.message = ''; //#todo more clever way to show if the value is the same
+            let url = route('cardApplication.update', this.cardApplication);
             let successFilesUpload = true;
+            let params = new FormData();
+            vue.result.message = ''; //#todo more clever way to show if the value is the same
             this.files.forEach((file, index) => {
                 this.fileUpload(file, index);
                 successFilesUpload = successFilesUpload && file.result.success;
@@ -182,9 +199,8 @@ export default {
                 vue.result.message = 'some files has not uploaded or delete on the server your application status will not change'
                 return;
             }
-            let params = new FormData();
             params.append('_method', 'PUT');
-            axios.post(vue.url, params
+            axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 vue.result.success = json['success'];

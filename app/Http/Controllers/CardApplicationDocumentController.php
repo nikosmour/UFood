@@ -32,10 +32,13 @@ class CardApplicationDocumentController extends Controller
      * @return CardApplicationDocument[]|Builder[]|Collection
      * @throws AuthorizationException
      */
-    public function index($cardApplication)
+    public function index(CardApplication $cardApplication)
     {
-        $this->authorize('viewAny', CardApplicationDocument::class);
-        return CardApplicationDocument::whereCardApplicationId($cardApplication)->select(['id', 'status'])->get();
+//        $this->authorize('viewAny', CardApplicationDocument::class);
+        $this->authorize('view', $cardApplication);
+        $select = Auth('cardApplicationStaffs')->user() ? ['id', 'status'] : ['id', 'description', 'status'];
+//        return  CardApplicationDocument::whereCardApplicationId($cardApplication->id)->select($select)->get();
+        return $cardApplication->cardApplicationDocument()->select($select)->get();
     }
 
     /**
