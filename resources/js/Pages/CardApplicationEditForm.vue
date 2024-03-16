@@ -69,7 +69,10 @@ export default {
     computed: {
         canEditDocument: function () {
             return this.files.map((file, index) => {
-                return ['incomplete', null, 'submitted'].includes(file.status)
+                return [null,
+                    this.$enums.CardDocumentStatusEnum.INCOMPLETE,
+                    this.$enums.CardDocumentStatusEnum.SUBMITTED
+                ].includes(file.status)
             });
 
         }

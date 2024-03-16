@@ -11,7 +11,10 @@
         </select>
         <select v-model="selectFile.status" v-on:select="updateStatus(selectFile.status)">
             <option disabled value="">Please select one</option>
-            <option v-for="status in ['submitted','accepted','rejected','incomplete']" :value="status"> {{ status }}
+            // 'submitted','accepted','rejected','incomplete'
+            <option v-for="(value, status) in $enums.CardDocumentStatusEnum"
+                    :key="'CardDocumentStatusEnum.'+status+selectFile.id"
+                    :value="value"> {{ status }}
             </option>
         </select>
         <message v-bind="result"></message>

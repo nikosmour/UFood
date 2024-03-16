@@ -25,7 +25,9 @@
                 </div>
                 <select v-model="selectedItem.status" v-on:change="updateStatus(selectedItem)">
                     <option disabled value="">Please select one</option>
-                    <option v-for="status in ['accepted','rejected','incomplete']" :value="status"> {{ status }}
+                    <option
+                        v-for="status in ['ACCEPTED','REJECTED','INCOMPLETE']"
+                        :key="'CardStatusEnum.'+status" :value="$enums.CardStatusEnum[status]"> {{ status }}
                     </option>
                 </select>
                 <message v-bind="result"></message>
@@ -95,8 +97,7 @@ export default {
                 }//else
                 application.status = vue.currentStatus;
                 vue.result.message = "Request failed:";
-                }
-            );
+            });
 
         }
     },
