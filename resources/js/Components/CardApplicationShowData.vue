@@ -9,7 +9,7 @@
             <!--            <option disabled value="">Please select one</option>-->
             <option v-for="file in files" :value="file"> files ; {{ file.id }}></option>
         </select>
-        <select v-model="selectFile.status" v-on:select="updateStatus(selectFile.status)">
+        <select v-if="selectFile" v-model="selectFile.status" v-on:select="updateStatus(selectFile.status)">
             <option disabled value="">Please select one</option>
             // 'submitted','accepted','rejected','incomplete'
             <option v-for="(value, status) in $enums.CardDocumentStatusEnum"
@@ -72,16 +72,18 @@ export default {
             params.append('_method', 'PUT')
             // params.append(`id`, file.id);
             params.append(`status`, file.status);
-            axios.post(url, params
+            return axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 vue.result.success = json['success'];
                 vue.result.message = json['message'];
                 vue.result.errors = []
+                return json['success'];
             }).catch(function (errors) {
                 vue.result.success = false;
                 vue.result.errors = errors.response.data.errors
                 vue.result.message = "Request failed:";
+                return false;
             });
         }
     },

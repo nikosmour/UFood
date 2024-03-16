@@ -13,7 +13,7 @@
                     <input v-model="file.description" placeholder="Description" type="text"
                            v-bind:disabled="!canEditDocument[index]">
                     <button @click="previewFile($event,index)">preview {{ file.id }}</button>
-                    <button v-if="0 !=file.id" @click="file.status = 'to delete'">delete {{ file.id }}</button>
+                    <button v-if="0 !=file.id" v-on:click="file.status = 'to delete'">delete {{ file.id }}</button>
                     <button v-else @click="files.splice(index, 1);">cancel adding file</button>
                     <message v-bind="file.result"></message>
                     <!--                    <label v-if="file.result.message || file.status">{{ file.status + '  ' + file.result.message }}</label>-->
