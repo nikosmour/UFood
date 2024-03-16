@@ -8,6 +8,8 @@ require('./bootstrap');
 
 // window.Vue = require('vue').default;
 import Vue from 'vue';
+//import {ZiggyVue} from '../../vendor/tightenco/ziggy';
+//import {Ziggy} from './ziggy.js';
 
 /**
  * The following block of code may be used to automatically register your
@@ -46,6 +48,7 @@ requireComponent.keys().forEach(fileName => {
 //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 //     }
 // });
+// Vue.use(ZiggyVue,Ziggy);
 const app = new Vue({
     el: '#app',
 });
