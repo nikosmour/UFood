@@ -10,6 +10,7 @@ require('./bootstrap');
 import Vue from 'vue';
 //import {ZiggyVue} from '../../vendor/tightenco/ziggy';
 //import {Ziggy} from './ziggy.js';
+import EnumPlugin from './enums';
 
 /**
  * The following block of code may be used to automatically register your
@@ -48,6 +49,7 @@ requireComponent.keys().forEach(fileName => {
 //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 //     }
 // });
+Vue.use(EnumPlugin);
 // Vue.use(ZiggyVue,Ziggy);
 const app = new Vue({
     el: '#app',
