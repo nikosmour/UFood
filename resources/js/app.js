@@ -6,7 +6,8 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue').default;
+// window.Vue = require('vue').default;
+import Vue from 'vue';
 
 /**
  * The following block of code may be used to automatically register your
@@ -16,9 +17,17 @@ window.Vue = require('vue').default;
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-const files = require.context('./', true, /\.vue$/i)
-files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+const requireComponent = require.context('./', true, /\.vue$/i)
+// Register each component globally
+requireComponent.keys().forEach(fileName => {
+    const componentConfig = requireComponent(fileName);
+    const componentName = fileName
+        .split('/')
+        .pop()
+        .replace(/\.\w+$/, ''); // Remove the file extension
 
+    Vue.component(componentName, componentConfig.default || componentConfig);
+});
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 // Vue.component('coupons-purchase-form', require('./components/CouponsPurchaseForm').default);
 // Vue.component('entry-checking-form', require('./components/EntryCheckingForm').default);
