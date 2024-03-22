@@ -4,6 +4,8 @@
 /public/img
 /public/js
 /public/css
+/resources/js/enums.js
+/resources/js/ziggy.js
 /storage/*.key
 /vendor
 .env
