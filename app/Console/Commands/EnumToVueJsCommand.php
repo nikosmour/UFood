@@ -62,8 +62,8 @@ class EnumToVueJsCommand extends Command
         $vueFile = resource_path('js/enums.js');
         $content = "
 const EnumPlugin = {
-    install(Vue) {
-        Vue.prototype.\$enums = $json;
+    install(app) {
+        app.config.globalProperties.\$enums = $json;
     }
 };
 

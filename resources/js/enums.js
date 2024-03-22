@@ -1,6 +1,7 @@
+
 const EnumPlugin = {
-    install(Vue) {
-        Vue.prototype.$enums = {
+    install(app) {
+        app.config.globalProperties.$enums = {
             "CardDocumentStatusEnum": {
                 "SUBMITTED": "submitted",
                 "ACCEPTED": "accepted",
