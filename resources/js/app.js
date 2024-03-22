@@ -7,11 +7,14 @@
 require('./bootstrap');
 
 // window.Vue = require('vue').default;
-import Vue from 'vue';
-//import {ZiggyVue} from '../../vendor/tightenco/ziggy';
-//import {Ziggy} from './ziggy.js';
+// Import createApp function from Vue 3
+import {createApp} from 'vue';
+// Import any additional plugins or components you may need
+import {ZiggyVue} from '../../vendor/tightenco/ziggy';
+// import {Ziggy} from './ziggy.js';
 import EnumPlugin from './enums';
 
+const app = createApp({});
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -29,7 +32,7 @@ requireComponent.keys().forEach(fileName => {
         .pop()
         .replace(/\.\w+$/, ''); // Remove the file extension
 
-    Vue.component(componentName, componentConfig.default || componentConfig);
+    app.component(componentName, componentConfig.default || componentConfig);
 });
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 // Vue.component('coupons-purchase-form', require('./components/CouponsPurchaseForm').default);
@@ -49,8 +52,9 @@ requireComponent.keys().forEach(fileName => {
 //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 //     }
 // });
-Vue.use(EnumPlugin);
-// Vue.use(ZiggyVue,Ziggy);
-const app = new Vue({
-    el: '#app',
-});
+
+// Use any plugins
+app.use(EnumPlugin);
+app.use(ZiggyVue);//,Ziggy);
+// Mount the app to the DOM
+app.mount('#app');
