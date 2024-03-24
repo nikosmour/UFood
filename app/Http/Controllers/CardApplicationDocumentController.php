@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCardApplicationDocumentRequest;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
 use App\Traits\DocumentTrait;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -90,6 +91,12 @@ class CardApplicationDocumentController extends Controller
         $this->authorize('view', $cardApplication);
 //        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
 //            abort(403, 'Unauthorized Access');
+        if (app()->environment('local') and '_Fake@doc_' == $document->description) {
+            $pdf = PDF::loadView('PDFS.fakePDF');
+
+            // Generate and output the PDF
+            return $pdf->stream('fakePDF');
+        }
         $fileStorageData = $this::storePositionData($cardApplication->academic_id, $document); // Adjust the file path according to your file storage location
         $filePath = $fileStorageData[0] . '/' . $fileStorageData[1];
         $disk = $fileStorageData[2];

@@ -18,7 +18,7 @@ class CardApplicationDocumentFactory extends Factory
     {
         return [
             'file_name' => $this->faker->firstName(),
-            'description' => $this->faker->word()
+            'description' => '_Fake@doc_'
         ];
     }
 }
