@@ -51,6 +51,7 @@ class UserSeeder extends Seeder
             UsageCardSeeder::class,
             UsageCouponSeeder::class,
             CardApplicantSeeder::class,
+            CardApplicationCheckingSeeder::class
         ]);
     }
 }
