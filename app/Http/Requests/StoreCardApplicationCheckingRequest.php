@@ -35,7 +35,7 @@ class StoreCardApplicationCheckingRequest extends FormRequest
                 'after_or_equal:' . CardApplication::whereId($this->input('card_application_id'))
                     ->select('expiration_date')->value('expiration_date')
             ],
-            'card_application_staff_comment' => Rule::requiredIf($this->input('status') != CardStatusEnum::ACCEPTED->value)
+            'card_application_staff_comment' => ['string', Rule::requiredIf($this->input('status') != CardStatusEnum::ACCEPTED->value)]
 
 
         ];

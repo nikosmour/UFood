@@ -15,11 +15,11 @@ class CardApplicationCheckingFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    #[ArrayShape(['card_application_staff_comment' => "string"])]
+    #[ArrayShape(['comment' => "string"])]
     public function definition(): array
     {
         return [
-            'card_application_staff_comment' => 'card_application_staff_comment',
+            'comment' => 'card_application_staff_comment',
         ];
     }
 }

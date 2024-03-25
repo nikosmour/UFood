@@ -47,14 +47,14 @@ class CardApplicationCheckingController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreCardApplicationCheckingRequest $request
-     * @return Response
+     * @return true
      */
     public function store(StoreCardApplicationCheckingRequest $request)
     {
         $vData = $request->validated();
         DB::transaction(function () use ($vData) {
             $data = isset($vData['card_application_staff_comment']) ? [
-                'card_application_staff_comment' => $vData['card_application_staff_comment']
+                'comment' => $vData['card_application_staff_comment']
             ] : [];
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
             $data = ['status' => $vData['status']];
@@ -62,7 +62,7 @@ class CardApplicationCheckingController extends Controller
                 $data['expiration_date'] = $vData['expiration_date'];
             CardApplication::whereId($vData['card_application_id'])->update($data);
         });
-        return 1;//true
+        return true;
     }
 
     /**
