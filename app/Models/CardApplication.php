@@ -37,7 +37,7 @@ class CardApplication extends Model
 
     public function cardApplicationStaff(): BelongsToMany
     {
-        return $this->belongsToMany(CardApplicationStaff::class)->using(CardApplicationChecking::class);
+        return $this->belongsToMany(CardApplicationStaff::class, table: (new CardApplicationChecking)->getTable())->using(CardApplicationChecking::class);
     }
 
     public function staffComments(): HasMany

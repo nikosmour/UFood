@@ -15,11 +15,11 @@ class HasCardApplicantCommentFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    #[ArrayShape(['card_applicant_comment' => "string"])]
+    #[ArrayShape(['comment' => "string"])]
     public function definition(): array
     {
         return [
-            'card_applicant_comment' => 'card_applicants_comment',
+            'comment' => 'card_applicants_comment',
         ];
     }
 }
