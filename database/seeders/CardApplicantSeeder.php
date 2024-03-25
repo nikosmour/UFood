@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Address as Address;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
+use App\Models\HasCardApplicantComment;
 use Illuminate\Database\Seeder;
 
 class CardApplicantSeeder extends Seeder
@@ -20,7 +21,7 @@ class CardApplicantSeeder extends Seeder
         foreach ($cardApplicants as $cardApplicant) {
             Address::factory()->permanent()->for($cardApplicant)->create();
             Address::factory()->notPermanent()->for($cardApplicant)->create();
-            $cardApplication = CardApplication::factory()->for($cardApplicant)->has(CardApplicationDocument::factory()->count(3))->create();
+            $cardApplication = CardApplication::factory()->for($cardApplicant)->has(CardApplicationDocument::factory()->count(3))->has(HasCardApplicantComment::factory()->count(1), 'applicantComments')->create();
             $cardApplicationDoc = $cardApplication->cardApplicationDocument[random_int(0, 2)];
             if ($cardApplication->status == \App\Enum\CardStatusEnum::REJECTED) {
                 $cardApplicationDoc->status = \App\Enum\CardDocumentStatusEnum::REJECTED;
@@ -34,6 +35,7 @@ class CardApplicantSeeder extends Seeder
             } elseif ($cardApplication->status == \App\Enum\CardStatusEnum::ACCEPTED) {
                 CardApplicationDocument::whereCardApplicationId($cardApplication->id)->update(['status' => \App\Enum\CardDocumentStatusEnum::ACCEPTED]);
             }
+
         }
     }
 }

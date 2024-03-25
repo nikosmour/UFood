@@ -11,4 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class HasCardApplicantComment extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
+
 }
