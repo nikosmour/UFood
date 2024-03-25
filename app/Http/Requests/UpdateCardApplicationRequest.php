@@ -24,6 +24,7 @@ class UpdateCardApplicationRequest extends FormRequest
     public function rules()
     {
         return [
+            'comment' => 'string'
         ];
     }
 }

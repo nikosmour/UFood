@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class CardApplicationController extends Controller
@@ -104,9 +105,20 @@ class CardApplicationController extends Controller
     {
         $this->authorize('update', $cardApplication);
         if ($cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0) return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents ',];
-        $cardApplication->status = CardStatusEnum::SUBMITTED;
-        if ($cardApplication->saveOrFail()) return ['success' => true, 'message' => 'Application has been saved',];
-        return ['success' => false, 'message' => 'Application didn\'t saved',];
+
+        $vData = $request->validated();
+        DB::transaction(function () use ($vData, $cardApplication) {
+            if (isset($vData['comment'])) {
+                $applicantComment = $cardApplication->applicantComments()->make();
+                $applicantComment->comment = $vData['comment'];
+                $applicantComment->saveOrFail();
+            }
+            $cardApplication->status = CardStatusEnum::SUBMITTED;
+            $cardApplication->saveOrFail();
+        });
+
+        return ['success' => true, 'message' => 'Application has been saved',];
+        //return ['success' => false, 'message' => 'Application didn\'t saved',];
     }
 
     /**

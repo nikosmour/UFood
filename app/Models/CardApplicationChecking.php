@@ -19,7 +19,6 @@ class CardApplicationChecking extends Pivot
     {
         return $this->belongsTo(CardApplicationStaff::class);
     }
-
     public function cardApplication(): BelongsTo
     {
         return $this->belongsTo(CardApplication::class);

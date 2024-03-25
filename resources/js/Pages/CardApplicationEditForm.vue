@@ -18,6 +18,11 @@
                     <message v-bind="file.result"></message>
                     <!--                    <label v-if="file.result.message || file.status">{{ file.status + '  ' + file.result.message }}</label>-->
                 </div>
+                <div>
+                    <label for="commentStudent">Enter Comment:</label>
+                    <input id="commentStudent" v-model="commentStudent" type="text">
+
+                </div>
 
                 <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">Submit
                 </button>
@@ -64,6 +69,7 @@ export default {
             docLink: '',
             docFiles: [],
             files: [],
+            commentStudent: null
         }
     },
     computed: {
@@ -203,6 +209,9 @@ export default {
                 return;
             }
             params.append('_method', 'PUT');
+            if (vue.commentStudent) {
+                params.append('comment', vue.commentStudent);
+            }
             axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
