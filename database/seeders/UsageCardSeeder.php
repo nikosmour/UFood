@@ -14,8 +14,8 @@ class UsageCardSeeder extends ManyToManySeeder
     public function run()
     {
         $this->make_connection(
-            \App\Models\CardApplicant::all(),
+            \App\Models\CardApplicant::where('created_at', '>', $this->createdAtMoreThan)->cursor(),
             \App\Models\EntryStaff::all(),
-            \App\Models\UsageCard::class, 5);
+            \App\Models\UsageCard::class, $this->count);
     }
 }

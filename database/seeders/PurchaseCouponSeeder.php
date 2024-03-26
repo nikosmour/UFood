@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use Database\Seeders\Classes\CreatedAtMoreThanSeeder;
+use Database\Seeders\Classes\ManyToManySeeder;
 
-class PurchaseCouponSeeder extends Seeder
+class PurchaseCouponSeeder extends ManyToManySeeder
 {
     /**
      * Run the database seeds.
@@ -13,13 +14,9 @@ class PurchaseCouponSeeder extends Seeder
      */
     public function run()
     {
-        $length = 5;
-        $couponOwners = \App\Models\CouponOwner::all();
-        $couponStaffs = \App\Models\CouponStaff::all();
-        foreach ($couponOwners as $buyer) {
-            for ($i = $length; $i > 0; $i--)
-                \App\Models\PurchaseCoupon::factory()->for(
-                    $buyer)->for($couponStaffs->random())->create();
-        }
+        $this->make_connection(
+            \App\Models\CouponOwner::where('created_at', '>', $this->createdAtMoreThan)->cursor(),
+            \App\Models\CouponStaff::all(),
+            \App\Models\PurchaseCoupon::class, $this->count);
     }
 }
