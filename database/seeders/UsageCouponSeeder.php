@@ -14,8 +14,8 @@ class UsageCouponSeeder extends ManyToManySeeder
     public function run()
     {
         $this->make_connection(
-            \App\Models\CouponOwner::all(),
+            \App\Models\CouponOwner::where('created_at', '>', $this->createdAtMoreThan)->cursor(),
             \App\Models\EntryStaff::all(),
-            \App\Models\UsageCoupon::class, 5);
+            \App\Models\UsageCoupon::class, $this->count);
     }
 }
