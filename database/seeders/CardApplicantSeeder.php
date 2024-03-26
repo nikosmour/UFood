@@ -6,9 +6,10 @@ use App\Models\Address as Address;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
 use App\Models\HasCardApplicantComment;
+use Database\Seeders\Classes\CreatedAtMoreThanSeeder;
 use Illuminate\Database\Seeder;
 
-class CardApplicantSeeder extends Seeder
+class CardApplicantSeeder extends CreatedAtMoreThanSeeder
 {
     /**
      * Run the database seeds.
@@ -17,7 +18,7 @@ class CardApplicantSeeder extends Seeder
      */
     public function run()
     {
-        $cardApplicants = \App\Models\CardApplicant::all();
+        $cardApplicants = \App\Models\CardApplicant::whereDoesntHave('cardApplications')->where('created_at', '>', $this->createdAtMoreThan)->cursor();
         foreach ($cardApplicants as $cardApplicant) {
             Address::factory()->permanent()->for($cardApplicant)->create();
             Address::factory()->notPermanent()->for($cardApplicant)->create();
