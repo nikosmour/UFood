@@ -27,8 +27,9 @@ class CardApplicationCheckingController extends Controller
      */
     public function index(CardStatusEnum $category)
     {
-        $cardApplications = CardApplication::whereStatus($category)->select('id', 'status')->get();
-        $models = $cardApplications;
+        $query = \App\Models\CardApplicationUpdate::groupBy('card_application_id')->selectRaw('max(id) as max_id ');
+        $models = $cardApplications = \App\Models\CardApplicationUpdate::whereStatus($category
+        )->joinSub($query, 'mostResent', 'id', 'max_id')->select('card_application_id as id')->get();
         return view('cardApplicationChecking.index', compact('models', 'category'));
     }
 
@@ -53,13 +54,14 @@ class CardApplicationCheckingController extends Controller
         $vData = $request->validated();
         DB::transaction(function () use ($vData) {
             $data = isset($vData['card_application_staff_comment']) ? [
-                'comment' => $vData['card_application_staff_comment']
-            ] : [];
+                'comment' => $vData['card_application_staff_comment'],
+                'status' => $vData['status']
+            ] : ['status' => $vData['status']];
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
-            $data = ['status' => $vData['status']];
             if (isset($vData['expiration_date']))
-                $data['expiration_date'] = $vData['expiration_date'];
-            CardApplication::whereId($vData['card_application_id'])->update($data);
+                CardApplication::whereId($vData['card_application_id'])->update(['expiration_date' => $vData['expiration_date']]);
+            else
+                CardApplication::whereId($vData['card_application_id'])->touch();
         });
         return true;
     }

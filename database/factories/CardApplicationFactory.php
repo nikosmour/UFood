@@ -16,12 +16,11 @@ class CardApplicationFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    #[ArrayShape(['expiration_date' => "\DateTime", 'status' => "mixed"])]
+    #[ArrayShape(['expiration_date' => "\DateTime"])]
     public function definition(): array
     {
         return [
             'expiration_date' => $this->faker->dateTimeBetween('-1 years', '+1 years'),
-            'status' => CardStatusEnum::random(),
         ];
     }
 }
