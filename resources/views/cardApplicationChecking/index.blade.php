@@ -1,7 +1,7 @@
 @extends('layouts.nav')
 @section('title')
-    cardApplicationChecking
+    {{  $category->value. ' Card Applications' }}
 @endsection
 @section('content')
-    <card-application-checking v-bind:items="{{$models}}"/>
+    <card-application-checking v-bind:items="{{$models}}" v-bind:category="'{{$category->value}}'"/>
 @endsection
