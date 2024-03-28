@@ -41,7 +41,8 @@
 
 export default {
     props: {
-        items: Array
+        items: Array,
+        category: String
     },
     data() {
         return {
@@ -62,7 +63,7 @@ export default {
         showSecondTable(item) {
             console.log('showSecondTable');
             this.selectedItem = item;
-            this.currentStatus = item.status;
+            this.currentStatus = this.category;
         },
         updateStatus(application) {
             let params = new FormData();

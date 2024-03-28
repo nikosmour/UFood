@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
+use App\Events\CardApplicationUpdated;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplication;
@@ -27,10 +28,12 @@ class CardApplicationCheckingController extends Controller
      */
     public function index(CardStatusEnum $category)
     {
-        $cardApplications = CardApplication::whereStatus($category)->select('id', 'status')->get();
-        $models = $cardApplications;
-        $caption = 'Card Applications -> ' . $category->value;
-        return view('cardApplicationChecking.index', compact('models', 'caption'));
+        $query = \App\Models\CardApplicationUpdate::groupBy('card_application_id')->selectRaw('max(id) as max_id ');
+        $models = $cardApplications = \App\Models\CardApplicationUpdate::whereStatus($category
+        )->joinSub($query, 'mostResent', 'id', 'max_id')->select('card_application_id as id')->get();
+//        $models =\App\Models\CardApplication::whereRelation('cardLastUpdate','status', $category)->get();
+
+        return view('cardApplicationChecking.index', compact('models', 'category'));
     }
 
     /**
@@ -54,13 +57,23 @@ class CardApplicationCheckingController extends Controller
         $vData = $request->validated();
         DB::transaction(function () use ($vData) {
             $data = isset($vData['card_application_staff_comment']) ? [
-                'comment' => $vData['card_application_staff_comment']
-            ] : [];
+                'comment' => $vData['card_application_staff_comment'],
+                'status' => $vData['status']
+            ] : ['status' => $vData['status']];
+            $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
+            $old_status = $application->cardLastUpdate->status;
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
-            $data = ['status' => $vData['status']];
-            if (isset($vData['expiration_date']))
-                $data['expiration_date'] = $vData['expiration_date'];
-            CardApplication::whereId($vData['card_application_id'])->update($data);
+            if (isset($vData['expiration_date'])) {
+                $application->expiration_date = $vData['expiration_date'];
+                $application->save();
+            }
+            else
+                $application->touch();
+            broadcast(event: new CardApplicationUpdated(
+                cardApplication: $application,
+                status: $vData['status'],
+                old_status: $old_status,
+                comment: $vData['card_application_staff_comment'] ?? null))->toOthers();
         });
         return true;
     }
