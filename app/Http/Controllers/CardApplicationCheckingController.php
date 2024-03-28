@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
-use App\Events\CardApplicationUpdated;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplication;
@@ -31,8 +30,6 @@ class CardApplicationCheckingController extends Controller
         $query = \App\Models\CardApplicationUpdate::groupBy('card_application_id')->selectRaw('max(id) as max_id ');
         $models = $cardApplications = \App\Models\CardApplicationUpdate::whereStatus($category
         )->joinSub($query, 'mostResent', 'id', 'max_id')->select('card_application_id as id')->get();
-//        $models =\App\Models\CardApplication::whereRelation('cardLastUpdate','status', $category)->get();
-
         return view('cardApplicationChecking.index', compact('models', 'category'));
     }
 
@@ -60,20 +57,11 @@ class CardApplicationCheckingController extends Controller
                 'comment' => $vData['card_application_staff_comment'],
                 'status' => $vData['status']
             ] : ['status' => $vData['status']];
-            $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
-            $old_status = $application->cardLastUpdate->status;
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
-            if (isset($vData['expiration_date'])) {
-                $application->expiration_date = $vData['expiration_date'];
-                $application->save();
-            }
+            if (isset($vData['expiration_date']))
+                CardApplication::whereId($vData['card_application_id'])->update(['expiration_date' => $vData['expiration_date']]);
             else
-                $application->touch();
-            broadcast(event: new CardApplicationUpdated(
-                cardApplication: $application,
-                status: $vData['status'],
-                old_status: $old_status,
-                comment: $vData['card_application_staff_comment'] ?? null))->toOthers();
+                CardApplication::whereId($vData['card_application_id'])->touch();
         });
         return true;
     }

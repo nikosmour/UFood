@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @mixin IdeHelperHasCardApplicantComment
  */
-class HasCardApplicantComment extends Model
+class HasCardApplicantComment extends CardApplicationUpdate
 {
-    use HasFactory;
-
-    public $timestamps = false;
-
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ApplicantComments', function ($builder) {
+            $builder->whereNull('card_application_staff_id')->except('card_application_staff_id');
+        });
+    }
 }

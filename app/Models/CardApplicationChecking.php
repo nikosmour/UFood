@@ -10,17 +10,12 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * @mixin IdeHelperCardApplicationChecking
  */
-class CardApplicationChecking extends Pivot
+class CardApplicationChecking extends CardApplicationUpdate
 {
-    use HasFactory;
-    public $timestamps = false;
-
-    public function cardApplicationStaff(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(CardApplicationStaff::class);
-    }
-    public function cardApplication(): BelongsTo
-    {
-        return $this->belongsTo(CardApplication::class);
+        static::addGlobalScope('ApplicantComments', function ($builder) {
+            $builder->whereNot('card_application_staff_id', null);
+        });
     }
 }
