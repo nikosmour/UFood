@@ -45,6 +45,10 @@ php artisan db:seed
 php artisan app:enum-to-vue-js 
 npm install 
 npm run dev
+php artisan clear-compiled
+php artisan ide-helper:generate
+php artisan ide-helper:models --write-mixin
+php artisan ide-helper:meta
 ````
 
 ### explanation
@@ -82,6 +86,16 @@ make the database
 ```bash
 php artisan migrate
 php artisan db:seed
+````
+
+only for dev
+IDE Helper Generator for Laravel
+
+```bash
+php artisan clear-compiled
+php artisan ide-helper:generate
+php artisan ide-helper:models --write-mixin
+php artisan ide-helper:meta
 ````
 
 ## License

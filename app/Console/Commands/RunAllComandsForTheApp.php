@@ -36,6 +36,10 @@ class RunAllComandsForTheApp extends Command
             'php artisan app:enum-to-vue-js',
             'npm install',
             'npm run dev',
+            'php artisan clear-compiled',
+            'php artisan ide-helper:generate',
+            'php artisan ide-helper:models --write-mixin (-M)',
+            'php artisan ide-helper:meta',
             // Add more commands here as needed
         ];
         // Run each command
