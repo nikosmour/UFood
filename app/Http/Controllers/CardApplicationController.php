@@ -107,14 +107,10 @@ class CardApplicationController extends Controller
         if ($cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0) return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents ',];
 
         $vData = $request->validated();
+        $vData['status'] = CardStatusEnum::SUBMITTED;
         DB::transaction(function () use ($vData, $cardApplication) {
-            if (isset($vData['comment'])) {
-                $applicantComment = $cardApplication->applicantComments()->make();
-                $applicantComment->comment = $vData['comment'];
-                $applicantComment->saveOrFail();
-            }
-            $cardApplication->status = CardStatusEnum::SUBMITTED;
-            $cardApplication->saveOrFail();
+            $cardApplication->applicantComments()->create($vData);
+            $cardApplication->touch();
         });
 
         return ['success' => true, 'message' => 'Application has been saved',];

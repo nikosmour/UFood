@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @mixin IdeHelperCardApplication
@@ -21,7 +22,6 @@ class CardApplication extends Model
      * @var string[]
      */
     protected $casts = [
-        'status' => CardStatusEnum::class,
         'expiration_date' => 'date:Y-m-d',
     ];
 
@@ -42,11 +42,19 @@ class CardApplication extends Model
 
     public function staffComments(): HasMany
     {
-        return $this->hasMany(CardApplicationChecking::class);
+        return $this->hasMany(CardApplicationChecking::class)->whereNotNull('card_application_staff_id');
     }
 
     public function applicantComments(): HasMany
     {
-        return $this->hasMany(HasCardApplicantComment::class);
+        return $this->hasMany(HasCardApplicantComment::class)->whereNull('card_application_staff_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function cardLastUpdate(): HasOne
+    {
+        return $this->hasOne(CardApplicationUpdate::class)->latestOfMany();
     }
 }
