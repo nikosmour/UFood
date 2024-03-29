@@ -10,8 +10,9 @@ require('./bootstrap');
 // Import createApp function from Vue 3
 import {createApp} from 'vue';
 // Import any additional plugins or components you may need
-import {ZiggyVue} from '../../vendor/tightenco/ziggy';
-// import {Ziggy} from './ziggy.js';
+import {route} from '../../vendor/tightenco/ziggy';
+// import {ZiggyVue} from '../../vendor/tightenco/ziggy';
+import {Ziggy} from './ziggy.js';
 import EnumPlugin from './enums';
 
 const app = createApp({});
@@ -55,6 +56,13 @@ requireComponent.keys().forEach(fileName => {
 
 // Use any plugins
 app.use(EnumPlugin);
-app.use(ZiggyVue);//,Ziggy);
+// app.use(ZiggyVue)//,Ziggy);
+window.route = route;
+window.Ziggy = Ziggy;
+app.mixin({
+    methods: {
+        route: (name, params, absolute) => route(name, params, absolute, Ziggy),
+    }
+});
 // Mount the app to the DOM
 app.mount('#app');
