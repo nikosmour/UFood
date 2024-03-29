@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
+use App\Events\CardApplicationUpdated;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplication;
@@ -57,11 +58,18 @@ class CardApplicationCheckingController extends Controller
                 'comment' => $vData['card_application_staff_comment'],
                 'status' => $vData['status']
             ] : ['status' => $vData['status']];
+            $application = CardApplication::whereId($vData['card_application_id'])->first();
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
-            if (isset($vData['expiration_date']))
-                CardApplication::whereId($vData['card_application_id'])->update(['expiration_date' => $vData['expiration_date']]);
+            if (isset($vData['expiration_date'])) {
+                $application->expiration_date = $vData['expiration_date'];
+                $application->save();
+            }
             else
-                CardApplication::whereId($vData['card_application_id'])->touch();
+                $application->touch();
+            broadcast(event: new CardApplicationUpdated(
+                cardApplication: $application,
+                status: $vData['status'],
+                comment: $vData['card_application_staff_comment'] ?? null))->toOthers();
         });
         return true;
     }
