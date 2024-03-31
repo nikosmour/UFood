@@ -1,4 +1,6 @@
 <template>
+    <div>
+        <p>Your Application status is {{ status }} and the expiration date is {{ expiration_date }}</p>
     <div class='row '>
         <div class='col-5'>
             <header>
@@ -44,13 +46,14 @@
 
         <!--        <object class='col' data="/img/getbill-7.pdf" type="application/pdf" width="100%" height="500px"/>-->
     </div>
+    </div>
 </template>
 
 
 <script>
 export default {
     props: {
-        cardApplication: Object,
+        application: Object,
         applicationEdit: Boolean
     },
     data() {
@@ -69,6 +72,7 @@ export default {
             docLink: '',
             docFiles: [],
             files: [],
+            cardApplication: this.application,
             commentStudent: null
         }
     },
@@ -81,6 +85,12 @@ export default {
                 ].includes(file.status)
             });
 
+        },
+        status: function () {
+            return this.cardApplication.card_last_update.status
+        },
+        expiration_date: function () {
+            return this.cardApplication.expiration_date;
         }
     },
     methods: {
@@ -235,6 +245,12 @@ export default {
     ,
     created() {
         this.startingData();
-    }
+        Echo.private(`cardApplication.${this.cardApplication.id}`)
+            .listen('CardApplicationUpdated', (e) => {
+                this.cardApplication.expiration_date = e['expiration_date'];
+                this.cardApplication.card_last_update.status = e['status'];
+
+            });
+    },
 }
 </script>

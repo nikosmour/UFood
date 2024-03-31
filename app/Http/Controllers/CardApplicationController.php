@@ -89,6 +89,7 @@ class CardApplicationController extends Controller
     public function edit(CardApplication $cardApplication)
     {
         $this->authorize('update', $cardApplication);
+        $cardApplication->load('cardLastUpdate');
         return view('cardApplication/edit', compact('cardApplication'));
 
     }
