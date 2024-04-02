@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enum\CardStatusEnum;
+use App\Events\CardApplicationUpdated;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
+use App\Models\CardApplicationUpdate;
 use App\Traits\DocumentTrait;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -110,8 +112,14 @@ class CardApplicationController extends Controller
         $vData = $request->validated();
         $vData['status'] = CardStatusEnum::SUBMITTED;
         DB::transaction(function () use ($vData, $cardApplication) {
+            $old_status = $cardApplication->cardLastUpdate->status ?? null;
             $cardApplication->applicantComments()->create($vData);
             $cardApplication->touch();
+            broadcast(event: new CardApplicationUpdated(
+                cardApplication: $cardApplication,
+                status: $vData['status'],
+                old_status: $old_status,
+                comment: $vData['comment'] ?? null))->toOthers();
         });
 
         return ['success' => true, 'message' => 'Application has been saved',];
