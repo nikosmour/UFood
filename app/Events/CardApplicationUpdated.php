@@ -27,6 +27,7 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
     public function __construct(
         private CardApplication $cardApplication,
         public string      $status,
+        private CardStatusEnum $old_status,
         public string|null $comment,
     )
     {
@@ -44,6 +45,8 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
         return [
             new PrivateChannel('cardApplication.' . $this->cardApplication_id),
             new PrivateChannel('academic.' . $this->cardApplication->academic_id),
+            new PresenceChannel('cardChecking.' . $this->old_status->value),
+            new PresenceChannel('cardChecking.' . $this->status)
         ];
     }
 }

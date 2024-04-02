@@ -40,3 +40,17 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 import './echo';
 
+// Manually attach X-Socket-ID header to Axios requests
+axios.interceptors.request.use(config => {
+    // Retrieve the socket ID from Laravel Echo
+    const socketId = window.Echo.socketId();
+
+    // Attach the X-Socket-ID header to the request
+    if (socketId) {
+        config.headers['X-Socket-ID'] = socketId;
+    }
+
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
