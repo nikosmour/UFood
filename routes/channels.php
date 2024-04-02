@@ -18,3 +18,4 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 Broadcast::channel('cardApplication.{cardApplication}', \App\Broadcasting\CardApplicationChannel::class);
 Broadcast::channel('academic.{Academic}', \App\Broadcasting\AcademicChannel::class);
+Broadcast::channel('cardChecking.{category}', \App\Broadcasting\CardApplicationCheckingChannel::class);

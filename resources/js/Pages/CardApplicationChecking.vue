@@ -7,7 +7,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="item in items" :key="item.id" @click="showSecondTable(item)">
+            <tr v-for="item in applications" :key="item.id" @click="showSecondTable(item)">
                 <td>{{ item.id }}</td>
             </tr>
             </tbody>
@@ -56,10 +56,17 @@ export default {
                 hide: false,
                 errors: ['']
             },
+            applications: [],
         };
 
     },
     methods: {
+        startingData() {
+            this.items.forEach((item) => {
+                //this.applications.push([ item]);
+                this.applications.push(item);
+            })
+        },
         showSecondTable(item) {
             console.log('showSecondTable');
             this.selectedItem = item;
@@ -94,13 +101,48 @@ export default {
                 if (vue.result.success) {
                     vue.result.message = "Change from " + vue.currentStatus + ' to ' + application.status;
                     vue.currentStatus = application.status;
+                    vue.updateApplicationsIds({
+                        'cardApplication_id': application.id,
+                        status: application.status
+                    })
                     return;
                 }//else
                 application.status = vue.currentStatus;
                 vue.result.message = "Request failed:";
             });
 
+        },
+        updateApplicationsIds(e) {
+            let cardApplication_id = e.cardApplication_id;
+            let status = e.status;
+            let position = this.applications.findIndex(obj => obj.id >= cardApplication_id);
+            if (position != -1)
+                if (status != this.category)//&& this.applications[position].id === cardApplication_id)
+                    this.applications.splice(position, 1);
+                else
+                    this.applications.splice(position, 0, {id: cardApplication_id});
+            else if (status === this.category)
+                this.applications.push({id: cardApplication_id});
         }
+
+    },
+    created() {
+        this.startingData();
+        Echo.join(`cardChecking.${this.category}`)
+            .here((users) => {
+                console.log('i am on  the channel', users);
+            })
+            .joining((user) => {
+                console.log('joining', user);
+            })
+            .leaving((user) => {
+                console.log('leaving ', user);
+            })
+            .error((error) => {
+                console.error(error);
+            })
+            .listen('CardApplicationUpdated', this.updateApplicationsIds);
+
     },
 }
 </script>

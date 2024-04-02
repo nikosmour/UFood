@@ -58,7 +58,8 @@ class CardApplicationCheckingController extends Controller
                 'comment' => $vData['card_application_staff_comment'],
                 'status' => $vData['status']
             ] : ['status' => $vData['status']];
-            $application = CardApplication::whereId($vData['card_application_id'])->first();
+            $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
+            $old_status = $application->cardLastUpdate->status;
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
             if (isset($vData['expiration_date'])) {
                 $application->expiration_date = $vData['expiration_date'];
@@ -69,6 +70,7 @@ class CardApplicationCheckingController extends Controller
             broadcast(event: new CardApplicationUpdated(
                 cardApplication: $application,
                 status: $vData['status'],
+                old_status: $old_status,
                 comment: $vData['card_application_staff_comment'] ?? null))->toOthers();
         });
         return true;
