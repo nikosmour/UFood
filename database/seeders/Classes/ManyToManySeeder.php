@@ -10,7 +10,7 @@ abstract class ManyToManySeeder extends CreatedAtMoreThanSeeder
 {
     use ManyToManyConnection;
 
-    public function __construct($createdAtMoreThan = '01-01-1900', protected int $count = 5)
+    public function __construct($createdAtMoreThan = '1900-01-01', protected int $count = 5)
     {
         parent::__construct($createdAtMoreThan);
     }
