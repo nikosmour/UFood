@@ -47,7 +47,7 @@ npm install
 npm run dev
 php artisan clear-compiled
 php artisan ide-helper:generate
-php artisan ide-helper:models --write-mixin (-M)
+php artisan ide-helper:models --write-mixin
 php artisan ide-helper:meta
 ````
 
@@ -94,7 +94,7 @@ IDE Helper Generator for Laravel
 ```bash
 php artisan clear-compiled
 php artisan ide-helper:generate
-php artisan ide-helper:models --write-mixin (-M)
+php artisan ide-helper:models --write-mixin
 php artisan ide-helper:meta
 ````
 
