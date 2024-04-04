@@ -20,4 +20,11 @@ class EntryStaff extends User
     {
         return $this->hasMany(UsageCard::class);
     }
+
+    public function takeStatistics($vData)
+    {
+        return UsageCoupon::takeStatistics($vData)
+            ->union(UsageCard::takeStatistics($vData))
+            ->orderBy('date');
+    }
 }

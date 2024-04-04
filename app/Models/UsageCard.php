@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Enum\MealPlanPeriodEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @mixin IdeHelperUsageCard
@@ -77,6 +79,18 @@ class UsageCard extends Model
     public function entryStaff(): BelongsTo
     {
         return $this->belongsTo(EntryStaff::class);
+    }
+
+    public function scopeTakeStatistics(Builder $query, $vData)
+    {
+        $selectColumns = ['date', DB::raw("'card' as category")];
+        foreach ($vData['meal_category'] as $period) {
+            $selectColumns[$period] = DB::raw("SUM(period = '{$period}') as {$period}");
+        }
+
+        return $query->select($selectColumns)
+            ->whereBetween('date', [$vData['from_date'], $vData['to_date']])
+            ->groupBy('date');
     }
 
 }

@@ -11,4 +11,10 @@ class CouponStaff extends User
     {
         return $this->hasMany(PurchaseCoupon::class);
     }
+
+    public static function takeStatistics($vData)
+    {
+        return PurchaseCoupon::takeStatistics($vData)
+            ->orderBy('date');
+    }
 }

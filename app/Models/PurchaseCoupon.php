@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @mixin IdeHelperPurchaseCoupon
@@ -51,5 +53,16 @@ class PurchaseCoupon extends Model
     public function couponStaff(): BelongsTo
     {
         return $this->belongsTo(CouponStaff::class);
+    }
+
+    public function scopeTakeStatistics(Builder $query, $vData)
+    {
+        $selectColumns = [DB::raw('DATE(created_at) as date'), DB::raw('sum(money) as money')];
+        foreach ($vData['meal_category'] as $period) {
+            $selectColumns[$period] = DB::raw("sum($period) as  $period");
+        }
+        return $query->select($selectColumns)
+            ->whereBetween(DB::raw('DATE(created_at)'), [$vData['from_date'], $vData['to_date']])
+            ->groupBy('date');
     }
 }
