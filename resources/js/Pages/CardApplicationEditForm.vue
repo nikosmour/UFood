@@ -5,7 +5,7 @@
         <div class='col-5'>
             <header>
                 <br/>
-                <h4 class="text-left">card edit</h4>
+                <h4 class="text-left">{{ title }}</h4>
             </header>
             <form v-if="applicationEdit" id="card_application_form" v-on:submit.prevent="">
                 <button @click="addFileUpload()">Add File</button>
@@ -52,10 +52,6 @@
 
 <script>
 export default {
-    props: {
-        application: Object,
-        applicationEdit: Boolean
-    },
     data() {
         return {
             // files: [{file: null, description:'academic_card',link:'',id:0,message:null,success:null}],
@@ -72,7 +68,7 @@ export default {
             docLink: '',
             docFiles: [],
             files: [],
-            cardApplication: this.application,
+            cardApplication: null,
             commentStudent: null
         }
     },
@@ -87,17 +83,57 @@ export default {
 
         },
         status: function () {
-            return this.cardApplication.card_last_update.status
+            return this.cardApplication ? this.cardApplication.card_last_update.status : null;
         },
         expiration_date: function () {
-            return this.cardApplication.expiration_date;
+            return this.cardApplication ? this.cardApplication.expiration_date : null;
+        },
+        applicationEdit() {
+            return [
+                this.$enums.CardStatusEnum.INCOMPLETE,
+                this.$enums.CardStatusEnum.SUBMITTED,
+                this.$enums.CardStatusEnum.TEMPORARY_SAVED,
+            ].includes(this.status);
+        },
+        title() {
+            return (this.applicationEdit) ? 'card Edit' : 'card Show'
         }
     },
     methods: {
+        broadcasting() {
+            if (typeof Echo !== 'undefined')
+                Echo.private(`cardApplication.${this.cardApplication.id}`)
+                    .listen('CardApplicationUpdated', (e) => {
+                        this.cardApplication.expiration_date = e['expiration_date'];
+                        this.cardApplication.card_last_update.status = e['status'];
+
+                    });
+        },
         startingData() {
+            this.getApplication();
+        },
+        getApplication() {
+
+            let vue = this;
+            let url = route('cardApplication.index');
+            console.log('getApplication');
+            axios.get(url
+            ).then(responseJson => {
+                let json = responseJson['data'];
+                this.cardApplication = json['cardApplication'];
+                this.getDocuments();
+                this.broadcasting();
+            }).catch(function (errors) {
+                vue.result.message = 'Retrieving application has failed :'
+                vue.result.errors = errors;
+                vue.result.success = false;
+            });
+
+        },
+        getDocuments() {
             let vue = this;
             let url = route('document.index', {'cardApplication': this.cardApplication.id});
-            console.log('startingData');
+
             axios.get(url
             ).then(function (responseJson) {
                 let json = responseJson['data'];
@@ -126,7 +162,7 @@ export default {
                 link: link,
                 status: status,
                 result: {
-                    message: message,
+                    message: message + status,
                     success: success,
                     hide: false,
                     errors: []
@@ -174,6 +210,10 @@ export default {
                 file.result.message = 'the file has already uploaded';
                 return file.result.success = true;
             }
+            if (!this.canEditDocument[index] || !this.applicationEdit) {
+                file.result.message = "file can't be edited";
+                return file.result.success = false;
+            }
             return axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
@@ -208,6 +248,10 @@ export default {
             let successFilesUpload = true;
             let params = new FormData();
             vue.result.message = ''; //#todo more clever way to show if the value is the same
+            if (!this.applicationEdit) {
+                vue.result.success = false;
+                vue.result.message = "The status of the application do not give you the ability to submit "
+            }
             this.files.forEach((file, index) => {
                 this.fileUpload(file, index);
                 successFilesUpload = successFilesUpload && file.result.success;
@@ -245,12 +289,7 @@ export default {
     ,
     created() {
         this.startingData();
-        Echo.private(`cardApplication.${this.cardApplication.id}`)
-            .listen('CardApplicationUpdated', (e) => {
-                this.cardApplication.expiration_date = e['expiration_date'];
-                this.cardApplication.card_last_update.status = e['status'];
-
-            });
+        document.title = this.title;
     },
 }
 </script>

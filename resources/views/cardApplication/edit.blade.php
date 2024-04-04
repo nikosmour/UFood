@@ -1,4 +1,3 @@
-@php use App\Enum\CardStatusEnum; @endphp
 @extends('layouts.nav')
 
 @section('content')
@@ -12,13 +11,6 @@
                 </ul>
             </div>
         @endif
-            <card-application-edit-form
-                {{--            v-bind:url="'{{route('cardApplication.update',$cardApplication)}}'"--}}
-                {{--                                    v-bind:url-doc="'{{route('document.store',$cardApplication)}}'",--}}
-                v-bind:application="{{$cardApplication}}"
-                {{--                                    v-bind:doc-files="{{$files}}"--}}
-                v-bind:application-edit='{{in_array($cardApplication->cardLastUpdate->status,[CardStatusEnum::TEMPORARY_SAVED, CardStatusEnum::INCOMPLETE, CardStatusEnum::SUBMITTED])}}'
-        >
-        </card-application-edit-form>
+            <card-application-edit-form/>
     </div>
 @endsection
