@@ -13,6 +13,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
@@ -32,13 +33,17 @@ class CardApplicationController extends Controller
 
 
     /**
-     * @return Application|Factory|View|RedirectResponse|Redirector
+     * @return Application|Factory|View|RedirectResponse|Redirector|\Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', CardApplication::class);
         $user = Auth::user();
-        if ($user->cardApplicant->currentCardApplication()->count() > 0) return redirect(route('cardApplication.show', ["cardApplication" => $user->cardApplicant->currentCardApplication]));
+        if ($user->cardApplicant->currentCardApplication()->count() > 0) {
+            return $request->ajax() && $request->header('X-Requested-With') == 'XMLHttpRequest'
+                ? response()->json(["cardApplication" => $user->cardApplicant->currentCardApplication()->with('cardLastUpdate')->first()], 200)
+                : view('cardApplication/show');;
+        }
         $user->cardApplicant->address;
         $models = [$user];
         $caption = 'User info';
@@ -67,7 +72,7 @@ class CardApplicationController extends Controller
         $cardApplication->academic_id = Auth::user()->cardApplicant->academic_id;
         $cardApplication->expiration_date = date('Y-m-d', strtotime('-1 day'));
         $cardApplication->save();
-        return redirect(route('cardApplication.show', compact("cardApplication")));
+        return redirect(route('cardApplication.index'));
     }
 
     /**
@@ -91,8 +96,7 @@ class CardApplicationController extends Controller
     public function edit(CardApplication $cardApplication)
     {
         $this->authorize('update', $cardApplication);
-        $cardApplication->load('cardLastUpdate');
-        return view('cardApplication/edit', compact('cardApplication'));
+        return view('cardApplication/edit');
 
     }
 
@@ -117,7 +121,7 @@ class CardApplicationController extends Controller
             $cardApplication->touch();
             broadcast(event: new CardApplicationUpdated(
                 cardApplication: $cardApplication,
-                status: $vData['status'],
+                status: $vData['status']->value,
                 old_status: $old_status,
                 comment: $vData['comment'] ?? null))->toOthers();
         });

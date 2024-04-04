@@ -55,7 +55,7 @@ class CardApplicationPolicy
      */
     public function update(User $user, CardApplication $cardApplication)
     {
-        return $user->academic_id == $cardApplication->academic_id;
+        return $user->academic_id == $cardApplication->academic_id && $cardApplication->cardLastUpdate->status->canBeUpdated();
     }
 
     /**
