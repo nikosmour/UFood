@@ -45,3 +45,5 @@ Route::resource('cardApplication', \App\Http\Controllers\CardApplicationControll
 
 Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
     ->whereIn('category', CardStatusEnum::values()->toArray())->only('index');
+
+Route::post('statistics', \App\Http\Controllers\ExportStatisticsController::class)->name('statistics');// invoke
