@@ -67,7 +67,7 @@ export default {
         updateStatus(file) {
             let params = new FormData();
             let vue = this;
-            let url = route('document.update', {'cardApplication': this.applicationId, 'document': file.id});
+            let url = route('document.update', {'document': file.id});
             vue.result.message = ''; //#todo more clever way to show if the value is the same
             params.append('_method', 'PUT')
             // params.append(`id`, file.id);
@@ -89,7 +89,7 @@ export default {
     },
     computed: {
         selectedFileUrl() {
-            return route('document.show', {'cardApplication': this.applicationId, 'document': this.selectFile.id});
+            return route('document.show', {'document': this.selectFile.id});
         }
     },
     watch: {

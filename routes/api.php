@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('coupons/purchase', \App\Http\Controllers\PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
 Route::resource('entryChecking', \App\Http\Controllers\EntryCheckingController::class)->only('store');
 Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->only('update');
-Route::resource('cardApplication/{cardApplication}/document', \App\Http\Controllers\CardApplicationDocumentController::class)->except('create', 'edit');
+Route::apiResource('cardApplication.document', \App\Http\Controllers\CardApplicationDocumentController::class)->shallow()
+    ->names(['index' => 'document.index', 'store' => 'document.store',]);
+
 Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
     ->whereIn('category', \App\Enum\CardStatusEnum::values()->toArray())->only('store');

@@ -13,4 +13,14 @@ enum CardDocumentStatusEnum: string implements Enum
     case ACCEPTED = 'accepted';
     case REJECTED = 'rejected';
     case INCOMPLETE = 'incomplete';
+
+    public function canBeUpdated(): bool
+    {
+        return $this == CardDocumentStatusEnum::SUBMITTED;
+    }
+
+    public function canBeDeleted(): bool
+    {
+        return $this == CardDocumentStatusEnum::SUBMITTED || $this == CardDocumentStatusEnum::INCOMPLETE;
+    }
 }
