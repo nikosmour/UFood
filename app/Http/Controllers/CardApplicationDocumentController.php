@@ -35,7 +35,7 @@ class CardApplicationDocumentController extends Controller
      */
     public function index(CardApplication $cardApplication)
     {
-//        $this->authorize('viewAny', CardApplicationDocument::class);
+        $this->authorize('viewAny', [CardApplicationDocument::class, $cardApplication]);
         $this->authorize('view', $cardApplication);
         $select = Auth('cardApplicationStaffs')->user() ? ['id', 'status'] : ['id', 'description', 'status'];
 //        return  CardApplicationDocument::whereCardApplicationId($cardApplication->id)->select($select)->get();
@@ -47,7 +47,7 @@ class CardApplicationDocumentController extends Controller
      */
     public function store(StoreCardApplicationDocumentRequest $request, CardApplication $cardApplication): array
     {
-        $this->authorize('create', CardApplicationDocument::class);
+        $this->authorize('create', [CardApplicationDocument::class, $cardApplication]);
 //        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
 //            return ['success'=>false,
 //                'message'=>'You don\'t have authority to update the Application ',
@@ -134,10 +134,11 @@ class CardApplicationDocumentController extends Controller
      * @param int $document
      * @return array
      */
-    public function update(UpdateCardApplicationDocumentRequest $request, int $cardApplication, int $document)
+    public function update(UpdateCardApplicationDocumentRequest $request, CardApplication $cardApplication, CardApplicationDocument $document)
     {
-        if (CardApplicationDocument::whereId($document)->update($request->validated()))
-            return ['success' => true, 'message' => 'File has updated successfully!', 'id' => $document];
+        $this->authorize('update', [$document, $cardApplication]);
+        if ($document->update($request->validated()))
+            return ['success' => true, 'message' => 'File has updated successfully!', 'id' => $document->id];
 
         return ['success' => false, 'message' => 'File has not updated successfully retry', 'id' => 0,];
     }
@@ -149,9 +150,10 @@ class CardApplicationDocumentController extends Controller
      * @return Response
      * @throws Throwable
      */
-    public function destroy(CardApplication $cardApplication, int $document)
+    public function destroy(CardApplication $cardApplication, CardApplicationDocument $document)
     {
-        if (!CardApplicationDocument::whereId($document)->delete())
+        $this->authorize('delete', [$document, $cardApplication]);
+        if (!$document->delete())
             return ['success' => false, 'message' => 'File has not be destoyed successfully retry', 'id' => $document];
         return ['success' => true, 'message' => 'File has destroyed successfully!', 'id' => 0];
 

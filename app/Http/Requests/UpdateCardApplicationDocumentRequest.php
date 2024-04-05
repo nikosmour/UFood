@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enum\CardDocumentStatusEnum;
 use App\Rules\InArray;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateCardApplicationDocumentRequest extends FormRequest
 {
@@ -25,6 +26,6 @@ class UpdateCardApplicationDocumentRequest extends FormRequest
      */
     public function rules()
     {
-        return isset(auth('academics')->user) ? ['description' => 'required'] : ['status' => ['required', new InArray(CardDocumentStatusEnum::values()->toArray())]];
+        return auth('academics')->user() ? ['description' => 'required'] : ['status' => ['required', new  Enum(CardDocumentStatusEnum::class)]];
     }
 }
