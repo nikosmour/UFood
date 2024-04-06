@@ -18,8 +18,11 @@ class CardApplicationPolicy
         // if  there is a cardApplication must be the same with the cardApplicant. if that is true check in the  function if it is more restrict
 
         if ($user instanceof Academic && $user->cardApplicant()->exists()) {
-            return ($ability != 'viewAny' && $ability != 'create' && $user->academic_id != $cardApplicationOrClass->academic_id)
+            /*return ($ability != 'viewAny' && $ability != 'create' && $user->academic_id != $cardApplicationOrClass->academic_id)
+                ? false : null;*/
+            return ($cardApplicationOrClass instanceof CardApplication && $user->academic_id != $cardApplicationOrClass->academic_id)
                 ? false : null;
+
         }
         //if the user is not cardApplicant must be cardApplicationStaffs
         return $user instanceof CardApplicationStaff && ($ability === 'view' || $ability === 'update');

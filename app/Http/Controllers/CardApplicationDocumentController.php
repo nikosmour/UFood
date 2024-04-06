@@ -36,7 +36,6 @@ class CardApplicationDocumentController extends Controller
     public function index(CardApplication $cardApplication)
     {
         $this->authorize('viewAny', [CardApplicationDocument::class, $cardApplication]);
-        $this->authorize('view', $cardApplication);
         $select = Auth('cardApplicationStaffs')->user() ? ['id', 'status'] : ['id', 'description', 'status'];
 //        return  CardApplicationDocument::whereCardApplicationId($cardApplication->id)->select($select)->get();
         return $cardApplication->cardApplicationDocument()->select($select)->get();
@@ -64,20 +63,7 @@ class CardApplicationDocumentController extends Controller
         });
         if (0 != $id) return ['success' => true, 'message' => 'File is uploaded successfully!', 'id' => $id,];
         return ['success' => false, 'message' => 'File is not valid please retry', 'id' => 0,];
-
-
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    /*public function create(CardApplication $cardApplication)
-    {
-        return ;
-
-    }*/
 
     /**
      * Display the specified resource.
@@ -86,9 +72,10 @@ class CardApplicationDocumentController extends Controller
      * @return Response
      * @throws AuthorizationException
      */
-    public function show(CardApplication $cardApplication, CardApplicationDocument $document)
+    public function show(CardApplicationDocument $document)
     {
-        $this->authorize('view', $cardApplication);
+        $this->authorize('view', $document);
+        $cardApplication = $document->cardApplication;
 //        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
 //            abort(403, 'Unauthorized Access');
         if (app()->environment('local') and '_Fake@doc_' == $document->description) {
@@ -117,16 +104,6 @@ class CardApplicationDocumentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param CardApplication $cardApplication
-     * @return Response
-     */
-    /*public function edit(CardApplication $cardApplication)
-    {
-    }*/
-
-    /**
      * Update the specified resource in storage.
      *
      * @param UpdateCardApplicationDocumentRequest $request
@@ -134,9 +111,9 @@ class CardApplicationDocumentController extends Controller
      * @param int $document
      * @return array
      */
-    public function update(UpdateCardApplicationDocumentRequest $request, CardApplication $cardApplication, CardApplicationDocument $document)
+    public function update(UpdateCardApplicationDocumentRequest $request, CardApplicationDocument $document)
     {
-        $this->authorize('update', [$document, $cardApplication]);
+        $this->authorize('update', $document);
         if ($document->update($request->validated()))
             return ['success' => true, 'message' => 'File has updated successfully!', 'id' => $document->id];
 
@@ -150,9 +127,9 @@ class CardApplicationDocumentController extends Controller
      * @return Response
      * @throws Throwable
      */
-    public function destroy(CardApplication $cardApplication, CardApplicationDocument $document)
+    public function destroy(CardApplicationDocument $document)
     {
-        $this->authorize('delete', [$document, $cardApplication]);
+        $this->authorize('delete', $document);
         if (!$document->delete())
             return ['success' => false, 'message' => 'File has not be destoyed successfully retry', 'id' => $document];
         return ['success' => true, 'message' => 'File has destroyed successfully!', 'id' => 0];

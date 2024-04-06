@@ -62,7 +62,6 @@ export default {
                 vue.docFiles = json;
                 json.forEach((file, index) => {
                     vue.addFileUpload(null, file.status, file.description, file.id, route('document.show', {
-                        'cardApplication': vue.cardApplication,
                         'document': file.id
                     }));
                 });
@@ -129,7 +128,7 @@ export default {
                 return file.result.success = false;
             }
             if ('to delete' == file.status) {
-                url = route('document.destroy', {'cardApplication': this.cardApplication, 'document': file.id})
+                url = route('document.destroy', {'document': file.id})
                 params.append('_method', 'DELETE');
             } else if (0 == file.id) {// submit a new  file
                 if (file.file != null) {
@@ -141,7 +140,7 @@ export default {
                     return file.result.success = true;
                 }
             } else if (file.description != this.docFiles[index].description) { //update existing file description
-                url = route('document.update', {'cardApplication': this.cardApplication, 'document': file.id})
+                url = route('document.update', {'document': file.id})
                 params.append(`description`, file.description);
                 params.append('_method', 'PUT');
             } else { // there is a file but nothing changed
