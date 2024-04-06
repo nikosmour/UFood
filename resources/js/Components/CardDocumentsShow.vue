@@ -40,7 +40,7 @@ export default {
     computed: {
         canEditDocument: function () {
             return this.files.map((file, index) => {
-                return [null,
+                return [null, 'to delete',
                     this.$enums.CardDocumentStatusEnum.INCOMPLETE,
                     this.$enums.CardDocumentStatusEnum.SUBMITTED
                 ].includes(file.status)
@@ -77,6 +77,13 @@ export default {
 
         },
         addFileUpload(file = null, status = null, description = '', id = 0, link = '', message = '', success = null) {
+            if (id === 0)
+                this.docFiles.push({
+                    id: 0,
+                    status: status,
+                    description: description,
+                })
+
             return this.files.push({
                 file: file,
                 id: id,
@@ -97,23 +104,28 @@ export default {
             if (!file.file || !file.description)
                 return file.message = 'there isn\'t any file or description';
 
-            if (0 == file.id)
+            if (0 == file.id) {
+                this.docFiles[index].status = file.status
+                this.docFiles[index].status = file.description
                 return;
+            }
             file.id = 0;
             this.files.push(file);// has been added the new file
+            this.docFiles.push(file);// has been added the new file
             let oldFile = this.files[index] = this.docFiles[index]; //restore the old file
             oldFile.status = (!confirm('would you like to keep the old file? if yes you will see the new file on the end')) ? "to delete" : (oldFile.status != 'incomplete') ? oldFile.status : 'submitted';
 
 
         },
-        fileUpload(file, index) {
+        async fileUpload(file, index) {
             let params = new FormData();
             let url;
+            let vue = this;
             console.log(index, file.id, 0 > file.id);
             file.result.message = ''; //#todo more clever way to show if the value is the same
             //is it need to delete the file;
             if (this.$enums.CardDocumentStatusEnum.INCOMPLETE === file.status) {
-                file.result.message = 'this file is incompilete you must submit replace it';
+                file.result.message = 'this file is incomplete you must submit replace it';
                 return file.result.success = false;
             }
             if ('to delete' == file.status) {
@@ -140,7 +152,7 @@ export default {
                 file.result.message = "file can't be edited";
                 return file.result.success = false;
             }
-            return axios.post(url, params
+            return await axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 file.id = json['id'];
@@ -149,14 +161,25 @@ export default {
                 file.result.errors = [];
             }).catch(function (errors) {
                 file.result.errors = errors.response.data.errors;
-                file.result.success = false;
                 file.result.message = "Request failed:";
+                file.result.message += file.status + 'not uploaded';
+                return file.result.success = false;
             }).finally(function () {
                 file.link = '';
-                if (file.result.success)
-                    file.status = ('to delete' == file.status) ? 'deleted' : 'submitted';
+                if (file.result.success) {
+                    if (file.status === 'to delete') {
+                        let time = 3000;
+                        setTimeout(() => {
+                            vue.files.splice(index, 1);
+                            vue.docFiles.splice(index, 1);
+                        }, time);
+                        file.result.message += "and the file will remove of the page in " + time + 'ms';
+                    }
+                    vue.docFiles[index].status = file.status = ('to delete' == file.status) ? 'deleted' : 'submitted';
+                    vue.docFiles[index].description = file.description;
+                    vue.docFiles[index].id = file.id;
+                }
                 file.result.message += file.status + (!file.result.success) ? '' : 'not uploaded';
-
                 return file.result.success;
             });
         },
@@ -170,15 +193,13 @@ export default {
             };
             reader.readAsDataURL(file.file);
         },
-        submitFiles() {
-            let successFilesUpload = true;
+        async submitFiles() {
+            let postPromises = [];
             this.files.forEach((file, index) => {
-                this.fileUpload(file, index);
-                successFilesUpload = successFilesUpload && file.result.success;
-
+                postPromises.push(this.fileUpload(file, index));
             });
-            console.log('submitFiles Finished:', successFilesUpload);
-            return successFilesUpload;
+            let result = await Promise.all(postPromises);
+            return !result.includes(false);
         }
     },
     watch: {

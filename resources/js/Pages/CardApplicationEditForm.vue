@@ -109,7 +109,7 @@ export default {
             });
 
         },
-        submit_form() {
+        async submit_form() {
             let vue = this;
             let url = route('cardApplication.update', this.cardApplication);
             let params = new FormData();
@@ -119,7 +119,7 @@ export default {
                 vue.result.message = "The status of the application do not give you the ability to submit "
             }
 
-            if (!this.$refs.CardDocuments.submitFiles()) {
+            if (!(await this.$refs.CardDocuments.submitFiles())) {
                 vue.result.success = false;
                 vue.result.message = 'some files has not uploaded or delete on the server your application status will not change'
                 return;
@@ -128,6 +128,7 @@ export default {
             if (vue.commentStudent) {
                 params.append('comment', vue.commentStudent);
             }
+            console.log('start axios to application for submition')
             axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
@@ -138,11 +139,9 @@ export default {
                 vue.result.errors = errors.response.data.errors;
                 vue.result.message = "Request failed: your status hasn't change";
             }).finally(function () {
-                    if (vue.result.success) {
-                        let time = 3000;
-                        setTimeout(() => location.reload(true), time);
-                        vue.result.message += "and the page will reload in " + time + 'ms';
-                    }
+                if (vue.result.success) {
+                    vue.cardApplication.card_last_update.status = vue.$enums.CardStatusEnum.SUBMITTED;
+                }
 
                 }
             )
