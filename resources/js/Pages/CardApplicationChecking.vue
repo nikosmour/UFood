@@ -1,5 +1,12 @@
 <template>
     <div class=' container-fluid row '>
+        <form action="" v-on:submit.prevent="">
+            <label>Application Id :<input v-model="search.application_id" min="1" type="number"/></label>
+            <label>Academic Id :<input v-model="search.academic_id" min="1" type="number"/></label>
+            <label>Arithos mitrou :<input v-model="search.a_m" min="1" type="number"/></label>
+            <label>email : <input v-model="search.email" type="email"/></label>
+            <button class="btn btn-primary" type="submit" @click="getId">Submit</button>
+        </form>
         <table class="col-auto ">
             <thead>
             <tr>
@@ -46,6 +53,12 @@ export default {
     },
     data() {
         return {
+            search: {
+                application_id: null,
+                academic_id: null,
+                email: null,
+                a_m: null,
+            },
             selectedItem: null,
             commentChecking: null,
             expirationDate: null,
@@ -77,6 +90,22 @@ export default {
                         console.error(error);
                     })
                     .listen('CardApplicationUpdated', this.updateApplicationsIds);
+        },
+        getId() {
+            let promise;
+            if (this.search.application_id)
+                promise = this.getApplications('application_id', this.search.application_id);
+            else if (this.search.academic_id)
+                promise = this.getApplications('academic_id', this.search.academic_id);
+            else if (this.search.a_m)
+                promise = this.getApplications('a_m', this.search.a_m);
+            else if (this.search.email)
+                promise = this.getApplications('email', this.search.email);
+            else
+                promise = this.getApplications('status', this.category);
+            promise.then(applications => {
+                this.applications = applications;
+            })
         },
         async getApplications(name, value) {
             let params = new FormData();
