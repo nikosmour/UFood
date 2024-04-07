@@ -25,6 +25,10 @@ class CardApplication extends Model
         'expiration_date' => 'date:Y-m-d',
     ];
 
+    public function Academic(): BelongsTo
+    {
+        return $this->belongsTo(Academic::class, 'academic_id');
+    }
     public function cardApplicant(): BelongsTo
     {
         return $this->belongsTo(CardApplicant::class, 'academic_id');
