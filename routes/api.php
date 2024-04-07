@@ -25,3 +25,4 @@ Route::apiResource('cardApplication.document', \App\Http\Controllers\CardApplica
 
 Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
     ->whereIn('category', \App\Enum\CardStatusEnum::values()->toArray())->only('store');
+Route::post('cardApplication/checking/search', [\App\Http\Controllers\CardApplicationCheckingController::class, 'search'])->name('cardApplication.checking.search');

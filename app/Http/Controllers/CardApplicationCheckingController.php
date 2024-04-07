@@ -9,6 +9,9 @@ use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplication;
 use App\Models\CardApplicationChecking;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,16 +35,6 @@ class CardApplicationCheckingController extends Controller
         $models = $cardApplications = \App\Models\CardApplicationUpdate::whereStatus($category
         )->joinSub($query, 'mostResent', 'id', 'max_id')->select('card_application_id as id')->get();
         return view('cardApplicationChecking.index', compact('models', 'category'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -77,47 +70,26 @@ class CardApplicationCheckingController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param UpdateCardApplicationCheckingRequest $request
-     * @param CardApplicationChecking $cardApplicationChecking
-     * @return Response
+     * @param Request $request
+     * @return Builder[]|Collection
      */
-    public function update(UpdateCardApplicationCheckingRequest $request, CardApplicationChecking $cardApplicationChecking)
+    public function search(Request $request): Collection|array
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param CardApplicationChecking $cardApplicationChecking
-     * @return Response
-     */
-    public function show(CardApplicationChecking $cardApplicationChecking)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param CardApplicationChecking $cardApplicationChecking
-     * @return Response
-     */
-    public function edit(CardApplicationChecking $cardApplicationChecking)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param CardApplicationChecking $cardApplicationChecking
-     * @return Response
-     */
-    public function destroy(CardApplicationChecking $cardApplicationChecking)
-    {
-        //
+        $query = \App\Models\CardApplication::with(relations: ['cardLastUpdate', 'cardApplicationDocument']);
+        if (isset($request['application_id']))
+            $query->where('id', $request['application_id']);
+        elseif (isset($request['academic_id']))
+            $query->where('academic_id', $request['academic_id']);
+        elseif (isset($request['a_m']))
+            $query->whereRelation('academic', 'a_m', $request['a_m']);
+        elseif (isset($request['email']))
+            $query->whereRelation('academic', 'email', $request['email']);
+        elseif (isset($request['status'])) {
+            $query1 = \App\Models\CardApplicationUpdate::groupBy('card_application_id')->selectRaw('max(id) as max_id ');
+            $query = \App\Models\CardApplicationUpdate::whereStatus($request['status']
+            )->joinSub($query1, 'mostResent', 'id', 'max_id')->select('card_application_id as id');
+        } else
+            return [];
+        return $query->get();
     }
 }
