@@ -36,9 +36,8 @@ class CardApplicationDocumentController extends Controller
     public function index(CardApplication $cardApplication)
     {
         $this->authorize('viewAny', [CardApplicationDocument::class, $cardApplication]);
-        $select = Auth('cardApplicationStaffs')->user() ? ['id', 'status'] : ['id', 'description', 'status'];
 //        return  CardApplicationDocument::whereCardApplicationId($cardApplication->id)->select($select)->get();
-        return $cardApplication->cardApplicationDocument()->select($select)->get();
+        return $cardApplication->cardApplicationDocument()->select(['id', 'description', 'status'])->get();
     }
 
     /**

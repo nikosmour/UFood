@@ -13,7 +13,7 @@
             </tbody>
         </table>
         <div v-if="selectedItem !== null" class='col-auto row'>
-            <CardApplicationShowData v-bind:applicationId="selectedItem.id"/>
+            <CardApplicationShowData v-bind:application="selectedItem"/>
             <div class="col-auto">
                 <h4>Application Status</h4>
                 <div>
@@ -61,16 +61,63 @@ export default {
 
     },
     methods: {
-        startingData() {
-            this.items.forEach((item) => {
-                //this.applications.push([ item]);
-                this.applications.push(item);
-            })
+        broadcasting() {
+            if (typeof Echo !== 'undefined' && typeof this.category !== 'undefined')
+                Echo.join(`cardChecking.${this.category}`)
+                    .here((users) => {
+                        console.log('i am on  the channel', users);
+                    })
+                    .joining((user) => {
+                        console.log('joining', user);
+                    })
+                    .leaving((user) => {
+                        console.log('leaving ', user);
+                    })
+                    .error((error) => {
+                        console.error(error);
+                    })
+                    .listen('CardApplicationUpdated', this.updateApplicationsIds);
+        },
+        async getApplications(name, value) {
+            let params = new FormData();
+            let vue = this;
+            params.append(name, value);
+            return await axios.post(route('cardApplication.checking.search'), params
+            ).then(function (responseJson) {
+                let applications = responseJson['data'];
+                let success = applications.length > 0;
+                if (success && name === 'application_id') {
+                    vue.selectedItem = applications[0];
+                    vue.currentStatus = applications[0].card_last_update.status;
+                }
+                vue.result.success = success;
+                vue.result.errors = [];
+                if (success) {
+                    vue.result.message = "Applications found";
+                    return applications;
+                }
+                //else
+                vue.selectedItem = vue.currentStatus = null;
+                vue.result.message = "Request failed: Application don't found";
+                return [];
+            }).catch(function (errors) {
+                console.log(errors);
+                // vue.result.errors = errors.response.data.errors;
+                vue.result.message = "Request failed: Application don't found";
+                vue.result.success = false;
+                return [];
+            });
+
+        },
+
+
+        async startingData() {
+            console.log('cardApplicationChecking.startingData')
+            this.applications = await this.getApplications('status', this.category);
         },
         showSecondTable(item) {
             console.log('showSecondTable');
-            this.selectedItem = item;
-            this.currentStatus = this.category;
+            this.getApplications('application_id', item.id);
         },
         updateStatus(application) {
             let params = new FormData();
@@ -128,20 +175,7 @@ export default {
     },
     created() {
         this.startingData();
-        Echo.join(`cardChecking.${this.category}`)
-            .here((users) => {
-                console.log('i am on  the channel', users);
-            })
-            .joining((user) => {
-                console.log('joining', user);
-            })
-            .leaving((user) => {
-                console.log('leaving ', user);
-            })
-            .error((error) => {
-                console.error(error);
-            })
-            .listen('CardApplicationUpdated', this.updateApplicationsIds);
+        this.broadcasting();
 
     },
 }

@@ -24,7 +24,8 @@ class CardApplicationDocumentPolicy
             $cardApplication = $document->cardApplication;
         }
         $applicationAbility = match ($ability) {
-            'view', 'viewAny' => 'view',
+            'viewAny' => 'viewAny',
+            'view' => 'view',
             'create', 'update', 'delete' => 'update',
         };
         $ifUser = $user instanceof CardApplicationStaff ? true : null;

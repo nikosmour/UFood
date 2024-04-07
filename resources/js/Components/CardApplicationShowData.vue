@@ -2,7 +2,7 @@
     <div class="col-xm-12 col-sm-6 col-md-7 col-lg-8">
         <header>
             <br/>
-            <h4 class="text-left">Application : {{ applicationId }}</h4>
+            <h4 class="text-left">Application : {{ application.id }}</h4>
         </header>
         <h5>files</h5>
         <select v-model="selectFile">
@@ -27,7 +27,7 @@
 <script>
 export default {
     props: {
-        applicationId: Number
+        application: Object
     },
     data() {
         return {
@@ -44,25 +44,7 @@ export default {
     },
     methods: {
         startingData() {
-            let vue = this;
-            let url = route('document.index', {'cardApplication': this.applicationId});
-            console.log('startingData');
-
-            axios.get(url
-            ).then(function (responseJson) {
-                let json = responseJson['data'];
-                vue.files = json;
-            }).catch(function (errors) {
-                vue.result.success = false;
-                vue.result.message = 'Retrieving files of this application has failed :'
-                vue.result.errors = errors.response.data.errors;
-
-                /*for (let error in errors.response.data.errors) {
-                    form.result = form.result + ' ' + error + ' => ' + errors.response.data.errors[error];
-                    console.log(errors.response.data.errors[error])
-                }*/
-            });
-
+            this.files = this.application.card_application_document;
         },
         updateStatus(file) {
             let params = new FormData();
@@ -93,8 +75,9 @@ export default {
         }
     },
     watch: {
-        applicationId(newValue) {
+        application(newValue) {
             this.startingData();
+            this.selectFile = '';
         },
         selectFile(newValue, oldValue) {
             if (oldValue)
