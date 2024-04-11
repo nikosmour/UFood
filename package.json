@@ -24,7 +24,6 @@
         "vue-loader": "^17.3.1"
     },
     "dependencies": {
-        "@vue/compat": "^3.2.29",
         "vue": "^3.2.33"
     }
 }
