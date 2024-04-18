@@ -13,6 +13,7 @@
     {{--    @routes--}}
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script> window.isAuthenticated = {!! (auth()->check())? 1 : 0!!}</script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -86,7 +87,7 @@
         </div>
     </nav>
 
-    <main class="py-4 my_flex_height">
+    <main id="main" class="py-4 my_flex_height">
         @yield('content')
     </main>
     <footer class="text-center ">
