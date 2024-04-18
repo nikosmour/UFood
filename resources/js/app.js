@@ -13,10 +13,13 @@ if (window.isAuthenticated) {
     promise = store.dispatch('getUser');
     console.log(Date.now() % 10000, 'dispatch get User');
 }
-import router from './router';
+
 // window.Vue = require('vue').default;
 // Import createApp function from Vue 3
 import {createApp} from 'vue';
+
+const app = createApp(App);
+import router from './router';
 // Import any additional plugins or components you may need
 import {route} from '../../vendor/tightenco/ziggy';
 // import {ZiggyVue} from '../../vendor/tightenco/ziggy';
@@ -24,7 +27,7 @@ import {Ziggy} from './ziggy.js';
 import EnumPlugin from './enums';
 import App from './Pages/App.vue'
 
-const app = createApp(App);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
