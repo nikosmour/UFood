@@ -47,10 +47,6 @@
 <script>
 
 export default {
-    props: {
-        items: Array,
-        category: String
-    },
     data() {
         return {
             search: {
@@ -70,6 +66,7 @@ export default {
                 errors: ['']
             },
             applications: [],
+            category: this.$route.params.category,
         };
 
     },

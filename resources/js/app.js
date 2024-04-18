@@ -3,9 +3,17 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
+console.log(Date.now() % 10000, 'before bootstrap')
 require('./bootstrap');
-
+console.log(Date.now() % 10000, 'after')
+import store from './store/auth'; // Import your store
+let promise = null;
+console.log(Date.now() % 10000, 'after')
+if (window.isAuthenticated) {
+    promise = store.dispatch('getUser');
+    console.log(Date.now() % 10000, 'dispatch get User');
+}
+import router from './router';
 // window.Vue = require('vue').default;
 // Import createApp function from Vue 3
 import {createApp} from 'vue';
@@ -14,8 +22,9 @@ import {route} from '../../vendor/tightenco/ziggy';
 // import {ZiggyVue} from '../../vendor/tightenco/ziggy';
 import {Ziggy} from './ziggy.js';
 import EnumPlugin from './enums';
+import App from './Pages/App.vue'
 
-const app = createApp({});
+const app = createApp(App);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -56,6 +65,7 @@ requireComponent.keys().forEach(fileName => {
 
 // Use any plugins
 app.use(EnumPlugin);
+app.use(store);
 // app.use(ZiggyVue)//,Ziggy);
 window.route = route;
 window.Ziggy = Ziggy;
@@ -64,5 +74,12 @@ app.mixin({
         route: (name, params, absolute) => route(name, params, absolute, Ziggy),
     }
 });
+if (promise) {
+    console.log(Date.now() % 10000, ' app mount');
+    await promise;
+    console.log(Date.now() % 10000, ' app mount 2');
+}
+app.use(router);
 // Mount the app to the DOM
-app.mount('#app');
+app.mount('#main');
+console.log(Date.now() % 10000, ' app mount 3');
