@@ -11,6 +11,10 @@ export default {
         ...mapActions([
             'getUser'
         ]),
+        async getCSRFToken() {
+            const response = await axios.get(route('csrfToken')); // Adjust route path as needed
+            return response.data.csrf_token;
+        },
     },
     watch: {
         isAuthenticated(newValue) {
@@ -29,6 +33,29 @@ export default {
             if (this.isAuthenticated)
                 this.getUser();
         }, 300000)
+        window.axios.interceptors.response.use(
+            response => response,
+            error => {
+                // csrf expired
+                if (error.response.status === 419) {
+                    // Attempt to refresh token
+                    return this.getCSRFToken()
+                        .then(newToken => {
+                            // Update Axios headers with the new token
+                            axios.defaults.headers.common['X-CSRF-TOKEN'] = newToken;
+                            // Retry the original request with the refreshed token
+                            return axios(error.config);
+                        })
+                        .catch(refreshError => {
+                            // Handle refresh error (e.g., failed to refresh token)
+                            console.error('Failed to refresh CSRF token:', refreshError);
+                            // Optionally display an error message to the user
+                            return Promise.reject(error);
+                        });
+                }
+                return Promise.reject(error);
+            }
+        );
     },
 
 }

@@ -1,5 +1,6 @@
 import {createWebHashHistory, createRouter} from 'vue-router'
 import authGuard from "./guards/AuthGuard";
+import enums from "./enums";
 
 const PurchaseCoupon = () => import('./Pages/PurchaseCoupon.vue');
 const EntryChecking = () => import('./Pages/EntryChecking.vue');
