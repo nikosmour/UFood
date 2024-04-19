@@ -19,7 +19,7 @@ class TransferCouponController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:academics');
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
         $this->middleware('ability:' . UserAbilityEnum::COUPON_OWNERSHIP->name);
 
     }

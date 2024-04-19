@@ -22,7 +22,7 @@ class DailyMealPlanController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:entryStaffs,couponStaffs')->except(['index', 'show']);
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs')->except(['index', 'show']);
         $this->middleware('ability:' . UserAbilityEnum::DAILY_MEAL_PLAN_CREATE->name)->except(['index', 'show']);
     }
 

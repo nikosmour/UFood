@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs')
+    ->get('/', function () {
     return view('router');
 });
 

@@ -26,11 +26,8 @@ class CardApplicationController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:academics,cardApplicationStaffs');
-//        $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
-
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
     }
-
 
     /**
      * @return Application|Factory|View|RedirectResponse|Redirector|\Illuminate\Http\JsonResponse

@@ -23,12 +23,8 @@ class CardApplicationDocumentController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:academics,cardApplicationStaffs');
-        //$this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
-
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
     }
-
-
     /**
      * @return CardApplicationDocument[]|Builder[]|Collection
      * @throws AuthorizationException

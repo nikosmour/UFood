@@ -17,7 +17,7 @@ class PurchaseCouponController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:couponStaffs');
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
         $this->middleware('ability:' . UserAbilityEnum::COUPON_SELL->name);
 
 

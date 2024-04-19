@@ -1,6 +1,7 @@
 import {createWebHashHistory, createRouter} from 'vue-router'
 import authGuard from "./guards/AuthGuard";
 
+const Unauthorized = () => import('./Pages/Errors/403.vue');
 const PurchaseCoupon = () => import('./Pages/PurchaseCoupon.vue');
 const EntryChecking = () => import('./Pages/EntryChecking.vue');
 const Login = () => import('./Pages/Auth/Login.vue');
@@ -30,7 +31,10 @@ const routes = [
         children: [
             {path: 'application/:application', name: 'cardApplicationChecking.application'},
         ]
-    }
+    },
+    {
+        path: '/error/403', name: 'error.403', component: Unauthorized,
+    },
 ];
 const router = createRouter({
     history: createWebHashHistory(),

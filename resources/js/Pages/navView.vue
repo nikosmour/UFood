@@ -57,7 +57,7 @@
                             <router-link :to="{name:'userProfile'}" class="nav-link router-link-exact-active"> My Info
                             </router-link>
                             <button class="nav-link "
-                                    v-on:click="logout().then(r=> {$router.push({name:'login',query:{redirect:$route.fullPath}});});">
+                                    v-on:click="logout()">
                                 LogOut
                             </button>
                         </div>
