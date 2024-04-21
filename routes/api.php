@@ -21,11 +21,6 @@ Route::middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs
     $request->user()->cardApplicant;
     return $request->user();
 });
-Route::get('csrfToken', function () {
-    return response()->json([
-        'csrfToken' => csrf_token(),
-    ]);
-})->name('csrfToken');;
 Route::resource('coupons/purchase', \App\Http\Controllers\PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
 Route::resource('entryChecking', \App\Http\Controllers\EntryCheckingController::class)->only('store');
 Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->only('update');

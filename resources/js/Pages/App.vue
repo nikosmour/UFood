@@ -11,10 +11,6 @@ export default {
         ...mapActions([
             'getUser'
         ]),
-        async getCSRFToken() {
-            const response = await axios.get(route('csrfToken')); // Adjust route path as needed
-            return response.data.csrf_token;
-        },
     },
     watch: {
         isAuthenticated(newValue) {
@@ -28,22 +24,28 @@ export default {
         }
     },
     mounted() {
-        // setInterval(this.updateAxiosCSRF, 60000);
+        let timeoutMin = process.env.MIX_SESSION_TIME_OUT;
+        let timeout = (timeoutMin - 1) * 60000
+        if (timeoutMin < 1)
+            timeout = (timeoutMin) * 60000
+        else if (timeoutMin < 2)
+            timeout = 60000
+
+        setInterval(() => {
+            axios.get(route('sanctum.csrf-cookie'));
+        }, timeout);
         setInterval(() => {
             if (this.isAuthenticated)
                 this.getUser();
-        }, 300000)
+        }, timeout)
         window.axios.interceptors.response.use(
             response => response,
             error => {
                 // csrf expired
                 if (error.response.status === 419) {
                     // Attempt to refresh token
-                    return this.getCSRFToken()
-                        .then(newToken => {
-                            // Update Axios headers with the new token
-                            axios.defaults.headers.common['X-CSRF-TOKEN'] = newToken;
-                            // Retry the original request with the refreshed token
+                    return axios.get(route('sanctum.csrf-cookie'))
+                        .then(() => {
                             return axios(error.config);
                         })
                         .catch(refreshError => {
