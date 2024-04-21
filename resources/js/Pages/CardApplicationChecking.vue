@@ -152,19 +152,26 @@ export default {
         }
 
     },
-    created() {
+    mounted() {
         this.startingData();
         this.broadcasting();
 
     },
     watch: {
-        category() {
+        category(newValue, oldValue) {
             this.startingData()
+            this.broadcasting();
+            if (typeof Echo !== 'undefined' && typeof oldValue !== 'undefined')
+                Echo.leave(`cardChecking.${oldValue}`);
         },
         async applicationId(newValue) {
             this.selectedItem = newValue ? (await this.getApplications('application_id', newValue))[0] : null;
         }
 
-    }
+    },
+    beforeRouteLeave(from, to) {
+        if (typeof Echo !== 'undefined' && typeof this.category !== 'undefined')
+            Echo.leave(`cardChecking.${this.category}`);
+    },
 }
 </script>
