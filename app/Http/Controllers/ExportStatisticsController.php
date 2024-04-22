@@ -15,7 +15,7 @@ class ExportStatisticsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:entryStaffs,couponStaffs');
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
     }
 
     /**

@@ -17,10 +17,8 @@ class EntryCheckingController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:entryStaffs');
+        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
         $this->middleware('ability:' . UserAbilityEnum::ENTRY_CHECK->name);
-
-
     }
 
     /**

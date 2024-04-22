@@ -54,12 +54,18 @@ export default {
                             // Optionally display an error message to the user
                             return Promise.reject(error);
                         });
+                    // Unauthenticated
+                } else if (error.response.status === 401) {
+                    this.$store.commit('setLogout');
+                    return Promise.reject(error);
+                    // unauthorized
+                } else if (error.response.status === 403) {
+                    this.$router.push({name: 'error.403'})
                 }
                 return Promise.reject(error);
             }
         );
     },
-
 }
 </script>
 
