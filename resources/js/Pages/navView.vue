@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
             <router-link class="nav-link router-link-exact-active" to=" ">
-                process.env.app
+                {{ appName }}
             </router-link>
             <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="'Toggle navigation'"
                     class="navbar-toggler" data-bs-target="#navbarSupportedContent"
@@ -71,7 +71,6 @@
 </template>
 <script>
 import {mapActions, mapGetters} from "vuex";
-
 export default {
     computed: {
         /*...mapState({
@@ -82,6 +81,12 @@ export default {
             'isAuthenticated',
             'currentUser',
         ]),
+        routeTitle() {
+            return this.$route.name ? `${this.$route.name} | ${this.appName}` : this.appName;
+        },
+        appName() {
+            return process.env.MIX_APP_NAME;
+        }
     },
     methods: {
         ...mapActions({
@@ -89,6 +94,11 @@ export default {
             logout: 'logout',
         }),
     },
+    watch: {
+        routeTitle(newValue) {
+            document.title = newValue;
+        }
+    }
 }
 </script>
 
