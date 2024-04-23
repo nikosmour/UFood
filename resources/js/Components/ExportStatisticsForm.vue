@@ -51,8 +51,6 @@
 
 export default {
     props: {
-        url: String,
-        show_free_food: Boolean,
         statistics: Object
     },
     data() {

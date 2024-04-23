@@ -8,6 +8,7 @@ use App\Traits\EntryCheckingTrait;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -24,10 +25,11 @@ class EntryCheckingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     * @return array|Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function create(): \Illuminate\Contracts\View\View|Factory|View|Application
+    public function create(Request $request)
     {
+        if ($request->expectsJson()) return $this->statisticsStartValues();
         $statistics = json_encode($this->statisticsStartValues());
         return view('entryChecking.create', compact('statistics'));
     }

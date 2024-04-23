@@ -1,8 +1,7 @@
 <template>
     <div class="row my_flex_height">
         <entry-checking-form v-on:newEntry="newEntry($event)"></entry-checking-form>
-        <export-statistics-form v-bind:show_free_food="true" v-bind:statistics="statistics"
-                                v-bind:url="urls.statistics"></export-statistics-form>
+        <export-statistics-form v-if="statistics" v-bind:statistics="statistics"></export-statistics-form>
     </div>
 </template>
 
@@ -11,23 +10,29 @@ export default {
     props: {
         statisticsServer: {
             type: Object,
-            cards: 0,
-            coupons: 0,
         }
 
     },
     data: function () {
         return {
-            statistics: this.statisticsServer,
-            urls: {
-                statistics: route('home'),
-            },
+            statistics: null,
         }
     },
     methods: {
         newEntry(entryCategory) {
             this.statistics[entryCategory] += 1;
+        },
+        async fetchData() {
+            return await axios.get(route('entryChecking.create')).then(
+                response => {
+                    return response.data
+                }
+            );
+            // return {cards: 0, coupons: 0,}
         }
-    }
+    },
+    async mounted() {
+        this.statistics = this.statisticsServer || (await this.fetchData())
+    },
 }
 </script>
