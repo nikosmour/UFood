@@ -45,3 +45,4 @@ export default {
     font-size: 1rem; /* Adjust font size as needed */
     line-height: 1.5; /* Improve readability with line spacing */
 }
+</style>
