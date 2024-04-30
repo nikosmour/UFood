@@ -37,14 +37,16 @@ class CardApplicationController extends Controller
         $this->authorize('viewAny', CardApplication::class);
         $user = Auth::user();
         if ($user->cardApplicant->currentCardApplication()->count() > 0) {
-            return $request->ajax() && $request->header('X-Requested-With') == 'XMLHttpRequest'
+            return ($request->expectsJson())
                 ? response()->json(["cardApplication" => $user->cardApplicant->currentCardApplication()->with('cardLastUpdate')->first()], 200)
                 : view('cardApplication/show');;
         }
         $user->cardApplicant->address;
         $models = [$user];
         $caption = 'User info';
-        return view('cardApplication/index', compact('models', 'caption'));
+        return ($request->expectsJson())
+            ? response()->json(["message " => 'Application not found. Please create a new one.'], 404)
+            : view('cardApplication/index', compact('models', 'caption'));
     }
 
     /**
@@ -60,16 +62,21 @@ class CardApplicationController extends Controller
 
     /**
      * @param StoreCardApplicationRequest $request
-     * @return Application|RedirectResponse|Redirector
+     * @return Application|RedirectResponse|Redirector|\Illuminate\Http\JsonResponse
      */
     public function store(StoreCardApplicationRequest $request)
     {
         $this->authorize('create', CardApplication::class);
-        $cardApplication = new CardApplication();
-        $cardApplication->academic_id = Auth::user()->cardApplicant->academic_id;
-        $cardApplication->expiration_date = date('Y-m-d', strtotime('-1 day'));
-        $cardApplication->save();
-        return redirect(route('cardApplication.index'));
+        DB::transaction(function () {
+            $cardApplication = new CardApplication();
+            $cardApplication->academic_id = Auth::user()->cardApplicant->academic_id;
+            $cardApplication->expiration_date = date('Y-m-d', strtotime('-1 day'));
+            $cardApplication->saveOrFail();
+            $cardApplication->applicantComments()->create(['comment' => '']);
+        });
+        return ($request->expectsJson())
+            ? response()->json(["message " => 'the application has created', 'success' => true], 201)
+            : redirect(route('cardApplication.index'));
     }
 
     /**

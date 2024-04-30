@@ -23,10 +23,12 @@ class CardHistoryController extends Controller
      * @param Request $request
      * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function __invoke(Request $request): Application|Factory|\Illuminate\Contracts\View\View|View
+    public function __invoke(Request $request): Application|Factory|\Illuminate\Contracts\View\View|View|\Illuminate\Http\JsonResponse
     {
         $cardApplicant = Auth::user()->cardApplicant()->with('usageCard')->first();
-        return view('cardApplicant.index', compact('cardApplicant'));
+        return $request->expectsJson()
+            ? response()->json(["transactions" => $cardApplicant, 'success' => true])
+            : view('cardApplicant.index', compact('cardApplicant'));
 
     }
 }
