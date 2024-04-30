@@ -63,6 +63,21 @@ const routes = [
 
 
     },
+    {
+        path: '/coupons',
+        meta: {requiresAuth: true},
+        component: CouponOwner,
+        children: [
+            {
+                path: 'transactions',
+                name: 'coupons.History',
+                component: Transactions,
+                props: {
+                    urlName: 'coupons.history',
+                }
+            },
+        ]
+    }
 ];
 const router = createRouter({
     history: createWebHashHistory(),

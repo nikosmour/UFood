@@ -24,9 +24,9 @@ class CouponOwnerController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     * @return Application|Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|View
      */
-    public function __invoke(Request $request): Application|Factory|\Illuminate\Contracts\View\View|View
+    public function __invoke(Request $request)
     {
         $couponOwner = Auth::user()->couponOwner;
         $sending = $couponOwner->sendingCoupon()->select(DB::raw('"sending" as transaction, receiver_id as academic_id,0 as money'), 'created_at', ...MealPlanPeriodEnum::names());
@@ -34,7 +34,9 @@ class CouponOwnerController extends Controller
         $buying = $couponOwner->purchaseCoupon()->select(DB::raw(' "buying" as transaction,0 as academic_id,money/100 as money'), 'created_at', ...MealPlanPeriodEnum::names());
         $using = $couponOwner->usageCoupon()->select(DB::raw('"using" as transaction,period as academic_id,0 as money'), 'created_at', DB::raw('0 as BREAKFAST,0 as `LUNCH`,0 as `DINNER`'));
         $transactions = $sending->union($receiving)->union($buying)->union($using)->orderByDesc('created_at')->get();
-        return view('couponOwner.index', compact('couponOwner', 'transactions'));
+        return $request->expectsJson()
+            ? response()->json(["transactions" => $transactions, 'success' => true])
+            : view('couponOwner.index', compact('couponOwner', 'transactions'));
 
     }
 }

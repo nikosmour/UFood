@@ -47,7 +47,7 @@
                             </router-link>
                         </div>
                     </li>
-                    
+
                     <li class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
