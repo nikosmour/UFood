@@ -43,7 +43,7 @@ const routes = [
         children: [
             {
                 path: 'transactions',
-                name: 'card.Transactions',
+                name: 'card.History',
                 component: Transactions,
                 props: {
                     urlName: 'card.history',
