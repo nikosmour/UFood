@@ -29,6 +29,42 @@
                             {{ value }}
                         </router-link>
                     </li>
+
+                    <li v-else class="nav-item dropdown">
+                        <a v-pre id="navbarDropdown"
+                           aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
+                           href="#" role="button">
+                            student.nav.Free Food <span class="caret"></span>
+                        </a>
+                        <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
+                            <router-link :to="{name:'card.History'}"
+                                         class="nav-link router-link-exact-active dropdown-item">
+                                'student.card.History'
+                            </router-link>
+                            <router-link :to="{name:'card.application'}"
+                                         class="nav-link router-link-exact-active dropdown-item">
+                                'student.card.Request'
+                            </router-link>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a v-pre id="navbarDropdown"
+                           aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
+                           href="#" role="button">
+                            student.nav.Coupons <span class="caret"></span>
+                        </a>
+                        <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
+                            <router-link :to="{name:'coupons.History'}"
+                                         class="nav-link router-link-exact-active dropdown-item">
+                                student.coupons.History
+                            </router-link>
+                            <router-link :to="{name:'coupons.History'}"
+                                         class="nav-link router-link-exact-active dropdown-item">
+                                student.nav.New Transaction
+                            </router-link>
+                        </div>
+                    </li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
