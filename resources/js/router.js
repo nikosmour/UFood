@@ -7,7 +7,9 @@ const EntryChecking = () => import('./Pages/EntryChecking.vue');
 const Login = () => import('./Pages/Auth/Login.vue');
 const UserProfile = () => import("./Pages/UserProfile.vue");
 const CardApplicationChecking = () => import("./Pages/CardApplicationChecking.vue");
-const CardApplicationShowData = () => import("./Components/CardApplicationShowData.vue")
+const CardApplication = () => import("./Pages/CardApplicationEditForm.vue");
+const CardApplicationCreate = () => import("./Pages/CardApplicationCreateForm.vue");
+const Transactions = () => import("./Pages/Transactions.vue");
 
 const routes = [
     {
@@ -34,6 +36,32 @@ const routes = [
     },
     {
         path: '/error/403', name: 'error.403', component: Unauthorized,
+    },
+    {
+        path: '/card',
+        meta: {requiresAuth: true},
+        children: [
+            {
+                path: 'transactions',
+                name: 'card.Transactions',
+                component: Transactions,
+                props: {
+                    urlName: 'card.history',
+                }
+            },
+            {
+                path: 'application',
+                name: 'card.application',
+                component: CardApplication,
+            },
+            {
+                path: 'application/create',
+                name: 'card.application.create',
+                component: CardApplicationCreate,
+            }
+        ]
+
+
     },
 ];
 const router = createRouter({

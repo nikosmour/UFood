@@ -97,12 +97,11 @@ export default {
             ).then(responseJson => {
                 let json = responseJson['data'];
                 this.cardApplication = json['cardApplication'];
-                console.log('success')
-                // this.getDocuments();
-                console.log('success2')
 
                 this.broadcasting();
-            }).catch(function (errors) {
+            }).catch(errors => {
+                if (errors.response.status === 404)
+                    return this.$router.push({name: 'card.application.create'});
                 vue.result.message = 'Retrieving application has failed :'
                 vue.result.errors = errors;
                 vue.result.success = false;
