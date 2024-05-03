@@ -66,6 +66,7 @@ const routes = [
     {
         path: '/coupons',
         meta: {requiresAuth: true},
+        component: CouponOwner,
         children: [
             {
                 path: 'transactions',
