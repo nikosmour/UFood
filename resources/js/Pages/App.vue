@@ -72,7 +72,15 @@ export default {
 <template>
     <div>
         <nav-view/>
-        <router-view/>
+        <main class="py-4  my_flex_height">
+            <router-view class="container"/>
+        </main>
+        <footer class="text-center ">
+            <div> © {{ "UNIVERSITY OF PATRAS" + ' ' + (new Date()).getFullYear() }}</div>
+            <div>{{ "Food Department" }}</div>
+            <!-- <img src= style="max-height: 100px" >-->
+            <img alt='logo' src="/img/big_logo_Upatras.png"/>
+        </footer>
     </div>
 </template>
 
