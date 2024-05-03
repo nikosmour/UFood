@@ -84,5 +84,5 @@ if (promise) {
 }
 app.use(router);
 // Mount the app to the DOM
-app.mount('#main');
+app.mount('#app');
 console.log(Date.now() % 10000, ' app mount 3');
