@@ -57,11 +57,11 @@
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
                             <router-link :to="{name:'coupons.History'}"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                student.coupons.History
+                                coupons.History
                             </router-link>
-                            <router-link :to="{name:'coupons.History'}"
+                            <router-link :to="{name:'coupons.transfer'}"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                student.nav.New Transaction
+                                coupons.transfer
                             </router-link>
                         </div>
                     </li>

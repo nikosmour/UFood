@@ -28,15 +28,17 @@ class TransferCouponController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreTransferCouponRequest $request
-     * @return Application|RedirectResponse|Redirector
+     * @return Application|\Illuminate\Http\JsonResponse|RedirectResponse|Redirector
      */
-    public function store(StoreTransferCouponRequest $request): Application|RedirectResponse|Redirector
+    public function store(StoreTransferCouponRequest $request)
     {
         $validatedData = $request->validated();
         DB::transaction(function () use ($validatedData) {
             TransferCoupon::create($validatedData);
         });
-        return redirect(route('coupons.transfer.create'));
+        return $request->expectsJson()
+            ? response()->json(['success' => true])
+            : redirect(route('coupons.transfer.create'));
     }
 
     /**

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 Route::middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs')->get('/user', function (Request $request) {
+    $request->user()->couponOwner;
     $cardApplicant = $request->user()->cardApplicant;
     if ($cardApplicant) $cardApplicant->address;
 
