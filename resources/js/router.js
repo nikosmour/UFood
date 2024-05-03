@@ -10,6 +10,8 @@ const CardApplicationChecking = () => import("./Pages/CardApplicationChecking.vu
 const CardApplication = () => import("./Pages/CardApplicationEditForm.vue");
 const CardApplicationCreate = () => import("./Pages/CardApplicationCreateForm.vue");
 const Transactions = () => import("./Pages/Transactions.vue");
+const TransferCoupons = () => import("./Pages/TransferCoupon.vue");
+const CouponOwner = () => import("./Pages/CouponOwner.vue");
 
 const routes = [
     {
@@ -75,6 +77,11 @@ const routes = [
                 props: {
                     urlName: 'coupons.history',
                 }
+            },
+            {
+                path: 'transfer',
+                name: 'coupons.transfer',
+                component: TransferCoupons,
             },
         ]
     }
