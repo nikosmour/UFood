@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <form v-if="couponOwner" @submit.prevent="handleSubmit">
+    <form v-if="couponOwner" @submit.prevent="handleSubmit">
             <div class="form-group">
                 <label for="receiverId">{{ "Receiver id" }}</label>
                 <input id="receiverId" v-model="receiverId" class="form-control" min="1" name="receiverId" required
@@ -19,13 +18,15 @@
             <button class="btn btn-primary" type="submit">{{ "Send" }}</button>
         </form>
         <message v-bind="result"></message>
-    </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'; // Assuming Vuex is used for state management
 
 export default {
+    props: {
+        couponOwner: Object
+    },
     data() {
         return {
             result: {
@@ -39,9 +40,6 @@ export default {
         };
     },
     computed: {
-        ...mapState({
-            couponOwner: state => state.auth.user.coupon_owner, // Assuming couponOwner data is in Vuex state
-        }),
         mealPlanPeriods: function () {
             return Object.keys(this.$enums.MealPlanPeriodEnum);
         },//Object.values(\App\Enum\MealPlanPeriodEnum::names()), // Get meal plan periods as array
