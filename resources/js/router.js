@@ -12,6 +12,7 @@ const CardApplicationCreate = () => import("./Pages/CardApplicationCreateForm.vu
 const Transactions = () => import("./Pages/Transactions.vue");
 const TransferCoupons = () => import("./Pages/TransferCoupon.vue");
 const CouponOwner = () => import("./Pages/CouponOwner.vue");
+const CouponTransactions = () => import("./Components/CouponsTransactions.vue")
 
 const routes = [
     {
@@ -73,10 +74,7 @@ const routes = [
             {
                 path: 'transactions',
                 name: 'coupons.History',
-                component: Transactions,
-                props: {
-                    urlName: 'coupons.history',
-                }
+                component: CouponTransactions
             },
             {
                 path: 'transfer',
