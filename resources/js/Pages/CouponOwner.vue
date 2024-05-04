@@ -15,7 +15,7 @@ export default {
 <template>
     <div>
         <models-to-table :models="[couponOwner]" caption="coupon_owner"/>
-        <router-view/>
+        <router-view :couponOwner="couponOwner"/>
     </div>
 </template>
 
