@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Closure;
 
-class InArray implements Rule
+class InArray implements ValidationRule
 {
     protected $allowedValues;
 
@@ -19,24 +20,13 @@ class InArray implements Rule
     }
 
     /**
-     * Determine if the validation rule passes.
+     * Run the validation rule.
      *
-     * @param string $attribute
-     * @param mixed $value
-     * @return bool
+     * @param \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        return in_array($value, $this->allowedValues);
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'The :attribute must be one of ' . implode(', ', $this->allowedValues);
+        if (!in_array($value, $this->allowedValues))
+            $fail('The :attribute must be one of ' . implode(', ', $this->allowedValues));
     }
 }

@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\DataAwareRule;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class AtLeastOneNoZero implements Rule, DataAwareRule
+class AtLeastOneNoZero implements ValidationRule, DataAwareRule
 {
     /**
      * All of the data under validation.
@@ -35,27 +36,15 @@ class AtLeastOneNoZero implements Rule, DataAwareRule
     }
 
     /**
-     * Determine if the validation rule passes.
+     * Run the validation rule.
      *
-     * @param string $attribute
-     * @param mixed $value
-     * @return bool
+     * @param \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         foreach ($this->params as $param)
             if (0 < $this->data[$param])
-                return true;
-        return false;
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'All values are 0';
+                return;
+        $fail('All values are 0');
     }
 }
