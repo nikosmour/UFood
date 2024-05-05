@@ -13,15 +13,16 @@ const Transactions = () => import("./Pages/Transactions.vue");
 const TransferCoupons = () => import("./Pages/TransferCoupon.vue");
 const CouponOwner = () => import("./Pages/CouponOwner.vue");
 const CouponTransactions = () => import("./Components/CouponsTransactions.vue")
+import {Enums} from "./enums";
 
 const routes = [
     {
         path: '/purchase', name: 'purchase', component: PurchaseCoupon,
-        meta: {requiresAuth: true},
+        meta: {requiresAbility: Enums.UserAbilityEnum.COUPON_SELL},
     },
     {
         path: '/entry', name: 'entryChecking', component: EntryChecking,
-        meta: {requiresAuth: true},
+        meta: {requiresAbility: Enums.UserAbilityEnum.ENTRY_CHECK},
     },
     {
         path: '/login', name: 'login', component: Login
@@ -32,7 +33,7 @@ const routes = [
     },
     {
         path: '/checking/:category', name: 'cardApplication.Checking', component: CardApplicationChecking,
-        meta: {requiresAuth: true},
+        meta: {requiresAbility: Enums.UserAbilityEnum.CARD_APPLICATION_CHECK},
         children: [
             {path: 'application/:application', name: 'cardApplicationChecking.application'},
         ]
@@ -42,7 +43,7 @@ const routes = [
     },
     {
         path: '/card',
-        meta: {requiresAuth: true},
+        meta: {requiresAbility: Enums.UserAbilityEnum.CARD_OWNERSHIP},
         children: [
             {
                 path: 'transactions',
@@ -68,7 +69,7 @@ const routes = [
     },
     {
         path: '/coupons',
-        meta: {requiresAuth: true},
+        meta: {requiresAbility: Enums.UserAbilityEnum.COUPON_OWNERSHIP},
         component: CouponOwner,
         children: [
             {

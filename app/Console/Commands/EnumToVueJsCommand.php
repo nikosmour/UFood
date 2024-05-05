@@ -61,13 +61,13 @@ class EnumToVueJsCommand extends Command
         // Write JSON to Vue.js file
         $vueFile = resource_path('js/enums.js');
         $content = "
-const EnumPlugin = {
+export const Enums = $json
+export const EnumPlugin = {
     install(app) {
-        app.config.globalProperties.\$enums = $json;
+        app.config.globalProperties.\$enums = Enums ;
     }
 };
-
-export default EnumPlugin;";
+";
         file_put_contents($vueFile, $content);
 
         $this->info("Enum objects saved to $vueFile");

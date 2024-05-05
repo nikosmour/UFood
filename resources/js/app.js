@@ -24,7 +24,7 @@ import router from './router';
 import {route} from '../../vendor/tightenco/ziggy';
 // import {ZiggyVue} from '../../vendor/tightenco/ziggy';
 import {Ziggy} from './ziggy.js';
-import EnumPlugin from './enums';
+import {EnumPlugin} from './enums';
 import App from './Pages/App.vue'
 
 
