@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
 use App\Events\CardApplicationUpdated;
+use App\Http\Requests\SearchApplicationRequest;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplication;
@@ -70,10 +71,10 @@ class CardApplicationCheckingController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param SearchApplicationRequest $request
      * @return Builder[]|Collection
      */
-    public function search(Request $request): Collection|array
+    public function search(SearchApplicationRequest $request): Collection|array
     {
         $query = \App\Models\CardApplication::with(relations: ['cardLastUpdate', 'cardApplicationDocument']);
         if (isset($request['application_id']))
