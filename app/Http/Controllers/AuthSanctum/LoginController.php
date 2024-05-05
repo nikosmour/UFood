@@ -22,11 +22,12 @@ class LoginController
 
             if (Auth::guard($guard)->attempt($credentials)) {
                 $request->session()->regenerate();
+                $user = Auth::guard($guard)->user();
                 return response()->json([
                     'success' => true,
                     'message' => 'Login Successful',
-                    'guard' => $guard,
-                    'user' => Auth::guard($guard)->user(),
+                    'abilities' => $user->getAbilities(),
+                    'user' => $user,
                 ]);
             }
         }
