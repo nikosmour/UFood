@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enum\UserAbilityEnum;
+use App\Rules\IsUserActive;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,7 @@ class StoreEntryCheckingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_id' => ["required", "integer", "exists:coupon_owners,academic_id"]
+            'academic_id' => ["required", "integer", new IsUserActive]
         ];
     }
 
