@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enum\MealPlanPeriodEnum;
 use App\Rules\AtLeastOneNoZero;
+use App\Rules\IsUserActive;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePurchaseCouponRequest extends FormRequest
@@ -25,7 +26,7 @@ class StorePurchaseCouponRequest extends FormRequest
     public function rules(): array
     {
         $rules = [];
-        $rules['academic_id'] = ["required", "integer", "exists:coupon_owners,academic_id"];
+        $rules['academic_id'] = ["required", "integer", new IsUserActive];
         $periods = MealPlanPeriodEnum::names();
         foreach ($periods as $period) {
             $rules[$period] = ['required',
