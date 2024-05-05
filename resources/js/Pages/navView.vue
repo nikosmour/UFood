@@ -13,24 +13,23 @@
             <div id="navbarSupportedContent" class="collapse navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul v-if="isAuthenticated" class="navbar-nav me-auto">
-                    <li v-if="currentUser.status === $enums.UserStatusEnum.STAFF_COUPON" class="nav-item">
+                    <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_SELL)" class="nav-item">
                         <router-link :to="{name:'purchase'}" class="nav-link router-link-exact-active"> Purchase
                         </router-link>
                     </li>
-                    <li v-else-if="currentUser.status === $enums.UserStatusEnum.STAFF_ENTRY" class="nav-item">
+                    <li v-if="hasAbility($enums.UserAbilityEnum.ENTRY_CHECK)" class="nav-item">
                         <router-link :to="{name:'entryChecking'}" class="nav-link router-link-exact-active">
                             EntryChecking
                         </router-link>
                     </li>
                     <li v-for="(value, category) in $enums.CardStatusEnum"
-                        v-else-if="currentUser.status === $enums.UserStatusEnum.STAFF_CARD" class="nav-item">
+                        v-if="hasAbility($enums.UserAbilityEnum.CARD_APPLICATION_CHECK)" class="nav-item">
                         <router-link :to="{name:'cardApplication.Checking',params:{category:value}}"
                                      class="nav-link router-link-exact-active">
                             {{ value }}
                         </router-link>
                     </li>
-                    <template v-else>
-                        <li class="nav-item dropdown">
+                    <li v-if="hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)" class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
                            href="#" role="button">
@@ -48,7 +47,8 @@
                         </div>
                     </li>
 
-                    <li class="nav-item dropdown">
+                    <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_OWNERSHIP)"
+                        class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
                            href="#" role="button">
@@ -65,7 +65,6 @@
                             </router-link>
                         </div>
                     </li>
-                    </template>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -117,6 +116,7 @@ export default {
         ...mapGetters([
             'isAuthenticated',
             'currentUser',
+            'hasAbility',
         ]),
         routeTitle() {
             return this.$route.name ? `${this.$route.name} | ${this.appName}` : this.appName;

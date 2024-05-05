@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\UserAbilityEnum;
 use App\Enum\UserStatusEnum;
+use App\Interfaces\Ability;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,5 +63,13 @@ class User extends Authenticatable
     public function hasAnyAbility(array $abilities): bool
     {
         return $this->status->canAny($abilities);
+    }
+
+    /**
+     * @return Ability[]|array
+     */
+    public function getAbilities(): array
+    {
+        return $this->status->getAbilities();
     }
 }
