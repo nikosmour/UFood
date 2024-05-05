@@ -29,8 +29,8 @@
                             {{ value }}
                         </router-link>
                     </li>
-
-                    <li v-else class="nav-item dropdown">
+                    <template v-else>
+                        <li class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
                            href="#" role="button">
@@ -65,6 +65,7 @@
                             </router-link>
                         </div>
                     </li>
+                    </template>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
