@@ -22,13 +22,15 @@
                             EntryChecking
                         </router-link>
                     </li>
-                    <li v-for="(value, category) in $enums.CardStatusEnum"
-                        v-if="hasAbility($enums.UserAbilityEnum.CARD_APPLICATION_CHECK)" class="nav-item">
-                        <router-link :to="{name:'cardApplication.Checking',params:{category:value}}"
-                                     class="nav-link router-link-exact-active">
-                            {{ value }}
-                        </router-link>
-                    </li>
+                    <template v-if="hasAbility($enums.UserAbilityEnum.CARD_APPLICATION_CHECK)">
+                        <li v-for="category in Object.keys($enums.CardStatusEnum)" class="nav-item">
+                            <router-link
+                                :to="{name:'cardApplication.Checking',params:{category:category.toLowerCase()}}"
+                                class="nav-link router-link-exact-active">
+                                {{ category.toLowerCase() }}
+                            </router-link>
+                        </li>
+                    </template>
                     <li v-if="hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)" class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
@@ -107,6 +109,7 @@
 </template>
 <script>
 import {mapActions, mapGetters} from "vuex";
+
 export default {
     computed: {
         /*...mapState({

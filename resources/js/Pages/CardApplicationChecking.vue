@@ -55,7 +55,7 @@ export default {
     },
     computed: {
         category() {
-            return this.$route.params.category;
+            return this.$enums.CardStatusEnum[this.$route.params.category.toUpperCase()];
         },
         applicationId() {
             return this.$route.params.application || this.$route.query.application;

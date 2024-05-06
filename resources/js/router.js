@@ -33,8 +33,16 @@ const routes = [
         meta: {requiresAuth: true},
     },
     {
-        path: '/checking/:category', name: 'cardApplication.Checking', component: CardApplicationChecking,
+        path: '/checking/:category([A-z]+)', name: 'cardApplication.Checking', component: CardApplicationChecking,
         meta: {requiresAbility: Enums.UserAbilityEnum.CARD_APPLICATION_CHECK},
+        beforeEnter: (to, from, next) => {
+            if (!Object.keys(Enums.CardStatusEnum).includes(to.params.category.toUpperCase())) {
+                // Handle invalid category (e.g., redirect to error page)
+                next({component: NotFound});
+            } else {
+                next();
+            }
+        },
         children: [
             {path: 'application/:application', name: 'cardApplicationChecking.application'},
         ]
