@@ -14,7 +14,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="item in applications" :key="item.id" @click="showSecondTable(item)">
+            <tr v-for="item in applications" :key="item.id">
                 <td>
                     <router-link :to="{name:'cardApplicationChecking.application',params:{application:item.id}}"
                                  class="nav-link router-link-exact-active" replace>{{ item.id }}
@@ -134,16 +134,12 @@ export default {
 
 
         },
-        showSecondTable(item) {
-            console.log('showSecondTable');
-            // this.getApplications('application_id', item.id);
-        },
         updateApplicationsIds(e) {
             let cardApplication_id = e.cardApplication_id;
             let status = e.status;
             let position = this.applications.findIndex(obj => obj.id >= cardApplication_id);
-            if (position != -1)
-                if (status != this.category)//&& this.applications[position].id === cardApplication_id)
+            if (position !== -1)
+                if (status !== this.category)//&& this.applications[position].id === cardApplication_id)
                     this.applications.splice(position, 1);
                 else
                     this.applications.splice(position, 0, {id: cardApplication_id});
