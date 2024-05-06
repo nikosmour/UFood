@@ -9,7 +9,7 @@ export const state = {
 
 export const mutations = {
     setLogin(state, payload) {
-        let user = state.auth.user = payload.user;
+        state.auth.user = payload.user;
         state.auth.abilities = payload.abilities;
     },
     setLogout(state) {
@@ -21,7 +21,7 @@ export const mutations = {
 export const actions = {
     async loginUser({commit}, credentials) {
         // Send login request to Laravel backend
-        const response = await axios.post('api/login', credentials).then(response => {
+        const response = await axios.post('/api/login', credentials).then(response => {
             return response;
         });
         console.log(response, response.data);
@@ -41,7 +41,7 @@ export const actions = {
         const data = await axios.get('/api/user').then(response => {
             return response.data;
         }).catch(error => {
-            if (error.response.status = 401)
+            if (error.response.status === 401)
                 return null;
 
         });
