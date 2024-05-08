@@ -25,7 +25,7 @@
                     <template v-if="hasAbility($enums.UserAbilityEnum.CARD_APPLICATION_CHECK)">
                         <li v-for="category in Object.keys($enums.CardStatusEnum)" class="nav-item">
                             <router-link
-                                :to="{name:'cardApplication.Checking',params:{category:category.toLowerCase()}}"
+                                :to="{name:'cardApplication.checking',params:{category:category.toLowerCase()}}"
                                 class="nav-link router-link-exact-active">
                                 {{ category.toLowerCase() }}
                             </router-link>

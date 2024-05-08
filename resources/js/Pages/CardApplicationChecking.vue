@@ -1,29 +1,20 @@
 <template>
     <div class=' container-fluid row '>
-        <form action="" v-on:submit.prevent="">
-            <label>Application Id :<input v-model="search.application_id" min="1" type="number"/></label>
-            <label>Academic Id :<input v-model="search.academic_id" min="1" type="number"/></label>
-            <label>Arithos mitrou :<input v-model="search.a_m" min="1" type="number"/></label>
-            <label>email : <input v-model="search.email" type="email"/></label>
-            <button class="btn btn-primary" type="submit" @click="getId">Submit</button>
-        </form>
-        <table class="col-auto ">
-            <thead>
-            <tr>
-                <th>ID</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in applications" :key="item.id">
-                <td>
-                    <router-link :to="{name:'cardApplicationChecking.application',params:{application:item.id}}"
-                                 class="nav-link router-link-exact-active" replace>{{ item.id }}
-                    </router-link>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <CardApplicationShowData class="col-auto" v-bind:application="selectedItem"/>
+        <router-view :applications="applications" class=' col ' v-on:getId="getId($event)"/>
+        <template v-if="true" class="col-auto">
+            <!--            <b-pagination
+                            v-model="currentPage"
+                            total-rows=100
+                            per-page=1
+                            first-text="⏮"
+                            prev-text="⏪"
+                            next-text="⏩"
+                            last-text="⏭"
+                            class="mt-4"
+                        ></b-pagination>-->
+            <p>pagination</p>
+            <CardApplicationShowData v-bind:application="selectedItem"/>
+        </template>
         <message v-bind="result"></message>
     </div>
 </template>
@@ -37,12 +28,7 @@ export default {
     components: {CardApplicationShowData},
     data() {
         return {
-            search: {
-                application_id: null,
-                academic_id: null,
-                email: null,
-                a_m: null,
-            },
+            currentPage: 1,
             selectedItem: null,
             result: {
                 message: '',
@@ -55,7 +41,7 @@ export default {
     },
     computed: {
         category() {
-            return this.$enums.CardStatusEnum[this.$route.params.category.toUpperCase()];
+            return this.$route.params.category ? this.$enums.CardStatusEnum[this.$route.params.category.toUpperCase()] : null;
         },
         applicationId() {
             return this.$route.params.application || this.$route.query.application;
@@ -79,20 +65,12 @@ export default {
                     })
                     .listen('CardApplicationUpdated', this.updateApplicationsIds);
         },
-        getId() {
-            let promise;
-            if (this.search.application_id)
-                promise = this.getApplications('application_id', this.search.application_id);
-            else if (this.search.academic_id)
-                promise = this.getApplications('academic_id', this.search.academic_id);
-            else if (this.search.a_m)
-                promise = this.getApplications('a_m', this.search.a_m);
-            else if (this.search.email)
-                promise = this.getApplications('email', this.search.email);
-            else
-                promise = this.getApplications('status', this.category);
-            promise.then(applications => {
+        getId(formData) {
+            this.getApplications(formData[0], formData[1]).then(applications => {
                 this.applications = applications;
+                this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}})
+
+
             })
         },
         async getApplications(name, value) {
@@ -110,13 +88,13 @@ export default {
                     return applications;
                 }
                 vue.result.message = "Request failed: Application don't found";
-                return [];
+                return [null];
             }).catch(function (errors) {
                 console.log(errors);
                 // vue.result.errors = errors.response.data.errors;
                 vue.result.message = "Request failed: Application don't found";
                 vue.result.success = false;
-                return [];
+                return [null];
             });
 
         },
@@ -124,11 +102,14 @@ export default {
 
         async startingData() {
             console.log('cardApplicationChecking.startingData')
-            this.getApplications('status', this.category).then(
-                applications => {
-                    return this.applications = applications;
-                }
-            );
+            if (this.category)
+                this.getApplications('status', this.category).then(
+                    applications => {
+                        this.applications = applications;
+                        if (!this.applicationId && applications.length > 0 && applications[0] !== null)
+                            this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}})
+                    }
+                );
 
             this.selectedItem = this.applicationId ? (await this.getApplications('application_id', this.applicationId))[0] : null;
 
@@ -155,6 +136,7 @@ export default {
     },
     watch: {
         category(newValue, oldValue) {
+            this.applications = []
             this.startingData()
             this.broadcasting();
             if (typeof Echo !== 'undefined' && typeof oldValue !== 'undefined')
