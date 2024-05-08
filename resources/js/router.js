@@ -1,5 +1,6 @@
-import {createWebHashHistory, createRouter} from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import authGuard from "./guards/AuthGuard";
+import {Enums} from "./enums";
 
 const Unauthorized = () => import('./Pages/Errors/403.vue');
 const NotFound = () => import('./Pages/Errors/404.vue')
@@ -14,7 +15,7 @@ const Transactions = () => import("./Pages/Transactions.vue");
 const TransferCoupons = () => import("./Pages/TransferCoupon.vue");
 const CouponOwner = () => import("./Pages/CouponOwner.vue");
 const CouponTransactions = () => import("./Components/CouponsTransactions.vue")
-import {Enums} from "./enums";
+const CardApplicationCheckingSearch = () => import("./Components/CardApplicationCheckingSearch.vue")
 
 const routes = [
     {
@@ -33,18 +34,24 @@ const routes = [
         meta: {requiresAuth: true},
     },
     {
-        path: '/checking/:category([A-z]+)', name: 'cardApplication.Checking', component: CardApplicationChecking,
+        path: '/checking', component: CardApplicationChecking,
         meta: {requiresAbility: Enums.UserAbilityEnum.CARD_APPLICATION_CHECK},
-        beforeEnter: (to, from, next) => {
-            if (!Object.keys(Enums.CardStatusEnum).includes(to.params.category.toUpperCase())) {
-                // Handle invalid category (e.g., redirect to error page)
-                next({component: NotFound});
-            } else {
-                next();
-            }
-        },
         children: [
-            {path: 'application/:application', name: 'cardApplicationChecking.application'},
+            {
+                path: 'search', name: 'cardApplication.checking.search',
+                component: CardApplicationCheckingSearch,
+            },
+            {
+                path: ':category([A-z]+)', name: 'cardApplication.checking',
+                beforeEnter: (to, from, next) => {
+                    if (!Object.keys(Enums.CardStatusEnum).includes(to.params.category.toUpperCase())) {
+                        // Handle invalid category (e.g., redirect to error page)
+                        next({component: NotFound});
+                    } else {
+                        next();
+                    }
+                },
+            },
         ]
     },
     {
