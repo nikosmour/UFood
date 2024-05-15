@@ -1,5 +1,12 @@
 <?php
 
+use App\Enum\CardStatusEnum;
+use App\Http\Controllers\AuthSanctum\LoginController;
+use App\Http\Controllers\CardApplicationCheckingController;
+use App\Http\Controllers\CardApplicationController;
+use App\Http\Controllers\CardApplicationDocumentController;
+use App\Http\Controllers\EntryCheckingController;
+use App\Http\Controllers\PurchaseCouponController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,13 +34,13 @@ Route::middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs
 
     return response()->json(['user' => $user, 'abilities' => $abilities]);
 });
-Route::resource('coupons/purchase', \App\Http\Controllers\PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
-Route::resource('entryChecking', \App\Http\Controllers\EntryCheckingController::class)->only('store');
-Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->only('update');
-Route::apiResource('cardApplication.document', \App\Http\Controllers\CardApplicationDocumentController::class)->shallow()
+Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
+Route::resource('entryChecking', EntryCheckingController::class)->only('store');
+Route::resource('cardApplication', CardApplicationController::class)->only('update');
+Route::apiResource('cardApplication.document', CardApplicationDocumentController::class)->shallow()
     ->names(['index' => 'document.index', 'store' => 'document.store',]);
 
-Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
-    ->whereIn('category', \App\Enum\CardStatusEnum::values()->toArray())->only('store');
-Route::post('cardApplication/checking/search', [\App\Http\Controllers\CardApplicationCheckingController::class, 'search'])->name('cardApplication.checking.search');
-Route::post('login', [\App\Http\Controllers\AuthSanctum\LoginController::class, 'login']);//->name('login');
+Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingController::class, ['as' => 'cardApplication'])
+    ->whereIn('category', CardStatusEnum::values()->toArray())->only('store');
+Route::get('cardApplication/checking/search', [CardApplicationCheckingController::class, 'search'])->name('cardApplication.checking.search');
+Route::post('login', [LoginController::class, 'login']);//->name('login');
