@@ -12,7 +12,10 @@
                             last-text="⏭"
                             class="mt-4"
                         ></b-pagination>-->
-            <p>pagination</p>
+            <div v-if="cursor.data">
+                <button v-if="cursor.next_cursor" @click="nextPage">Next Page</button>
+                <button v-if="cursor.prev_cursor" @click="prevPage">Previous Page</button>
+            </div>
             <CardApplicationShowData v-bind:application="selectedItem"/>
         </template>
         <message v-bind="result"></message>
@@ -28,7 +31,7 @@ export default {
     components: {CardApplicationShowData},
     data() {
         return {
-            currentPage: 1,
+            cursor: {data: []},
             selectedItem: null,
             result: {
                 message: '',
@@ -36,7 +39,6 @@ export default {
                 hide: false,
                 errors: ['']
             },
-            applications: [],
         };
     },
     computed: {
@@ -46,6 +48,9 @@ export default {
         applicationId() {
             return this.$route.params.application || this.$route.query.application;
         },
+        applications() {
+            return this.cursor.data;
+        }
     },
     methods: {
         broadcasting() {
@@ -67,19 +72,21 @@ export default {
         },
         getId(formData) {
             this.getApplications(formData[0], formData[1]).then(applications => {
-                this.applications = applications;
                 this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}})
 
 
             })
         },
-        async getApplications(name, value) {
-            let params = new FormData();
+        async getApplications(name, value, url = route('cardApplication.checking.search')) {
+            let params = {[name]: value};
             let vue = this;
-            params.append(name, value);
-            return await axios.post(route('cardApplication.checking.search'), params
-            ).then(function (responseJson) {
-                let applications = responseJson['data'];
+
+            return await axios.get(url, {params: params}
+            ).then(responseJson => {
+                console.log('get Application', responseJson['data']);
+                if (name !== 'application_id')
+                    this.cursor = responseJson['data'];
+                let applications = responseJson['data']['data'];
                 let success = applications.length > 0;
                 vue.result.success = success;
                 vue.result.errors = [];
@@ -105,7 +112,6 @@ export default {
             if (this.category)
                 this.getApplications('status', this.category).then(
                     applications => {
-                        this.applications = applications;
                         if (!this.applicationId && applications.length > 0 && applications[0] !== null)
                             this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}})
                     }
@@ -126,7 +132,21 @@ export default {
                     this.applications.splice(position, 0, {id: cardApplication_id});
             else if (status === this.category)
                 this.applications.push({id: cardApplication_id});
-        }
+        },
+        nextPage() {
+            this.changePage(this.cursor?.next_page_url); // Use the next cursor from the response
+        },
+
+        prevPage() {
+            this.changePage(this.cursor?.prev_page_url);// Use the prev cursor from the response
+        },
+        changePage(url) {
+            if (url)
+                this.getApplications('status', this.category, url).then(applications => {
+                    this.$router.replace({name: this.$route.name, query: {'application': applications[0]?.id}});
+                });
+        },
+
 
     },
     mounted() {
@@ -143,7 +163,10 @@ export default {
                 Echo.leave(`cardChecking.${oldValue}`);
         },
         async applicationId(newValue) {
-            this.selectedItem = newValue ? (await this.getApplications('application_id', newValue))[0] : null;
+            if (!newValue)
+                return
+            let position = this.applications.findIndex(obj => obj.id == newValue);
+            this.selectedItem = position === -1 ? (await this.getApplications('application_id', newValue))[0] : this.applications[position];
         }
 
     },

@@ -27,13 +27,18 @@
         <div class="col-auto">
             <h4>Application Status</h4>
             <div>
+                <label>last comment from
+                    {{ application.card_last_update.card_application_staff_id ? 'staff' : 'student' }}:</label>
+                <p> {{ application.card_last_update.comment ?? 'no comment' }}</p>
+            </div>
+            <div>
                 <label for="commentStaff">Enter text:</label>
                 <input id="commentStaff" v-model="commentChecking" type="text">
-                <label for="expiration_date">Enter text:</label>
+                <label for="expiration_date">expiration_date:</label>
                 <input id="expiration_date" v-model="expirationDate" type="date">
 
             </div>
-            <select v-model="application.status" v-on:change="updateApplicationStatus(application)">
+            <select v-model="application.card_last_update.status" v-on:change="updateApplicationStatus(application)">
                 <option disabled value="">Please select one</option>
                 <option
                     v-for="status in ['ACCEPTED','REJECTED','INCOMPLETE']"
@@ -77,6 +82,7 @@ export default {
         startingData() {
             this.currentStatus = this.application.card_last_update.status;
             this.files = this.application.card_application_document;
+            this.expirationDate = this.application.expiration_date;
         },
         async updateStatus(file) {
             let params = new FormData();
@@ -105,7 +111,7 @@ export default {
             let vue = this;
             //params.append('_method','PUT')
             // params.append(`id`, application.id);
-            params.append(`status`, application.status);
+            params.append(`status`, application.card_last_update.status);
             params.append('card_application_id', application.id)
             if (this.expirationDate) {
                 params.append('expiration_date', this.expirationDate)
@@ -114,7 +120,7 @@ export default {
                 params.append('card_application_staff_comment', this.commentChecking)
             }
             console.log(params);
-            axios.post(route('cardApplication.checking.store', {'category': application.status}), params
+            axios.post(route('cardApplication.checking.store', {'category': application.card_last_update.status}), params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
                 // application.success = json['success'];
@@ -127,15 +133,11 @@ export default {
                 vue.result.success = false
             }).finally(() => {
                 if (vue.result.success) {
-                    vue.result.message = "Change from " + vue.currentStatus + ' to ' + application.status;
-                    vue.currentStatus = application.status;
-                    vue.updateApplicationsIds({
-                        'cardApplication_id': application.id,
-                        status: application.status
-                    })
+                    vue.result.message = "Change from " + vue.currentStatus + ' to ' + application.card_last_update.status;
+                    vue.currentStatus = application.card_last_update.status;
                     return;
                 }//else
-                application.status = vue.currentStatus;
+                application.card_last_update.status = vue.currentStatus;
                 vue.result.message = "Request failed:";
             });
         },
