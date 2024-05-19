@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CardApplicationCheckingController extends Controller
 {
@@ -49,12 +50,20 @@ class CardApplicationCheckingController extends Controller
     public function store(StoreCardApplicationCheckingRequest $request)
     {
         $vData = $request->validated();
-        DB::transaction(function () use ($vData) {
+        $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
+        // make validation comparing data in database
+        $secondValidationRules = [
+            'status' => ['different:' . $application->cardLastUpdate['status']->value],
+            'expiration_date' => ['date', 'after_or_equal:' . $application['expiration_date']],
+
+        ];
+        Validator::make($vData, $secondValidationRules)->validate();
+        DB::transaction(function () use ($vData, $application) {
             $data = isset($vData['card_application_staff_comment']) ? [
                 'comment' => $vData['card_application_staff_comment'],
                 'status' => $vData['status']
             ] : ['status' => $vData['status']];
-            $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
+
             $old_status = $application->cardLastUpdate->status;
             Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
             if (isset($vData['expiration_date'])) {
