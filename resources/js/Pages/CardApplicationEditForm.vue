@@ -1,37 +1,37 @@
 <template>
     <div>
         <p>Your Application status is {{ status }} and the expiration date is {{ expiration_date }}</p>
-    <div class='row '>
-        <div class='col-5'>
-            <header>
-                <br/>
-                <h4 class="text-left">{{ title }}</h4>
-            </header>
-            <form v-if="applicationEdit" id="card_application_form" v-on:submit.prevent="">
-                <CardDocumentsShow ref="CardDocuments" v-bind:applicationEdit="applicationEdit"
+        <div class='row '>
+            <div class='col-5'>
+                <header>
+                    <br/>
+                    <h4 class="text-left">{{ title }}</h4>
+                </header>
+                <form v-if="applicationEdit" id="card_application_form" v-on:submit.prevent="">
+                    <CardDocumentsShow ref="CardDocuments" v-bind:applicationEdit="applicationEdit"
+                                       v-bind:cardApplication="cardApplication?.id"
+                                       v-on:previewFile="this.docLink= $event"/>
+                    <div>
+                        <label for="commentStudent">Enter Comment:</label>
+                        <input id="commentStudent" v-model="commentStudent" type="text">
+
+                    </div>
+
+                    <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">Submit
+                    </button>
+                </form>
+                <CardDocumentsShow v-else v-bind:applicationEdit="applicationEdit"
                                    v-bind:cardApplication="cardApplication?.id"
                                    v-on:previewFile="this.docLink= $event"/>
-                <div>
-                    <label for="commentStudent">Enter Comment:</label>
-                    <input id="commentStudent" v-model="commentStudent" type="text">
 
-                </div>
+                <br/>
+                <message v-bind="result"></message>
+                <br/>
+            </div>
+            <object class='col' height="500px" type="application/pdf" v-bind:data="docLink" width="100%"/>
 
-                <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">Submit
-                </button>
-            </form>
-            <CardDocumentsShow v-else v-bind:applicationEdit="applicationEdit"
-                               v-bind:cardApplication="cardApplication?.id"
-                               v-on:previewFile="this.docLink= $event"/>
-
-            <br/>
-            <message v-bind="result"></message>
-            <br/>
+            <!--        <object class='col' data="/img/getbill-7.pdf" type="application/pdf" width="100%" height="500px"/>-->
         </div>
-        <object class='col' height="500px" type="application/pdf" v-bind:data="docLink" width="100%"/>
-
-        <!--        <object class='col' data="/img/getbill-7.pdf" type="application/pdf" width="100%" height="500px"/>-->
-    </div>
     </div>
 </template>
 
@@ -145,8 +145,7 @@ export default {
                 }
             )
         }
-    }
-    ,
+    },
     created() {
         this.startingData();
         document.title = this.title;
