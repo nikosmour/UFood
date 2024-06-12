@@ -1,0 +1,13 @@
+{
+    "transactions": "Transactions",
+    "Category": "Category",
+    "Comments": "Comments",
+    "Money": "Money",
+    "Date": "Date",
+    "Sender": "Sender",
+    "Receiver": "Receiver",
+    "entry_check": "Entry Check",
+    "card_number": "Card Number",
+    "enter_card_number": "Enter the card number",
+    "required_field": "This field is required"
+}

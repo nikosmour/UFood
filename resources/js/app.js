@@ -7,18 +7,9 @@ console.log(Date.now() % 10000, 'before bootstrap')
 require('./bootstrap');
 console.log(Date.now() % 10000, 'after')
 import store from './store/auth'; // Import your store
-let promise = null;
-console.log(Date.now() % 10000, 'after')
-if (window.isAuthenticated) {
-    promise = store.dispatch('getUser');
-    console.log(Date.now() % 10000, 'dispatch get User');
-}
-
 // window.Vue = require('vue').default;
 // Import createApp function from Vue 3
 import {createApp} from 'vue';
-
-const app = createApp(App);
 import router from './router';
 // Import any additional plugins or components you may need
 import {route} from '../../vendor/tightenco/ziggy';
@@ -26,6 +17,27 @@ import {route} from '../../vendor/tightenco/ziggy';
 import {Ziggy} from './ziggy.js';
 import {EnumPlugin} from './enums';
 import App from './Pages/App.vue'
+import {createI18n} from 'vue-i18n';
+import en from './locales/en.json';
+import el from './locales/el.json';
+
+let promise = null;
+console.log(Date.now() % 10000, 'after')
+if (window.isAuthenticated) {
+    promise = store.dispatch('getUser');
+    console.log(Date.now() % 10000, 'dispatch get User');
+}
+
+const app = createApp(App);
+
+const i18n = createI18n({
+    locale: 'en', // set locale
+    fallbackLocale: 'en', // set fallback locale
+    messages: {
+        en,
+        el
+    }
+});
 
 
 /**
@@ -67,6 +79,7 @@ requireComponent.keys().forEach(fileName => {
 // });
 
 // Use any plugins
+app.use(i18n);
 app.use(EnumPlugin);
 app.use(store);
 // app.use(ZiggyVue)//,Ziggy);
