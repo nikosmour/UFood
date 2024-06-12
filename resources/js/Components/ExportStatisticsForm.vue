@@ -1,54 +1,60 @@
 <template>
-    <div id=statistics class="col-xm-12 col-sm-6 col-md-5 col-lg-4  ">
-        <div id="statistic_food " class=" col-12 ">
+    <div id="statistics" class="col-xm-12 col-sm-6 col-md-5 col-lg-4">
+        <div id="statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>Στατιστικά γεύματος</h4>
+              <h4>{{ $t('meal_statistics.value') }}</h4>
             </header>
             <br/>
-            <div v-for="(value, category) in statistics" :key="'statistics.'+category" class="row">
-                <label class="col-9 col-lg-7">{{ category }} => {{ value }}</label>
+            <div v-for="(value, category) in statistics" :key="'statistics.' + category" class="row">
+              <label class="col-9 col-lg-7">{{ $t('meal_statistics.' + category.toLowerCase(), 2) }} => {{
+                  value
+                }}</label>
             </div>
         </div>
-        <div id="print_statistic_food " class=" col-12 ">
+        <div id="print_statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>Εξαγωγή στατιστικών</h4>
+              <h4>{{ $t('meal_statistics.export') }}</h4>
             </header>
             <br/>
-            <form method="GET" v-on:submit.prevent="check_id">
-                <div class="mx-auto" style=" min-width: 70%; max-width:80%;">
-                    <select v-model="meal_period" class=" col-12 ">
-                        <option value="meal">Meal</option>
-                        <option value="today">Today</option>
-                        <option value="adapted">adapted</option>
+          <form :aria-label="$t('meal_statistics.export_form')" method="GET" @submit.prevent="check_id">
+                <div class="mx-auto" style="min-width: 70%; max-width: 80%;">
+                  <label class="sr-only" for="mealPeriodSelect">{{ $t('time period') }}</label>
+                  <select id="mealPeriodSelect" v-model="meal_period" :aria-label="$t('time period')"
+                          class="col-12 form-control">
+                        <option v-for="period in meal_export_periods" :key="period" :value="period">{{
+                            $t('meal_statistics.' + period)
+                            }}
+                        </option>
                     </select>
-                    <div v-if='meal_period!="meal"' id="meal_category" name="meal_category">
-                        <label class="checkbox-inline "><input v-model="meal_category" name="breakfast" type="checkbox"
-                                                               value="breakfast">Πρωινό</label>
-                        <label class="checkbox-inline "><input v-model="meal_category" name="lunch" type="checkbox"
-                                                               value="lunch">Μεσημεριανό</label>
-                        <label class="checkbox-inline "><input v-model="meal_category" name="dinner" type="checkbox"
-                                                               value="dinner">Βραδινό</label>
+                    <div v-if="meal_period !== 'meal'" id="meal_category" name="meal_category">
+                        <label v-for="category in meal_categories" :key="category" class="checkbox-inline">
+                            <input v-model="meal_category" :name="category" :value="category" class="form-check-input"
+                                   type="checkbox"/>
+                          {{ $t('meal_statistics.' + category) }}
+                        </label>
                     </div>
                 </div>
-                <div v-if='meal_period=="adapted"' id="choose_days_period" class="text-center"
+                <div v-if="meal_period === 'adapted'" id="choose_days_period" class="text-center"
                      name="choose_days_period">
-                    <label class=" ">Από:<input id="from_day" v-model="from_date" type="date" value=""></label>
-                    <label class=" ">Μέχρι:<input id="to_day" v-model="to_date" type="date" value=""></label>
+                    <label for="from_day">{{ $t('from') }}: <input id="from_day" v-model="from_date" class="form-control"
+                                                                   type="date"/></label>
+                    <label for="to_day">{{ $t('to') }}: <input id="to_day" v-model="to_date" class="form-control"
+                                                               type="date"/></label>
                 </div>
-                <button class="  btn-primary col-12 " type="submit">Υποβολή</button>
+            <button aria-label="Submit" class="btn btn-primary col-12" type="submit">{{
+                $t('status.submitted')
+              }}
+            </button>
                 <message v-bind="result"></message>
             </form>
         </div>
-        <statistics v-if="shouldShowStatics" v-bind:html="new_page"
-                    v-on:destroy="this.shouldShowStatics = false"></statistics>
-
+      <statistics v-if="shouldShowStatics" v-bind:html="new_page" v-on:destroy="shouldShowStatics = false"></statistics>
     </div>
 </template>
 
 <script>
-
 export default {
     props: {
         statistics: Object
@@ -61,7 +67,7 @@ export default {
             from_date: now,
             to_date: now,
             result: {
-                message: 'ready',
+              message: this.$t('test.message'),
                 success: true,
                 hide: false,
                 errors: ['']
@@ -75,7 +81,14 @@ export default {
             this.meal_category = this.meal_period == 'meal' ? ['breakfast'] : ['breakfast', 'lunch', 'dinner'];
         }
     },
-    computed: {},
+    computed: {
+        meal_categories() {
+            return ['breakfast', 'lunch', 'dinner'];
+        },
+        meal_export_periods() {
+          return ['current meal', 'today', 'adapted'];
+        }
+    },
     methods: {
         check_id() {
             let vue = this;
@@ -107,7 +120,24 @@ export default {
 
             });
         },
-
     }
 }
 </script>
+
+<style scoped>
+button.btn-primary {
+  background-color: #0056b3; /* Darken the primary color */
+  color: #ffffff;
+}
+
+button.btn-primary:hover {
+  background-color: #004494; /* Darken the hover color */
+}
+
+@media (min-width: 768px) {
+  #statistics {
+    display: flex;
+    flex-direction: column;
+  }
+}
+</style>

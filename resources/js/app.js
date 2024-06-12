@@ -7,6 +7,7 @@ console.log(Date.now() % 10000, 'before bootstrap')
 require('./bootstrap');
 console.log(Date.now() % 10000, 'after')
 import store from './store/auth'; // Import your store
+import {FiltersPlugin} from './vueFilters'; // Adjust the path as needed
 // window.Vue = require('vue').default;
 // Import createApp function from Vue 3
 import {createApp} from 'vue';
@@ -29,9 +30,18 @@ if (window.isAuthenticated) {
 }
 
 const app = createApp(App);
-
+// Function to determine the locale from browser settings
+const getPreferredLocale = () => {
+    const browserLocales = navigator.languages || [navigator.language];
+    for (const locale of browserLocales) {
+        if (['en', 'el'].includes(locale)) {
+            return locale; // Return the first supported locale
+        }
+    }
+    return 'en'; // Default to English if no match
+};
 const i18n = createI18n({
-    locale: 'en', // set locale
+    locale: getPreferredLocale(), // set locale
     fallbackLocale: 'en', // set fallback locale
     messages: {
         en,
@@ -82,6 +92,7 @@ requireComponent.keys().forEach(fileName => {
 app.use(i18n);
 app.use(EnumPlugin);
 app.use(store);
+app.use(FiltersPlugin);
 // app.use(ZiggyVue)//,Ziggy);
 window.route = route;
 window.Ziggy = Ziggy;

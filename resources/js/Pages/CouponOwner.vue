@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapState} from "vuex";
+import {mapState} from "vuex";
 import ModelsToTable from "../Components/modelsToTable.vue";
 
 export default {
@@ -14,7 +14,7 @@ export default {
 
 <template>
     <div>
-        <models-to-table :models="[couponOwner]" caption="coupon_owner"/>
+        <models-to-table :aria-label="$t('coupon.owner.info')" :caption="$t('coupon.owner')" :models="[couponOwner]"/>
         <router-view :couponOwner="couponOwner"/>
     </div>
 </template>

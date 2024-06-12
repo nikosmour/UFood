@@ -1,7 +1,7 @@
 <template>
     <div class="row my_flex_height">
-        <purchase-coupon-form v-on:newPurchase="newPurchase($event)"></purchase-coupon-form>
-        <export-statistics-form v-bind:statistics="statistics"></export-statistics-form>
+        <purchase-coupon-form @newPurchase="newPurchase($event)"></purchase-coupon-form>
+        <export-statistics-form :statistics="statistics"></export-statistics-form>
     </div>
 </template>
 
@@ -33,8 +33,21 @@ export default {
         }
     },
     async mounted() {
-        this.statistics = this.statisticsServer || (await this.fetchData())
-    },
-
-}
+        this.statistics = this.statisticsServer || (await this.fetchData());
+    }
+};
 </script>
+
+<style scoped>
+/* Ensure responsive design */
+.row.my_flex_height {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .row.my_flex_height {
+        flex-direction: row;
+    }
+}
+</style>
