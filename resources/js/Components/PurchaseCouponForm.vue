@@ -1,8 +1,7 @@
 <template>
     <div class="col-xm-12 col-sm-6 col-md-7 col-lg-8">
-        <header>
-            <br/>
-            <h4 class="text-left">Πώληση κουπονιών</h4>
+        <header class="mb-4">
+            <h4 class="text-left">{{ $t('sale_coupons') }}</h4>
         </header>
         <form v-on:submit.prevent="coupons">
             <!--            <div class="form-group mx-auto " style="max-width:20em">-->
@@ -18,17 +17,18 @@
                 </div>
             </div>
             <message v-bind="result"></message>
-            <div class="mx-auto" style="max-width:5em">
-                <button class="btn btn-default" type="submit">Επόμενο</button>
+            <div class="mx-auto" style="max-width: 5em;">
+                <button class="btn btn-primary" type="submit">{{ $t('next') }}</button>
             </div>
         </form>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    //props: {url: String},
-    data: function () {
+    data() {
         return {
             form_data: {
                 academic_id: '',
@@ -43,46 +43,49 @@ export default {
                 hide: true,
                 errors: []
             },
-        }
+        };
     },
     methods: {
         coupons() {
-            let vue = this;
-            vue.result.message = ''; //#todo more clever way to show if the value is the same
-            if (0 === vue.form_data.academic_id) {
-                vue.result.success = false;
-                vue.result.message = " Request failed:"; //#todo not enough time to change if the message was the same
-                vue.result.errors = ["Provide a valid academic card"];
+            if (this.form_data.academic_id === 0) {
+                this.result.success = false;
+                this.result.message = this.$t('request_failed');
+                this.result.errors = [this.$t('provide_valid_card')];
                 return;
             }
-            if (0 == vue.form_data.BREAKFAST && 0 == vue.form_data.LUNCH && 0 == vue.form_data.DINNER) {
-                vue.result.success = false;
-                vue.result.message = " Request failed: ";
-                vue.result.errors = ["You need to sell something"];
+            if (this.form_data.BREAKFAST === 0 && this.form_data.LUNCH === 0 && this.form_data.DINNER === 0) {
+                this.result.success = false;
+                this.result.message = this.$t('request_failed');
+                this.result.errors = [this.$t('sell_something')];
                 return;
             }
-            if (confirm("Αγορά κουπονιών απο τον χρήστη με ακαδημαϊκή ταυτότητα: " + vue.form_data.academic_id +
-                " Πρωινά: " + vue.form_data.BREAKFAST + " Γευμα: " + vue.form_data.LUNCH + " Δείπνο: " + vue.form_data.DINNER))
-                axios.post(vue.url, vue.form_data
-                ).then(function (responseJson) {
-                    let json = responseJson['data'];
-                    vue.result.success = json['sold'];
-                    if (json['sold']) {
-                        vue.result.message = "Επιτυχής πώληση";
-                        vue.$emit('newPurchase', vue.form_data);
-                        vue.result.errors = [];
-                    } else {
-                        vue.result.message = "Request failed:";
-                        vue.result.errors = json;
-                    }
-                }).catch(function (errors) {
-                    vue.result.success = false;
-                    vue.result.errors = errors.response.data.errors;
-                    console.log(errors.response.data.errors);
-                    vue.result.message = "Request failed:";
-                });
+            if (confirm(this.$t('confirm_purchase', {
+                academic_id: this.form_data.academic_id,
+                BREAKFAST: this.form_data.BREAKFAST,
+                LUNCH: this.form_data.LUNCH,
+                DINNER: this.form_data.DINNER
+            }))) {
+                axios.post(this.url, this.form_data)
+                    .then(responseJson => {
+                        let json = responseJson.data;
+                        this.result.success = json.sold;
+                        if (json.sold) {
+                            this.result.message = this.$t('successful_sale');
+                            this.$emit('newPurchase', this.form_data);
+                            this.result.errors = [];
+                        } else {
+                            this.result.message = this.$t('request_failed');
+                            this.result.errors = json.errors;
+                        }
+                    })
+                    .catch(errors => {
+                        this.result.success = false;
+                        this.result.errors = errors.response.data.errors;
+                        this.result.message = this.$t('request_failed');
+                    });
+            }
         }
-
     }
-}
+};
 </script>
+

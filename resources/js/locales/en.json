@@ -9,5 +9,32 @@
     "entry_check": "Entry Check",
     "card_number": "Card Number",
     "enter_card_number": "Enter the card number",
-    "required_field": "This field is required"
+    "required_field": "This field is required",
+    "sale_coupons": "Sale Coupons",
+    "card_number": "Card Number",
+    "enter_card_number": "Enter the card number",
+    "required_field": "This field is required",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "next": "Next",
+    "successful_sale": "Successful sale",
+    "request_failed": "Request failed",
+    "provide_valid_card": "Provide a valid academic card",
+    "sell_something": "You need to sell something",
+    "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}"
+
+    "user": "User",
+    "Accept": "Accept",
+    "ready": "Ready",
+    "entry_check": "Entry Check",
+    "card_number": "Card Number",
+    "enter_card_number": "Enter the card number",
+    "required_field": "This field is required",
+    "Receiver id": "Receiver ID",
+    "Send": "Send",
+    "successful_transfer": "Successful Transfer",
+    "Request failed": "Request failed"
 }
+
+

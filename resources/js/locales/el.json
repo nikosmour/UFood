@@ -9,6 +9,33 @@
     "entry_check": "Έλεγχος Εισόδου",
     "card_number": "Αριθμός Κάρτας",
     "enter_card_number": "Καταχωρίστε τον αριθμό της κάρτας",
-    "required_field": "Αυτό το πεδίο είναι υποχρεωτικό"
+    "required_field": "Αυτό το πεδίο είναι υποχρεωτικό",
+    "sale_coupons": "Πώληση κουπονιών",
+    "card_number": "Αριθμός κάρτας",
+    "enter_card_number": "Καταχωρίστε τον αριθμό της κάρτας",
+    "required_field": "Αυτό το πεδίο είναι υποχρεωτικό",
+    "breakfast": "Πρωινό",
+    "lunch": "Γεύμα",
+    "dinner": "Δείπνο",
+    "next": "Επόμενο",
+    "successful_sale": "Επιτυχής πώληση",
+    "request_failed": "Το αίτημα απέτυχε",
+    "provide_valid_card": "Καταχωρίστε έναν έγκυρο αριθμό ακαδημαϊκής ταυτότητας",
+    "sell_something": "Πρέπει να πουλήσετε κάτι",
+    "confirm_purchase": "Αγορά κουπονιών απο τον χρήστη με ακαδημαϊκή ταυτότητα: {academic_id} Πρωινά: {BREAKFAST} Γεύμα: {LUNCH} Δείπνο: {DINNER}"
+
+    "user": "Χρήστης",
+    "Accept": "Αποδοχή",
+    "ready": "Έτοιμο",
+    "entry_check": "Έλεγχος Εισόδου",
+    "card_number": "Αριθμός Κάρτας",
+    "enter_card_number": "Καταχωρίστε τον αριθμό της κάρτας",
+    "required_field": "Αυτό το πεδίο είναι υποχρεωτικό",
+    "Receiver id": "Αριθμός Παραλήπτη",
+    "Send": "Αποστολή",
+    "successful_transfer": "Επιτυχής μεταφορά",
+    "Request failed": "Αίτημα απέτυχε"
 }
+
+
 

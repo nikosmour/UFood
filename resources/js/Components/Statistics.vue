@@ -12,8 +12,8 @@ export default {
     }
 }
 </script>
-<style>
-/* Style for message display */
+
+<style scoped>
 .message-container {
     position: fixed;
     top: 50%;

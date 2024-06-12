@@ -1,27 +1,23 @@
 <template>
     <form v-if="couponOwner" @submit.prevent="handleSubmit">
+        <div class="form-group">
+            <label for="receiverId">{{ $t('Receiver id') }}</label>
+            <input id="receiverId" v-model="receiverId" class="form-control" min="1" name="receiverId" required
+                   type="number"/>
+        </div>
+        <template v-for="(meal, index) in mealPlanPeriods" :key="index">
             <div class="form-group">
-                <label for="receiverId">{{ "Receiver id" }}</label>
-                <input id="receiverId" v-model="receiverId" class="form-control" min="1" name="receiverId" required
-                       type="number"/>
+                <label :for="meal">{{ meal }}</label>
+                <input :id="meal" v-model="mealQuantities[meal]" :max="couponOwner[meal]" :name="meal"
+                       class="form-control" min="0" required type="number"/>
             </div>
-
-            <template v-for="(meal, index) in mealPlanPeriods" :key="index">
-                <div class="form-group">
-                    <label for="{{ meal }}">{{ meal }}</label>
-                    <input :id="meal" v-model="mealQuantities[meal]" :max="couponOwner[meal]" :name="meal"
-                           class="form-control"
-                           min="0" required type="number"/>
-                </div>
-            </template>
-
-            <button class="btn btn-primary" type="submit">{{ "Send" }}</button>
-        </form>
-        <message v-bind="result"></message>
+        </template>
+        <button class="btn btn-primary" type="submit">{{ $t('Send') }}</button>
+    </form>
+    <message v-bind="result"></message>
 </template>
 
 <script>
-import {mapState} from 'vuex'; // Assuming Vuex is used for state management
 
 export default {
     props: {
@@ -30,7 +26,7 @@ export default {
     data() {
         return {
             result: {
-                message: 'ready',
+                message: this.$t('ready'),
                 success: true,
                 hide: true,
                 errors: []
@@ -47,23 +43,21 @@ export default {
     },
     methods: {
         async transferCoupons(data) {
-            axios.post(this.url, data
-            ).then(responseJson => {
-                let json = responseJson['data'];
-                this.result.success = json['success'];
-                if (json['success']) {
-                    this.result.message = "Επιτυχής μεταφορά";
-                    // vue.$emit('newPurchase', vue.form_data);
+            axios.post(this.url, data).then(responseJson => {
+                let json = responseJson.data;
+                this.result.success = json.success;
+                if (json.success) {
+                    this.result.message = this.$t('successful_transfer');
                     this.result.errors = [];
                 } else {
-                    this.result.message = "Request failed:";
+                    this.result.message = this.$t('Request failed');
                     this.result.errors = json;
                 }
             }).catch(errors => {
                 this.result.success = false;
                 this.result.errors = errors.response.data.errors;
                 console.log(errors.response.data.errors);
-                this.result.message = "Request failed:";
+                this.result.message = this.$t('Request failed');
             });
 
         },

@@ -1,7 +1,7 @@
 <template>
     <div class="row my_flex_height">
-        <entry-checking-form v-on:newEntry="newEntry($event)"></entry-checking-form>
-        <export-statistics-form v-if="statistics" v-bind:statistics="statistics"></export-statistics-form>
+        <entry-checking-form @newEntry="newEntry($event)"></entry-checking-form>
+        <export-statistics-form v-if="statistics" :statistics="statistics"></export-statistics-form>
     </div>
 </template>
 

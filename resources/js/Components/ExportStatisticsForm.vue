@@ -1,51 +1,53 @@
 <template>
-    <div id=statistics class="col-xm-12 col-sm-6 col-md-5 col-lg-4  ">
-        <div id="statistic_food " class=" col-12 ">
+    <div id="statistics" class="col-xm-12 col-sm-6 col-md-5 col-lg-4">
+        <div id="statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>Στατιστικά γεύματος</h4>
+                <h4>{{ $t('statistics.mealStatistics') }}</h4>
             </header>
             <br/>
-            <div v-for="(value, category) in statistics" :key="'statistics.'+category" class="row">
-                <label class="col-9 col-lg-7">{{ category }} => {{ value }}</label>
+            <div v-for="(value, category) in statistics" :key="'statistics.' + category" class="row">
+                <label class="col-9 col-lg-7">{{ $t(`meal.categories.${category}`) }} => {{ value }}</label>
             </div>
         </div>
-        <div id="print_statistic_food " class=" col-12 ">
+        <div id="print_statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>Εξαγωγή στατιστικών</h4>
+                <h4>{{ $t('statistics.exportStatistics') }}</h4>
             </header>
             <br/>
             <form method="GET" v-on:submit.prevent="check_id">
-                <div class="mx-auto" style=" min-width: 70%; max-width:80%;">
-                    <select v-model="meal_period" class=" col-12 ">
-                        <option value="meal">Meal</option>
-                        <option value="today">Today</option>
-                        <option value="adapted">adapted</option>
+                <div class="mx-auto" style="min-width: 70%; max-width: 80%;">
+                    <label class="sr-only" for="mealPeriodSelect">{{ $t('statistics.periodLabel') }}</label>
+                    <select id="mealPeriodSelect" v-model="meal_period" aria-label="Period" class="col-12">
+                        <option v-for="period in periods" :key="period" :value="period">{{
+                                $t(`periods.${period}`)
+                            }}
+                        </option>
                     </select>
-                    <div v-if='meal_period!="meal"' id="meal_category" name="meal_category">
-                        <label class="checkbox-inline "><input v-model="meal_category" name="breakfast" type="checkbox"
-                                                               value="breakfast">Πρωινό</label>
-                        <label class="checkbox-inline "><input v-model="meal_category" name="lunch" type="checkbox"
-                                                               value="lunch">Μεσημεριανό</label>
-                        <label class="checkbox-inline "><input v-model="meal_category" name="dinner" type="checkbox"
-                                                               value="dinner">Βραδινό</label>
+                    <div v-if="meal_period !== 'meal'" id="meal_category" name="meal_category">
+                        <label v-for="category in meal_categories" :key="category" class="checkbox-inline">
+                            <input v-model="meal_category" :name="category" :value="category" type="checkbox"/>
+                            {{ $t(`meal.categories.${category}`) }}
+                        </label>
                     </div>
                 </div>
-                <div v-if='meal_period=="adapted"' id="choose_days_period" class="text-center"
+                <div v-if="meal_period === 'adapted'" id="choose_days_period" class="text-center"
                      name="choose_days_period">
-                    <label class=" ">Από:<input id="from_day" v-model="from_date" type="date" value=""></label>
-                    <label class=" ">Μέχρι:<input id="to_day" v-model="to_date" type="date" value=""></label>
+                    <label for="from_day">{{ $t('statistics.from') }}: <input id="from_day" v-model="from_date"
+                                                                              type="date" value=""/></label>
+                    <label for="to_day">{{ $t('statistics.to') }}: <input id="to_day" v-model="to_date" type="date"
+                                                                          value=""/></label>
                 </div>
-                <button class="  btn-primary col-12 " type="submit">Υποβολή</button>
+                <button class="btn-primary col-12" type="submit">{{ $t('statistics.submit') }}</button>
                 <message v-bind="result"></message>
             </form>
         </div>
         <statistics v-if="shouldShowStatics" v-bind:html="new_page"
-                    v-on:destroy="this.shouldShowStatics = false"></statistics>
-
+                    v-on:destroy="shouldShowStatics = false"></statistics>
     </div>
 </template>
+
 
 <script>
 
