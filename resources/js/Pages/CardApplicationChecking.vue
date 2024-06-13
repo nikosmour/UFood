@@ -4,8 +4,10 @@
 
         <div class="col-auto">
             <div v-if="cursor.data">
-                <button v-if="cursor.next_cursor" class="btn btn-primary" @click="nextPage">Next Application</button>
-                <button v-if="cursor.prev_cursor" class="btn btn-secondary" @click="prevPage">Previous Application
+                <button v-if="cursor.next_cursor" class="btn btn-primary" @click="nextPage">{{ $t('next') }}</button>
+                <button v-if="cursor.prev_cursor" class="btn btn-secondary" @click="prevPage">{{
+                        $t('previous')
+                    }}
                 </button>
             </div>
             <CardApplicationShowData :application="selectedItem"/>
@@ -72,12 +74,12 @@ export default {
 
                 this.result.success = success;
                 this.result.errors = [];
-                this.result.message = success ? "Applications found" : "Request failed: Application not found";
+                this.result.message = success ? this.$t('applications_found') : this.$t('request_failed_application_not_found');
 
                 return applications.length > 0 ? applications : [null];
             } catch (errors) {
                 console.log(errors);
-                this.result.message = "Request failed: Application not found";
+                this.result.message = this.$t('request_failed_application_not_found');
                 this.result.success = false;
                 return [null];
             }
@@ -143,13 +145,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.container-fluid {
-    padding: 20px;
-}
-
-button.btn {
-    margin: 5px;
-}
-</style>

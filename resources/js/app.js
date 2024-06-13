@@ -7,6 +7,7 @@ console.log(Date.now() % 10000, 'before bootstrap')
 require('./bootstrap');
 console.log(Date.now() % 10000, 'after')
 import store from './store/auth'; // Import your store
+import {FiltersPlugin} from './vueFilters'; // Adjust the path as needed
 // window.Vue = require('vue').default;
 // Import createApp function from Vue 3
 import {createApp} from 'vue';
@@ -82,6 +83,7 @@ requireComponent.keys().forEach(fileName => {
 app.use(i18n);
 app.use(EnumPlugin);
 app.use(store);
+app.use(FiltersPlugin);
 // app.use(ZiggyVue)//,Ziggy);
 window.route = route;
 window.Ziggy = Ziggy;

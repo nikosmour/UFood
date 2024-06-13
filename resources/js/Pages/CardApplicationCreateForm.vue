@@ -1,8 +1,8 @@
 <template>
     <div>
-        <models-to-table :caption="$t('user')" :models="[currentUser]"/>
-        <form id="accept-form" method="POST" @submit.prevent="createApplication">
-            <button>{{ $t('Accept') }}</button>
+        <models-to-table :caption="$t('user')" :models="[currentUser]" aria-label="User Table"/>
+        <form id="accept-form" aria-label="Accept Form" method="POST" @submit.prevent="createApplication">
+            <button aria-label="Accept" class="btn btn-primary">{{ $t('Accept') }}</button>
         </form>
         <message v-bind="result"/>
     </div>
@@ -59,3 +59,15 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+/* Ensure sufficient color contrast */
+button.btn-primary {
+    background-color: #0056b3; /* Darken the primary color */
+    color: #ffffff;
+}
+
+button.btn-primary:hover {
+    background-color: #004494; /* Darken the hover color */
+}
+</style>

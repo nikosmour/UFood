@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1>Welcome, {{ currentUser.name }}!</h1>
-        <models-to-table :models="[currentUser]" caption="User Information"/>
+      <h1>{{ $t('Welcome') }}, {{ currentUser.name }}!</h1>
+      <models-to-table :caption="$t('User Information')" :models="[currentUser]"/>
     </div>
 </template>
 

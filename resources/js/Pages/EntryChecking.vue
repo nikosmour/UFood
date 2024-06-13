@@ -36,3 +36,17 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+/* Ensure responsive design */
+.row.my_flex_height {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .row.my_flex_height {
+        flex-direction: row;
+    }
+}
+</style>

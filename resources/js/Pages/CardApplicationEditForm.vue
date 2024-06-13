@@ -18,11 +18,12 @@
                                        v-on:previewFile="this.docLink= $event"/>
                     <!-- Comment input field -->
                     <div>
-                        <label for="commentStudent">Enter Comment:</label>
+                        <label for="commentStudent">{{ $t('enter_comment') }}</label>
                         <input id="commentStudent" v-model="commentStudent" type="text">
                     </div>
                     <!-- Submit button -->
-                    <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">Submit
+                    <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">
+                        {{ $t(Submit) }}
                     </button>
                 </form>
                 <!-- Show card documents if not in edit mode -->
@@ -110,7 +111,7 @@ export default {
             }).catch(errors => {
                 if (errors.response.status === 404)
                     return this.$router.push({name: 'card.application.create'});
-                vue.result.message = 'Retrieving application has failed :'
+                vue.result.message = this.$t('retrieving_application_failed');
                 vue.result.errors = errors;
                 vue.result.success = false;
             });
@@ -124,18 +125,18 @@ export default {
             vue.result.message = ''; //#todo more clever way to show if the value is the same
             if (!this.applicationEdit) {
                 vue.result.success = false;
-                vue.result.message = "The status of the application does not allow submission"
+                vue.result.message = this.$t('application_status_not_allow_submission');
             }
             if (!(await this.$refs.CardDocuments.submitFiles())) {
                 vue.result.success = false;
-                vue.result.message = 'Some files were not uploaded or deleted on the server. Your application status will not change.'
+                vue.result.message = this.$t('some_files_not_uploaded');
                 return;
             }
             params.append('_method', 'PUT');
             if (vue.commentStudent) {
                 params.append('comment', vue.commentStudent);
             }
-            console.log('start axios to application for submition')
+            console.log('start axios to application for submission');
             axios.post(url, params
             ).then(function (responseJson) {
                 let json = responseJson['data'];
@@ -144,7 +145,7 @@ export default {
             }).catch(function (errors) {
                 vue.result.success = false;
                 vue.result.errors = errors.response.data.errors;
-                vue.result.message = "Request failed: your status hasn't change";
+                vue.result.message = this.$t('request_failed_status_not_changed');
             }).finally(function () {
                 if (vue.result.success) {
                     vue.cardApplication.card_last_update.status = vue.$enums.CardStatusEnum.SUBMITTED;

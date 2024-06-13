@@ -3,7 +3,8 @@
         <header class="mb-4">
             <h4 class="text-left">{{ $t('entry_check') }}</h4>
         </header>
-        <form id="use_form" class="needs-validation" novalidate @submit.prevent="check_id">
+        <form id="use_form" aria-label="Entry Checking Form" class="needs-validation" novalidate
+              @submit.prevent="check_id">
             <div class="form-group mx-auto" style="max-width: 20em;">
                 <label for="academic_id"><strong>{{ $t('card_number') }}</strong></label>
                 <input
@@ -52,14 +53,14 @@ export default {
                         this.$emit('newEntry', json.passWith + 's');
                         this.result.errors = [];
                     } else {
-                        this.result.message = "Request failed:";
+                        this.result.message = this.$t('request_failed');
                         this.result.errors = json;
                     }
                 })
                 .catch(errors => {
                     this.result.success = false;
                     this.result.errors = errors.response.data.errors;
-                    this.result.message = "Request failed:";
+                    this.result.message = this.$t('request_failed');
                 });
         }
     }

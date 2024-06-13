@@ -1,22 +1,33 @@
 <template>
-    <!-- Vue component template -->
     <div v-if="applicationEdit">
-        <button @click="addFileUpload()">Add File</button>
+        <button class="btn btn-primary" @click="addFileUpload()">{{ $t('Add File') }}</button>
         <div v-for="(file, index) in files" :key="index">
             <input v-if="canEditDocument[index]" accept="application/pdf" type="file"
                    v-bind:disabled="!file.description" @change="onFileChange($event, index)">
-            <input v-model="file.description" placeholder="Description" type="text"
-                   v-bind:disabled="!canEditDocument[index]">
-            <button @click="previewFile($event,index)">preview {{ file.id }}</button>
-            <button v-if="file.id !== 0" v-on:click="file.status = 'to delete'">delete {{ file.id }}</button>
-            <button v-else @click="files.splice(index, 1);">cancel adding file</button>
+            <input v-model="file.description" :placeholder="$t('Description')" class="form-control"
+                   type="text" v-bind:disabled="!canEditDocument[index]">
+            <button class="btn btn-secondary" @click="previewFile($event, index)">{{ $t('preview') }} {{
+                    file.id
+                }}
+            </button>
+            <button v-if="file.id !== 0" class="btn btn-danger" v-on:click="file.status = 'to delete'">{{
+                    $t('delete')
+                }} {{ file.id }}
+            </button>
+            <button v-else class="btn btn-warning" @click="files.splice(index, 1);">{{
+                    $t('cancel adding file')
+                }}
+            </button>
             <message v-bind="file.result"></message>
         </div>
     </div>
     <div v-else>
         <div v-for="(file, index) in files" :key="index">
-            <label> {{ file.description }} </label>
-            <button @click="previewFile($event,index)">preview {{ file.id }}</button>
+            <label>{{ file.description }}</label>
+            <button class="btn btn-secondary" @click="previewFile($event, index)">{{ $t('preview') }} {{
+                    file.id
+                }}
+            </button>
             <message v-bind="file.result"></message>
         </div>
     </div>
@@ -69,7 +80,7 @@ export default {
                 })
                 .catch(function (errors) {
                     vue.result.success = false;
-                    vue.result.message = 'Retrieving files of this application has failed :'
+                    vue.result.message = vue.$t('Request failed: Retrieving files of this application has failed');
                     vue.result.errors = errors.response.data.errors;
                 })
 
@@ -100,8 +111,7 @@ export default {
             let file = this.files[index];
             file.file = event.target.files[0];
             if (!file.file || !file.description)
-                return file.message = 'There isn\'t any file or description';
-
+                return file.result.message = this.$t('There isn\'t any file or description');
             if (0 == file.id) {
                 this.docFiles[index].status = file.status;
                 this.docFiles[index].description = file.description;
@@ -111,7 +121,7 @@ export default {
             this.files.push(file); // Add the new file
             this.docFiles.push(file); // Add the new file
             let oldFile = this.files[index] = this.docFiles[index]; // Restore the old file
-            oldFile.status = (!confirm('Would you like to keep the old file? If yes, you will see the new file at the end')) ? "to delete" : (oldFile.status !== 'incomplete') ? oldFile.status : 'submitted';
+            oldFile.status = (!confirm(this.$t('Would you like to keep the old file? If yes, you will see the new file at the end'))) ? "to delete" : (oldFile.status !== 'incomplete') ? oldFile.status : 'submitted';
         },
         async fileUpload(file, index) {
             let params = new FormData();
@@ -120,7 +130,7 @@ export default {
             file.result.message = ''; //#todo more clever way to show if the value is the same
             //is it need to delete the file;
             if (this.$enums.CardDocumentStatusEnum.INCOMPLETE === file.status) {
-                file.result.message = 'This file is incomplete. You must submit or replace it.';
+                file.result.message = this.$t('This file is incomplete. You must submit or replace it.');
                 return file.result.success = false;
             }
             // Set URL based on file status
@@ -133,20 +143,20 @@ export default {
                     params.append(`description`, file.description);
                     url = route('document.store', {'cardApplication': this.cardApplication});
                 } else {
-                    file.result.message = 'There is no file to upload.';
+                    file.result.message = this.$t('There is no file to upload.');
                     return file.result.success = true;
                 }
             } else if (file.description != this.docFiles[index].description) { //update existing file description
                 url = route('document.update', {'document': file.id});
                 params.append(`description`, file.description);
                 params.append('_method', 'PUT');
-            } else { // File exists but nothing changed
-                file.result.message = 'The file has already been uploaded.';
+            } else {
+                file.result.message = this.$t('The file has already been uploaded.');
                 return file.result.success = true;
             }
             // Check if file can be edited
             if (!this.canEditDocument[index] || !this.applicationEdit) {
-                file.result.message = "File can't be edited.";
+                file.result.message = this.$t("File can't be edited.");
                 return file.result.success = false;
             }
             // Make axios request to upload file
@@ -173,7 +183,7 @@ export default {
                                 vue.files.splice(index, 1);
                                 vue.docFiles.splice(index, 1);
                             }, time);
-                            file.result.message += " and the file will be removed from the page in " + time + 'ms';
+                            file.result.message += vue.$t(" and the file will be removed from the page in ") + time + 'ms';
                         }
                         vue.docFiles[index].status = file.status = ('to delete' === file.status) ? 'deleted' : 'submitted';
                         vue.docFiles[index].description = file.description;

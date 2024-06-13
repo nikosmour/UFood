@@ -1,32 +1,32 @@
 <template>
     <div class="container">
-        <form class="row g-3" @submit.prevent="getId">
+        <form aria-label="Search Form" class="row g-3" @submit.prevent="getId">
             <div class="col-md-6">
-                <label class="form-label" for="applicationId">Application Id:</label>
+                <label class="form-label" for="applicationId">{{ $t('applicationId') }}</label>
                 <input id="applicationId" v-model="search.application_id" class="form-control" min="1" type="number"/>
             </div>
             <div class="col-md-6">
-                <label class="form-label" for="academicId">Academic Id:</label>
+                <label class="form-label" for="academicId">{{ $t('academicId') }}</label>
                 <input id="academicId" v-model="search.academic_id" class="form-control" min="1" type="number"/>
             </div>
             <div class="col-md-6">
-                <label class="form-label" for="aM">Arithos Mitrou:</label>
+                <label class="form-label" for="aM">{{ $t('studentId') }}</label>
                 <input id="aM" v-model="search.a_m" class="form-control" min="1" type="number"/>
             </div>
             <div class="col-md-6">
-                <label class="form-label" for="email">Email:</label>
+                <label class="form-label" for="email">{{ $t('email') }}</label>
                 <input id="email" v-model="search.email" class="form-control" type="email"/>
             </div>
             <div class="col-12">
-                <button class="btn btn-primary" type="submit">Submit</button>
+                <button aria-label="Submit" class="btn btn-primary" type="submit">{{ $t('submit') }}</button>
             </div>
         </form>
-        <div v-if="applications.length" class="mt-4">
+        <div v-if="applications.length" class="mt-4 table-responsive">
             <table class="table table-striped table-bordered caption-top">
-                <caption>Applications</caption>
+                <caption>{{ $t('applications') }}</caption>
                 <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
+                    <th>{{ $t('id') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -120,5 +120,13 @@ export default {
 
 .table-hover tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* Ensure responsive design */
+@media (min-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
 }
 </style>

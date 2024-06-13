@@ -9,7 +9,7 @@ export default {
     data() {
         return {
             transactions: null,
-            temp: {...this.couponOwner},
+          temp: {...this.couponOwner},
         };
     },
     computed: {
@@ -72,20 +72,18 @@ export default {
     mounted() {
         this.fetchData();
     },
-
 }
 </script>
-
 <template>
-    <div v-if="transactions" class="table-responsive">
-        <table class="table table-striped table-hover text-center">
+  <div v-if="transactions">
+    <table aria-label="Transactions Table" class="table text-center table-hover table-col-to-row-sm caption-top">
             <caption>{{ $t('transactions') }}</caption>
             <thead class="thead-dark">
             <tr>
                 <th scope="col">{{ $t('Category') }}</th>
                 <th scope="col">{{ $t('Comments') }}</th>
                 <th scope="col">{{ $t('Money') }}</th>
-                <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal" scope="col">{{ meal }}</th>
+              <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal" scope="col">{{ $t(meal) }}</th>
                 <th scope="col">{{ $t('Date') }}</th>
             </tr>
             </thead>
@@ -115,9 +113,19 @@ export default {
         </table>
     </div>
 </template>
-
 <style scoped>
-.table-responsive {
-    margin-top: 20px;
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+@media (max-width: 576px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
 }
 </style>

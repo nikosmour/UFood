@@ -1,10 +1,9 @@
 <template>
-    <!-- Navigation bar component -->
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm" role="navigation">
+    <nav aria-label="Main Navigation" class="navbar navbar-expand-md navbar-light bg-white shadow-sm" role="navigation">
         <div class="container">
             <!-- Brand/logo -->
             <router-link class="nav-link router-link-exact-active" to="">
-                {{ appName }} <!-- Display the application name -->
+                {{ $t('appName') }}
             </router-link>
             <!-- Toggle button for mobile navigation -->
             <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
@@ -18,13 +17,14 @@
                 <ul v-if="isAuthenticated" class="navbar-nav me-auto">
                     <!-- Display 'Purchase' link if user has coupon selling ability -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_SELL)" class="nav-item">
-                        <router-link :to="{ name: 'purchase' }" class="nav-link router-link-exact-active"> Purchase
+                        <router-link :to="{ name: 'purchase' }" class="nav-link router-link-exact-active">
+                            {{ $t('Purchase') }}
                         </router-link>
                     </li>
                     <!-- Display 'Entry Checking' link if user has entry checking ability -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.ENTRY_CHECK)" class="nav-item">
                         <router-link :to="{ name: 'entryChecking' }" class="nav-link router-link-exact-active">
-                            Entry Checking
+                            {{ $t('entry_check') }}
                         </router-link>
                     </li>
                     <!-- Display links for card application checking based on user's abilities -->
@@ -33,27 +33,26 @@
                             <router-link
                                 :to="{ name: 'cardApplication.checking', params: { category: category.toLowerCase() } }"
                                 class="nav-link router-link-exact-active">
-                                {{ category.toLowerCase() }}
+                                {{ $t(category) }}
                             </router-link>
                         </li>
                     </template>
-                    <!-- Dropdown menu for card ownership -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)" class="nav-item dropdown">
-                        <a v-pre id="navbarDropdown"
+                        <a id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
                            data-bs-toggle="dropdown"
                            href="#" role="button">
-                            Student Menu <span class="caret"></span>
+                            {{ $t('Student Menu') }}
+                            <span class="caret"></span>
                         </a>
-                        <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
                             <router-link :to="{ name: 'card.History' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                Card History
+                                {{ $t('History') }}
                             </router-link>
                             <router-link :to="{ name: 'card.application' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                Card Application
+                                {{ $t('application') }}
                             </router-link>
                         </div>
                     </li>
@@ -61,21 +60,21 @@
                     <!-- Dropdown menu for coupon ownership -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_OWNERSHIP)"
                         class="nav-item dropdown">
-                        <a v-pre id="navbarDropdown"
+                        <a id="navbarDropdown"
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
                            data-bs-toggle="dropdown"
                            href="#" role="button">
-                            Coupons <span class="caret"></span>
+                            {{ $t('Coupons') }}<span class="caret"></span>
                         </a>
                         <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
                             <router-link :to="{ name: 'coupons.History' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                Coupons History
+                                {{ $t('History') }}
                             </router-link>
                             <router-link :to="{ name: 'coupons.transfer' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                Coupons Transfer
+                                {{ $t('Transfer') }}
                             </router-link>
                         </div>
                     </li>
@@ -83,9 +82,9 @@
 
                 <!-- Right side of navbar - for authentication links -->
                 <ul class="navbar-nav ms-auto">
-                    <!-- Display 'Login' link if user is not authenticated -->
                     <li v-if="!isAuthenticated" class="nav-item">
-                        <router-link :to="{ name: 'login' }" class="nav-link router-link-exact-active"> Login
+                        <router-link :to="{ name: 'login' }" class="nav-link router-link-exact-active">
+                            {{ $t('Login') }}
                         </router-link>
                     </li>
 
@@ -98,13 +97,12 @@
 
                         <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end">
-                            <router-link :to="{ name: 'userProfile' }" class="nav-link router-link-exact-active"> My
-                                Info
+                            <router-link :to="{ name: 'userProfile' }" class="nav-link router-link-exact-active">
+                                {{ $t('My Info') }}
                             </router-link>
-                            <!-- Logout button -->
                             <button class="nav-link"
                                     @click="logout()">
-                                Logout
+                                {{ $t('Logout') }}
                             </button>
                         </div>
                     </li>
@@ -112,15 +110,14 @@
             </div>
         </div>
     </nav>
-
 </template>
 
 <script>
 import {mapActions, mapGetters} from "vuex";
 
 export default {
+    name: "NavView",
     computed: {
-        // Mapping getters from Vuex store
         ...mapGetters([
             'isAuthenticated',
             'currentUser',
@@ -132,8 +129,8 @@ export default {
         },
         // Get application name from environment variables
         appName() {
-            return process.env.MIX_APP_NAME;
-        }
+            return this.$i18n.t('appName'); // Using translation for app name
+        },
     },
     methods: {
         // Mapping actions from Vuex store
@@ -142,20 +139,19 @@ export default {
         }),
     },
     watch: {
-        // Watch for changes in route title and update document title
-        routeTitle(newValue) {
-            document.title = newValue;
+        '$route.name'(newValue) {
+            document.title = newValue ? `${newValue} | ${this.appName}` : this.appName;
         }
     }
 }
 </script>
 
 <style scoped>
-.router-link-active:focus {
+.router-link-active:focus, .router-link-exact-active:focus {
     outline: 2px solid #005fcc;
 }
 
-.router-link-active {
+.nav-link, .dropdown-item {
     padding: 10px;
     display: inline-block;
 }

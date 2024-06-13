@@ -1,5 +1,5 @@
 <template>
-    <form v-if="couponOwner" @submit.prevent="handleSubmit">
+    <form v-if="couponOwner" aria-label="Transfer Coupon Form" @submit.prevent="handleSubmit">
         <div class="form-group">
             <label for="receiverId">{{ $t('Receiver id') }}</label>
             <input id="receiverId" v-model="receiverId" class="form-control" min="1" name="receiverId" required
@@ -82,5 +82,13 @@ export default {
 </script>
 
 <style scoped>
-/* Add any necessary styles here */
+/* Ensure sufficient color contrast */
+button.btn-primary {
+    background-color: #0056b3; /* Darken the primary color */
+    color: #ffffff;
+}
+
+button.btn-primary:hover {
+    background-color: #004494; /* Darken the hover color */
+}
 </style>

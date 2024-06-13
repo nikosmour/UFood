@@ -7,50 +7,48 @@
             </header>
             <br/>
             <div v-for="(value, category) in statistics" :key="'statistics.' + category" class="row">
-                <label class="col-9 col-lg-7">{{ $t(`meal.categories.${category}`) }} => {{ value }}</label>
+                <label class="col-9 col-lg-7">{{ $t(category) }} => {{ value }}</label>
             </div>
         </div>
         <div id="print_statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>{{ $t('statistics.exportStatistics') }}</h4>
+                <h4>{{ $t('exportStatistics') }}</h4>
             </header>
             <br/>
-            <form method="GET" v-on:submit.prevent="check_id">
+            <form aria-label="Export Statistics Form" method="GET" @submit.prevent="check_id">
                 <div class="mx-auto" style="min-width: 70%; max-width: 80%;">
-                    <label class="sr-only" for="mealPeriodSelect">{{ $t('statistics.periodLabel') }}</label>
-                    <select id="mealPeriodSelect" v-model="meal_period" aria-label="Period" class="col-12">
-                        <option v-for="period in periods" :key="period" :value="period">{{
-                                $t(`periods.${period}`)
+                    <label class="sr-only" for="mealPeriodSelect">{{ $t('periodLabel') }}</label>
+                    <select id="mealPeriodSelect" v-model="meal_period" aria-label="Period" class="col-12 form-control">
+                        <option v-for="period in meal_export_periods" :key="period" :value="period">{{
+                                $t(period)
                             }}
                         </option>
                     </select>
                     <div v-if="meal_period !== 'meal'" id="meal_category" name="meal_category">
                         <label v-for="category in meal_categories" :key="category" class="checkbox-inline">
-                            <input v-model="meal_category" :name="category" :value="category" type="checkbox"/>
-                            {{ $t(`meal.categories.${category}`) }}
+                            <input v-model="meal_category" :name="category" :value="category" class="form-check-input"
+                                   type="checkbox"/>
+                            {{ $t(category) }}
                         </label>
                     </div>
                 </div>
                 <div v-if="meal_period === 'adapted'" id="choose_days_period" class="text-center"
                      name="choose_days_period">
-                    <label for="from_day">{{ $t('statistics.from') }}: <input id="from_day" v-model="from_date"
-                                                                              type="date" value=""/></label>
-                    <label for="to_day">{{ $t('statistics.to') }}: <input id="to_day" v-model="to_date" type="date"
-                                                                          value=""/></label>
+                    <label for="from_day">{{ $t('from') }}: <input id="from_day" v-model="from_date" class="form-control"
+                                                                   type="date"/></label>
+                    <label for="to_day">{{ $t('to') }}: <input id="to_day" v-model="to_date" class="form-control"
+                                                               type="date"/></label>
                 </div>
-                <button class="btn-primary col-12" type="submit">{{ $t('statistics.submit') }}</button>
+                <button aria-label="Submit" class="btn btn-primary col-12" type="submit">{{ $t('submit') }}</button>
                 <message v-bind="result"></message>
             </form>
         </div>
-        <statistics v-if="shouldShowStatics" v-bind:html="new_page"
-                    v-on:destroy="shouldShowStatics = false"></statistics>
+      <statistics v-if="shouldShowStatics" v-bind:html="new_page" v-on:destroy="shouldShowStatics = false"></statistics>
     </div>
 </template>
 
-
 <script>
-
 export default {
     props: {
         statistics: Object
@@ -77,7 +75,14 @@ export default {
             this.meal_category = this.meal_period == 'meal' ? ['breakfast'] : ['breakfast', 'lunch', 'dinner'];
         }
     },
-    computed: {},
+    computed: {
+        meal_categories() {
+            return ['breakfast', 'lunch', 'dinner'];
+        },
+        meal_export_periods() {
+            return ['meal', 'today', 'adapted'];
+        }
+    },
     methods: {
         check_id() {
             let vue = this;
@@ -109,7 +114,24 @@ export default {
 
             });
         },
-
     }
 }
 </script>
+
+<style scoped>
+button.btn-primary {
+  background-color: #0056b3; /* Darken the primary color */
+  color: #ffffff;
+}
+
+button.btn-primary:hover {
+  background-color: #004494; /* Darken the hover color */
+}
+
+@media (min-width: 768px) {
+  #statistics {
+    display: flex;
+    flex-direction: column;
+  }
+}
+</style>

@@ -2,19 +2,23 @@
     <div v-if="application" class="row">
         <div class="col-12 col-sm-6 col-md-5 col-lg-4">
             <header>
-                <h4 class="text-left mt-3">Application: {{ application.id }}</h4>
+                <h4 class="text-left mt-3">{{ $t('application') }}: {{ application.id }}</h4>
             </header>
-            <h5 class="mt-3">Files</h5>
+            <h5 class="mt-3">{{ $t('files') }}</h5>
             <div class="mb-3">
-                <select v-model="selectFile" class="form-select">
-                    <option v-for="file in files" :key="file.id" :value="file">File ID: {{ file.id }}</option>
+                <select v-model="selectFile" aria-label="Select File" class="form-select">
+                    <option v-for="file in files" :key="file.id" :value="file">{{ $t('fileId') }}: {{
+                            file.id
+                        }}
+                    </option>
                 </select>
             </div>
             <div v-if="selectFile" class="mb-3">
-                <select v-model="selectFile.status" class="form-select" @change="updateStatus(selectFile)">
-                    <option disabled value="">Please select one</option>
+                <select v-model="selectFile.status" aria-label="File Status" class="form-select"
+                        @change="updateStatus(selectFile)">
+                    <option disabled value="">{{ $t('pleaseSelect') }}</option>
                     <option v-for="(value, status) in $enums.CardDocumentStatusEnum" :key="status" :value="value">
-                        {{ status }}
+                        {{ $t(status) }}
                     </option>
                 </select>
             </div>
@@ -22,31 +26,31 @@
         </div>
 
         <div class="col-12 col-sm-6 col-md-5 col-lg-4 mt-3">
-            <h4>Application Status</h4>
+            <h4>{{ $t('applicationStatus') }}</h4>
             <div>
-                <label>Last comment from {{
-                        application.card_last_update.card_application_staff_id ? 'staff' : 'student'
+                <label>{{ $t('lastCommentFrom') }} {{
+                        application.card_last_update.card_application_staff_id ? $t('staff') : $t('student')
                     }}:</label>
-                <p>{{ application.card_last_update.comment ?? 'No comment' }}</p>
+                <p>{{ application.card_last_update.comment ?? $t('noComment') }}</p>
             </div>
             <div>
-                <label for="commentStaff">Enter text:</label>
+                <label for="commentStaff">{{ $t('enterText') }}</label>
                 <input id="commentStaff" v-model="commentChecking" class="form-control mb-2" type="text">
-                <label for="expiration_date">Expiration date:</label>
+                <label for="expiration_date">{{ $t('expirationDate') }}</label>
                 <input id="expiration_date" v-model="expirationDate" class="form-control mb-2" type="date">
             </div>
             <div aria-label="Status buttons" class="btn-group mb-2" role="group">
-                <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.ACCEPTED }" class="btn btn-outline-primary"
-                        type="button"
-                        @click="changeStatus('ACCEPTED')">Accepted
+                <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.ACCEPTED }"
+                        class="btn btn-outline-primary" type="button" @click="changeStatus('ACCEPTED')">
+                    {{ $t('accepted') }}
                 </button>
-                <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.REJECTED }" class="btn btn-outline-secondary"
-                        type="button"
-                        @click="changeStatus('REJECTED')">Rejected
+                <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.REJECTED }"
+                        class="btn btn-outline-secondary" type="button" @click="changeStatus('REJECTED')">
+                    {{ $t('rejected') }}
                 </button>
-                <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.INCOMPLETE }" class="btn btn-outline-warning"
-                        type="button"
-                        @click="changeStatus('INCOMPLETE')">Incomplete
+                <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.INCOMPLETE }"
+                        class="btn btn-outline-warning" type="button" @click="changeStatus('INCOMPLETE')">
+                    {{ $t('incomplete') }}
                 </button>
             </div>
             <message v-bind="result"></message>
