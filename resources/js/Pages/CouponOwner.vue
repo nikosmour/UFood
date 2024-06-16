@@ -14,7 +14,7 @@ export default {
 
 <template>
     <div>
-        <models-to-table :caption="$t('coupon_owner')" :models="[couponOwner]" aria-label="Coupon Owner Table"/>
+        <models-to-table :aria-label="$t('coupon.owner.info')" :caption="$t('coupon.owner')" :models="[couponOwner]"/>
         <router-view :couponOwner="couponOwner"/>
     </div>
 </template>

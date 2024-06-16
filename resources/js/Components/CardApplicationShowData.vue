@@ -4,10 +4,10 @@
             <header>
                 <h4 class="text-left mt-3">{{ $t('application') }}: {{ application.id }}</h4>
             </header>
-            <h5 class="mt-3">{{ $t('files') }}</h5>
+            <h5 class="mt-3">{{ $t('file', 2) }}</h5>
             <div class="mb-3">
                 <select v-model="selectFile" aria-label="Select File" class="form-select">
-                    <option v-for="file in files" :key="file.id" :value="file">{{ $t('fileId') }}: {{
+                    <option v-for="file in files" :key="file.id" :value="file">{{ $t('file') }}: {{
                             file.id
                         }}
                     </option>
@@ -18,7 +18,7 @@
                         @change="updateStatus(selectFile)">
                     <option disabled value="">{{ $t('pleaseSelect') }}</option>
                     <option v-for="(value, status) in $enums.CardDocumentStatusEnum" :key="status" :value="value">
-                        {{ $t(status) }}
+                        {{ $t('status.' + status.toLowerCase()) }}
                     </option>
                 </select>
             </div>
@@ -28,29 +28,29 @@
         <div class="col-12 col-sm-6 col-md-5 col-lg-4 mt-3">
             <h4>{{ $t('applicationStatus') }}</h4>
             <div>
-                <label>{{ $t('lastCommentFrom') }} {{
-                        application.card_last_update.card_application_staff_id ? $t('staff') : $t('student')
+                <label>{{ $t('comment.latestFrom') }} {{
+                        (application.card_last_update.card_application_staff_id ? $t('staff') : $t('applicant')).toLowerCase()
                     }}:</label>
-                <p>{{ application.card_last_update.comment ?? $t('noComment') }}</p>
+                <p>{{ application.card_last_update.comment ?? $t('comment.value', 0) }}</p>
             </div>
             <div>
-                <label for="commentStaff">{{ $t('enterText') }}</label>
+                <label for="commentStaff">{{ $t('comment.enter') }}</label>
                 <input id="commentStaff" v-model="commentChecking" class="form-control mb-2" type="text">
-                <label for="expiration_date">{{ $t('expirationDate') }}</label>
+                <label for="expiration_date">{{ $t('expiration date') }}</label>
                 <input id="expiration_date" v-model="expirationDate" class="form-control mb-2" type="date">
             </div>
             <div aria-label="Status buttons" class="btn-group mb-2" role="group">
                 <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.ACCEPTED }"
                         class="btn btn-outline-primary" type="button" @click="changeStatus('ACCEPTED')">
-                    {{ $t('accepted') }}
+                    {{ $t('status.accepted') }}
                 </button>
                 <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.REJECTED }"
                         class="btn btn-outline-secondary" type="button" @click="changeStatus('REJECTED')">
-                    {{ $t('rejected') }}
+                    {{ $t('status.rejected') }}
                 </button>
                 <button :class="{ active: application.card_last_update.status === $enums.CardStatusEnum.INCOMPLETE }"
                         class="btn btn-outline-warning" type="button" @click="changeStatus('INCOMPLETE')">
-                    {{ $t('incomplete') }}
+                    {{ $t('status.incomplete') }}
                 </button>
             </div>
             <message v-bind="result"></message>
@@ -112,7 +112,7 @@ export default {
             } catch (errors) {
                 vue.resultFile.success = false;
                 vue.resultFile.errors = errors.response.data.errors;
-                vue.resultFile.message = "Request failed:";
+                vue.resultFile.message = this.$t("request_failed");
                 return false;
             }
         },
@@ -137,17 +137,21 @@ export default {
                     vue.result.success = json === 1;
                     vue.result.errors = [];
                     if (vue.result.success) {
-                        vue.result.message = `Change from ${vue.currentStatus} to ${application.card_last_update.status}`;
+                        vue.result.message = vue.$t('changeFromTo', {
+                            'from': `status.${vue.currentStatus}`,
+                            'to': `status.${application.card_last_update.status}`
+                        });
+                        // `Change from ${vue.currentStatus} ${vue.$t("to").toLowerCase()} ${application.card_last_update.status}`;
                         vue.currentStatus = application.card_last_update.status;
                     } else {
                         application.card_last_update.status = vue.currentStatus;
-                        vue.result.message = "Request failed:";
+                        vue.result.message = $t("request_failed");
                     }
                 })
                 .catch(errors => {
-                    vue.result.errors = errors.response.data.errors;
-                    vue.result.success = false;
-                    application.card_last_update.status = vue.currentStatus;
+                    this.result.errors = errors.response.data.errors;
+                    this.result.success = false;
+                    application.card_last_update.status = this.currentStatus;
                 });
         }
     },

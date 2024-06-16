@@ -47,17 +47,17 @@ export default {
                 let json = responseJson.data;
                 this.result.success = json.success;
                 if (json.success) {
-                    this.result.message = this.$t('successful_transfer');
+                    this.result.message = this.$t('transfer.successful');
                     this.result.errors = [];
                 } else {
-                    this.result.message = this.$t('Request failed');
+                    this.result.message = this.$t("transfer.unsuccessful");
                     this.result.errors = json;
                 }
             }).catch(errors => {
                 this.result.success = false;
                 this.result.errors = errors.response.data.errors;
                 console.log(errors.response.data.errors);
-                this.result.message = this.$t('Request failed');
+                this.result.message = this.$t('required_failed');
             });
 
         },

@@ -76,30 +76,33 @@ export default {
 </script>
 <template>
   <div v-if="transactions">
-    <table aria-label="Transactions Table" class="table text-center table-hover table-col-to-row-sm caption-top">
+      <table :aria-label="$t('transactions')"
+             class="table text-center table-hover table-bordered table-col-to-row-sm caption-top">
             <caption>{{ $t('transactions') }}</caption>
             <thead class="thead-dark">
             <tr>
-                <th scope="col">{{ $t('Category') }}</th>
-                <th scope="col">{{ $t('Comments') }}</th>
-                <th scope="col">{{ $t('Money') }}</th>
-              <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal" scope="col">{{ $t(meal) }}</th>
-                <th scope="col">{{ $t('Date') }}</th>
+                <th scope="col">{{ $t('transaction.kind') }}</th>
+                <th scope="col">{{ $t('comment.value', 2) }}</th>
+                <th scope="col">{{ $t('money') }}</th>
+                <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal" scope="col">
+                    {{ $t('meal_statistics.' + meal.toLowerCase()) }}
+                </th>
+                <th scope="col">{{ $t('date') }}</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="transaction in transactions" :key="transaction.id">
-                <th scope="row">{{ transaction.transaction }}</th>
+                <th scope="row">{{ $t('transaction.' + transaction.transaction) }}</th>
                 <td>
                     <span v-if="transaction.money != 0">{{ transaction.money }}€</span>
                     <template v-for="(value, meal) in $enums.MealPlanPeriodEnum">
-                        &nbsp;{{ meal }}: {{ transaction[meal] }}
+                        &nbsp;{{ $t('meal_statistics.' + meal.toLowerCase()) }}: {{ transaction[meal] }}
                     </template>
                     <template v-if="transaction.transaction === 'receiving'">
-                        &nbsp;{{ $t('Sender') }}: {{ transaction.academic_id }}
+                        &nbsp;{{ $t('sender') }}: {{ transaction.academic_id }}
                     </template>
                     <template v-else-if="transaction.transaction === 'sending'">
-                        &nbsp;{{ $t('Receiver') }}: {{ transaction.academic_id }}
+                        &nbsp;{{ $t('receiver') }}: {{ transaction.academic_id }}
                     </template>
                 </td>
                 <td>{{ transaction.totalMoney }} €</td>

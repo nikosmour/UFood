@@ -18,7 +18,7 @@
                     <!-- Display 'Purchase' link if user has coupon selling ability -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_SELL)" class="nav-item">
                         <router-link :to="{ name: 'purchase' }" class="nav-link router-link-exact-active">
-                            {{ $t('Purchase') }}
+                            {{ $t('purchase') }}
                         </router-link>
                     </li>
                     <!-- Display 'Entry Checking' link if user has entry checking ability -->
@@ -33,7 +33,7 @@
                             <router-link
                                 :to="{ name: 'cardApplication.checking', params: { category: category.toLowerCase() } }"
                                 class="nav-link router-link-exact-active">
-                                {{ $t(category) }}
+                                {{ $t('status.category.' + category.toLowerCase(), 2) }}
                             </router-link>
                         </li>
                     </template>
@@ -42,13 +42,13 @@
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
                            data-bs-toggle="dropdown"
                            href="#" role="button">
-                            {{ $t('Student Menu') }}
+                            {{ $t('card.value') }}
                             <span class="caret"></span>
                         </a>
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
                             <router-link :to="{ name: 'card.History' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                {{ $t('History') }}
+                                {{ $t('history') }}
                             </router-link>
                             <router-link :to="{ name: 'card.application' }"
                                          class="nav-link router-link-exact-active dropdown-item">
@@ -64,17 +64,17 @@
                            aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
                            data-bs-toggle="dropdown"
                            href="#" role="button">
-                            {{ $t('Coupons') }}<span class="caret"></span>
+                            {{ $t('coupon.value', 2) }}<span class="caret"></span>
                         </a>
                         <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
                             <router-link :to="{ name: 'coupons.History' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                {{ $t('History') }}
+                                {{ $t('history') }}
                             </router-link>
                             <router-link :to="{ name: 'coupons.transfer' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                {{ $t('Transfer') }}
+                                {{ $t('transfer.value') }}
                             </router-link>
                         </div>
                     </li>
@@ -84,7 +84,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li v-if="!isAuthenticated" class="nav-item">
                         <router-link :to="{ name: 'login' }" class="nav-link router-link-exact-active">
-                            {{ $t('Login') }}
+                            {{ $t('login') }}
                         </router-link>
                     </li>
 
@@ -98,11 +98,11 @@
                         <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end">
                             <router-link :to="{ name: 'userProfile' }" class="nav-link router-link-exact-active">
-                                {{ $t('My Info') }}
+                                {{ $t('my info') }}
                             </router-link>
                             <button class="nav-link"
                                     @click="logout()">
-                                {{ $t('Logout') }}
+                                {{ $t('logout') }}
                             </button>
                         </div>
                     </li>

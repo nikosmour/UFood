@@ -79,9 +79,9 @@ export default {
             <router-view class="container"/>
         </main>
         <footer class="text-center" role="contentinfo">
-            <div>© {{ "UNIVERSITY OF PATRAS" + ' ' + (new Date()).getFullYear() }}</div>
-            <div>Food Department</div>
-            <img alt="University of Patras Logo" src="/img/big_logo_Upatras.png"/>
+            <div>© {{ $t('company.name').toUpperCase() + ' ' + (new Date()).getFullYear() }}</div>
+            <div> {{ $t('company.department').toUpperCase() }}</div>
+            <img alt="{{$t('logo') +' '+$t('company.name')}}" src="/img/big_logo_Upatras.png"/>
         </footer>
     </div>
 </template>

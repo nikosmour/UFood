@@ -1,8 +1,8 @@
 <template>
     <div>
-        <models-to-table :caption="$t('user')" :models="[currentUser]" aria-label="User Table"/>
+        <models-to-table :aria-label="$t('user.information')" :caption="$t('user.value')" :models="[currentUser]"/>
         <form id="accept-form" aria-label="Accept Form" method="POST" @submit.prevent="createApplication">
-            <button aria-label="Accept" class="btn btn-primary">{{ $t('Accept') }}</button>
+            <button aria-label="Accept" class="btn btn-primary">{{ $t('accept') }}</button>
         </form>
         <message v-bind="result"/>
     </div>
@@ -21,7 +21,7 @@ export default {
             academic_id: '',
             url: route('cardApplication.store'),
             result: {
-                message: this.$t('ready'),
+                message: this.$t('test.Message'),
                 success: true,
                 hide: true,
                 errors: ['']
@@ -42,18 +42,18 @@ export default {
                 let json = responseJson.data;
                 this.result.success = json.success;
                 if (json.success) {
-                    this.result.message = this.$t('successful_transfer');
+                    this.result.message = this.$t('transfer.successful');
                     this.result.errors = [];
                     setTimeout(() => this.$router.push({name: 'card.application'}), 2000);
                     return;
                 }
-                this.result.message = this.$t('Request failed');
+                this.result.message = this.$t('request_failed');
                 this.result.errors = json;
             }).catch(errors => {
                 this.result.success = false;
                 this.result.errors = errors.response.data.errors;
                 console.log(errors.response.data.errors);
-                this.result.message = this.$t('Request failed');
+                this.result.message = this.$t('request_failed');
             });
         }
     }

@@ -30,9 +30,18 @@ if (window.isAuthenticated) {
 }
 
 const app = createApp(App);
-
+// Function to determine the locale from browser settings
+const getPreferredLocale = () => {
+    const browserLocales = navigator.languages || [navigator.language];
+    for (const locale of browserLocales) {
+        if (['en', 'el'].includes(locale)) {
+            return locale; // Return the first supported locale
+        }
+    }
+    return 'en'; // Default to English if no match
+};
 const i18n = createI18n({
-    locale: 'en', // set locale
+    locale: getPreferredLocale(), // set locale
     fallbackLocale: 'en', // set fallback locale
     messages: {
         en,

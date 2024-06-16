@@ -38,7 +38,7 @@ export default {
             },
             url: route('coupons.purchase.store'),
             result: {
-                message: 'ready',
+                message: this.$t("test.message"),
                 success: true,
                 hide: true,
                 errors: []
@@ -56,7 +56,7 @@ export default {
             if (this.form_data.BREAKFAST === 0 && this.form_data.LUNCH === 0 && this.form_data.DINNER === 0) {
                 this.result.success = false;
                 this.result.message = this.$t('request_failed');
-                this.result.errors = [this.$t('sell_something')];
+                this.result.errors = [this.$t('errors.sell_something')];
                 return;
             }
             if (confirm(this.$t('confirm_purchase', {

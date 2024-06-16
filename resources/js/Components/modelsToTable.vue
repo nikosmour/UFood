@@ -4,7 +4,7 @@
             <caption>{{ caption }}</caption>
             <thead class="thead-dark">
             <tr>
-                <th v-for="key in attributes" :key="key" scope="col">{{ key }}</th>
+                <th v-for="key in attributes" :key="key" scope="col">{{ $t("model_data." + key.toLowerCase()) }}</th>
             </tr>
             </thead>
             <tbody>

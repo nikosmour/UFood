@@ -3,7 +3,7 @@
         <header class="mb-4">
             <h4 class="text-left">{{ $t('entry_check') }}</h4>
         </header>
-        <form id="use_form" aria-label="Entry Checking Form" class="needs-validation" novalidate
+        <form id="use_form" :aria-label="$t('entry_check_form')" class="needs-validation" novalidate
               @submit.prevent="check_id">
             <div class="form-group mx-auto" style="max-width: 20em;">
                 <label for="academic_id"><strong>{{ $t('card_number') }}</strong></label>
@@ -30,7 +30,7 @@ export default {
             academic_id: '',
             url: route('entryChecking.store'),
             result: {
-                message: 'ready',
+                message: this.$t("test.message"),
                 success: true,
                 hide: true,
                 errors: ['']

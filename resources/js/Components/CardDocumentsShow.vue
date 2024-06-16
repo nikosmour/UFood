@@ -1,34 +1,40 @@
 <template>
     <div v-if="applicationEdit">
-        <button class="btn btn-primary" @click="addFileUpload()">{{ $t('Add File') }}</button>
-        <div v-for="(file, index) in files" :key="index">
+        <button class="btn btn-primary mb-3" @click="addFileUpload()">{{ $t('Add File') }}</button>
+        <div v-for="(file, index) in files" :key="index" class="mt-3">
+
             <input v-if="canEditDocument[index]" accept="application/pdf" type="file"
                    v-bind:disabled="!file.description" @change="onFileChange($event, index)">
-            <input v-model="file.description" :placeholder="$t('Description')" class="form-control"
+            <input v-model="file.description" :placeholder="$t('description')" class="form-control"
                    type="text" v-bind:disabled="!canEditDocument[index]">
-            <button class="btn btn-secondary" @click="previewFile($event, index)">{{ $t('preview') }} {{
-                    file.id
-                }}
-            </button>
-            <button v-if="file.id !== 0" class="btn btn-danger" v-on:click="file.status = 'to delete'">{{
-                    $t('delete')
-                }} {{ file.id }}
-            </button>
-            <button v-else class="btn btn-warning" @click="files.splice(index, 1);">{{
-                    $t('cancel adding file')
-                }}
-            </button>
             <message v-bind="file.result"></message>
+            <div class="row justify-content-between ms-auto me-auto">
+                <button class="btn btn-secondary col-auto" @click="previewFile($event, index)">{{ $t('preview') }} {{
+                        file.id
+                    }}
+                </button>
+                <button v-if="file.id !== 0" class="btn btn-danger col-auto " v-on:click="file.status = 'to delete'">{{
+                        $t('status.delete')
+                    }} {{ file.id }}
+                </button>
+                <button v-else class="btn btn-warning " @click="files.splice(index, 1);">{{
+                        $t('cancel adding file')
+                    }}
+                </button>
+            </div>
         </div>
     </div>
     <div v-else>
-        <div v-for="(file, index) in files" :key="index">
-            <label>{{ file.description }}</label>
-            <button class="btn btn-secondary" @click="previewFile($event, index)">{{ $t('preview') }} {{
+        <div v-for="(file, index) in files" :key="index" class="row justify-content-between ms-auto me-auto mt-4">
+            <div class="col-auto">
+                <label>{{ file.description }}</label>
+                <message v-bind="file.result"></message>
+            </div>
+            <button class="btn btn-secondary col-auto" @click="previewFile($event, index)">{{ $t('preview') }} {{
                     file.id
                 }}
             </button>
-            <message v-bind="file.result"></message>
+
         </div>
     </div>
 </template>
@@ -80,7 +86,7 @@ export default {
                 })
                 .catch(function (errors) {
                     vue.result.success = false;
-                    vue.result.message = vue.$t('Request failed: Retrieving files of this application has failed');
+                    vue.result.message = vue.$t('retrieving_application_files_failed');
                     vue.result.errors = errors.response.data.errors;
                 })
 
@@ -100,7 +106,7 @@ export default {
                 link: link,
                 status: status,
                 result: {
-                    message: message + status,
+                    message: message + this.$t("status.category." + status),
                     success: success,
                     hide: false,
                     errors: []
@@ -111,7 +117,7 @@ export default {
             let file = this.files[index];
             file.file = event.target.files[0];
             if (!file.file || !file.description)
-                return file.result.message = this.$t('There isn\'t any file or description');
+                return file.result.message = this.$t('no file or description');
             if (0 == file.id) {
                 this.docFiles[index].status = file.status;
                 this.docFiles[index].description = file.description;
@@ -121,7 +127,7 @@ export default {
             this.files.push(file); // Add the new file
             this.docFiles.push(file); // Add the new file
             let oldFile = this.files[index] = this.docFiles[index]; // Restore the old file
-            oldFile.status = (!confirm(this.$t('Would you like to keep the old file? If yes, you will see the new file at the end'))) ? "to delete" : (oldFile.status !== 'incomplete') ? oldFile.status : 'submitted';
+            oldFile.status = (!confirm(this.$t('keep old file?'))) ? "to delete" : (oldFile.status !== 'incomplete') ? oldFile.status : 'submitted';
         },
         async fileUpload(file, index) {
             let params = new FormData();
@@ -130,7 +136,7 @@ export default {
             file.result.message = ''; //#todo more clever way to show if the value is the same
             //is it need to delete the file;
             if (this.$enums.CardDocumentStatusEnum.INCOMPLETE === file.status) {
-                file.result.message = this.$t('This file is incomplete. You must submit or replace it.');
+                file.result.message = this.$t('incomplete file');
                 return file.result.success = false;
             }
             // Set URL based on file status
@@ -143,7 +149,7 @@ export default {
                     params.append(`description`, file.description);
                     url = route('document.store', {'cardApplication': this.cardApplication});
                 } else {
-                    file.result.message = this.$t('There is no file to upload.');
+                    file.result.message = this.$t('no_file');
                     return file.result.success = true;
                 }
             } else if (file.description != this.docFiles[index].description) { //update existing file description
@@ -151,12 +157,12 @@ export default {
                 params.append(`description`, file.description);
                 params.append('_method', 'PUT');
             } else {
-                file.result.message = this.$t('The file has already been uploaded.');
+                file.result.message = this.$t('file_upload_already');
                 return file.result.success = true;
             }
             // Check if file can be edited
             if (!this.canEditDocument[index] || !this.applicationEdit) {
-                file.result.message = this.$t("File can't be edited.");
+                file.result.message = this.$t("file_cant_edited");
                 return file.result.success = false;
             }
             // Make axios request to upload file
@@ -170,8 +176,8 @@ export default {
                 })
                 .catch(function (errors) {
                     file.result.errors = errors.response.data.errors;
-                    file.result.message = "Request failed:";
-                    file.result.message += file.status + ' not uploaded';
+                    file.result.message = `${this.$t("request_failed")} : `;
+                    file.result.message += this.$t("status.category." + file.status) + this.$t("uploadedNot");
                     return file.result.success = false;
                 })
                 .finally(function () {
@@ -179,17 +185,17 @@ export default {
                     if (file.result.success) {
                         if (file.status === 'to delete') {
                             let time = 3000;
-                            setTimeout(() => {
+                            /*setTimeout(() => {
                                 vue.files.splice(index, 1);
                                 vue.docFiles.splice(index, 1);
                             }, time);
-                            file.result.message += vue.$t(" and the file will be removed from the page in ") + time + 'ms';
+                            file.result.message += vue.$t(" and the file will be removed from the page in ") + time + 'ms';*/
                         }
                         vue.docFiles[index].status = file.status = ('to delete' === file.status) ? 'deleted' : 'submitted';
                         vue.docFiles[index].description = file.description;
                         vue.docFiles[index].id = file.id;
                     }
-                    file.result.message += file.status + (!file.result.success) ? '' : ' not uploaded';
+                    file.result.message += this.$t("status.category." + file.status) + (!file.result.success) ? '' : " " + this.$t("uploadedNot");
                     return file.result.success;
                 });
         },

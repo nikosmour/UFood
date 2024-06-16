@@ -3,25 +3,28 @@
         <div id="statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>{{ $t('statistics.mealStatistics') }}</h4>
+              <h4>{{ $t('meal_statistics.value') }}</h4>
             </header>
             <br/>
             <div v-for="(value, category) in statistics" :key="'statistics.' + category" class="row">
-                <label class="col-9 col-lg-7">{{ $t(category) }} => {{ value }}</label>
+              <label class="col-9 col-lg-7">{{ $t('meal_statistics.' + category.toLowerCase(), 2) }} => {{
+                  value
+                }}</label>
             </div>
         </div>
         <div id="print_statistic_food" class="col-12">
             <header>
                 <br/>
-                <h4>{{ $t('exportStatistics') }}</h4>
+              <h4>{{ $t('meal_statistics.export') }}</h4>
             </header>
             <br/>
-            <form aria-label="Export Statistics Form" method="GET" @submit.prevent="check_id">
+          <form :aria-label="$t('meal_statistics.export_form')" method="GET" @submit.prevent="check_id">
                 <div class="mx-auto" style="min-width: 70%; max-width: 80%;">
-                    <label class="sr-only" for="mealPeriodSelect">{{ $t('periodLabel') }}</label>
-                    <select id="mealPeriodSelect" v-model="meal_period" aria-label="Period" class="col-12 form-control">
+                  <label class="sr-only" for="mealPeriodSelect">{{ $t('time period') }}</label>
+                  <select id="mealPeriodSelect" v-model="meal_period" :aria-label="$t('time period')"
+                          class="col-12 form-control">
                         <option v-for="period in meal_export_periods" :key="period" :value="period">{{
-                                $t(period)
+                            $t('meal_statistics.' + period)
                             }}
                         </option>
                     </select>
@@ -29,7 +32,7 @@
                         <label v-for="category in meal_categories" :key="category" class="checkbox-inline">
                             <input v-model="meal_category" :name="category" :value="category" class="form-check-input"
                                    type="checkbox"/>
-                            {{ $t(category) }}
+                          {{ $t('meal_statistics.' + category) }}
                         </label>
                     </div>
                 </div>
@@ -40,7 +43,10 @@
                     <label for="to_day">{{ $t('to') }}: <input id="to_day" v-model="to_date" class="form-control"
                                                                type="date"/></label>
                 </div>
-                <button aria-label="Submit" class="btn btn-primary col-12" type="submit">{{ $t('submit') }}</button>
+            <button aria-label="Submit" class="btn btn-primary col-12" type="submit">{{
+                $t('status.submitted')
+              }}
+            </button>
                 <message v-bind="result"></message>
             </form>
         </div>
@@ -61,7 +67,7 @@ export default {
             from_date: now,
             to_date: now,
             result: {
-                message: 'ready',
+              message: this.$t('test.message'),
                 success: true,
                 hide: false,
                 errors: ['']
@@ -80,7 +86,7 @@ export default {
             return ['breakfast', 'lunch', 'dinner'];
         },
         meal_export_periods() {
-            return ['meal', 'today', 'adapted'];
+          return ['current meal', 'today', 'adapted'];
         }
     },
     methods: {

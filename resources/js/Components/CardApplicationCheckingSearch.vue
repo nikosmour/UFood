@@ -2,15 +2,15 @@
     <div class="container">
         <form aria-label="Search Form" class="row g-3" @submit.prevent="getId">
             <div class="col-md-6">
-                <label class="form-label" for="applicationId">{{ $t('applicationId') }}</label>
+                <label class="form-label" for="applicationId">{{ $t('application_id') }}</label>
                 <input id="applicationId" v-model="search.application_id" class="form-control" min="1" type="number"/>
             </div>
             <div class="col-md-6">
-                <label class="form-label" for="academicId">{{ $t('academicId') }}</label>
+                <label class="form-label" for="academicId">{{ $t('academic_id') }}</label>
                 <input id="academicId" v-model="search.academic_id" class="form-control" min="1" type="number"/>
             </div>
             <div class="col-md-6">
-                <label class="form-label" for="aM">{{ $t('studentId') }}</label>
+                <label class="form-label" for="aM">{{ $t('a_m') }}</label>
                 <input id="aM" v-model="search.a_m" class="form-control" min="1" type="number"/>
             </div>
             <div class="col-md-6">
@@ -23,7 +23,7 @@
         </form>
         <div v-if="applications.length" class="mt-4 table-responsive">
             <table class="table table-striped table-bordered caption-top">
-                <caption>{{ $t('applications') }}</caption>
+                <caption>{{ $t('application', 2) }}</caption>
                 <thead class="table-dark">
                 <tr>
                     <th>{{ $t('id') }}</th>

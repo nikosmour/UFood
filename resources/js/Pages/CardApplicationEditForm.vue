@@ -2,13 +2,15 @@
     <!-- Vue component template -->
     <div>
         <!-- Display application status and expiration date -->
-        <p>Your Application status is {{ status }} and the expiration date is {{ expiration_date }}</p>
+        <p>{{ $t('applicationStatus') }} : {{ $t(status) + $t('and') + $t('expiration date') }} : {{
+                expiration_date
+            }}</p>
         <div class='row '>
             <div class='col-5'>
                 <!-- Application form -->
                 <header>
                     <br/>
-                    <h4 class="text-left">{{ title }}</h4>
+                    <h4 class="text-center">{{ title }}</h4>
                 </header>
                 <!-- Form for editing card application -->
                 <form v-if="applicationEdit" id="card_application_form" v-on:submit.prevent="">
@@ -18,12 +20,12 @@
                                        v-on:previewFile="this.docLink= $event"/>
                     <!-- Comment input field -->
                     <div>
-                        <label for="commentStudent">{{ $t('enter_comment') }}</label>
+                        <label for="commentStudent">{{ $t('comment.enter') }}</label>
                         <input id="commentStudent" v-model="commentStudent" type="text">
                     </div>
                     <!-- Submit button -->
                     <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">
-                        {{ $t(Submit) }}
+                        {{ $t('status.submitted') }}
                     </button>
                 </form>
                 <!-- Show card documents if not in edit mode -->
@@ -48,7 +50,7 @@ export default {
         return {
             // Initialize data properties
             result: {
-                message: 'ready',
+                message: this.$t('test.Message'),
                 success: true,
                 hide: false,
                 errors: {
@@ -80,7 +82,7 @@ export default {
         },
         // Set title based on application mode
         title() {
-            return document.title = (this.applicationEdit) ? 'Edit Card' : 'Show Card'
+            return document.title = this.$t((this.applicationEdit) ? 'card.edit' : 'card.show');
         }
     },
     methods: {
@@ -99,7 +101,6 @@ export default {
         },
         // Method to fetch card application data
         getApplication() {
-            let vue = this;
             let url = route('cardApplication.index');
             console.log('getApplication');
             axios.get(url
@@ -111,44 +112,43 @@ export default {
             }).catch(errors => {
                 if (errors.response.status === 404)
                     return this.$router.push({name: 'card.application.create'});
-                vue.result.message = this.$t('retrieving_application_failed');
-                vue.result.errors = errors;
-                vue.result.success = false;
+                this.result.message = this.$t('retrieving_application_failed');
+                this.result.errors = errors;
+                this.result.success = false;
             });
 
         },
         // Method to submit form
         async submit_form() {
-            let vue = this;
             let url = route('cardApplication.update', this.cardApplication);
             let params = new FormData();
-            vue.result.message = ''; //#todo more clever way to show if the value is the same
+            this.result.message = ''; //#todo more clever way to show if the value is the same
             if (!this.applicationEdit) {
-                vue.result.success = false;
-                vue.result.message = this.$t('application_status_not_allow_submission');
+                this.result.success = false;
+                this.result.message = this.$t('application_status_not_allow_submission');
             }
             if (!(await this.$refs.CardDocuments.submitFiles())) {
-                vue.result.success = false;
-                vue.result.message = this.$t('some_files_not_uploaded');
+                this.result.success = false;
+                this.result.message = this.$t('some_files_not_uploaded');
                 return;
             }
             params.append('_method', 'PUT');
-            if (vue.commentStudent) {
-                params.append('comment', vue.commentStudent);
+            if (this.commentStudent) {
+                params.append('comment', this.commentStudent);
             }
             console.log('start axios to application for submission');
             axios.post(url, params
-            ).then(function (responseJson) {
+            ).then(responseJson => {
                 let json = responseJson['data'];
-                vue.result.success = json['success'];
-                vue.result.message = json['message'];
-            }).catch(function (errors) {
-                vue.result.success = false;
-                vue.result.errors = errors.response.data.errors;
-                vue.result.message = this.$t('request_failed_status_not_changed');
-            }).finally(function () {
-                if (vue.result.success) {
-                    vue.cardApplication.card_last_update.status = vue.$enums.CardStatusEnum.SUBMITTED;
+                this.result.success = json['success'];
+                this.result.message = json['message'];
+            }).catch(errors => {
+                this.result.success = false;
+                this.result.errors = errors.response.data.errors;
+                this.result.message = this.$t('request_failed_status_wont_changed');
+            }).finally(() => {
+                if (this.result.success) {
+                    this.cardApplication.card_last_update.status = this.$enums.CardStatusEnum.SUBMITTED;
                 }
 
                 }

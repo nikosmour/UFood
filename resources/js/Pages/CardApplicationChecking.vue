@@ -5,9 +5,7 @@
         <div class="col-auto">
             <div v-if="cursor.data">
                 <button v-if="cursor.next_cursor" class="btn btn-primary" @click="nextPage">{{ $t('next') }}</button>
-                <button v-if="cursor.prev_cursor" class="btn btn-secondary" @click="prevPage">{{
-                        $t('previous')
-                    }}
+                <button v-if="cursor.prev_cursor" class="btn btn-secondary" @click="prevPage">{{ $t('previous') }}
                 </button>
             </div>
             <CardApplicationShowData :application="selectedItem"/>
@@ -66,20 +64,22 @@ export default {
             try {
                 const response = await axios.get(url, {params: {[name]: value}});
                 console.log('get Applications', response.data);
-
-                if (name !== 'application_id') this.cursor = response.data;
-
                 const applications = response.data.data;
-                const success = applications.length > 0;
-
-                this.result.success = success;
+                const success = this.result.success = applications.length > 0;
+                if (name !== 'application_id') {
+                    let cursor = this.cursor = response.data;
+                    let applicationsLength = (cursor.next_page_url || cursor.prev_page_url) ? 2 : applications.length
+                    this.result.message = (success ? "" : this.$t('request_failed') + ': ') +
+                        this.$t('application', applicationsLength) + ' ' +
+                        this.$t('found', applicationsLength).toLowerCase();
+                }
                 this.result.errors = [];
-                this.result.message = success ? this.$t('applications_found') : this.$t('request_failed_application_not_found');
 
                 return applications.length > 0 ? applications : [null];
             } catch (errors) {
                 console.log(errors);
-                this.result.message = this.$t('request_failed_application_not_found');
+                this.result.message = this.$t('request_failed') + ': ' + this.$t('application', 0) + ' ' + this.$t('found', 0).toLowerCase();
+
                 this.result.success = false;
                 return [null];
             }
