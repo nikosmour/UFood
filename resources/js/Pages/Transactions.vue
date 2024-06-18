@@ -1,11 +1,10 @@
 <template>
     <div>
-        <models-to-table v-if="transactions" :caption="urlName" :models="transactions"/>
+        <models-to-table v-if="transactions" :caption="$t('transactions')" :models="transactions"/>
     </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
 import ModelsToTable from "../Components/modelsToTable.vue";
 
 export default {

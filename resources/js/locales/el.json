@@ -103,7 +103,12 @@
         "period": "@:meal",
         "phone": "Τηλέφωνο",
         "status": "Είδος",
-        "time": "Ώρα"
+        "time": "Ώρα",
+        "coupon_owner": "@:coupon.owner",
+        "card_applicant": "@:card.value @:applicant",
+        "address": "@:model_data.location",
+        "usage_card": "@:transactions",
+        "card.history": "@:transactions"
     },
     "money": "Χρήματα",
     "my info": "Οι Πληροφορίες μου",

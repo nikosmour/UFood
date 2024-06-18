@@ -103,7 +103,12 @@
         "period": "@:meal",
         "phone": "Phone",
         "status": "Status",
-        "time": "Time"
+        "time": "Time",
+        "coupon_owner": "@:coupon.owner",
+        "card_applicant": "@:card.value @:applicant",
+        "address": "@:model_data.location",
+        "usage_card": "@:transactions",
+        "card.history": "@:transactions"
     },
     "money": "Money",
     "my info": "My Information",
