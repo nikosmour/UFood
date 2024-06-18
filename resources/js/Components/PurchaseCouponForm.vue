@@ -12,7 +12,7 @@
             <!--            </div>-->
             <div class="form-group form-row mx-auto  " style="max-width:30em">
                 <div v-for="(value, category) in form_data" :key="'form_data_'+category" class="col-sm md-form">
-                    <label>{{ $t(`${category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()}`) }}</label>
+                    <label>{{ $t(`${category.toLowerCase()}`) }}</label>
                     <input v-model.trim.number='form_data[category]' class="form-control" min="0" type="number"/>
                 </div>
             </div>

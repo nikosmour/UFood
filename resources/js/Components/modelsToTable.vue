@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered caption-top">
             <caption>{{ caption }}</caption>
             <thead class="thead-dark">
             <tr>
@@ -14,12 +14,13 @@
             <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
                 <td :colspan="attributes.length" class="p-0">
                     <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
-                        {{ relationship }}
+                        {{ $t('model_data.' + relationship) }}
                         <span v-if="expandedRelationships.includes(index)">&#9650;</span>
                         <span v-else>&#9660;</span>
                     </button>
                     <div v-if="expandedRelationships.includes(index)">
-                        <models-to-table :caption="relationship" :models="dataToArray(models[0][relationship])"/>
+                        <models-to-table :caption="$t('model_data.'+relationship)"
+                                         :models="dataToArray(models[0][relationship])"/>
                     </div>
                 </td>
             </tr>

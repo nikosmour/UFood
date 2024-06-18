@@ -25,7 +25,8 @@
     },
     "company": {
         "department": "Student Welfare Department",
-        "name": "University of Patras"
+        "name": "University of Patras",
+        "appName": "Meal plan"
     },
     "coupon": {
         "owner": "Coupon Owner",
@@ -35,14 +36,15 @@
     "date": "Date",
     "description": "Description",
     "dinner": "Dinner",
+    "edit": "Edit",
     "email": "Email",
     "entry_check": "Entry Check",
     "entry_check_form": "@:form : @:entry_check ",
+    "entry_input": "@:card.value",
     "errors": {
         "application_status_not_allow_submission": "@:application_status_not_allow_submission",
         "application status wont change": "@:{application status wont change}",
         "file_cant_edited": "@:file_cant_edited",
-        "file_upload_already": "@:file_upload_already",
         "incomplete file": "@:{incomplete file}",
         "keep old file?": "@:{keep old file?}",
         "no file or description": "@:{no file or description}",
@@ -57,7 +59,19 @@
     "file": "File | Files",
     "file_status": "File status",
     "file_cant_edited": "File can't be edited.",
-    "file_upload_already": "The file has already been uploaded.",
+    "file_submitted": {
+        "already": "The file has already been uploaded.",
+        "success": "File is uploaded successfully!",
+        "failed": "File is not valid please retry"
+    },
+    "file_updated": {
+        "success": "File has updated successfully!",
+        "failed": "File updated failed,please retry"
+    },
+    "file_destroyed": {
+        "success": "File has destroyed successfully!",
+        "failed": "File has not be destroyed successfully, please retry"
+    },
     "form": "Form",
     "found": "Not found | Found | Found",
     "from": "From",
@@ -103,7 +117,12 @@
         "period": "@:meal",
         "phone": "Phone",
         "status": "Status",
-        "time": "Time"
+        "time": "Time",
+        "coupon_owner": "@:coupon.owner",
+        "card_applicant": "@:card.value @:applicant",
+        "address": "@:model_data.location",
+        "usage_card": "@:transactions",
+        "card.history": "@:transactions"
     },
     "money": "Money",
     "my info": "My Information",
@@ -118,9 +137,9 @@
     "purchase": "Sale",
     "receiver": "Receiver",
     "request_failed": "Request failed",
-    "request_failed_status_wont_changed": "@:{required_failed}: @:{application status wont change}",
-    "retrieving_application_failed": "@:{required_failed}: Retrieving application has failed ",
-    "retrieving_application_files_failed": "@:{required_failed}: Retrieving files of this  application has failed ",
+    "request_failed_status_wont_changed": "@:required_failed : @:{application status wont change}",
+    "retrieving_application_failed": "@:required_failed : Retrieving application has failed ",
+    "retrieving_application_files_failed": "@:required_failed: Retrieving files of this  application has failed ",
     "sale_coupons": "Sale Coupons",
     "select_file": "Select file",
     "sender": "Sender",

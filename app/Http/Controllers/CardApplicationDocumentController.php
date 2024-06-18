@@ -56,8 +56,8 @@ class CardApplicationDocumentController extends Controller
                 return $cardApplicationDocument->id;
             } else  return 0; // the file is not valid
         });
-        if (0 != $id) return ['success' => true, 'message' => 'File is uploaded successfully!', 'id' => $id,];
-        return ['success' => false, 'message' => 'File is not valid please retry', 'id' => 0,];
+        if (0 != $id) return ['success' => true, 'message' => 'file_submitted.success', 'id' => $id,];
+        return ['success' => false, 'message' => 'file_submitted.failed', 'id' => 0,];
     }
 
     /**
@@ -110,9 +110,9 @@ class CardApplicationDocumentController extends Controller
     {
         $this->authorize('update', $document);
         if ($document->update($request->validated()))
-            return ['success' => true, 'message' => 'File has updated successfully!', 'id' => $document->id];
+            return ['success' => true, 'message' => 'file_updated.success', 'id' => $document->id];
 
-        return ['success' => false, 'message' => 'File has not updated successfully retry', 'id' => 0,];
+        return ['success' => false, 'message' => 'file_updated.failed', 'id' => 0,];
     }
 
     /**
@@ -126,8 +126,8 @@ class CardApplicationDocumentController extends Controller
     {
         $this->authorize('delete', $document);
         if (!$document->delete())
-            return ['success' => false, 'message' => 'File has not be destoyed successfully retry', 'id' => $document];
-        return ['success' => true, 'message' => 'File has destroyed successfully!', 'id' => 0];
+            return ['success' => false, 'message' => 'file_destroyed.failed', 'id' => $document];
+        return ['success' => true, 'message' => 'file_destroyed.success!', 'id' => 0];
 
     }
 }

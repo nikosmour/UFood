@@ -13,14 +13,17 @@
                         file.id
                     }}
                 </button>
-                <button v-if="file.id !== 0" class="btn btn-danger col-auto " v-on:click="file.status = 'to delete'">{{
-                        $t('status.delete')
-                    }} {{ file.id }}
-                </button>
-                <button v-else class="btn btn-warning " @click="files.splice(index, 1);">{{
-                        $t('cancel adding file')
-                    }}
-                </button>
+                <template v-if="canEditDocument[index]">
+                    <button v-if="file.id !== 0" class="btn btn-danger col-auto "
+                            v-on:click="file.status = 'to delete'">{{
+                            $t('status.delete')
+                        }} {{ file.id }}
+                    </button>
+                    <button v-else class="btn btn-warning " @click="files.splice(index, 1);">{{
+                            $t('cancel adding file')
+                        }}
+                    </button>
+                </template>
             </div>
         </div>
     </div>
@@ -157,7 +160,7 @@ export default {
                 params.append(`description`, file.description);
                 params.append('_method', 'PUT');
             } else {
-                file.result.message = this.$t('file_upload_already');
+                file.result.message = this.$t('file_submitted.already');
                 return file.result.success = true;
             }
             // Check if file can be edited
@@ -171,7 +174,7 @@ export default {
                     let json = responseJson['data'];
                     file.id = json['id'];
                     file.result.success = json['success'];
-                    file.result.message = json['message'];
+                    file.result.message = this.$t(json['message']);
                     file.result.errors = [];
                 })
                 .catch(function (errors) {

@@ -1,9 +1,9 @@
 <template>
-    <div class="container-fluid row">
+    <div class="container-fluid row mx-auto text-center ">
         <router-view :applications="applications" class="col" @getId="getId($event)"/>
 
-        <div class="col-auto">
-            <div v-if="cursor.data">
+        <div class="col">
+            <div v-if="cursor.data" class="align-items-baseline">
                 <button v-if="cursor.next_cursor" class="btn btn-primary" @click="nextPage">{{ $t('next') }}</button>
                 <button v-if="cursor.prev_cursor" class="btn btn-secondary" @click="prevPage">{{ $t('previous') }}
                 </button>

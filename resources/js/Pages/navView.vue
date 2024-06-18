@@ -3,7 +3,7 @@
         <div class="container">
             <!-- Brand/logo -->
             <router-link class="nav-link router-link-exact-active" to="">
-                {{ $t('appName') }}
+                {{ appName }}
             </router-link>
             <!-- Toggle button for mobile navigation -->
             <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
@@ -129,7 +129,7 @@ export default {
         },
         // Get application name from environment variables
         appName() {
-            return this.$i18n.t('appName'); // Using translation for app name
+            return this.$i18n.t('company.appName'); // Using translation for app name
         },
     },
     methods: {

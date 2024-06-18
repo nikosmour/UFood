@@ -7,7 +7,7 @@
     "applicant": "Αιτούντα",
     "application": "Αίτηση | Αιτήσεις",
     "application_id": "Αριθμός Αίτησης",
-    "application_status_not_allow_submission": "@:{required_failed}: Η κατάσταση της αίτησης δεν επιτρέπει την υποβολή.",
+    "application_status_not_allow_submission": "@:required_failed: Η κατάσταση της αίτησης δεν επιτρέπει την υποβολή.",
     "application status wont change": "Η κατάσταση της αίτησης δεν θα αλλάξει.",
     "applicationStatus": "Κατάσταση Αίτησης",
     "breakfast": "Πρωινό",
@@ -17,7 +17,7 @@
         "show": "Προβολή Κάρτας",
         "value": "Κάρτα | Κάρτες"
     },
-    "changeFromTo": "Άλλαξε από @:{from} σε @:{to} ",
+    "changeFromTo": "Άλλαξε από @:from σε @:to ",
     "comment": {
         "enter": "Εισαγωγή Σχολίου:",
         "latestFrom": "Τελευταίο σχόλιο υποβλήθηκε από ",
@@ -25,7 +25,8 @@
     },
     "company": {
         "department": "Διέυθυνση φοιτητικής μέριμνας",
-        "name": "Πανεπιστήμιο Πατρών"
+        "name": "Πανεπιστήμιο Πατρών",
+        "appName": "Σίτιση"
     },
     "coupon": {
         "owner": "Κάτοχος κουπονιών",
@@ -35,14 +36,15 @@
     "date": "Ημερομηνία",
     "description": "Περιγραφή",
     "dinner": "Βραδινό",
-    "email": "Email",
-    "entry_check": "Ελενχος εισόδου",
+    "edit": "Επεξεργασία",
+    "email": "Ηλ. ταχυδρομείο",
+    "entry_check": "Έλενχος εισόδου",
     "entry_check_form": "@:{form} : @:{entry_check} ",
+    "entry_input": "@:card.value",
     "errors": {
         "application_status_not_allow_submission": "@:application_status_not_allow_submission",
         "application status wont change": "@:{application status wont change}",
         "file_cant_edited": "@:file_cant_edited",
-        "file_upload_already": "@:file_upload_already",
         "incomplete file": "@:{incomplete file}",
         "keep old file?": "@:{keep old file?}",
         "no file or description": "@:{no file or description}",
@@ -53,17 +55,29 @@
         "sell_something": "Δεν είναι δινατή η πώληση μηδενικού πλήθους κουπονιών",
         "some_files_not_updated": "@:some_files_not_updated"
     },
-    "expiration date": "@:{date} λήξης",
+    "expiration date": "@:date λήξης",
     "file": "Αρχείο | Αρχεία",
     "file_cant_edited": "Το αρχείο δεν μπορεί να επεξεργαστεί.",
     "file_status": "Κατάσταση αρχείου",
-    "file_upload_already": "Το αρχείο έχει ήδη μεταφορτωθεί.",
+    "file_submitted": {
+        "already": "Το αρχείο έχει ήδη μεταφορτωθεί.",
+        "success": "Το αρχείο μεταφορτώθηκε επιτυχώς!",
+        "failed": "Το αρχείο δεν είναι έγκυρο. Παρακαλώ δοκιμάστε ξανά."
+    },
+    "file_updated": {
+        "success": "Το αρχείο ενημερώθηκε επιτυχώς!",
+        "failed": "Η ενημέρωση του αρχείου απέτυχε. Παρακαλώ δοκιμάστε ξανά."
+    },
+    "file_destroyed": {
+        "success": "Το αρχείο διαγράφηκε επιτυχώς!",
+        "failed": "Η διαγραφή του αρχείου απέτυχε. Παρακαλώ δοκιμάστε ξανά."
+    },
     "form": "Φόρμα",
     "found": "Δεν βρέθηκαν | Βρέθηκε | Βρέθηκαν",
     "from": "Από",
     "history": "Ιστορικό",
     "id": "Αναγνωριστικό",
-    "incomplete": "Eλλιπής",
+    "incomplete": "Eλλιπή",
     "incomplete file": "Αυτό το αρχείο είναι ημιτελές. Πρέπει να υποβάλετε επιπλέον αρχεία  ή να το αντικαταστήσετε.",
     "keep old file?": "Θέλετε να κρατήσετε το παλιό αρχείο; Εάν ναι, το νέο αρχείο θα μεταφερθεί στο τέλος.",
     "login": "Είσοδος",
@@ -74,13 +88,13 @@
     "meal_statistics": {
         "adapted": "Προσαρμοσμένο",
         "breakfast": "@:breakfast",
-        "cards": "@:{card.value}",
-        "coupons": "@:{coupon.value}",
+        "cards": "@:card.value",
+        "coupons": "@:coupon.value",
         "current meal": "Τρέχον γεύμα",
-        "dinner": "@:{dinner}",
+        "dinner": "@:dinner",
         "export": "Εξαγωγή Στατιστικών",
-        "export_form": "Φόρμα για την @:{meal_statistics.export}",
-        "lunch": "@:{lunch}",
+        "export_form": "Φόρμα για την @:meal_statistics.export",
+        "lunch": "@:lunch",
         "today": "Σήμερα",
         "value": "Στατιστικά Γεύματος"
     },
@@ -103,12 +117,17 @@
         "period": "@:meal",
         "phone": "Τηλέφωνο",
         "status": "Είδος",
-        "time": "Ώρα"
+        "time": "Ώρα",
+        "coupon_owner": "@:coupon.owner",
+        "card_applicant": "@:card.value @:applicant",
+        "address": "@:model_data.location",
+        "usage_card": "@:transactions",
+        "card.history": "@:transactions"
     },
     "money": "Χρήματα",
     "my info": "Οι Πληροφορίες μου",
     "next": "Επόμενο",
-    "no file or description": "@_{no_file} ή δεν υπάρχει περιγραφή",
+    "no file or description": "@:no_file ή δεν υπάρχει περιγραφή",
     "no_file": "Δεν υπάρχει κανένα αρχείο.",
     "periodLabel": "Περίοδος",
     "pleaseSelect": "Παρακαλώ επιλέξτε ένα",
@@ -118,22 +137,23 @@
     "purchase": "Πώληση",
     "receiver": "Παραλήπτης",
     "request_failed": "Το αίτημα απέτυχε",
-    "request_failed_status_wont_changed": "@:{required_failed}: @:{application status wont change}",
-    "retrieving_application_failed": "@:{required_failed}: Η ανάκτηση της αίτησης απέτυχε.",
-    "retrieving_application_files_failed": "@:{required_failed}: Η ανάκτηση των αρχείων αυτής της αίτησης απέτυχε.",
+    "request_failed_status_wont_changed": "@:required_failed: @:{application status wont change}",
+    "retrieving_application_failed": "@:required_failed: Η ανάκτηση της αίτησης απέτυχε.",
+    "retrieving_application_files_failed": "@:required_failed: Η ανάκτηση των αρχείων αυτής της αίτησης απέτυχε.",
     "sale_coupons": "Πώληση Κουπονιών",
+    "save": "Αποθήκευση",
     "select_file": "Επιλογή αρχείου",
     "sender": "Αποστολέας",
-    "some_files_not_updated": "@:{required_failed}: Δεν ήταν δυνατή η μεταφόρτωση ή η διαγραφή ορισμένων αρχείων στον διακομιστή. @:{application status wont change}",
+    "some_files_not_updated": "@:required_failed: Δεν ήταν δυνατή η μεταφόρτωση ή η διαγραφή ορισμένων αρχείων στον διακομιστή. @:{application status wont change}",
     "staff": "Προσωπικό",
     "status": {
         "accepted": "Έγκριση",
         "category": {
             "accepted": "Εγγεκριμένο | Εγγεκριμένα",
             "checking": "Ύπο έλενχο",
-            "incomplete": "Ελλιπή | Ελλιπή",
+            "incomplete": "Ελλιπές | Ελλιπή",
             "rejected": "Απόρριπτέο | Απορριπτέα",
-            "submitted": "Υποβλημενο | Υποβλημένα",
+            "submitted": "Υποβεβλημένο | Υποβεβλημένα",
             "temporary_saved": "Προσωρινά αποθήκευμένο | Προσωρινά αποθηκευμένα",
             "temporary_checked": "Προσωρινά ελεγμένο | Προσωρινά ελεγμένα"
         },
