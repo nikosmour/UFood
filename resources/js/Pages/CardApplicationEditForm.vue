@@ -25,7 +25,7 @@
                     </div>
                     <!-- Submit button -->
                     <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">
-                        {{ $t('status.submitted') }}
+                        {{ $t('submit') }}
                     </button>
                 </form>
                 <!-- Show card documents if not in edit mode -->

@@ -6,7 +6,7 @@
         <form id="use_form" :aria-label="$t('entry_check_form')" class="needs-validation" novalidate
               @submit.prevent="check_id">
             <div class="form-group mx-auto" style="max-width: 20em;">
-                <label for="academic_id"><strong>{{ $t('card_number') }}</strong></label>
+                <label for="academic_id"><strong>{{ $t('entry_input') }}</strong></label>
                 <input
                     id="academic_id"
                     v-model.number="academic_id"
