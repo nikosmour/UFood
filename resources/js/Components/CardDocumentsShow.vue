@@ -1,6 +1,6 @@
 <template>
     <div v-if="applicationEdit">
-        <button class="btn btn-primary mb-3" @click="addFileUpload()">{{ $t('Add File') }}</button>
+        <button class="btn btn-primary mb-3" @click="addFileUpload()">{{ $t('add File') }}</button>
         <div v-for="(file, index) in files" :key="index" class="mt-3">
 
             <input v-if="canEditDocument[index]" accept="application/pdf" type="file"

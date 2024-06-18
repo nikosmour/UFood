@@ -6,7 +6,7 @@
             </header>
             <h5 class="mt-3">{{ $t('file', 2) }}</h5>
             <div class="mb-3">
-                <select v-model="selectFile" aria-label="Select File" class="form-select">
+                <select v-model="selectFile" :aria-label="$t('select_file')" class="form-select">
                     <option v-for="file in files" :key="file.id" :value="file">{{ $t('file') }}: {{
                             file.id
                         }}
@@ -14,7 +14,7 @@
                 </select>
             </div>
             <div v-if="selectFile" class="mb-3">
-                <select v-model="selectFile.status" aria-label="File Status" class="form-select"
+                <select v-model="selectFile.status" :aria-label="$t('file_status')" class="form-select"
                         @change="updateStatus(selectFile)">
                     <option disabled value="">{{ $t('pleaseSelect') }}</option>
                     <option v-for="(value, status) in $enums.CardDocumentStatusEnum" :key="status" :value="value">
