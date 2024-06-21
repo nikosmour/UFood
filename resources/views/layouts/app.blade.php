@@ -1,4 +1,5 @@
-<!doctype html>
+@php use Carbon\Carbon; @endphp
+    <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -14,6 +15,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script> window.isAuthenticated = {!! (auth()->check())? 1 : 0!!}</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -91,7 +93,7 @@
         @yield('content')
     </main>
     <footer class="text-center ">
-        <div> © {{ __("UNIVERSITY OF PATRAS").' '. \Carbon\Carbon::now()->year }} </div>
+        <div> © {{ __("UNIVERSITY OF PATRAS").' '. Carbon::now()->year }} </div>
         <div>{{ __("Food Department") }} </div>
         <!-- <img src= style="max-height: 100px" >-->
         <img src="{{asset('img/big_logo_Upatras.png')}}" alt='logo'/>

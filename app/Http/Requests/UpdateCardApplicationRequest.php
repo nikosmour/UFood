@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\CardStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateCardApplicationRequest extends FormRequest
 {
@@ -24,7 +27,8 @@ class UpdateCardApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => 'string'
+            'comment' => 'string',
+            'status' => [Rule::in([CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED]), new Enum(CardStatusEnum::class)]
         ];
     }
 }

@@ -11,30 +11,42 @@ export default {
         ...mapActions([
             'getUser'
         ]),
-    },
-    watch: {
-        isAuthenticated(newValue) {
-            if (!newValue && this.$route.meta.requiresAuth)
+        redirectAuth(isAuthenticated) {
+            console.log('App.vue/redirectAuth', this.$route.fullPath, isAuthenticated, this.$route.meta.requiresAuth);
+            if (!isAuthenticated && (this.$route.meta.requiresAuth || this.$route.meta.requiresAbility))
                 this.$router.push({
                     name: 'login',
                     query: {redirect: this.$route.fullPath},
                 })
-            else if (newValue && this.$route.name === 'login')
+            else if (isAuthenticated && this.$route.name === 'login')
                 this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
         }
     },
+    watch: {
+        isAuthenticated(newValue) {
+            console.log('App.vue/watch/isAuthenticated', this.$route.fullPath);
+            this.redirectAuth(newValue);
+        }
+    },
+    created() {
+        //console.log('created',this.$route,this.$router.resolve(this.$route.fullPath).fullPath,Date());
+
+    },
     mounted() {
+        this.redirectAuth(this.isAuthenticated);
+        //console.log('mounted',this.$route,this.$router.resolve(this.$route.fullPath).fullPath,Date());
+        // console.log('mounted',this.$route);
         let timeoutMin = process.env.MIX_SESSION_TIME_OUT;
         let timeout = (timeoutMin - 1) * 60000
-        if (timeoutMin < 1)
-            timeout = (timeoutMin) * 60000
-        else if (timeoutMin < 2)
+        //console.log('App.vue/mounted/timeout',timeout)
+        if (timeoutMin < 2)
             timeout = 60000
 
         setInterval(() => {
             axios.get(route('sanctum.csrf-cookie'));
         }, timeout);
         setInterval(() => {
+            console.log('setInterval', this.isAuthenticated);
             if (this.isAuthenticated)
                 this.getUser();
         }, timeout)
