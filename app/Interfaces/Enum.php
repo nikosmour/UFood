@@ -46,4 +46,9 @@ interface Enum
      * @return Enum
      */
     public static function random(): Enum;
+
+    /**
+     * @return string
+     */
+    public function valueWithUnderscores(): string;
 }

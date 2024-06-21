@@ -46,7 +46,7 @@ export default {
     methods: {
         broadcasting() {
             if (typeof Echo !== 'undefined' && this.category)
-                Echo.join(`cardChecking.${this.category}`)
+                Echo.join(`cardChecking.${this.category.replace(' ', '_')}`)
                     .here((users) => console.log('Joined channel', users))
                     .joining((user) => console.log('Joining', user))
                     .leaving((user) => console.log('Leaving', user))
