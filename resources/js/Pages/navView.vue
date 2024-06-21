@@ -3,7 +3,7 @@
         <div class="container">
             <!-- Brand/logo -->
             <router-link class="nav-link router-link-exact-active" to="">
-                {{ appName) }}
+                {{ appName }}
             </router-link>
             <!-- Toggle button for mobile navigation -->
             <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
