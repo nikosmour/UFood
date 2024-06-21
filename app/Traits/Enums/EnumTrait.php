@@ -71,4 +71,9 @@ trait EnumTrait
     {
         return collect(self::cases())->random();
     }
+
+    public function valueWithUnderscores(): string
+    {
+        return str_replace(' ', '_', $this->value);
+    }
 }

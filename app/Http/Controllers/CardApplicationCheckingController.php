@@ -58,6 +58,7 @@ class CardApplicationCheckingController extends Controller
 
         ];
         Validator::make($vData, $secondValidationRules)->validate();
+        $vData['status'] = CardStatusEnum::from($vData['status']);
         DB::transaction(function () use ($vData, $application) {
             $data = isset($vData['card_application_staff_comment']) ? [
                 'comment' => $vData['card_application_staff_comment'],

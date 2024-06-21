@@ -116,6 +116,7 @@ class CardApplicationController extends Controller
     {
         $this->authorize('update', $cardApplication);
         $vData = $request->validated();
+        $vData['status'] = CardStatusEnum::from($vData['status']);
         if ($vData['status'] === CardStatusEnum::SUBMITTED && $cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0)
             return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents '];
 
