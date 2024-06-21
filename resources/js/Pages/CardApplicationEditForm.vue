@@ -2,7 +2,7 @@
     <!-- Vue component template -->
     <div>
         <!-- Display application status and expiration date -->
-        <p>{{ $t('applicationStatus') }} : {{ $t(status) + $t('and') + $t('expiration date') }} : {{
+        <p>{{ $t('applicationStatus') }} : {{ $t(status) + ' ' + $t('and') + ' ' + $t('expiration date') }} : {{
                 expiration_date
             }}</p>
         <div class='row '>
@@ -11,11 +11,23 @@
                 <header>
                     <br/>
                     <h4 class="text-center">{{ title }}</h4>
+                    <button v-if="status === $enums.CardStatusEnum.TEMPORARY_SAVED" :aria-label="$t('save')"
+                            class="btn btn-secondary" @click="changeToSave()">
+                        <i aria-hidden="true" class="bi bi-save"></i>
+                        <span class="visually-hidden">{{ $t('save') }}</span>
+                    </button>
+                    <button v-else-if="applicationEdit" :aria-label="$t('edit')" class="btn btn-secondary"
+                            @click="changeToEdit()">
+                        <i aria-hidden="true" class="bi bi-pencil"></i>
+                        <span class="visually-hidden">{{ $t('edit') }}</span>
+                    </button>
                 </header>
+
                 <!-- Form for editing card application -->
-                <form v-if="applicationEdit" id="card_application_form" v-on:submit.prevent="">
+                <form v-if="status === $enums.CardStatusEnum.TEMPORARY_SAVED" id="card_application_form"
+                      v-on:submit.prevent="">
                     <!-- Show card documents -->
-                    <CardDocumentsShow ref="CardDocuments" v-bind:applicationEdit="applicationEdit"
+                    <CardDocumentsShow ref="CardDocuments" v-bind:applicationEdit="true"
                                        v-bind:cardApplication="cardApplication?.id"
                                        v-on:previewFile="this.docLink= $event"/>
                     <!-- Comment input field -->
@@ -24,12 +36,12 @@
                         <input id="commentStudent" v-model="commentStudent" type="text">
                     </div>
                     <!-- Submit button -->
-                    <button v-if="applicationEdit" class="btn btn-primary" type="submit" @click="submit_form">
+                    <button class="btn btn-primary" type="submit" @click="submit_form">
                         {{ $t('submit') }}
                     </button>
                 </form>
                 <!-- Show card documents if not in edit mode -->
-                <CardDocumentsShow v-else v-bind:applicationEdit="applicationEdit"
+                <CardDocumentsShow v-else :applicationEdit="false"
                                    v-bind:cardApplication="cardApplication?.id"
                                    v-on:previewFile="this.docLink= $event"/>
                 <br/>
@@ -95,6 +107,14 @@ export default {
                         this.cardApplication.card_last_update.status = e['status'];
                     });
         },
+        async changeToEdit() {
+            return await this.update_form(this.$enums.CardStatusEnum.TEMPORARY_SAVED);
+        },
+        async changeToSave() {
+            await this.$refs.CardDocuments.submitFiles();
+            return await this.update_form(this.$enums.CardStatusEnum.TEMPORARY_SAVED);
+
+        },
         // Method to fetch initial data
         startingData() {
             this.getApplication();
@@ -120,6 +140,14 @@ export default {
         },
         // Method to submit form
         async submit_form() {
+            if (!(await this.$refs.CardDocuments.submitFiles())) {
+                this.result.success = false;
+                this.result.message = this.$t('some_files_not_updated');
+                return;
+            }
+            return await this.update_form(this.$enums.CardStatusEnum.SUBMITTED);
+        },
+        async update_form(status) {
             let url = route('cardApplication.update', this.cardApplication);
             let params = new FormData();
             this.result.message = ''; //#todo more clever way to show if the value is the same
@@ -127,28 +155,30 @@ export default {
                 this.result.success = false;
                 this.result.message = this.$t('application_status_not_allow_submission');
             }
-            if (!(await this.$refs.CardDocuments.submitFiles())) {
-                this.result.success = false;
-                this.result.message = this.$t('some_files_not_uploaded');
-                return;
-            }
             params.append('_method', 'PUT');
+            params.append('status', status);
             if (this.commentStudent) {
                 params.append('comment', this.commentStudent);
             }
             console.log('start axios to application for submission');
             axios.post(url, params
             ).then(responseJson => {
+                console.log(responseJson);
                 let json = responseJson['data'];
                 this.result.success = json['success'];
-                this.result.message = json['message'];
+                this.result.message = (json['success']) ?
+                    this.$t('application') + " " + $this.$t(
+                        'changeFromTo', {
+                            "from": `status.${this.cardApplication.card_last_update.status}`,
+                            'to': `status.${status}`
+                        }) : this.$t(json['message']);
             }).catch(errors => {
                 this.result.success = false;
                 this.result.errors = errors.response.data.errors;
                 this.result.message = this.$t('request_failed_status_wont_changed');
             }).finally(() => {
                 if (this.result.success) {
-                    this.cardApplication.card_last_update.status = this.$enums.CardStatusEnum.SUBMITTED;
+                    this.cardApplication.card_last_update.status = status;
                 }
 
                 }

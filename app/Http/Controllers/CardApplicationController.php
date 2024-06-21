@@ -7,11 +7,11 @@ use App\Events\CardApplicationUpdated;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
-use App\Models\CardApplicationUpdate;
 use App\Traits\DocumentTrait;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,7 +30,7 @@ class CardApplicationController extends Controller
     }
 
     /**
-     * @return Application|Factory|View|RedirectResponse|Redirector|\Illuminate\Http\JsonResponse
+     * @return Application|Factory|View|RedirectResponse|Redirector|JsonResponse
      */
     public function index(Request $request)
     {
@@ -39,7 +39,7 @@ class CardApplicationController extends Controller
         if ($user->cardApplicant->currentCardApplication()->count() > 0) {
             return ($request->expectsJson())
                 ? response()->json(["cardApplication" => $user->cardApplicant->currentCardApplication()->with('cardLastUpdate')->first()], 200)
-                : view('cardApplication/show');;
+                : view('cardApplication/show');
         }
         $user->cardApplicant->address;
         $models = [$user];
@@ -62,7 +62,7 @@ class CardApplicationController extends Controller
 
     /**
      * @param StoreCardApplicationRequest $request
-     * @return Application|RedirectResponse|Redirector|\Illuminate\Http\JsonResponse
+     * @return Application|RedirectResponse|Redirector|JsonResponse
      */
     public function store(StoreCardApplicationRequest $request)
     {
@@ -115,17 +115,20 @@ class CardApplicationController extends Controller
     public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication): array
     {
         $this->authorize('update', $cardApplication);
-        if ($cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0) return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents ',];
-
         $vData = $request->validated();
-        $vData['status'] = CardStatusEnum::SUBMITTED;
+        if ($vData['status'] === CardStatusEnum::SUBMITTED && $cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0)
+            return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents '];
+
+
         DB::transaction(function () use ($vData, $cardApplication) {
             $old_status = $cardApplication->cardLastUpdate->status ?? null;
-            $cardApplication->applicantComments()->create($vData);
             $cardApplication->touch();
+            if ($old_status === $vData['status'])
+                return;
+            $cardApplication->applicantComments()->create($vData);
             broadcast(event: new CardApplicationUpdated(
                 cardApplication: $cardApplication,
-                status: $vData['status']->value,
+                status: $vData['status'],
                 old_status: $old_status,
                 comment: $vData['comment'] ?? null))->toOthers();
         });
