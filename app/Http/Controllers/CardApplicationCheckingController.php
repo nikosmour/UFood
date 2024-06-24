@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CardApplicationCheckingController extends Controller
 {
@@ -52,13 +53,22 @@ class CardApplicationCheckingController extends Controller
         $vData = $request->validated();
         $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
         // make validation comparing data in database
+        $old_status = $application->cardLastUpdate['status']->value;
+//        dd($old_status === CardStatusEnum::CHECKING->value);
+//        dd($old_status,CardStatusEnum::CHECKING->value,$vData['status'], $vData['status'] === $old_status);
+
         $secondValidationRules = [
-            'status' => ['different:' . $application->cardLastUpdate['status']->value],
+            'status' => [($old_status === CardStatusEnum::CHECKING->value) ?
+                Rule::notIn([CardStatusEnum::CHECKING->value]) :
+                Rule::in([CardStatusEnum::CHECKING->value])
+
+            ],
             'expiration_date' => ['date', 'after_or_equal:' . $application['expiration_date']],
 
         ];
         Validator::make($vData, $secondValidationRules)->validate();
         $vData['status'] = CardStatusEnum::from($vData['status']);
+//        dd('eutheuet');
         DB::transaction(function () use ($vData, $application) {
             $data = isset($vData['card_application_staff_comment']) ? [
                 'comment' => $vData['card_application_staff_comment'],
@@ -88,7 +98,7 @@ class CardApplicationCheckingController extends Controller
      */
     public function search(Request $request)
     {
-        $query = CardApplication::with(relations: ['cardLastUpdate', 'cardApplicationDocument']);
+        $query = CardApplication::with(relations: ['cardLastUpdate', 'cardApplicationDocument', 'cardApplicant', 'academic', 'addresses']);
         if (isset($request['application_id']))
             $query->where('id', $request['application_id']);
         elseif (isset($request['academic_id']))

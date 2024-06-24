@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enum\CardStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,5 +59,16 @@ class CardApplication extends Model
     public function cardLastUpdate(): HasOne
     {
         return $this->hasOne(CardApplicationUpdate::class)->latestOfMany();
+    }
+
+    /**
+     * Every application relates to address through the applicant but because
+     * the column, everywhere that relates to the person,  is academic_id ,
+     * there is not need to access through the applicant
+     * @return HasMany
+     */
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class, 'academic_id', 'academic_id');
     }
 }
