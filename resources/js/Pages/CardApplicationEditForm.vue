@@ -62,14 +62,10 @@ export default {
         return {
             // Initialize data properties
             result: {
-                message: this.$t('test.Message'),
+                message: this.$t('test.message'),
                 success: true,
                 hide: false,
-                errors: {
-                    default: function () {
-                        return [];
-                    }
-                }
+                errors: []
             },
             docLink: '', // Initialize docLink
             cardApplication: null, // Initialize cardApplication
@@ -167,15 +163,17 @@ export default {
                 let json = responseJson['data'];
                 this.result.success = json['success'];
                 this.result.message = (json['success']) ?
-                    this.$t('application') + " " + $this.$t(
+                    this.$t('application') + " " + this.$t(
                         'changeFromTo', {
-                            "from": `status.${this.cardApplication.card_last_update.status}`,
-                            'to': `status.${status}`
+                            "from1": `status.${this.cardApplication.card_last_update.status.replace(' ', '_')}`,
+                            'to1': `status.${status.replace(' ', '_')}`
                         }) : this.$t(json['message']);
+                this.result.errors = [];
             }).catch(errors => {
+                console.log(errors);
                 this.result.success = false;
-                this.result.errors = errors.response.data.errors;
-                this.result.message = this.$t('request_failed_status_wont_changed');
+                this.result.errors = errors.response.data.errors || errors;
+                this.result.message = this.$t('request_failed_status_wont_change');
             }).finally(() => {
                 if (this.result.success) {
                     this.cardApplication.card_last_update.status = status;
