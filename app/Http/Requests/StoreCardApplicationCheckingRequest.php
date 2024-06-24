@@ -34,7 +34,8 @@ class StoreCardApplicationCheckingRequest extends FormRequest
                 'after_or_equal:' . now()->format('Y-m-d'),
 
             ],
-            'card_application_staff_comment' => ['string', Rule::requiredIf($this->input('status') != CardStatusEnum::ACCEPTED->value)]
+            'card_application_staff_comment' => ['string', Rule::requiredIf(!in_array($this->input('status'), [
+                CardStatusEnum::ACCEPTED->value, CardStatusEnum::CHECKING->value, CardStatusEnum::TEMPORARY_CHECKED->value]))]
 
 
         ];

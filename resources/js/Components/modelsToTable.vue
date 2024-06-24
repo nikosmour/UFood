@@ -1,5 +1,21 @@
 <template>
     <div>
+        <!--        <h3>{{ caption }}</h3>
+                        <template v-for="(model, index) in models" :key="caption +'-model-' + index">
+                            <show-a-data v-for="key in attributes" :key="key" :name="$t('model_data.' + key.toLowerCase())"
+                                         :value=" model[key]" class="col-auto row"/>
+                            <template v-for="(relationship, index) in relationships"
+                                      :key="caption +'-model-' + index +'relationship-' + index">
+                                <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
+                                    {{ $t('model_data.' + relationship) }}
+                                    <span v-if="expandedRelationships.includes(index)">&#9650;</span>
+                                    <span v-else>&#9660;</span>
+                                </button>
+                                <models-to-table v-if="expandedRelationships.includes(index)"
+                                                 :caption="$t('model_data.'+relationship)" :models="dataToArray(model[relationship])">
+                                </models-to-table>
+                            </template>
+                        </template>-->
         <table class="table table-hover table-bordered caption-top">
             <caption>{{ caption }}</caption>
             <thead class="thead-dark">
@@ -8,23 +24,26 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(model, index) in models" :key="'model-' + index">
-                <td v-for="key in attributes" :key="'model-' + index + '-attribute-' + key">{{ model[key] }}</td>
-            </tr>
-            <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
-                <td :colspan="attributes.length" class="p-0">
-                    <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
-                        {{ $t('model_data.' + relationship) }}
-                        <span v-if="expandedRelationships.includes(index)">&#9650;</span>
-                        <span v-else>&#9660;</span>
-                    </button>
-                    <div v-if="expandedRelationships.includes(index)">
-                        <models-to-table :caption="$t('model_data.'+relationship)"
-                                         :models="dataToArray(models[0][relationship])"/>
-                    </div>
-                </td>
-            </tr>
+            <template v-for="(model, index) in models" :key="'model-' + index">
+                <tr>
+                    <td v-for="key in attributes" :key="'model-' + index + '-attribute-' + key">{{ model[key] }}</td>
+                </tr>
+                <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
+                    <td :colspan="attributes.length" class="p-0">
+                        <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
+                            {{ $t('model_data.' + relationship) }}
+                            <span v-if="expandedRelationships.includes(index)">&#9650;</span>
+                            <span v-else>&#9660;</span>
+                        </button>
+                        <div v-if="expandedRelationships.includes(index)">
+                            <models-to-table :caption="$t('model_data.'+relationship)"
+                                             :models="dataToArray(model[relationship])"/>
+                        </div>
+                    </td>
+                </tr>
+            </template>
             </tbody>
+
         </table>
     </div>
 </template>
