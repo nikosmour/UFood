@@ -57,7 +57,7 @@
         "request_failed_status_wont_change": "@:request_failed_status_wont_change",
         "retrieving_application_failed": "@:retrieving_application_failed",
         "retrieving_application_files_failed": "@:retrieving_application_files_failed",
-        "sell_something": "Δεν είναι δινατή η πώληση μηδενικού πλήθους κουπονιών",
+        "at_least_one_greater_than_zero": "Τουλάχιστον μια τιμή πρεπει να είναι μεγαλήτερη του 0",
         "some_files_not_updated": "@:some_files_not_updated"
     },
     "expiration date": "@:date λήξης",
@@ -200,5 +200,6 @@
         "information": "Στοιχεία Χρήστη",
         "value": "Χρήστης"
     },
+    "verification": "Επαλήθευση",
     "Welcome": "Καλώς ορίσατε"
 }
