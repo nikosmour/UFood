@@ -1,31 +1,50 @@
 <template>
-    <div class="col-xm-12 col-sm-6 col-md-7 col-lg-8">
-        <header class="mb-4">
-            <h4 class="text-left">{{ $t('sale_coupons') }}</h4>
-        </header>
-        <form v-on:submit.prevent="coupons">
-            <!--            <div class="form-group mx-auto " style="max-width:20em">-->
-            <!--                <div class="col-sm md-form">-->
-            <!--                    <label > Αριθμός κάρτας</label>-->
-            <!--                    <input  v-bind:class="getClass/*, {'form-control':true}*/ " type="number" v-model.number='form_data.academic_id'  placeholder="Καταχωρίστε τον αριθμό της κάρτας"  min="0" autofocus required/>&lt;!&ndash;name="academic_id"&ndash;&gt;-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <div class="form-group form-row mx-auto  " style="max-width:30em">
-                <div v-for="(value, category) in form_data" :key="'form_data_'+category" class="col-sm md-form">
-                    <label>{{ $t(`${category.toLowerCase()}`) }}</label>
-                    <input v-model.trim.number='form_data[category]' class="form-control" min="0" type="number"/>
+    <div class="container col-xm-12 col-sm-6 col-md-7 col-lg-8">
+        <div class="row justify-content-center">
+            <div class="col-md-11">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">{{
+                                $t('sale_coupons') + ' - ' + $t(disableForm ? 'verification' : 'edit')
+                            }}</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <form @submit.prevent="submitForm">
+                            <loading v-if="isLoading"/>
+                            <div v-for="(value, category) in form_data" :key="'form_data_'+category" class="row mb-3">
+                                <label :for="category"
+                                       class="col-md-4 col-form-label text-md-end">{{ $t(`${category.toLowerCase()}`) }}</label>
+                                <div class="col-md-6">
+                                    <input :id="category" v-model.trim.number='form_data[category]'
+                                           :class="[{ 'is-invalid': errors[category] || errors.credentials },
+                                           disableForm ? 'form-control-plaintext' : 'form-control',
+                                           ]" :readonly="disableForm" min="0" required type="number">
+                                    <div v-for=" error in errors[category]" class="invalid-feedback" role="alert">
+                                        {{ $t(error) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <message v-bind="result"></message>
+                            <div class="row mb-0">
+                                <div class="col-md-8 offset-md-4">
+                                    <button v-if="disableForm" class="btn btn-primary" type="submit">{{
+                                            $t('submit')
+                                        }}
+                                    </button>
+                                    <button v-else class="btn btn-primary" type="button" v-on:click="validateForm">
+                                        {{ $t('next') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <message v-bind="result"></message>
-            <div class="mx-auto" style="max-width: 5em;">
-                <button class="btn btn-primary" type="submit">{{ $t('next') }}</button>
-            </div>
-        </form>
+        </div>
     </div>
 </template>
-
 <script>
-import axios from 'axios';
 
 export default {
     data() {
@@ -37,6 +56,9 @@ export default {
                 DINNER: 0,
             },
             url: route('coupons.purchase.store'),
+            errors: {},
+            isLoading: false,
+            disableForm: false,
             result: {
                 message: this.$t("test.message"),
                 success: true,
@@ -46,25 +68,25 @@ export default {
         };
     },
     methods: {
-        coupons() {
+        validateForm() {
+            this.errors = {};
+            this.result.message = '';
             if (this.form_data.academic_id === 0) {
                 this.result.success = false;
                 this.result.message = this.$t('request_failed');
-                this.result.errors = [this.$t('provide_valid_card')];
+                this.errors.academic_id = [this.$t('provide_valid_card')];
                 return;
             }
             if (this.form_data.BREAKFAST === 0 && this.form_data.LUNCH === 0 && this.form_data.DINNER === 0) {
                 this.result.success = false;
                 this.result.message = this.$t('request_failed');
-                this.result.errors = [this.$t('errors.sell_something')];
+                this.errors.BREAKFAST = [this.$t('errors.at_least_one_greater_than_zero')];
                 return;
             }
-            if (confirm(this.$t('confirm_purchase', {
-                academic_id: this.form_data.academic_id,
-                BREAKFAST: this.form_data.BREAKFAST,
-                LUNCH: this.form_data.LUNCH,
-                DINNER: this.form_data.DINNER
-            }))) {
+            this.disableForm = true
+        },
+        submitForm() {
+                this.isLoading = true;
                 axios.post(this.url, this.form_data)
                     .then(responseJson => {
                         let json = responseJson.data;
@@ -80,12 +102,15 @@ export default {
                     })
                     .catch(errors => {
                         this.result.success = false;
-                        this.result.errors = errors.response.data.errors;
+                        this.errors = errors.response.data.errors;
                         this.result.message = this.$t('request_failed');
+                    })
+                    .finally(() => {
+                        // Reset form after login attempt
+                        this.isLoading = false;
+                        this.disableForm = false;
                     });
-            }
         }
     }
 };
 </script>
-
