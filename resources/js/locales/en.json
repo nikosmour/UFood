@@ -27,6 +27,7 @@
         "latestFrom": "Last comment submitted by ",
         "value": "No comment | Comment | Comments"
     },
+    "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}",
     "company": {
         "department": "Student Welfare Department",
         "name": "University of Patras",
@@ -83,7 +84,9 @@
     "id": "ID",
     "incomplete": "Incomplete",
     "incomplete file": "This file is incomplete. You must submit more documents or to replace it.",
+    "invalid.credentials": "invalid credentials",
     "keep old file?": "Would you like to keep the old file? If yes, you will see the new file at the end",
+    "loading": "Loading",
     "login": "Login",
     "logo": "Logo",
     "logout": "Logout",
@@ -134,6 +137,7 @@
     "next": "Next",
     "no file or description": "@:no_file or description",
     "no_file": "There isn't any file",
+    "password": "Password",
     "periodLabel": "Period",
     "pleaseSelect": "Please select one",
     "preview": "Preview",

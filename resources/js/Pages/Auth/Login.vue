@@ -1,52 +1,82 @@
 <template>
-    <div>
-        <h1>Login</h1>
-        <form @submit.prevent="loginUser">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input id="email" v-model="email" required type="email">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">{{ $t("login") }}</div>
+
+                    <div class="card-body">
+                        <form @submit.prevent="submitForm">
+                            <loading v-if="isLoading"/>
+                            <div class="row mb-3">
+                                <label class="col-md-4 col-form-label text-md-end" for="email">{{ $t('email') }}</label>
+                                <div class="col-md-6">
+                                    <input id="email" v-model="formData.email" :class="{ 'is-invalid': errors.email || errors.credentials }"
+                                           class="form-control " required
+                                           type="email">
+                                    <div v-for=" error in errors.email" class="invalid-feedback" role="alert">
+                                        {{ $t(error) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-4 col-form-label text-md-end" for="password">{{
+                                        $t("password")
+                                    }}</label>
+                                <div class="col-md-6">
+                                    <input id="password" v-model="formData.password" :class="{ 'is-invalid': errors.password || errors.credentials}"
+                                           class="form-control"
+                                           required type="password">
+                                    <div v-for=" error in errors.password || errors.credentials"
+                                         class="invalid-feedback" role="alert">
+                                        {{ $t(error) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--                            <div class="row mb-3">
+                                                            <div class="col-md-6 offset-md-4">
+                                                                <div class="form-check">
+                                                                    <input id="remember" v-model="formData.remember" class="form-check-input"
+                                                                           type="checkbox">
+                                                                    <label class="form-check-label" for="remember">Remember Me</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
+
+                            <div class="row mb-0">
+                                <div class="col-md-8 offset-md-4">
+                                    <button class="btn btn-primary" type="submit">{{ $t("login") }}</button>
+                                    <!--
+                                                                        <a class="btn btn-link" href="#">Forgot Your Password?</a>
+                                    -->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input id="password" v-model="password" required type="password">
-            </div>
-            <div class="form-group">
-                <button type="submit">Login</button>
-            </div>
-            <div v-if="error">{{ error }}</div>
-        </form>
+        </div>
     </div>
 </template>
-
 <script>
-
 import {mapGetters} from "vuex";
 
 export default {
     data() {
         return {
-            email: '',
-            password: '',
-            error: null,
+            formData: {
+                email: '',
+                password: '',
+                // remember: false
+            },
+            errors: {},
+            isLoading: false
         };
     },
     methods: {
-        async getCookie(cname) {
-            let name = cname + '='
-            let decodedCookie = decodeURIComponent(document.cookie)
-            let ca = decodedCookie.split(';')
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return null;
-        },
-        async loginUser() {
+        async submitForm() {
             try {
                 // 1. Fetch CSRF cookie (assuming you have a function to retrieve it)
                 /*await axios.get('/sanctum/csrf-cookie').then(response => {
@@ -54,28 +84,25 @@ export default {
                 });
                 const csrfToken = await this.getCookie('XSRF-TOKEN');*/
 
-                // 2. Prepare login data
-                const loginData = {
-                    email: this.email,
-                    password: this.password
-                };
-
 
                 // 4. Handle successful login
-                if (await this.$store.dispatch('loginUser', loginData)) {
+                this.isLoading = true;
+                if (await this.$store.dispatch('loginUser', this.formData)) {
                     console.log('Login successful! login as ', this.$store.state.auth.user, this.$store.state.auth.isLoggedIn);
 
                     // Store authentication state (e.g., tokens) or redirect
                 } else {
                     // 5. Handle login errors
-                    this.error = response.data.message; // Assuming response has an 'error' message
+                    this.errors = response.data.message; // Assuming response has an 'error' message
                 }
-            } catch (error) {
+            } catch (errors) {
                 // 6. Handle network or other errors
-                console.error('Login error:', error);
-                this.error = 'An error occurred. Please try again.'; // Generic error for user
+                this.errors = errors.response.data.errors;
+                console.error('Login error:', errors.response.data.errors);
+                // this.error = 'An error occurred. Please try again.'; // Generic error for user
             } finally {
                 // Reset form after login attempt
+                this.isLoading = false
                 this.email = '';
                 this.password = '';
             }

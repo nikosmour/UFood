@@ -4,7 +4,6 @@ namespace App\Http\Controllers\AuthSanctum;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 //use Laravel\Sanctum\Http\Controllers\SanctumController;
 
@@ -18,11 +17,15 @@ class LoginController
         ]);
 
         // Attempt login using Laravel authentication
-        foreach (config('auth.guards') as $guard => $value) {
+//        dd(config('auth.guards'));
+        foreach (["couponStaffs", "academics", "cardApplicationStaffs", "entryStaffs"] as $guard) {
 
             if (Auth::guard($guard)->attempt($credentials)) {
                 $request->session()->regenerate();
                 $user = Auth::guard($guard)->user();
+                $user->couponOwner;
+                $cardApplicant = $user->cardApplicant;
+                if ($cardApplicant) $cardApplicant->address;
                 return response()->json([
                     'success' => true,
                     'message' => 'Login Successful',
@@ -35,7 +38,7 @@ class LoginController
         return response()->json([
             'success' => false,
             'message' => 'Invalid email or password',
-            'guard' => config('auth.guards'),
-        ], 401);
+            "errors" => ["credentials" => ['invalid.credentials']]
+        ], 422);
     }
 }
