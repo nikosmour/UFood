@@ -12,8 +12,8 @@
     "application": "Application | Applications",
     "application_id": "Application ID",
     "application_status_not_allow_submission": "@:{required_failed}: The status of the application does not allow submission",
-    "request_failed_status_wont_change": "The application status will not change.",
     "applicationStatus": "Application Status",
+    "back": "Back",
     "breakfast": "Breakfast",
     "cancel adding file": "Cancel adding file",
     "card": {
@@ -27,12 +27,12 @@
         "latestFrom": "Last comment submitted by ",
         "value": "No comment | Comment | Comments"
     },
-    "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}",
     "company": {
         "department": "Student Welfare Department",
         "name": "University of Patras",
         "appName": "Meal plan"
     },
+    "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}",
     "coupon": {
         "owner": "Coupon Owner",
         "owner.info": "Coupon Owner Information",
@@ -48,22 +48,26 @@
     "entry_input": "@:card.value",
     "errors": {
         "application_status_not_allow_submission": "@:application_status_not_allow_submission",
-        "request_failed_status_wont_change": "@:request_failed_status_wont_change",
         "file_cant_edited": "@:file_cant_edited",
         "incomplete file": "@:{incomplete file}",
         "keep old file?": "@:{keep old file?}",
+        "maxCoupons": "The max coupons that you can use is {max}",
+        "minCoupons": "The min coupons that you can use is {min}",
         "no file or description": "@:{no file or description}",
         "no_file": "@:no_file",
         "request_failed_status_wont_change": "@:request_failed_status_wont_change",
         "retrieving_application_failed": "@:retrieving_application_failed",
         "retrieving_application_files_failed": "@:retrieving_application_files_failed",
+        "transfer": {
+            "myself": "You can't transfer to your self"
+        },
         "at_least_one_greater_than_zero": "One of the values must be greater than 0",
         "some_files_not_updated": "@:some_files_not_updated"
     },
     "expiration date": "Expiration @:date",
     "file": "File | Files",
-    "file_status": "File status",
     "file_cant_edited": "File can't be edited.",
+    "file_status": "File status",
     "file_submitted": {
         "already": "The file has already been uploaded.",
         "success": "File is uploaded successfully!",
@@ -150,6 +154,7 @@
     "retrieving_application_failed": "@:required_failed : Retrieving application has failed ",
     "retrieving_application_files_failed": "@:required_failed: Retrieving files of this  application has failed ",
     "sale_coupons": "Sale Coupons",
+    "save": "Save",
     "select_file": "Select file",
     "sender": "Sender",
     "some_files_not_updated": "@:{required_failed}: Some files were not uploaded or deleted on the server. @:request_failed_status_wont_change",
@@ -184,12 +189,15 @@
     "transaction": {
         "buying": "Buying",
         "kind": "Transaction type",
+        "new": "New transaction",
         "receiving": "Receiving",
         "sending": "Sending",
+        "successful": "Successful transaction",
         "using": "Using"
     },
     "transactions": "Transactions",
     "transfer": {
+        "coupon_form": "Transfer Coupon Form",
         "successful": "Successful transfer",
         "unsuccessful": "Unsuccessful transfer",
         "value": "Transfer"

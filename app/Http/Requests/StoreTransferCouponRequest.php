@@ -3,8 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Enum\MealPlanPeriodEnum;
+use App\Models\CouponOwner;
 use App\Rules\AtLeastOneNoZero;
+use App\Rules\IsUserActive;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTransferCouponRequest extends FormRequest
 {
@@ -26,7 +29,9 @@ class StoreTransferCouponRequest extends FormRequest
     public function rules(): array
     {
         $rules = [];
-        $rules['receiver_id'] = ["required", "integer", "exists:coupon_owners,academic_id"];
+        $rules['receiver_id'] = ["required", "integer",
+            Rule::prohibitedIf(auth()->user()->academic_id == $this->input('receiver_id')),
+            "exists:coupon_owners,academic_id", new IsUserActive()];
         $periods = MealPlanPeriodEnum::names();
         foreach ($periods as $period) {
             $rules[$period] = ['required',
@@ -34,7 +39,7 @@ class StoreTransferCouponRequest extends FormRequest
             ];
         }
         $rules[$periods[0]][] = new AtLeastOneNoZero(...$periods);
-        $couponOwner = \App\Models\CouponOwner::find(auth()->user()->academic_id);
+        $couponOwner = CouponOwner::find(auth()->user()->academic_id);
         foreach ($periods as $period) {
             $rules[$period][] = 'max:' . $couponOwner[$period];
         }

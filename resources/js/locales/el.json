@@ -12,8 +12,8 @@
     "application": "Αίτηση | Αιτήσεις",
     "application_id": "Αριθμός Αίτησης",
     "application_status_not_allow_submission": "@:request_failed: Η κατάσταση της αίτησης δεν επιτρέπει την υποβολή.",
-    "request_failed_status_wont_change": "Η κατάσταση της αίτησης δεν θα αλλάξει.",
     "applicationStatus": "Κατάσταση Αίτησης",
+    "back": "Πίσω",
     "breakfast": "Πρωινό",
     "cancel adding file": "Ακύρωση προσθήκης αρχείου",
     "card": {
@@ -22,7 +22,6 @@
         "value": "Κάρτα | Κάρτες"
     },
     "changeFromTo": "Άλλαξε από @:{from1} σε @:{to1} ",
-    "confirm_purchase": "Αγορά κουπονιών απο τον χρήστη με ακαδημαϊκή ταυτότητα: {academic_id} Πρωινά: {BREAKFAST} Γεύμα: {LUNCH} Δείπνο: {DINNER}",
     "comment": {
         "enter": "Εισαγωγή Σχολίου:",
         "latestFrom": "Τελευταίο σχόλιο υποβλήθηκε από ",
@@ -33,6 +32,7 @@
         "name": "Πανεπιστήμιο Πατρών",
         "appName": "Σίτιση"
     },
+    "confirm_purchase": "Αγορά κουπονιών απο τον χρήστη με ακαδημαϊκή ταυτότητα: {academic_id} Πρωινά: {BREAKFAST} Γεύμα: {LUNCH} Δείπνο: {DINNER}",
     "coupon": {
         "owner": "Κάτοχος κουπονιών",
         "owner.info": "Πληροφορίες κατόχου κουπονιών",
@@ -48,15 +48,19 @@
     "entry_input": "@:card.value",
     "errors": {
         "application_status_not_allow_submission": "@:application_status_not_allow_submission",
-        "request_failed_status_wont_change": "@:request_failed_status_wont_change",
         "file_cant_edited": "@:file_cant_edited",
         "incomplete file": "@:{incomplete file}",
         "keep old file?": "@:{keep old file?}",
+        "maxCoupons": "Το μέγιστο πλήθος κουπονιών  είναι {max}",
+        "minCoupons": "Το ελάχιστον πλήθος κουπονιών είναι  {min}",
         "no file or description": "@:{no file or description}",
         "no_file": "@:no_file",
         "request_failed_status_wont_change": "@:request_failed_status_wont_change",
         "retrieving_application_failed": "@:retrieving_application_failed",
         "retrieving_application_files_failed": "@:retrieving_application_files_failed",
+        "transfer": {
+            "myself": "Δεν μπορείς να στείλεις στον εαυτό σου"
+        },
         "at_least_one_greater_than_zero": "Τουλάχιστον μια τιμή πρεπει να είναι μεγαλήτερη του 0",
         "some_files_not_updated": "@:some_files_not_updated"
     },
@@ -163,16 +167,17 @@
             "incomplete": "Ελλιπές | Ελλιπή",
             "rejected": "Απόρριπτέο | Απορριπτέα",
             "submitted": "Υποβεβλημένο | Υποβεβλημένα",
-            "temporary_saved": "Προσωρινά αποθήκευμένο | Προσωρινά αποθηκευμένα",
-            "temporary_checked": "Προσωρινά ελεγμένο | Προσωρινά ελεγμένα"
+            "temporary_checked": "Προσωρινά ελεγμένο | Προσωρινά ελεγμένα",
+            "temporary_saved": "Προσωρινά αποθήκευμένο | Προσωρινά αποθηκευμένα"
+
         },
         "checking": "Ύπο έλενχο",
         "delete": "Διαγραφή",
         "incomplete": "Ελλιπής",
-        "submitted": "@:submit",
         "rejected": "Απόρριψη",
-        "temporary_saved": "Προσωρινή αποθήκευση",
-        "temporary_checked": "Προσωρινά ελεγμένο"
+        "submitted": "@:submit",
+        "temporary_checked": "Προσωρινά ελεγμένο",
+        "temporary_saved": "Προσωρινή αποθήκευση"
     },
     "submit": "Υποβολή",
     "submitted": "Υποβλήθηκε",
@@ -185,12 +190,15 @@
     "transaction": {
         "buying": "Αγορά",
         "kind": "Είδος συναλλαγής",
+        "new": "Νέα συναλλαγή",
         "receiving": "Λήψη",
         "sending": "Aποστολή",
+        "successful": "Επιτυχημένη συναλλαγή",
         "using": "Κατανάλωση"
     },
     "transactions": "Συναλλαγές",
     "transfer": {
+        "coupon_form": "Φόρμα μεταφοράς κουπονιών",
         "successful": "Επιτυχημένη μεταφορά",
         "unsuccessful": "Αποτυχημένη μεταφορά",
         "value": "Μεταφορά"
