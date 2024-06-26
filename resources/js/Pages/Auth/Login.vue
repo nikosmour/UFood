@@ -3,7 +3,9 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ $t("login") }}</div>
+                    <div class="card-header">
+                        <h5 class="card-title">{{ $t("login") }}</h5>
+                    </div>
 
                     <div class="card-body">
                         <form @submit.prevent="submitForm">
