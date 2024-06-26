@@ -1,23 +1,36 @@
 <template>
-    <div class="col-12 col-sm-6 col-md-7 col-lg-8">
-        <header class="mb-4">
-            <h4 class="text-left">{{ $t('entry_check') }}</h4>
-        </header>
-        <form id="use_form" :aria-label="$t('entry_check_form')" class="needs-validation" novalidate
-              @submit.prevent="check_id">
-            <div class="form-group mx-auto" style="max-width: 20em;">
-                <label for="academic_id"><strong>{{ $t('entry_input') }}</strong></label>
-                <input
-                    id="academic_id"
-                    v-model.number="academic_id"
-                    class="form-control"
-                    required
-                    type="number"
-                />
-                <div class="invalid-feedback">{{ $t('required_field') }}</div>
-                <message v-bind="result"></message>
+  <div class="container col-12 col-sm-6 col-md-7 col-lg-8">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">{{ $t('entry_check') }}</h5>
+          </div>
+
+          <div class="card-body">
+            <form :aria-label="$t('entry_check_form')" @submit.prevent="check_id">
+              <loading v-if="isLoading"/>
+              <div class="row mb-3">
+                <label class="col-md-4 col-form-label text-md-end" for="academic_id"> {{ $t('entry_input') }}</label>
+                <div class="col-md-6">
+                  <input id="academic_id" v-model.number.trim="academic_id"
+                         :class="{ 'is-invalid': errors.academic_id  }"
+                         class="form-control " required
+                         type="number">
+                  <div v-for=" error in errors.academic_id" class="invalid-feedback" role="alert">
+                    {{ $t(error) }}
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div v-if="result.success && show" class="alert alert-success mt-3" role="alert">
+              {{ $t(result.message) }}
             </div>
-        </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
 </template>
 
@@ -34,7 +47,11 @@ export default {
                 success: true,
                 hide: true,
                 errors: ['']
-            }
+            },
+          errors: {},
+          isLoading: false,
+          show: false,
+          time: 2500
         };
     },
     methods: {
@@ -44,6 +61,8 @@ export default {
             let params = new FormData();
             params.append('academic_id', this.academic_id);
             this.result.message = '';
+          this.isLoading = true;
+          this.errors = {};
             axios.post(this.url, params)
                 .then(response => {
                     let json = response.data;
@@ -56,12 +75,20 @@ export default {
                         this.result.message = this.$t('request_failed');
                         this.result.errors = json;
                     }
+                  this.show = true;
                 })
                 .catch(errors => {
                     this.result.success = false;
-                    this.result.errors = errors.response.data.errors;
+                  this.errors = errors.response.data.errors;
                     this.result.message = this.$t('request_failed');
-                });
+                }).finally(() => {
+              this.isLoading = false;
+              setTimeout(() => {
+                this.show = false;
+                this.errors = {};
+
+              }, this.time);
+            });
         }
     }
 };
