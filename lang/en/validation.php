@@ -170,7 +170,11 @@ return [
     */
 
     'attributes' => [
-        'receiver_id' => 'receiver id'
+        'academic_id' => 'Academic id',
+        'receiver_id' => 'Receiver id',
+        'BREAKFAST' => 'Breakfast',
+        'LUNCH' => 'Lunch',
+        'DINNER' => 'Dinner'
     ],
 
 ];

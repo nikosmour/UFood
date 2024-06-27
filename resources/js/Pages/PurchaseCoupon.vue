@@ -1,11 +1,13 @@
 <template>
     <div class="row my_flex_height">
-        <purchase-coupon-form @newPurchase="newPurchase($event)"></purchase-coupon-form>
+        <transaction-coupon-form :customClass="['col-xm-12',' col-sm-6 ','col-md-7','col-lg-8'] " transaction='purchase'
+                                 @new_purchase="newPurchase($event)"></transaction-coupon-form>
         <export-statistics-form :statistics="statistics"></export-statistics-form>
     </div>
 </template>
 
 <script>
+
 export default {
     props: {
         statisticsServer: {

@@ -51,8 +51,6 @@
         "file_cant_edited": "@:file_cant_edited",
         "incomplete file": "@:{incomplete file}",
         "keep old file?": "@:{keep old file?}",
-        "maxCoupons": "The max coupons that you can use is {max}",
-        "minCoupons": "The min coupons that you can use is {min}",
         "no file or description": "@:{no file or description}",
         "no_file": "@:no_file",
         "request_failed_status_wont_change": "@:request_failed_status_wont_change",
@@ -61,7 +59,6 @@
         "transfer": {
             "myself": "You can't transfer to your self"
         },
-        "at_least_one_greater_than_zero": "One of the values must be greater than 0",
         "some_files_not_updated": "@:some_files_not_updated"
     },
     "expiration date": "Expiration @:date",
@@ -147,7 +144,12 @@
     "preview": "Preview",
     "previous": "Previous",
     "provide_valid_card": "Provide a valid academic card",
-    "purchase": "Sale",
+    "purchase": {
+        "coupon_form": "coupon sale form",
+        "successful": "Successful sale",
+        "unsuccessful": "Unsuccessful sale",
+        "value": "Sale"
+    },
     "receiver": "Receiver",
     "request_failed": "Request failed",
     "request_failed_status_wont_change": "@:required_failed : @:request_failed_status_wont_change",
