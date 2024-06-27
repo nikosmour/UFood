@@ -77,7 +77,8 @@ export default {
                 this.errors.academic_id = [this.$t('provide_valid_card')];
                 return;
             }
-            if (this.form_data.BREAKFAST === 0 && this.form_data.LUNCH === 0 && this.form_data.DINNER === 0) {
+            const mealCounts = Object.values(this.form_data).slice(1); // Skip academic_id
+            if (mealCounts.every(count => count === 0)) {
                 this.result.success = false;
                 this.result.message = this.$t('request_failed');
                 this.errors.BREAKFAST = [this.$t('errors.at_least_one_greater_than_zero')];
@@ -102,7 +103,8 @@ export default {
                     })
                     .catch(errors => {
                         this.result.success = false;
-                        this.errors = errors.response.data.errors;
+                        if (error.response && error.response.status === 422)
+                            this.errors = errors.response.data.errors;
                         this.result.message = this.$t('request_failed');
                     })
                     .finally(() => {
