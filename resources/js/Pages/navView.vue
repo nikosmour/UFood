@@ -18,7 +18,7 @@
                     <!-- Display 'Purchase' link if user has coupon selling ability -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_SELL)" class="nav-item">
                         <router-link :to="{ name: 'purchase' }" class="nav-link router-link-exact-active">
-                            {{ $t('purchase') }}
+                            {{ $t('purchase.value') }}
                         </router-link>
                     </li>
                     <!-- Display 'Entry Checking' link if user has entry checking ability -->

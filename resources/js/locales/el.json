@@ -147,7 +147,12 @@
     "preview": "Προβολή",
     "previous": "Προηγούμενο",
     "provide_valid_card": "Παρέχετε μια έγκυρη ακαδημαϊκή κάρτα",
-    "purchase": "Πώληση",
+    "purchase": {
+        "coupon_form": "Φόρμα πώλησης κουπονιών",
+        "successful": "Επιτυχημένη πώληση",
+        "unsuccessful": "Αποτυχημένη πώληση",
+        "value": "Πώληση"
+    },
     "receiver": "Παραλήπτης",
     "request_failed": "Το αίτημα απέτυχε",
     "request_failed_status_wont_change": "@:request_failed : @:{request_failed_status_wont_change}",

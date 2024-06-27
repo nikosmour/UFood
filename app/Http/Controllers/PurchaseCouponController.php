@@ -45,6 +45,8 @@ class PurchaseCouponController extends Controller
     public function store(StorePurchaseCouponRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $data['academic_id'] = $data['receiver_id'];
+        unset($data['receiver_id']);
         return response()->json(
             DB::transaction(function () use ($data) {
                 return $this->canBuy($data);

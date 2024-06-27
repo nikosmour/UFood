@@ -147,7 +147,12 @@
     "preview": "Preview",
     "previous": "Previous",
     "provide_valid_card": "Provide a valid academic card",
-    "purchase": "Sale",
+    "purchase": {
+        "coupon_form": "coupon sale form",
+        "successful": "Successful sale",
+        "unsuccessful": "Unsuccessful sale",
+        "value": "Sale"
+    },
     "receiver": "Receiver",
     "request_failed": "Request failed",
     "request_failed_status_wont_change": "@:required_failed : @:request_failed_status_wont_change",
