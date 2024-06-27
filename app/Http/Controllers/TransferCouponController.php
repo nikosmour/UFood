@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreTransferCouponRequest;
+use App\Models\Academic;
 use App\Models\TransferCoupon;
 use App\Traits\CouponOwnerTrait;
 use DB;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
@@ -28,7 +30,7 @@ class TransferCouponController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreTransferCouponRequest $request
-     * @return Application|\Illuminate\Http\JsonResponse|RedirectResponse|Redirector
+     * @return Application|JsonResponse|RedirectResponse|Redirector
      */
     public function store(StoreTransferCouponRequest $request)
     {
@@ -36,8 +38,12 @@ class TransferCouponController extends Controller
         DB::transaction(function () use ($validatedData) {
             TransferCoupon::create($validatedData);
         });
+
         return $request->expectsJson()
-            ? response()->json(['success' => true])
+            ? response()->json([
+                'success' => true,
+                "receiver" => Academic::whereAcademicId($validatedData['receiver_id'])->value('name')
+            ])
             : redirect(route('coupons.transfer.create'));
     }
 
