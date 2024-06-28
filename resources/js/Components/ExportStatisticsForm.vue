@@ -1,7 +1,7 @@
 <template>
-    <div id="statistics" class=" container col-xm-12 col-sm-6 col-md-5 col-lg-4">
-        <div class="row justify-content-center">
-            <div class="col-12">
+    <div id="statistics" class=" container col-xm-12 col-sm-6 col-md-5 col-lg-4 h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-12 h-100 d-flex flex-column">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">{{ $t('meal_statistics.value') }}</h5>
@@ -15,7 +15,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="print_statistic_food" class="card">
+                <div id="print_statistic_food" class="card flex-grow-1">
                     <div class="card-header">
                         <h5 class="card-title">{{ $t('meal_statistics.export') }}</h5>
                     </div>

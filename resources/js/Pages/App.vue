@@ -85,15 +85,13 @@ export default {
 </style>
 
 <template>
-    <div>
-        <nav-view/>
-        <main class="py-4 my_flex_height" role="main">
-            <router-view class="container"/>
-        </main>
-        <footer class="text-center" role="contentinfo">
-            <div>© {{ $t('company.name').toUpperCase() + ' ' + (new Date()).getFullYear() }}</div>
-            <div> {{ $t('company.department').toUpperCase() }}</div>
-            <img alt="{{$t('logo') +' '+$t('company.name')}}" src="/img/big_logo_Upatras.png"/>
-        </footer>
-    </div>
+    <nav-view/>
+    <main class="py-4 h-100" role="main">
+        <router-view class="container"/>
+    </main>
+    <footer class="text-center" role="contentinfo">
+        <div>© {{ $t('company.name').toUpperCase() + ' ' + (new Date()).getFullYear() }}</div>
+        <div> {{ $t('company.department').toUpperCase() }}</div>
+        <img alt="{{$t('logo') +' '+$t('company.name')}}" src="/img/big_logo_Upatras.png"/>
+    </footer>
 </template>
