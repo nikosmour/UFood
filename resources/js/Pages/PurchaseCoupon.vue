@@ -1,5 +1,5 @@
 <template>
-    <div class="row my_flex_height">
+    <div class="row h-100">
         <transaction-coupon-form :customClass="['col-xm-12',' col-sm-6 ','col-md-7','col-lg-8'] " transaction='purchase'
                                  @new_purchase="newPurchase($event)"></transaction-coupon-form>
         <export-statistics-form :statistics="statistics"></export-statistics-form>

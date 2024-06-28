@@ -1,8 +1,8 @@
 <template>
-    <div :class="customClass" class="container">
-        <div class=" row justify-content-center">
-            <div class="">
-                <div class="card">
+    <div :class="customClass" class="container h-100">
+        <div class=" row justify-content-center h-100">
+            <div class="h-100">
+                <div class="card h-100">
                     <div class="card-header">
                         <h5 class="card-title">{{
                                 $t(`${transaction}.value`) + ' - ' + $t(
