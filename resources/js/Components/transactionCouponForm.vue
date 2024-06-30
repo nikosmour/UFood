@@ -162,11 +162,17 @@ export default {
             if (this.submitted) return;
             this.valid[key] = false;
             if (this.couponOwner && newValue > this.couponOwner[key]) {
-                this.errors[key] = [this.$t('errors.maxCoupons', {'max': this.couponOwner[key]})]
+                this.errors[key] = [this.$t('validation.max.numeric', {
+                    'max': this.couponOwner[key],
+                    'attribute': this.$t(`validation.attributes.${key}`)
+                })]
             } else if (newValue < 0 || newValue === '') {
-                this.errors[key] = [this.$t('errors.minCoupons', {'min': 0})]
+                this.errors[key] = [this.$t('validation.min.numeric', {
+                    'min': 0,
+                    'attribute': this.$t(`validation.attributes.${key}`)
+                })]
             } else if (newValue === 0 && (Object.keys(this.mealQuantities).reduce((sum, key) => sum + this.mealQuantities[key], 0) === 0)) {
-                this.errors.total_meals = [this.$t('errors.at_least_one_greater_than_zero')];
+                this.errors.total_meals = [this.$t('validation.at_least_one_greater_than_zero')];
             } else {
                 delete this.errors.total_meals;
                 delete this.errors[key];
@@ -186,7 +192,7 @@ export default {
                 // Vue.set(this.errors,'receiver_id',[this.$t('errors.transfer.myself')])
                 this.errors.receiver_id = [this.$t('errors.transfer.myself')];
             } else if (newValue < 1) {
-                this.errors.receiver_id = [this.$t('provide_valid_card')];
+                this.errors.receiver_id = [this.$t('validation.exists', {'attribute': this.$t('validation.attributes.receiver_id')})];
             } else {
                 this.valid['receiver_id'] = true;
                 delete this.errors.receiver_id;

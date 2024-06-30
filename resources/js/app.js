@@ -21,6 +21,8 @@ import App from './Pages/App.vue'
 import {createI18n} from 'vue-i18n';
 import en from './locales/en.json';
 import el from './locales/el.json';
+import enValidation from './locales/en/validation.json';
+import elValidation from './locales/el/validation.json';
 
 let promise = null;
 console.log(Date.now() % 10000, 'after')
@@ -44,8 +46,14 @@ const i18n = createI18n({
     locale: getPreferredLocale(), // set locale
     fallbackLocale: 'en', // set fallback locale
     messages: {
-        en,
-        el
+        en: {
+            validation: enValidation,
+            ...en
+        },
+        el: {
+            validation: elValidation,
+            ...el
+        },
     }
 });
 
