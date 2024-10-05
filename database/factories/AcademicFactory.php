@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Enum\UserStatusEnum;
+use App\Models\Academic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Academic>
+ * @extends Factory<Academic>
  */
 class AcademicFactory extends Factory
 {
@@ -23,7 +24,7 @@ class AcademicFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'status' => UserStatusEnum::random(),
+            'status' => UserStatusEnum::UNDERGRADUATE,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
             'a_m' => $this->faker->unique()->numberBetween('1000000', '9999999'),
