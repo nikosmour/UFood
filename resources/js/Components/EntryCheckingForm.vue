@@ -67,14 +67,14 @@ export default {
             axios.post(this.url, params)
                 .then(response => {
                     let json = response.data;
-                    this.result.success = json.pass;
-                    if (json.pass) {
+                    this.result.success = json.success;
+                    if (json.success) {
                         this.result.message = json.passWith;
                         this.$emit('newEntry', json.passWith + 's');
-                        this.result.errors = [];
+                        this.errors = [];
                     } else {
                         this.result.message = this.$t('request_failed');
-                        this.result.errors = json;
+                        this.errors = {'academic_id': [json['card']['message'], json['coupon']['message']]};
                     }
                     this.show = true;
                 })

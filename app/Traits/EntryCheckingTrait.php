@@ -9,6 +9,7 @@ use App\Models\UsageCard;
 use App\Models\UsageCoupon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 
@@ -17,18 +18,18 @@ trait EntryCheckingTrait
     /**
      * Check if the user can pass the entry point
      * @param array $data
-     * @return array
+     * @return JsonResponse
      * <p>
      * A string that define how the user pass the entry point or if didn't poss
      * </p>
      */
-    private function canPass(array $data): array
+    private function canPass(array $data): JsonResponse
     {
-        $json = ['pass' => false];
+        $json = ['success' => false];
         try {
             if ($this->canPassAsCardApplicant($data))
-                return ['pass' => true,
-                    'passWith' => 'card'];
+                return response()->json(['success' => true,
+                    'passWith' => 'card']);
             else
                 $json += ['card' => ['message' => 'expired or not exist card ']];
         } catch (ModelNotFoundException) {
@@ -42,21 +43,23 @@ trait EntryCheckingTrait
         } catch (Throwable $e) {
             $json += ['card' => $e];
         }
+
         try {
             $this->canPassAsCouponOwner($data);
-            return ['pass' => true,
-                    'passWith' => 'coupon'] + $json;
+            return response()->json(['success' => true,
+                    'passWith' => 'coupon'] + $json);
         } catch (ModelNotFoundException) {
-            return $json + ['coupon' => ['message' => 'not be a coupon owner']];
+            $json += $json + ['coupon' => ['message' => 'not be a coupon owner']];
         } catch (QueryException $e) {
             // check if the error is for negative
             if (22003 == $e->getCode())//1690
-                return $json + ['coupon' => ['message' => 'not have enough coupons']];
-            return $json + ['coupon' => $e];
+                $json += $json + ['coupon' => ['message' => 'not have enough coupons']];
+            else
+                $json += $json + ['coupon' => $e];
         } catch (Throwable $e) {
-            return $json + ['coupon' => $e];
-
+            $json += $json + ['coupon' => $e];
         }
+        return response()->json(['errors' => ['academic_id' => [$json['card']['message'], $json['coupon']['message']]]], 422);
     }
 
     /**

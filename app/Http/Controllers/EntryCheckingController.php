@@ -43,10 +43,9 @@ class EntryCheckingController extends Controller
     public function store(StoreEntryCheckingRequest $request): JsonResponse
     {
         $data = $request->validated();
-        return response()->json(
-            DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
                 return $this->canPass($data);
-            })
+        }
         );
     }
 }
