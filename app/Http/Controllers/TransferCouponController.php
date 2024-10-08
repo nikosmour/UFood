@@ -35,14 +35,15 @@ class TransferCouponController extends Controller
     public function store(StoreTransferCouponRequest $request)
     {
         $validatedData = $request->validated();
-        DB::transaction(function () use ($validatedData) {
-            TransferCoupon::create($validatedData);
+        $transaction = DB::transaction(function () use ($validatedData) {
+            return TransferCoupon::create($validatedData);
         });
 
         return $request->expectsJson()
             ? response()->json([
                 'success' => true,
-                "receiver" => Academic::whereAcademicId($validatedData['receiver_id'])->value('name')
+                "receiver" => Academic::whereAcademicId($validatedData['receiver_id'])->value('name'),
+                'transaction' => "T$transaction->id"
             ])
             : redirect(route('coupons.transfer.create'));
     }
