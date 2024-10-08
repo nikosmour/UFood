@@ -7,6 +7,7 @@ use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardApplicationDocumentController;
 use App\Http\Controllers\EntryCheckingController;
 use App\Http\Controllers\PurchaseCouponController;
+use App\Http\Controllers\TransactionCouponConformationDetailsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,3 +45,5 @@ Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingC
     ->whereIn('category', CardStatusEnum::values()->toArray())->only('store');
 Route::get('cardApplication/checking/search', [CardApplicationCheckingController::class, 'search'])->name('cardApplication.checking.search');
 Route::post('login', [LoginController::class, 'login']);//->name('login');
+Route::post('/transaction/confirm', [TransactionCouponConformationDetailsController::class, '__invoke'])->name('transaction.confirm');
+

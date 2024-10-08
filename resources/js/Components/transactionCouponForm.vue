@@ -18,8 +18,13 @@
                                 <label class="col-md-4 col-form-label text-md-end" for="receiverId">
                                     {{ $t('receiver') }} </label>
                                 <div class="col-md-6">
-                                    <div v-if="submitted">
+                                    <div v-if="disableForm">
+                                        <span v-if="submitted">{{ receiver.transaction }}</span>
+                                        <br/>
                                         {{ receiver.name }}
+                                        <br/>
+                                        {{ receiver.status }}
+
                                     </div>
                                     <input id="receiverId" v-model.number.trim="receiver.id"
                                            :class="[{ 'is-invalid': errors.receiver_id,'is-valid': valid.receiver_id && !errors.receiver_id  },
@@ -107,7 +112,9 @@ export default {
             },
             receiver: {
                 'id': '',
-                'name': null
+                'name': null,
+                "transaction": null,
+                'status': null
             },
             mealQuantities: {}, // Object to store meal quantities
             errors: {},
@@ -132,7 +139,8 @@ export default {
             this.isLoading = true;
             axios.post(this.url, data).then(responseJson => {
                 let json = responseJson.data;
-                this.receiver.name = json.receiver
+                this.receiver.name = json.receiver;
+                this.receiver.transaction = json.transaction;
                 this.result.message = this.$t(`${this.transaction}.successful`);
                 this.$emit(`new_${this.transaction}`, this.mealQuantities);
                 this.submitted = true;
@@ -181,8 +189,38 @@ export default {
         },
         validateForm() {
             this.errors = {};
+            this.confirmDataTransactions();
 
             this.disableForm = this.result.success
+        },
+        confirmDataTransactions() {
+            const data = {
+                receiver_id: this.receiver.id,
+                ...this.mealQuantities,
+            };
+            this.isLoading = true;
+            axios.post(route(`transaction.confirm`), data).then(responseJson => {
+                console.log(responseJson)
+                let json = responseJson.data;
+                console.log(json)
+                this.receiver.name = json.data.name;
+                this.receiver.status = json.data.status;
+                // this.result.message = this.$t(`${this.transaction}.successful`);
+                // this.$emit(`new_${this.transaction}`, this.mealQuantities);
+                // this.submitted = true;
+                this.disableForm = true;
+
+
+            }).catch(errors => {
+                if (errors.response && errors.response.status === 422)
+                    this.errors = errors.response.data.errors;
+                else
+                    this.result.errors = errors;
+                this.result.message = this.$t('request_failed');
+                this.disableForm = false;
+            }).finally(() => {
+                this.isLoading = false;
+            });
         },
     },
     watch: {

@@ -3,8 +3,8 @@
 namespace App\Traits;
 
 use App\Enum\MealPlanPeriodEnum;
+use App\Models\Academic;
 use App\Models\PurchaseCoupon;
-use JetBrains\PhpStorm\ArrayShape;
 
 trait PurchaseCouponTrait
 {
@@ -17,11 +17,13 @@ trait PurchaseCouponTrait
      * A string that define how the user pass the entry point or if didn't poss
      * </p>
      */
-    #[ArrayShape(['sold' => "bool"])]
+    //#[ArrayShape(['success' => "bool"])]
     private function canBuy(array $data): array
     {
-        PurchaseCoupon::create($data);
-        return ['sold' => true];
+        $transaction = PurchaseCoupon::create($data);
+        return ['success' => true,
+            'receiver' => Academic::whereAcademicId($data['academic_id'])->value('name'),
+            'transaction' => "P$transaction->id"];
     }
 
     /**
