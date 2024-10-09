@@ -52,6 +52,15 @@ class UsageCoupon extends Model
     }
 
     /**
+     * Get the couponOwner model associate with the usageCoupon
+     * @return BelongsTo
+     */
+    public function academic(): BelongsTo
+    {
+        return $this->belongsTo(Academic::class, 'academic_id');
+    }
+
+    /**
      * Get the entryStaff model associate with the usageCoupon
      * @return BelongsTo
      */
@@ -62,13 +71,19 @@ class UsageCoupon extends Model
 
     public function scopeTakeStatistics(Builder $query, $vData)
     {
-        $selectColumns = [DB::raw('DATE(created_at) as date'), DB::raw("'coupon' as category")];
+        $selectColumns = [
+            DB::raw('DATE(usage_coupons.created_at) as date'),
+            DB::raw("(CASE WHEN academics.status = 'researcher' THEN 'coupons staff' ELSE 'coupon students' END) as category"),
+//            'academics.status as category',
+        ];
+
         foreach ($vData['meal_category'] as $period) {
-            $selectColumns[$period] = DB::raw("SUM(period = '{$period}') as {$period}");
+            $selectColumns[$period] = DB::raw("SUM(CASE WHEN period = '{$period}' THEN 1 ELSE 0 END) as {$period}");
         }
 
         return $query->select($selectColumns)
-            ->whereBetween(DB::raw('DATE(created_at)'), [$vData['from_date'], $vData['to_date']])
-            ->groupBy('date');
+            ->join('academics', 'usage_coupons.academic_id', '=', 'academics.academic_id')
+            ->whereBetween(DB::raw('DATE(usage_coupons.created_at)'), [$vData['from_date'], $vData['to_date']])
+            ->groupBy('date', 'category');
     }
 }

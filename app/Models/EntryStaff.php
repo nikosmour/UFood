@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin IdeHelperEntryStaff
@@ -11,12 +12,12 @@ class EntryStaff extends User
 {
     use HasFactory;
 
-    public function usageCoupon(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function usageCoupon(): HasMany
     {
         return $this->hasMany(UsageCoupon::class);
     }
 
-    public function usageCard(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function usageCard(): HasMany
     {
         return $this->hasMany(UsageCard::class);
     }
@@ -25,6 +26,6 @@ class EntryStaff extends User
     {
         return UsageCoupon::takeStatistics($vData)
             ->union(UsageCard::takeStatistics($vData))
-            ->orderBy('date');
+            ->orderBy('date', 'desc');
     }
 }

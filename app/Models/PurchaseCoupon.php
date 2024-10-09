@@ -57,12 +57,22 @@ class PurchaseCoupon extends Model
 
     public function scopeTakeStatistics(Builder $query, $vData)
     {
-        $selectColumns = [DB::raw('DATE(created_at) as date'), DB::raw('sum(money) as money')];
+
+        $selectColumns = [
+            DB::raw('DATE(purchase_coupons.created_at) as date'),
+            DB::raw("(CASE WHEN academics.status = 'researcher' THEN 'staffs' ELSE 'students' END) as category"),
+            DB::raw('sum(money) as money')
+        ];
+
         foreach ($vData['meal_category'] as $period) {
-            $selectColumns[$period] = DB::raw("sum($period) as  $period");
+            $selectColumns[$period] = DB::raw("SUM($period) as {$period}");
         }
+
         return $query->select($selectColumns)
-            ->whereBetween(DB::raw('DATE(created_at)'), [$vData['from_date'], $vData['to_date']])
-            ->groupBy('date');
+            ->join('academics', 'purchase_coupons.academic_id', '=', 'academics.academic_id')
+            ->whereBetween(DB::raw('DATE(purchase_coupons.created_at)'), [$vData['from_date'], $vData['to_date']])
+            ->groupBy('date', 'category');
     }
+
+
 }
