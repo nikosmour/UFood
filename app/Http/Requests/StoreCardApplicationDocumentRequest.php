@@ -24,8 +24,19 @@ class StoreCardApplicationDocumentRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required',
-            'description' => 'required',
+            'file' => [
+                'required',
+                'file',
+                'mimes:pdf',
+                'mimetypes:application/pdf',
+                'extension:pdf',
+                'max:2048', // Maximum file size in kilobytes (2MB)
+            ],
+            'description' => [
+                'required',
+                'string',
+                'max:27',
+            ],
 //            'id' => '' //if i want to also give the option to update
         ];
     }

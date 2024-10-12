@@ -73,7 +73,9 @@ export default {
             },
             docLink: '', // Initialize docLink
             cardApplication: null, // Initialize cardApplication
+            lastExpiration: null,
             commentStudent: null // Initialize commentStudent
+
         }
     },
     computed: {
@@ -82,7 +84,7 @@ export default {
             return this.cardApplication ? this.cardApplication.card_last_update.status : null;
         },
         expiration_date: function () {
-            return this.cardApplication ? this.cardApplication.expiration_date : null;
+            return this.lastExpiration || (this.cardApplication ? this.cardApplication.expiration_date : null);
         },
         // Check if application is in edit mode
         applicationEdit() {
@@ -127,6 +129,7 @@ export default {
             ).then(responseJson => {
                 let json = responseJson['data'];
                 this.cardApplication = json['cardApplication'];
+                this.lastExpiration = json['lastExpiration'];
 
                 this.broadcasting();
             }).catch(errors => {

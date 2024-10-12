@@ -76,14 +76,14 @@ export default {
 
             axios.get(url)
                 .then(function (responseJson) {
-                    let json = responseJson['data'];
-                    vue.docFiles = json;
-                    json.forEach((file, index) => {
+                    let documents = responseJson['data']['documents'];
+                    vue.docFiles = documents;
+                    documents.forEach((file, index) => {
                         vue.addFileUpload(null, file.status, file.description, file.id, route('document.show', {
                             'document': file.id
                         }));
                     });
-                    if (0 == json.length && this.applicationEdit)
+                    if (0 == documents.length && this.applicationEdit)
                         vue.addFileUpload();
                     console.log(vue.files);
                 })
@@ -186,14 +186,6 @@ export default {
                 .finally(function () {
                     file.link = '';
                     if (file.result.success) {
-                        if (file.status === 'to delete') {
-                            let time = 3000;
-                            /*setTimeout(() => {
-                                vue.files.splice(index, 1);
-                                vue.docFiles.splice(index, 1);
-                            }, time);
-                            file.result.message += vue.$t(" and the file will be removed from the page in ") + time + 'ms';*/
-                        }
                         vue.docFiles[index].status = file.status = ('to delete' === file.status) ? 'deleted' : 'submitted';
                         vue.docFiles[index].description = file.description;
                         vue.docFiles[index].id = file.id;

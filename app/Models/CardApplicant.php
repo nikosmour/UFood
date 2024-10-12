@@ -35,9 +35,17 @@ class CardApplicant extends Model
         return $this->hasMany(CardApplication::class, 'academic_id');
     }
 
+    public function validCardApplication(): HasOne
+    {
+        return $this->hasOne(CardApplication::class, 'academic_id')
+//            ->latestOfMany()
+            ->where('created_at', '>', now()->subMonths(15)->format('Y-m-d'))
+            ->where('expiration_date', '>=', now()->format('Y-m-d'));
+    }
+
     public function currentCardApplication(): HasOne
     {
-        return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at', '>', strtotime('-15 months'));
+        return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at', '>', now()->subMonths(12)->format('Y-m-d'));
     }
 
     public function usageCard(): HasMany

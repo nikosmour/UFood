@@ -10,8 +10,7 @@ use App\Models\CardApplicationDocument;
 use App\Traits\DocumentTrait;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -25,54 +24,49 @@ class CardApplicationDocumentController extends Controller
     {
         $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
     }
+
     /**
-     * @return CardApplicationDocument[]|Builder[]|Collection
+     * @return JsonResponse
      * @throws AuthorizationException
      */
     public function index(CardApplication $cardApplication)
     {
         $this->authorize('viewAny', [CardApplicationDocument::class, $cardApplication]);
 //        return  CardApplicationDocument::whereCardApplicationId($cardApplication->id)->select($select)->get();
-        return $cardApplication->cardApplicationDocument()->select(['id', 'description', 'status'])->get();
+        return response()->json([
+            'documents' => $cardApplication->cardApplicationDocument()->select(['id', 'description', 'status'])->get()
+        ]);
     }
 
     /**
      * @throws Throwable
      */
-    public function store(StoreCardApplicationDocumentRequest $request, CardApplication $cardApplication): array
+    public function store(StoreCardApplicationDocumentRequest $request, CardApplication $cardApplication): JsonResponse
     {
         $this->authorize('create', [CardApplicationDocument::class, $cardApplication]);
-//        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
-//            return ['success'=>false,
-//                'message'=>'You don\'t have authority to update the Application ',
-//            ];
         $id = DB::transaction(callback: function () use ($request, $cardApplication) {
             $file = $request->file('file');
             $description = $request['description'];
-            if ($file->isValid() && $file->extension() == 'pdf') {
-                $filename = $file->getClientOriginalName();
-                $cardApplicationDocument = $cardApplication->cardApplicationDocument()->create(['file_name' => $filename, 'description' => $description, 'status' => CardDocumentStatusEnum::SUBMITTED]);
-                $file->storeAs(...$this::storePositionData($cardApplication->academic_id, $cardApplicationDocument));
-                return $cardApplicationDocument->id;
-            } else  return 0; // the file is not valid
+            $filename = $file->getClientOriginalName();
+            $cardApplicationDocument = $cardApplication->cardApplicationDocument()->create(['file_name' => $filename, 'description' => $description, 'status' => CardDocumentStatusEnum::SUBMITTED]);
+            $file->storeAs(...$this::storePositionData($cardApplication->academic_id, $cardApplicationDocument));
+            return $cardApplicationDocument->id;
         });
-        if (0 != $id) return ['success' => true, 'message' => 'file_submitted.success', 'id' => $id,];
-        return ['success' => false, 'message' => 'file_submitted.failed', 'id' => 0,];
+
+        return response()->json(['success' => true, 'message' => 'file_submitted.success', 'id' => $id], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param CardApplication $cardApplication
+     * @param CardApplicationDocument $document
      * @return Response
      * @throws AuthorizationException
      */
-    public function show(CardApplicationDocument $document)
+    public function show(CardApplicationDocument $document): Response
     {
         $this->authorize('view', $document);
         $cardApplication = $document->cardApplication;
-//        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
-//            abort(403, 'Unauthorized Access');
         if (app()->environment('local') and '_Fake@doc_' == $document->description) {
             $pdf = PDF::loadView('PDFS.fakePDF');
 
@@ -102,32 +96,31 @@ class CardApplicationDocumentController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateCardApplicationDocumentRequest $request
-     * @param int $cardApplication
-     * @param int $document
-     * @return array
+     * @param CardApplicationDocument $document
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function update(UpdateCardApplicationDocumentRequest $request, CardApplicationDocument $document)
+    public function update(UpdateCardApplicationDocumentRequest $request, CardApplicationDocument $document): JsonResponse
     {
         $this->authorize('update', $document);
         if ($document->update($request->validated()))
-            return ['success' => true, 'message' => 'file_updated.success', 'id' => $document->id];
-
-        return ['success' => false, 'message' => 'file_updated.failed', 'id' => 0,];
+            return response()->json(['success' => true, 'message' => 'file_updated.success', 'id' => $document->id], 200);
+        return response()->json(['error' => 'Failed to update card application document.'], 500);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param CardApplication $cardApplication
-     * @return Response
-     * @throws Throwable
+     * @param CardApplicationDocument $document
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function destroy(CardApplicationDocument $document)
+    public function destroy(CardApplicationDocument $document): JsonResponse
     {
         $this->authorize('delete', $document);
-        if (!$document->delete())
-            return ['success' => false, 'message' => 'file_destroyed.failed', 'id' => $document];
-        return ['success' => true, 'message' => 'file_destroyed.success!', 'id' => 0];
+        return !$document->delete() ?
+            response()->json(['error' => 'Failed to delete card application document.'], 500) :
+            response()->json(['success' => true, 'message' => 'file_destroyed.success', 'id' => 0], 200);
 
     }
 }

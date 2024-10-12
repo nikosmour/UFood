@@ -35,18 +35,25 @@ class CardApplicationController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', CardApplication::class);
-        $user = Auth::user();
-        if ($user->cardApplicant->currentCardApplication()->count() > 0) {
-            return ($request->expectsJson())
-                ? response()->json(["cardApplication" => $user->cardApplicant->currentCardApplication()->with('cardLastUpdate')->first()], 200)
-                : view('cardApplication/show');
+        $cardApplicant = Auth::user()->cardApplicant;
+//        $user->load('cardApplicant.currentCardApplication.cardLastUpdate');
+        if ($cardApplicant->currentCardApplication) {
+            $update = $cardApplicant->currentCardApplication->cardLastUpdate;
+            $responseData = [
+                "cardApplication" => $cardApplicant->currentCardApplication
+            ];
+            if ($update->status !== CardStatusEnum::ACCEPTED)
+                $responseData['lastExpiration'] = $cardApplicant->validCardApplication()->value('expiration_date')->format('Y-m-d');
+//            value('status')->first();
+            return response()->json($responseData, 200);
         }
-        $user->cardApplicant->address;
-        $models = [$user];
-        $caption = 'User info';
-        return ($request->expectsJson())
-            ? response()->json(["message " => 'Application not found. Please create a new one.'], 404)
-            : view('cardApplication/index', compact('models', 'caption'));
+
+        return response()->json(["message" => 'Application not found. Please create a new one.'], 404);
+
+//        $user->cardApplicant->address;
+//        $models = [$user];
+//        $caption = 'User info';
+//        return view('cardApplication/index', compact('models', 'caption'));
     }
 
     /**
@@ -70,7 +77,7 @@ class CardApplicationController extends Controller
         DB::transaction(function () {
             $cardApplication = new CardApplication();
             $cardApplication->academic_id = Auth::user()->cardApplicant->academic_id;
-            $cardApplication->expiration_date = date('Y-m-d', strtotime('-1 day'));
+            $cardApplication->expiration_date = now()->subDay()->format('Y-m-d');
             $cardApplication->saveOrFail();
             $cardApplication->applicantComments()->create(['comment' => '']);
         });
@@ -109,16 +116,16 @@ class CardApplicationController extends Controller
      *
      * @param UpdateCardApplicationRequest $request
      * @param CardApplication $cardApplication
-     * @return array
+     * @return JsonResponse
      * @throws Throwable
      */
-    public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication): array
+    public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication): JsonResponse
     {
         $this->authorize('update', $cardApplication);
         $vData = $request->validated();
         $vData['status'] = CardStatusEnum::from($vData['status']);
         if ($vData['status'] === CardStatusEnum::SUBMITTED && $cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0)
-            return ['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents '];
+            return response()->json(['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents '], 422);
 
 
         DB::transaction(function () use ($vData, $cardApplication) {
@@ -134,7 +141,7 @@ class CardApplicationController extends Controller
                 comment: $vData['comment'] ?? null))->toOthers();
         });
 
-        return ['success' => true, 'message' => 'Application has been saved',];
+        return response()->json(['success' => true, 'message' => 'Application has been updated'], 201);
         //return ['success' => false, 'message' => 'Application didn\'t saved',];
     }
 
