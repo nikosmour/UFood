@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\MealPlanPeriodEnum;
 use App\Enum\UserAbilityEnum;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +23,7 @@ class CouponOwnerController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
-     * @return Application|Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|View
+     * @return JsonResponse|View
      */
     public function __invoke(Request $request)
     {
@@ -33,7 +32,7 @@ class CouponOwnerController extends Controller
         $receiving = $couponOwner->receivingCoupon()->select(DB::raw(' "receiving" as transaction,sender_id as academic_id,0 as money'), 'created_at', ...MealPlanPeriodEnum::names());
         $buying = $couponOwner->purchaseCoupon()->select(DB::raw(' "buying" as transaction,0 as academic_id,money/100 as money'), 'created_at', ...MealPlanPeriodEnum::names());
         $using = $couponOwner->usageCoupon()->select(DB::raw('"using" as transaction,period as academic_id,0 as money'), 'created_at', DB::raw('0 as BREAKFAST,0 as `LUNCH`,0 as `DINNER`'));
-        $transactions = $sending->union($receiving)->union($buying)->union($using)->orderByDesc('created_at')->get();
+        $transactions = $sending->union($receiving)->union($buying)->union($using)->orderByDesc('created_at')->simplePaginate(10);
         return $request->expectsJson()
             ? response()->json(["transactions" => $transactions, 'success' => true])
             : view('couponOwner.index', compact('couponOwner', 'transactions'));

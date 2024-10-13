@@ -8,35 +8,38 @@ export default {
     },
     data() {
         return {
-            transactions: null,
+            transactions: [],
           temp: {...this.couponOwner},
+            url: route('coupons.history'),
         };
     },
-    computed: {
+    /*computed: {
         url() {
             return route('coupons.history');
         },
-    },
+    },*/
     methods: {
         ...mapActions([
             'getUser'
         ]),
         fetchData() {
-            axios.get(this.url).then(
-                response => {
-                    console.log(response.data);
-                    let transactions = response.data.transactions;
-                    transactions = Array.isArray(transactions) ? transactions : [transactions]
-                    // transactions = this.reformatTransactions(transactions);
-                    if (new Date(transactions[0].created_at) > new Date(this.couponOwner.updated_at))
-                        this.getUser().then(response => {
-                            this.temp = {...this.couponOwner};
-                            this.transactions = this.reformatTransactions(transactions)
-                        });
-                    else
-                        this.transactions = this.reformatTransactions(transactions);
-                }
-            );
+            if (this.url)
+                axios.get(this.url).then(
+                    response => {
+                        console.log(response.data);
+                        let transactions = response.data.transactions.data;
+                        transactions = Array.isArray(transactions) ? transactions : [transactions]
+                        this.url = response.data.transactions.next_page_url;
+                        // transactions = this.reformatTransactions(transactions);
+                        /*if (new Date(transactions[0].created_at) > new Date(this.couponOwner.updated_at))
+                            this.getUser().then(response => {
+                                this.temp = {...this.couponOwner};
+                                this.transactions.push(...this.reformatTransactions(transactions));
+                            });
+                        else*/
+                        this.transactions.push(...this.reformatTransactions(transactions));
+                    }
+                );
         },
         calculateMoney(amount, transaction) {
             if (transaction === 'buying' || transaction === 'sending')
@@ -46,9 +49,9 @@ export default {
             return this.temp.money;
         },
         calculateMeal(amount, transaction, meal) {
-            if (transaction === 'buying' || transaction === 'using')
+            if (transaction === 'buying' || transaction === 'receiving')
                 this.temp[meal] -= amount;
-            else if (transaction === 'sending' || transaction === 'receiving')
+            else if (transaction === 'sending' || transaction === 'using')
                 this.temp[meal] += amount;
             return this.temp[meal];
         },
@@ -113,8 +116,9 @@ export default {
                 <td>{{ new Date(transaction.created_at).toLocaleDateString() }}</td>
             </tr>
             </tbody>
-        </table>
-    </div>
+      </table>
+      <button v-if="this.url" v-on:click="fetchData">More</button>
+  </div>
 </template>
 <style scoped>
 .table {
