@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Propaganistas\LaravelPhone\Casts\E164PhoneNumberCast;
 
 /**
  * @mixin IdeHelperCardApplicant
@@ -23,6 +24,7 @@ class CardApplicant extends Model
      */
     protected $casts = [
         'year' => 'date:Y',
+        'cellphone' => E164PhoneNumberCast::class . ':GR'
     ];
 
     public function academic(): BelongsTo

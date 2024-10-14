@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('permanent_address_phone');
             $table->char('temporary_address', 50)->nullable();
             $table->unsignedBigInteger('temporary_address_phone')->nullable();
-            $table->unsignedBigInteger('cellphone')->nullable();
+            $table->char('cellphone', 15)->nullable();
             $table->timestamps();
             $table->foreign('academic_id')->references('academic_id')->on('academics')->onDelete('cascade')->onUpdate('cascade');
         });

@@ -100,6 +100,7 @@ return [
     'not_in' => 'Η επιλεγμένη τιμή για το :attribute δεν είναι έγκυρη.',
     'not_regex' => 'Η μορφή του :attribute δεν είναι έγκυρη.',
     'numeric' => 'Το :attribute πρέπει να είναι ένας αριθμός.',
+    'phone' => 'Το :attribute πεδίο πρέπει να είναι ένας έγκυρος τηλεφωνικός αριθμός.',
     'present' => 'Το πεδίο :attribute πρέπει να υπάρχει.',
     'prohibited' => 'Το πεδίο :attribute απαγορεύεται.',
     'prohibited_if' => 'Το πεδίο :attribute απαγορεύεται όταν το :other είναι :value.',
