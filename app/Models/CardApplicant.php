@@ -27,6 +27,14 @@ class CardApplicant extends Model
         'cellphone' => E164PhoneNumberCast::class . ':GR'
     ];
 
+    /**
+     * The attributes that should be received together.
+     * @var string[]
+     */
+    protected $with = [
+        'address', 'department'
+    ];
+
     public function academic(): BelongsTo
     {
         return $this->belongsTo(Academic::class, 'academic_id');
@@ -48,6 +56,11 @@ class CardApplicant extends Model
     public function currentCardApplication(): HasOne
     {
         return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at', '>', now()->subMonths(12)->format('Y-m-d'));
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 
     public function usageCard(): HasMany

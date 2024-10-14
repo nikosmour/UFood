@@ -20,7 +20,7 @@
             <show-a-data :name="$t('model_data.is_active')"
                          :value=" model['academic']['is_active']" class="col-auto row"/>
             <show-a-data :name="$t('model_data.department')"
-                         :value=" model['card_applicant']['department']" class="col-auto row"/>
+                         :value=" model['card_applicant']['department']['name']" class="col-auto row"/>
             <show-a-data :name="$t('model_data.first_year')"
                          :value=" model['card_applicant']['first_year']" class="col-auto row"/>
             <show-a-data :name="$t('model_data.cellphone')"
@@ -47,40 +47,11 @@ export default {
             default: () => {
             },
         },
-        caption: {
-            type: String,
-            default: 'Table',
-        },
     },
     data() {
         return {
-            expandedRelationships: [],
             showApplicant: true,
         };
-    },
-    computed: {
-        firstModel() {
-            return this.models.length > 0 ? this.models[0] : {};
-        },
-        attributes() {
-            return Object.keys(this.firstModel).filter(key => typeof this.firstModel[key] !== 'object');
-        },
-        relationships() {
-            return Object.keys(this.firstModel).filter(key => typeof this.firstModel[key] === 'object');
-        },
-    },
-    methods: {
-        dataToArray(data) {
-            return Array.isArray(data) ? data : [data];
-        },
-        toggleRelationship(index) {
-            const pos = this.expandedRelationships.indexOf(index);
-            if (pos > -1) {
-                this.expandedRelationships.splice(pos, 1);
-            } else {
-                this.expandedRelationships.push(index);
-            }
-        },
     },
 };
 </script>

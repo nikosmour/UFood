@@ -93,6 +93,7 @@ class UserSeeder extends Seeder
         echo str_pad(number_format($elapsedTime * 1000, 2), 7, ' ', STR_PAD_LEFT) . 'ms';
         echo "\033[0;32m" . ' DONE' . "\033[0m" . PHP_EOL;
         $seeders = [
+            DepartmentSeeder::class,
             PurchaseCouponSeeder::class,
             TransferCouponSeeder::class,
             UsageCardSeeder::class,

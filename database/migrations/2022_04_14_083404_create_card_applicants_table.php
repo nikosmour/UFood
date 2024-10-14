@@ -14,7 +14,6 @@ return new class extends Migration {
     {
         Schema::create('card_applicants', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_id')->primary();
-            $table->char('department', 60);
             $table->year('first_year');
             $table->date('expiration_date');
             $table->char('permanent_address', 99);
@@ -22,7 +21,9 @@ return new class extends Migration {
             $table->char('temporary_address', 50)->nullable();
             $table->unsignedBigInteger('temporary_address_phone')->nullable();
             $table->char('cellphone', 15)->nullable();
+            $table->unsignedTinyInteger('department_id')->nullable();
             $table->timestamps();
+            $table->foreign('department_id')->references('id')->on('departments')->nullOnDelete()->onUpdate('cascade');
             $table->foreign('academic_id')->references('academic_id')->on('academics')->onDelete('cascade')->onUpdate('cascade');
         });
     }

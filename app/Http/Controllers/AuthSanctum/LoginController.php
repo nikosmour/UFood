@@ -23,9 +23,8 @@ class LoginController
             if (Auth::guard($guard)->attempt($credentials)) {
                 $request->session()->regenerate();
                 $user = Auth::guard($guard)->user();
-                $user->couponOwner;
-                $cardApplicant = $user->cardApplicant;
-                if ($cardApplicant) $cardApplicant->address;
+                if ($guard == "academics")
+                    $user->load(['couponOwner', 'cardApplicant']);
                 return response()->json([
                     'success' => true,
                     'message' => 'Login Successful',
