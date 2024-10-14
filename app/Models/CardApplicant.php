@@ -32,7 +32,7 @@ class CardApplicant extends Model
      * @var string[]
      */
     protected $with = [
-        'address', 'department'
+        'addresses', 'department'
     ];
 
     public function academic(): BelongsTo
@@ -68,7 +68,7 @@ class CardApplicant extends Model
         return $this->hasMany(UsageCard::class, 'academic_id')->orderByDesc('date',);
     }
 
-    public function address(): HasMany
+    public function addresses(): HasMany
     {
         return $this->hasMany(Address::class, 'academic_id')->orderByDesc('created_at');
     }

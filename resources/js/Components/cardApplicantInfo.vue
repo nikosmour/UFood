@@ -26,7 +26,7 @@
             <show-a-data :name="$t('model_data.cellphone')"
                          :value=" model['card_applicant']['cellphone']" class="col-auto row"/>
 
-            <template v-for="address in model['addresses']">
+            <template v-for="address in model['card_applicant']['addresses']">
                 <h5>{{ $t((address['is_permanent']) ? 'address.permanent' : 'address.temporary') }}</h5>
                 <show-a-data :name="$t('model_data.address')"
                              :value=" address['location']" class="col-auto row"/>

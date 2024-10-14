@@ -14,7 +14,8 @@ class Address extends Model
     use HasFactory;
 
     protected $casts = [
-        'phone' => E164PhoneNumberCast::class . ':GR'
+        'phone' => E164PhoneNumberCast::class . ':GR',
+        'is_permanent' => 'boolean',
     ];
     #public $timestamps = false;
     public function cardApplicant()
