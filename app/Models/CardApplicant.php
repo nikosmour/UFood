@@ -26,6 +26,7 @@ class CardApplicant extends Model
         'year' => 'date:Y',
         'cellphone' => E164PhoneNumberCast::class . ':GR'
     ];
+    public $fillable = ['department_id', 'first_year', 'cellphone'];
 
     /**
      * The attributes that should be received together.

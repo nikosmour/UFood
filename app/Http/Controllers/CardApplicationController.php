@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\CardStatusEnum;
 use App\Events\CardApplicationUpdated;
-use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
 use App\Traits\DocumentTrait;
@@ -68,10 +67,9 @@ class CardApplicationController extends Controller
 
 
     /**
-     * @param StoreCardApplicationRequest $request
      * @return Application|RedirectResponse|Redirector|JsonResponse
      */
-    public function store(StoreCardApplicationRequest $request)
+    public function store()
     {
         $this->authorize('create', CardApplication::class);
         DB::transaction(function () {
@@ -81,9 +79,7 @@ class CardApplicationController extends Controller
             $cardApplication->saveOrFail();
             $cardApplication->applicantComments()->create(['comment' => '']);
         });
-        return ($request->expectsJson())
-            ? response()->json(["message " => 'the application has created', 'success' => true], 201)
-            : redirect(route('cardApplication.index'));
+        return response()->json(["message " => 'the application has created', 'success' => true], 201);
     }
 
     /**

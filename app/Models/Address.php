@@ -18,6 +18,8 @@ class Address extends Model
         'is_permanent' => 'boolean',
     ];
     #public $timestamps = false;
+    public $fillable = ['academic_id', 'location', 'is_permanent'];
+
     public function cardApplicant()
     {
         return $this->belongsTo(CardApplicant::class, 'academic_id');

@@ -2,6 +2,7 @@
 
 use App\Enum\CardStatusEnum;
 use App\Http\Controllers\AuthSanctum\LoginController;
+use App\Http\Controllers\CardApplicantController;
 use App\Http\Controllers\CardApplicationCheckingController;
 use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardApplicationDocumentController;
@@ -44,4 +45,5 @@ Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingC
 Route::get('cardApplication/checking/search', [CardApplicationCheckingController::class, 'search'])->name('cardApplication.checking.search');
 Route::post('login', [LoginController::class, 'login']);//->name('login');
 Route::post('/transaction/confirm', [TransactionCouponConformationDetailsController::class, '__invoke'])->name('transaction.confirm');
+Route::post('card-applicant', [CardApplicantController::class, '__invoke']);
 
