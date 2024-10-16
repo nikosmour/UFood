@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use App\Models\Academic;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\JsonResponse;
 
 class UserInfoController extends Controller
 {
@@ -22,15 +21,24 @@ class UserInfoController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     * @param Authenticatable|null $user
+     * @return JsonResponse
      */
-    public function __invoke()
+    public function __invoke(?Authenticatable $user): JsonResponse
     {
-        $user = Auth::user();
-        $user->cardApplicant;
-        $models = [$user];
-        $caption = 'User info';
-        return view('test', compact('models', 'caption'));
+        $user = ($user) ?: auth()->user();
+        if ($user instanceof Academic)
+            $user->load([
+                'couponOwner',
+                'cardApplicant',
+                'cardApplicant.currentCardApplication',//:expiration_date
+                'cardApplicant.currentCardApplication.cardLastUpdate' //:status
+            ]);
+        return response()->json([
+            'message' => 'Login Successful',
+            'abilities' => $user->getAbilities(),
+            'user' => $user,
+        ]);
 
     }
 }

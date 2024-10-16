@@ -24,16 +24,10 @@ export const actions = {
         const response = await axios.post('/api/login', credentials).then(response => {
             return response;
         });
-        console.log(response, response.data);
+        commit('setLogin', response.data);
+        localStorage.setItem('user', JSON.stringify(response.data.user)); // Store user data
+        return true;
 
-        if (response.data.success) {
-            commit('setLogin', response.data);
-            localStorage.setItem('user', JSON.stringify(response.data.user)); // Store user data
-            return true;
-        } else {
-            // Handle login failure
-            return false
-        }
     },
     async getUser({state, commit}) {
         // Send login request to Laravel backend

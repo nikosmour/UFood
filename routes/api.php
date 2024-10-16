@@ -9,7 +9,7 @@ use App\Http\Controllers\CardApplicationDocumentController;
 use App\Http\Controllers\EntryCheckingController;
 use App\Http\Controllers\PurchaseCouponController;
 use App\Http\Controllers\TransactionCouponConformationDetailsController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserInfoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,14 +26,7 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-Route::middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs')->get('/user', function (Request $request) {
-    $user = $request->user();
-    $user->load(['couponOwner', 'cardApplicant']);
-    $abilities = $user->getAbilities();
-
-
-    return response()->json(['user' => $user, 'abilities' => $abilities]);
-});
+Route::get('/user', [UserInfoController::class, '__invoke'])->name('user');
 Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
 Route::resource('entryChecking', EntryCheckingController::class)->only('store');
 Route::resource('cardApplication', CardApplicationController::class)->only('update');

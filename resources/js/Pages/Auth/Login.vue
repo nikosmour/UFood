@@ -89,19 +89,13 @@ export default {
 
                 // 4. Handle successful login
                 this.isLoading = true;
-                if (await this.$store.dispatch('loginUser', this.formData)) {
-                    console.log('Login successful! login as ', this.$store.state.auth.user, this.$store.state.auth.isLoggedIn);
-
-                    // Store authentication state (e.g., tokens) or redirect
-                } else {
-                    // 5. Handle login errors
-                    this.errors = response.data.message; // Assuming response has an 'error' message
-                }
+                await this.$store.dispatch('loginUser', this.formData)
+                console.log('Login successful! login as ', this.$store.state.auth.user, this.$store.state.auth.isLoggedIn);
             } catch (errors) {
-                // 6. Handle network or other errors
-                this.errors = errors.response.data.errors;
-                console.error('Login error:', errors.response.data.errors);
-                // this.error = 'An error occurred. Please try again.'; // Generic error for user
+                // 6. Handle network or other error
+                if (errors.response.status === 422)
+                    this.errors = errors.response.data.errors;
+                console.error('Login error:', errors);
             } finally {
                 // Reset form after login attempt
                 this.isLoading = false
