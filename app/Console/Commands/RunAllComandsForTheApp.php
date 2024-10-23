@@ -3,8 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 
 class RunAllComandsForTheApp extends Command
@@ -33,13 +31,12 @@ class RunAllComandsForTheApp extends Command
             'composer install',
             'php artisan migrate',
             'php artisan db:seed',
-            'php artisan app:enum-to-vue-js',
             'npm install',
-            'npm run dev',
             'php artisan clear-compiled',
             'php artisan ide-helper:generate',
             'php artisan ide-helper:models --write-mixin (-M)',
             'php artisan ide-helper:meta',
+            'npm run dev',
             // Add more commands here as needed
         ];
         // Run each command

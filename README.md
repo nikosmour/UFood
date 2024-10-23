@@ -24,7 +24,7 @@ php artisan ui vue --auth
 ````
 
 To generate a js file with all the routes there. There
-is also no need to do it because is not include it in the functionality
+is also no need to do it because is auto genarate with composer install in the functionality
 
 ````bash
 php artisan ziggy:generate
@@ -42,7 +42,6 @@ THe above command will run all the bellow command
 composer install
 php artisan migrate
 php artisan db:seed 
-php artisan app:enum-to-vue-js 
 npm install 
 npm run dev
 php artisan clear-compiled
