@@ -1,5 +1,5 @@
 import {createI18n} from 'vue-i18n';
-import en from '../locales/en.json'; // English translations
+import en from '../locales/en.js'; // English translations
 import el from '../locales/el.json'; // Greek translations
 import enValidation from '../locales/en/validation.json';
 import elValidation from '../locales/el/validation.json';
@@ -15,8 +15,8 @@ const getPreferredLocale = () => {
     return 'en'; // Default to English if no match
 };
 
-// Create the i18n instance
-const i18n = createI18n({
+// Create the I18n instance
+export const I18n = createI18n({
     locale: getPreferredLocale(), // set locale
     fallbackLocale: 'en', // set fallback locale
     messages: {
@@ -30,5 +30,3 @@ const i18n = createI18n({
         },
     }
 });
-
-export default i18n; // Export the i18n instance for use in the Vue app
