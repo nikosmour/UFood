@@ -42,7 +42,7 @@ class CardApplicationController extends Controller
                 "cardApplication" => $cardApplicant->currentCardApplication
             ];
             if ($update->status !== CardStatusEnum::ACCEPTED)
-                $responseData['lastExpiration'] = $cardApplicant->validCardApplication()->value('expiration_date')->format('Y-m-d');
+                $responseData['lastExpiration'] = ($cardApplicant->validCardApplication()->value('expiration_date') ?: now()->subCenturies(1))->format('Y-m-d');
 //            value('status')->first();
             return response()->json($responseData, 200);
         }
