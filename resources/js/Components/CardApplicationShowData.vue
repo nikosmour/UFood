@@ -170,11 +170,11 @@ export default {
                         this.currentStatus = application.card_last_update.status;
                     } else {
                         application.card_last_update.status = this.currentStatus;
-                        this.result.message = $t("request_failed");
+                        this.result.message = this.$t("request_failed");
                     }
                 })
                 .catch(errors => {
-                    this.result.message = $t("request_failed");
+                    this.result.message = this.$t("request_failed");
                     this.result.errors = errors.response.data.errors;
                     this.result.success = false;
                     application.card_last_update.status = this.currentStatus;

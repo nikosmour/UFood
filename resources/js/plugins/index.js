@@ -1,6 +1,6 @@
 import {Enums} from './enums';
 import {AxiosInstance} from "./axios";
-import {EchoInstance, PusherInstance} from './echo';
+import {EchoInstance} from './echo';
 import {capitalize, formatDate, formatNumber, truncate} from "./filters";
 import {I18n} from "./i18n";
 import {Vuetify} from "./vuetify";
@@ -24,7 +24,7 @@ AxiosInstance.interceptors.request.use(config => {
 export const plugins = {
     install(app) {
         app.config.globalProperties.$axios = AxiosInstance;
-        app.config.globalProperties.$pusher = PusherInstance;
+        // app.config.globalProperties.$pusher = PusherInstance;
         app.config.globalProperties.$echo = EchoInstance;
         app.config.globalProperties.$enums = Enums;
         app.config.globalProperties.$filters = {
