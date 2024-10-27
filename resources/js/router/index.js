@@ -2,8 +2,8 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 import authGuard from "../guards/AuthGuard";
 import {Enums} from "../plugins/enums.js";
 
-const Unauthorized = () => import('../Pages/Errors/403.vue');
-const NotFound = () => import('../Pages/Errors/404.vue')
+const Unauthorized = () => import('../pages/Errors/403.vue');
+const NotFound = () => import('../pages/Errors/404.vue')
 const PurchaseCoupon = () => import('../Pages/PurchaseCoupon.vue');
 const EntryChecking = () => import('../Pages/EntryChecking.vue');
 const Login = () => import('../Pages/Auth/Login.vue');
@@ -35,7 +35,9 @@ const routes = [
     },
     {
         path: '/checking', component: CardApplicationChecking,
+        name: "cardApplicationChecking",
         meta: {requiresAbility: Enums.UserAbilityEnum.CARD_APPLICATION_CHECK},
+        redirect: {name: 'cardApplication.checking', params: {category: 'submitted'}},
         children: [
             {
                 path: 'search', name: 'cardApplication.checking.search',
@@ -47,9 +49,9 @@ const routes = [
                     if (!Object.keys(Enums.CardStatusEnum).includes(to.params.category.toUpperCase())) {
                         // Handle invalid category (e.g., redirect to error page)
                         next({component: NotFound});
-                    } else {
+                    } else
                         next();
-                    }
+
                 },
             },
         ]

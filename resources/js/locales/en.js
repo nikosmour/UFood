@@ -9,18 +9,21 @@ export const en = {
     // },
     // "and": "and",
     // "applicant": "Applicant",
-    // "application": "Application | Applications",
+    "application": "Application | Applications",
     // "application_id": "Application ID",
     // "application_status_not_allow_submission": "@:{required_failed}: The status of the application does not allow submission",
     // "applicationStatus": "Application Status",
     // "back": "Back",
     // "breakfast": "Breakfast",
     // "cancel adding file": "Cancel adding file",
-    // "card": {
+    "card": {
     //     "edit": "Edit Card",
     //     "show": "Show Card",
-    //     "value": "Card | Cards"
-    // },
+        "value": "Card | Cards",
+        "application": {
+            "submitted": " Submitted Applications"
+        }
+    },
     // "changeFromTo": "Changed from @:{from1} to @:{to1} ",
     // "comment": {
     //     "enter": "Enter Comment:",
@@ -33,27 +36,35 @@ export const en = {
         "appName": "UFood"
     },
     // "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}",
-    // "coupon": {
+    "coupon": {
     //     "owner": "Coupon Owner",
     //     "owner.info": "Coupon Owner Information",
-    //     "value": "Coupon | Coupons"
-    // },
+        "value": "Coupon | Coupons"
+    },
     // "date": "Date",
     // "description": "Description",
     'developedBy': "Developed by Nikolaos Mouratidis",
     // "dinner": "Dinner",
     // "edit": "Edit",
     // "email": "Email",
-    // "entry_check": "Entry Check",
+    "entry_check": "Entry Check",
     // "entry_check_form": "@:form : @:entry_check ",
     // "entry_input": "@:card.value",
-    // "errors": {
+    "errors": {
     //     "application_status_not_allow_submission": "@:application_status_not_allow_submission",
     //     "file_cant_edited": "@:file_cant_edited",
+        "forbiddenAccess": {
+            "value": "Access Forbidden",
+            "details": "You are not authorized to access this resource"
+        },
     //     "incomplete file": "@:{incomplete file}",
     //     "keep old file?": "@:{keep old file?}",
+        "navigateAfter": "Navigate to the start Page",
     //     "no file or description": "@:{no file or description}",
     //     "no_file": "@:no_file",
+        "pageNotFound": {
+            "details": "The page you requested could not be found."
+        },
     //     "request_failed_status_wont_change": "@:request_failed_status_wont_change",
     //     "retrieving_application_failed": "@:retrieving_application_failed",
     //     "retrieving_application_files_failed": "@:retrieving_application_files_failed",
@@ -61,7 +72,7 @@ export const en = {
     //         "myself": "You can't transfer to your self"
     //     },
     //     "some_files_not_updated": "@:some_files_not_updated"
-    // },
+    },
     // "expiration date": "Expiration @:date",
     // "file": "File | Files",
     // "file_cant_edited": "File can't be edited.",
@@ -80,18 +91,18 @@ export const en = {
     //     "failed": "File has not be destroyed successfully, please retry"
     // },
     // "form": "Form",
-    // "found": "Not found | Found | Found",
+    "found": "Not Found | Found | Found",
     // "from": "From",
-    // "history": "History",
+    "history": "History",
     // "id": "ID",
     // "incomplete": "Incomplete",
     // "incomplete file": "This file is incomplete. You must submit more documents or to replace it.",
     // "invalid.credentials": "invalid credentials",
     // "keep old file?": "Would you like to keep the old file? If yes, you will see the new file at the end",
     // "loading": "Loading",
-    // "login": "Login",
+    "login": "Login",
     // "logo": "Logo",
-    // "logout": "Logout",
+    "logout": "Logout",
     // "lunch": "Lunch",
     // "meal": "Meal | Meals",
     // "meal_statistics": {
@@ -139,18 +150,19 @@ export const en = {
     // "next": "Next",
     // "no file or description": "@:no_file or description",
     // "no_file": "There isn't any file",
+    "page": "Page",
     // "password": "Password",
     // "periodLabel": "Period",
     // "pleaseSelect": "Please select one",
     // "preview": "Preview",
     // "previous": "Previous",
     // "provide_valid_card": "Provide a valid academic card",
-    // "purchase": {
+    "purchase": {
     //     "coupon_form": "coupon sale form",
     //     "successful": "Successful sale",
     //     "unsuccessful": "Unsuccessful sale",
-    //     "value": "Sale"
-    // },
+        "value": "Sale"
+    },
     // "receiver": "Receiver",
     // "request_failed": "Request failed",
     // "request_failed_status_wont_change": "@:required_failed : @:request_failed_status_wont_change",
@@ -160,6 +172,7 @@ export const en = {
     // "save": "Save",
     // "select_file": "Select file",
     // "sender": "Sender",
+    "settings": "Settings",
     // "some_files_not_updated": "@:{required_failed}: Some files were not uploaded or deleted on the server. @:request_failed_status_wont_change",
     // "staff": "Staff",
     // "status": {
@@ -188,6 +201,7 @@ export const en = {
     //     "message": "test message"
     // },
     // "time period": "Time Period",
+    "theme": {"select": "Select theme"},
     // "to": "To",
     // "transaction": {
     //     "buying": "Buying",
@@ -199,12 +213,12 @@ export const en = {
     //     "using": "Using"
     // },
     // "transactions": "Transactions",
-    // "transfer": {
+    "transfer": {
     //     "coupon_form": "Transfer Coupon Form",
     //     "successful": "Successful transfer",
     //     "unsuccessful": "Unsuccessful transfer",
-    //     "value": "Transfer"
-    // },
+        "value": "Transfer"
+    },
     // "uploadedNot": "Not uploaded",
     // "user": {
     //     "information": "User Information",
