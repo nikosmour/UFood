@@ -56,7 +56,11 @@ export default {
         getId(formData) {
             this.getApplications(formData[0], formData[1]).then(applications => {
                 if (applications[0]) {
-                    this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}});
+                    this.$router.replace({
+                        name: this.$route.name,
+                        params: {category: this.category},
+                        query: {'application': applications[0].id}
+                    });
                 }
             });
         },
@@ -89,7 +93,11 @@ export default {
             if (this.category) {
                 const applications = await this.getApplications('status', this.category);
                 if (!this.applicationId && applications.length > 0 && applications[0]) {
-                    this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}});
+                    this.$router.replace({
+                        name: this.$route.name,
+                        params: {category: this.category},
+                        query: {'application': applications[0].id}
+                    });
                 }
             }
             this.selectedItem = this.applicationId ? (await this.getApplications('application_id', this.applicationId))[0] : null;
@@ -117,7 +125,11 @@ export default {
             if (url) {
                 const applications = await this.getApplications('status', this.category, url);
                 if (applications[0]) {
-                    this.$router.replace({name: this.$route.name, query: {'application': applications[0]?.id}});
+                    this.$router.replace({
+                        name: this.$route.name,
+                        params: {category: this.category},
+                        query: {'application': applications[0]?.id}
+                    });
                 }
             }
         }
