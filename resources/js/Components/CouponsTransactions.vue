@@ -10,21 +10,21 @@ export default {
         return {
             transactions: [],
           temp: {...this.couponOwner},
-            url: route('coupons.history'),
+            // url: this.route('coupons.history'),
         };
     },
-    /*computed: {
+    computed: {
         url() {
-            return route('coupons.history');
+            return this.route('coupons.history');
         },
-    },*/
+    },
     methods: {
         ...mapActions('auth', [
             'getUser'
         ]),
         fetchData() {
             if (this.url)
-                axios.get(this.url).then(
+                this.$axios.get(this.url).then(
                     response => {
                         console.log(response.data);
                         let transactions = response.data.transactions.data;

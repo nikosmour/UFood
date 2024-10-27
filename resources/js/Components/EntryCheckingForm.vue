@@ -36,13 +36,11 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
     data() {
         return {
             academic_id: '',
-            url: route('entryChecking.store'),
+          url: this.route('entryChecking.store'),
             result: {
                 message: this.$t("test.message"),
                 success: true,
@@ -64,7 +62,7 @@ export default {
             this.result.message = '';
             this.isLoading = true;
             this.errors = {};
-            axios.post(this.url, params)
+          this.$axios.post(this.url, params)
                 .then(response => {
                     let json = response.data;
                     this.result.success = json.success;

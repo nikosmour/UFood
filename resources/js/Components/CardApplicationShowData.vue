@@ -123,12 +123,12 @@ export default {
         },
         async updateDocumentStatus(file) {
             let params = new FormData();
-            let url = route('document.update', {'document': file.id});
+            let url = this.route('document.update', {'document': file.id});
             this.resultFile.message = '';
             params.append('_method', 'PUT');
             params.append('status', file.status);
             try {
-                const response = await axios.post(url, params);
+                const response = await this.$axios.post(url, params);
                 let json = response.data;
                 this.resultFile.success = json.success;
                 this.resultFile.message = json.message;
@@ -156,7 +156,7 @@ export default {
             if (this.commentChecking) {
                 params.append('card_application_staff_comment', this.commentChecking);
             }
-            axios.post(route('cardApplication.checking.store', {'category': application.card_last_update.status}), params)
+            this.$axios.post(this.route('cardApplication.checking.store', {'category': application.card_last_update.status}), params)
                 .then(response => {
                     let json = response.data;
                     this.result.success = json === 1;
@@ -183,9 +183,9 @@ export default {
     },
     computed: {
         selectedFileUrl() {
-            return route('document.show', {'document': this.selectFile?.id});
+            return this.route('document.show', {'document': this.selectFile?.id});
         },
-        ...mapGetters([
+        ...mapGetters('auth', [
             'currentUser',
         ]),
         isCheckingByUser() {

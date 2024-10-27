@@ -120,7 +120,7 @@ export default {
             // params.append('meal_category',JSON.stringify(this.meal_category));
             this.result.message = ''; //#todo more clever way to show if the value is the same
             this.isLoading = true;
-            axios.post(route('statistics'), params
+            this.$axios.post(this.route('statistics'), params
             ).then(responseJson => {
                 const json = responseJson['data'];
                 // window.open('', '_blank').document.write(json);

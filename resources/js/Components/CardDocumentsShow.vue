@@ -72,14 +72,14 @@ export default {
         },
         getDocuments() {
             let vue = this;
-            let url = route('document.index', {'cardApplication': this.cardApplication});
+            let url = this.route('document.index', {'cardApplication': this.cardApplication});
 
-            axios.get(url)
+            this.$axios.get(url)
                 .then(function (responseJson) {
                     let documents = responseJson['data']['documents'];
                     vue.docFiles = documents;
                     documents.forEach((file, index) => {
-                        vue.addFileUpload(null, file.status, file.description, file.id, route('document.show', {
+                        vue.addFileUpload(null, file.status, file.description, file.id, this.route('document.show', {
                             'document': file.id
                         }));
                     });
@@ -144,19 +144,19 @@ export default {
             }
             // Set URL based on file status
             if ('to delete' === file.status) {
-                url = route('document.destroy', {'document': file.id});
+                url = this.route('document.destroy', {'document': file.id});
                 params.append('_method', 'DELETE');
             } else if (0 === file.id) { // Submit a new file
                 if (file.file != null) {
                     params.append(`file`, file.file);
                     params.append(`description`, file.description);
-                    url = route('document.store', {'cardApplication': this.cardApplication});
+                    url = this.route('document.store', {'cardApplication': this.cardApplication});
                 } else {
                     file.result.message = this.$t('no_file');
                     return file.result.success = true;
                 }
             } else if (file.description != this.docFiles[index].description) { //update existing file description
-                url = route('document.update', {'document': file.id});
+                url = this.route('document.update', {'document': file.id});
                 params.append(`description`, file.description);
                 params.append('_method', 'PUT');
             } else {
@@ -169,7 +169,7 @@ export default {
                 return file.result.success = false;
             }
             // Make axios request to upload file
-            return await axios.post(url, params)
+            return await this.$axios.post(url, params)
                 .then(function (responseJson) {
                     let json = responseJson['data'];
                     file.id = json['id'];

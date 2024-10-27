@@ -120,7 +120,7 @@ export default {
             errors: {},
             isLoading: false,
             disableForm: false,
-            url: route(`coupons.${this.transaction}.store`),
+            url: this.route(`coupons.${this.transaction}.store`),
             valid: {},
             submitted: false
         };
@@ -137,7 +137,7 @@ export default {
                 ...this.mealQuantities,
             };
             this.isLoading = true;
-            axios.post(this.url, data).then(responseJson => {
+            this.$axios.post(this.url, data).then(responseJson => {
                 let json = responseJson.data;
                 this.receiver.name = json.receiver;
                 this.receiver.transaction = json.transaction;
@@ -199,7 +199,7 @@ export default {
                 ...this.mealQuantities,
             };
             this.isLoading = true;
-            axios.post(route(`transaction.confirm`), data).then(responseJson => {
+            this.$axios.post(this.route(`transaction.confirm`), data).then(responseJson => {
                 console.log(responseJson)
                 let json = responseJson.data;
                 console.log(json)

@@ -50,7 +50,7 @@ export default {
         if (timeoutMin < 2) timeout = 60000;
 
         setInterval(() => {
-            axios.get(route('sanctum.csrf-cookie'));
+            this.$axios.get(this.route('sanctum.csrf-cookie'));
         }, timeout);
 
         setInterval(() => {
@@ -58,12 +58,12 @@ export default {
             if (this.isAuthenticated) this.getUser();
         }, timeout);
 
-        axios.interceptors.response.use(
+        this.$axios.interceptors.response.use(
             response => response,
             error => {
                 if (error.response.status === 419) {
-                    return axios.get(route('sanctum.csrf-cookie'))
-                        .then(() => axios(error.config))
+                    return this.$axios.get(this.route('sanctum.csrf-cookie'))
+                        .then(() => this.$axios(error.config))
                         .catch(refreshError => {
                             console.error('Failed to refresh CSRF token:', refreshError);
                             return Promise.reject(error);

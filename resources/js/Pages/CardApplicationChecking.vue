@@ -45,13 +45,16 @@ export default {
     },
     methods: {
         broadcasting() {
-            if (typeof Echo !== 'undefined' && this.category)
-                Echo.join(`cardChecking.${this.category.replace(' ', '_')}`)
+            console.log('capdApplicationChecking.vue, broadcasting  ')
+            if (typeof this.$echo !== 'undefined' && this.category)
+                this.$echo.join(`cardChecking.${this.category.replace(' ', '_')}`)
                     .here((users) => console.log('Joined channel', users))
                     .joining((user) => console.log('Joining', user))
                     .leaving((user) => console.log('Leaving', user))
                     .error((error) => console.error(error))
                     .listen('CardApplicationUpdated', this.updateApplicationsIds);
+            else
+                console.log(' Echo:', this.$echo, ' this.category:', this.category)
         },
         getId(formData) {
             this.getApplications(formData[0], formData[1]).then(applications => {
@@ -64,9 +67,9 @@ export default {
                 }
             });
         },
-        async getApplications(name, value, url = route('cardApplication.checking.search')) {
+        async getApplications(name, value, url = this.route('cardApplication.checking.search')) {
             try {
-                const response = await axios.get(url, {params: {[name]: value}});
+                const response = await this.$axios.get(url, {params: {[name]: value}});
                 console.log('get Applications', response.data);
                 const applications = response.data.data;
                 const success = this.result.success = applications.length > 0;
@@ -143,7 +146,7 @@ export default {
             this.applications = [];
             this.startingData();
             this.broadcasting();
-            if (typeof Echo !== 'undefined' && oldValue) Echo.leave(`cardChecking.${oldValue}`);
+            if (typeof this.$echo !== 'undefined' && oldValue) this.$echo.leave(`cardChecking.${oldValue}`);
         },
         async applicationId(newValue) {
             if (newValue) {
@@ -153,7 +156,7 @@ export default {
         }
     },
     beforeRouteLeave(to, from) {
-        if (typeof Echo !== 'undefined' && this.category) Echo.leave(`cardChecking.${this.category}`);
+        if (typeof this.$echo !== 'undefined' && this.category) this.$echo.leave(`cardChecking.${this.category}`);
     }
 };
 </script>

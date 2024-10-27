@@ -3,15 +3,17 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-import './bootstrap';
+import 'bootstrap';
+import _ from 'lodash';
+import AxiosInstance from "./plugins/axios.js";
 import {createApp} from 'vue';
 import router from './router';
 import App from './pages/App.vue';
 import store from './store';
 import {plugins} from './plugins';
 
-
-// import {ZiggyVue} from '../../vendor/tightenco/ziggy';
+window._ = _;
+window.axios = AxiosInstance;
 
 /**
  * The following block of create a request to the server to receive if
@@ -57,8 +59,6 @@ for (const [fileName, component] of Object.entries(requireComponent)) {
 // Use any plugins
 app.use(plugins);
 app.use(store);
-
-window.route = app.config.globalProperties.route;
 
 /**
  * The following block will waiting  the request to the server to

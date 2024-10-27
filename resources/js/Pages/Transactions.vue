@@ -19,12 +19,12 @@ export default {
     },
     computed: {
         url() {
-            return route(this.urlName);
+            return this.route(this.urlName);
         }
     },
     methods: {
         fetchData() {
-            axios.get(this.url).then(
+            this.$axios.get(this.url).then(
                 response => {
                     console.log(response.data);
                     let transactions = response.data.transactions;

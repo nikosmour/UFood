@@ -102,8 +102,8 @@ export default {
     methods: {
         // Method to listen for updates
         broadcasting() {
-            if (typeof Echo !== 'undefined')
-                Echo.private(`cardApplication.${this.cardApplication.id}`)
+            if (typeof this.$echo !== 'undefined')
+                this.$echo.private(`cardApplication.${this.cardApplication.id}`)
                     .listen('CardApplicationUpdated', (e) => {
                         this.cardApplication.expiration_date = e['expiration_date'];
                         this.cardApplication.card_last_update.status = e['status'];
@@ -123,9 +123,9 @@ export default {
         },
         // Method to fetch card application data
         getApplication() {
-            let url = route('cardApplication.index');
+            let url = this.route('cardApplication.index');
             console.log('getApplication');
-            return axios.get(url
+            return this.$axios.get(url
             ).then(responseJson => {
                 let json = responseJson['data'];
                 this.cardApplication = json['cardApplication'];
@@ -151,7 +151,7 @@ export default {
             return await this.update_form(this.$enums.CardStatusEnum.SUBMITTED);
         },
         async update_form(status) {
-            let url = route('cardApplication.update', this.cardApplication);
+            let url = this.route('cardApplication.update', this.cardApplication);
             let params = new FormData();
             this.result.message = ''; //#todo more clever way to show if the value is the same
             if (!this.applicationEdit) {
@@ -164,7 +164,7 @@ export default {
                 params.append('comment', this.commentStudent);
             }
             console.log('start axios to application for submission');
-            axios.post(url, params
+            this.$axios.post(url, params
             ).then(responseJson => {
                 console.log(responseJson);
                 let json = responseJson['data'];

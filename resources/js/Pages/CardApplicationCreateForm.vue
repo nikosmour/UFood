@@ -16,7 +16,7 @@ import {mapGetters} from 'vuex';
 export default {
     data: function () {
         return {
-            url: route('cardApplication.store'),
+            url: this.route('cardApplication.store'),
             result: {
                 message: this.$t('test.Message'),
                 success: true,
@@ -43,7 +43,7 @@ export default {
         createApplication() {
             if (0 === this.currentUser.academic_id) return;
             this.result.message = '';
-            axios.post(this.url).then(responseJson => {
+            this.$axios.post(this.url).then(responseJson => {
                 let json = responseJson.data;
                 this.result.success = json.success;
                 if (json.success) {

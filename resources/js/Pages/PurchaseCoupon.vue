@@ -21,7 +21,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            return await axios.get(route('coupons.purchase.create')).then(
+            return await this.$axios.get(this.route('coupons.purchase.create')).then(
                 response => {
                     return response.data
                 }

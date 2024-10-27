@@ -23,7 +23,7 @@ export default {
             this.statistics[entryCategory] += 1;
         },
         async fetchData() {
-            return await axios.get(route('entryChecking.create')).then(
+            return await this.$axios.get(this.route('entryChecking.create')).then(
                 response => {
                     return response.data
                 }

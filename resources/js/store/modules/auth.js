@@ -51,7 +51,7 @@ export const actions = {
         }
     },
     async logout({commit}) {
-        await axios.post(route('logout'));
+        await axios.post('/logout');
         localStorage.removeItem('user'); // Store user data
         commit('setLogout');
     },
