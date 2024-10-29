@@ -63,7 +63,6 @@
     </div>
 </template>
 <script>
-import {mapGetters} from "vuex";
 
 export default {
     data() {
@@ -103,25 +102,25 @@ export default {
                 this.password = '';
             }
         },
-        redirectAfterLogin() {
-            this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
-        }
+      /*redirectAfterLogin() {
+          this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
+      }*/
 
     },
-    computed: {
-        ...mapGetters('auth', [
-            'isAuthenticated',
-        ]),
-    },
-    watch: {
-        isAuthenticated(newValue) {
-            if (newValue)
-                this.redirectAfterLogin();
-        }
-    },
-    created() {
-        if (this.isAuthenticated)
-            this.redirectAfterLogin();
-    }
+  /*computed: {
+      ...mapGetters('auth', [
+          'isAuthenticated',
+      ]),
+  },
+  watch: {
+      isAuthenticated(newValue) {
+          if (newValue)
+              this.redirectAfterLogin();
+      }
+  },
+  created() {
+      if (this.isAuthenticated)
+          this.redirectAfterLogin();
+  }*/
 };
 </script>

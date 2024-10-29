@@ -17,14 +17,12 @@ export const mutations = {
 };
 
 export const actions = {
-    async loginUser({commit}, credentials) {
+    async loginUser({dispatch}, credentials) {
         // Send login request to Laravel backend
-        const response = await axios.post('/api/login', credentials).then(response => {
-            return response;
+        return await axios.post('api/login', credentials).then(response => {
+            console.log('status', response)
+            return (response.status === 204) ? dispatch("getUser") : (response.status === 200) ? response.data : null;
         });
-        commit('setLogin', response.data);
-        localStorage.setItem('user', JSON.stringify(response.data.user)); // Store user data
-        return true;
 
     },
     async getUser({state, commit}) {

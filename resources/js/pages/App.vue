@@ -40,10 +40,13 @@ export default {
         // console.log('created', this.$route, this.$router.resolve(this.$route.fullPath).fullPath, Date());
     },
     mounted() {
-        this.redirectAuth(this.isAuthenticated);
+      // this.redirectAuth(this.isAuthenticated);
         // Uncomment if needed for debugging
         // console.log('mounted', this.$route, this.$router.resolve(this.$route.fullPath).fullPath, Date());
-
+        console.log('App.vue/mounted');
+        if (this.isAuthenticated && this.$route.name === 'login') {
+            this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
+        }
         let timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
         let timeout = (timeoutMin - 1) * 60000;
 

@@ -1,7 +1,7 @@
 <template>
     <div>
-      <h1>{{ $t('Welcome') }}, {{ currentUser.name }}!</h1>
-        <models-to-table :caption="$t('user.information')" :models="[currentUser]"/>
+      <h1>{{ $t('Welcome') }}, {{ currentUser?.name }}!</h1>
+      <models-to-table :caption="$t('user.information')" :models="currentUser? [currentUser]:[]"/>
     </div>
 </template>
 

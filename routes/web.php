@@ -1,10 +1,13 @@
 <?php
 
 use App\Enum\CardStatusEnum;
+use App\Http\Controllers\CardApplicationCheckingController;
+use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardHistoryController;
 use App\Http\Controllers\CouponOwnerController;
 use App\Http\Controllers\DailyMealPlanController;
 use App\Http\Controllers\EntryCheckingController;
+use App\Http\Controllers\ExportStatisticsController;
 use App\Http\Controllers\PurchaseCouponController;
 use App\Http\Controllers\TransferCouponController;
 use App\Http\Controllers\UserInfoController;
@@ -22,8 +25,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs')
-    ->get('/', function () {
+Route::get('/', function () {
     return view('router');
 });
 
@@ -41,10 +43,10 @@ Route::resource('entryChecking', EntryCheckingController::class)->only('create')
 Route::redirect('coupons/transfer', '/coupons/transfer/create');
 Route::resource('coupons/transfer', TransferCouponController::class, ['as' => 'coupons'])->parameter(
     'transfer', 'transferCoupon')->only('create', 'store', 'show');
-Route::resource('cardApplication', \App\Http\Controllers\CardApplicationController::class)->except(['create', 'update', 'destroy']);
+Route::resource('cardApplication', CardApplicationController::class)->except(['create', 'update', 'destroy']);
 //Route::resource('cardApplication/{cardApplication}/document', \App\Http\Controllers\CardApplicationDocumentController::class)->only('show');
 
-Route::resource('/cardApplication/{category}/checking', \App\Http\Controllers\CardApplicationCheckingController::class, ['as' => 'cardApplication'])
+Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingController::class, ['as' => 'cardApplication'])
     ->whereIn('category', CardStatusEnum::values()->toArray())->only('index');
 
-Route::post('statistics', \App\Http\Controllers\ExportStatisticsController::class)->name('statistics');// invoke
+Route::post('statistics', ExportStatisticsController::class)->name('statistics');// invoke

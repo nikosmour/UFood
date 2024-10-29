@@ -20,12 +20,12 @@ window.axios = AxiosInstance;
  * exist the authenticated user
  */
 
-let promise = null;
+/*let promise = null;
 console.log(Date.now() % 10000, 'after')
 if (window.isAuthenticated) {
     promise = store.dispatch('auth/getUser');
     console.log(Date.now() % 10000, 'dispatch get User');
-}
+}*/
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -57,6 +57,7 @@ for (const [fileName, component] of Object.entries(requireComponent)) {
 }
 
 // Use any plugins
+app.use(router);
 app.use(plugins);
 app.use(store);
 
@@ -64,17 +65,15 @@ app.use(store);
  * The following block will waiting  the request to the server to
  * finished and  to register the authenticated user
  */
-if (promise) {
+/*if (promise) {
     console.log(Date.now() % 10000, ' app mount');
     await promise;
     console.log(Date.now() % 10000, ' app mount 2');
-}
+}*/
 /**
  * after we  will have the user we can load  the router to determent
  * in which page will  direct or redirect
  */
-app.use(router);
-
 // Mount the app to the DOM
 app.mount('#app');
 console.log(Date.now() % 10000, ' app mount 3');

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\AuthSanctum;
 
-use App\Http\Controllers\UserInfoController;
+use BadMethodCallException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,16 +20,21 @@ class LoginController
 
         // Attempt login using Laravel authentication
 //        dd(config('auth.guards'));
-        foreach (config('auth.guards') as $guard => $temp) {
-            if (Auth::guard($guard)->attempt($credentials)) {
-                $request->session()->regenerate();
-                return (new UserInfoController())(Auth::guard($guard)->user());//call userInfoController to sent the user Info
+        try {
+            foreach (config('auth.guards') as $guard => $temp) {
+                if (Auth::guard($guard)->attempt($credentials)) {
+                    $request->session()->regenerate();
+//                    return (new UserInfoController())(Auth::guard($guard)->user());//call userInfoController to sent the user Info
+                    return response()->json([], 204);
+                }
             }
+        } catch (BadMethodCallException$exception) {
+
         }
 
         return response()->json([
             'message' => 'Invalid email or password',
-            "errors" => ["credentials" => ['invalid.credentials']]
+            "errors" => ["email" => ['invalid.credentials']]
         ], 422);
     }
 }

@@ -14,14 +14,14 @@
     {{--    @routes--}}
     <!-- Scripts -->
     <script> window.isAuthenticated = {!! (auth()->check())? 1 : 0!!}</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">--}}
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    {{--    <link rel="dns-prefetch" href="//fonts.gstatic.com">--}}
+    {{--    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">--}}
     <link rel="icon" href="{{asset('/img/logo_Upatras.png')}}" type="image/x-icon">
     <!-- Styles -->
-    @vite(['resources/js/main.js','resources/sass/app.scss'])  <!--'resources/css/app.css'])-->
+    @vite(['resources/js/main.js'])  <!--'resources/css/app.css'])-->
     {{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
     @yield('Styles')
 </head>
