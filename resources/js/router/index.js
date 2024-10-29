@@ -6,7 +6,7 @@ const Unauthorized = () => import('../pages/Errors/403.vue');
 const NotFound = () => import('../pages/Errors/404.vue')
 const PurchaseCoupon = () => import('../Pages/PurchaseCoupon.vue');
 const EntryChecking = () => import('../Pages/EntryChecking.vue');
-const Login = () => import('../Pages/Auth/Login.vue');
+const Login = () => import('../pages/Auth/Login.vue');
 const UserProfile = () => import("../Pages/UserProfile.vue");
 const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.vue");
 const CardApplication = () => import("../Pages/CardApplicationEditForm.vue");
