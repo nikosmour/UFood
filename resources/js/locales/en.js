@@ -35,6 +35,8 @@ export const en = {
         "name": "University of Patras",
         "appName": "UFood"
     },
+    "confirmation": "Confirmation",
+    "confirm": "Confirm",
     // "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}",
     "coupon": {
     //     "owner": "Coupon Owner",
@@ -68,9 +70,9 @@ export const en = {
     //     "request_failed_status_wont_change": "@:request_failed_status_wont_change",
     //     "retrieving_application_failed": "@:retrieving_application_failed",
     //     "retrieving_application_files_failed": "@:retrieving_application_files_failed",
-    //     "transfer": {
-    //         "myself": "You can't transfer to your self"
-    //     },
+        "transfer": {
+            "myself": "You can't transfer to your self"
+        },
     //     "some_files_not_updated": "@:some_files_not_updated"
     },
     // "expiration date": "Expiration @:date",
@@ -118,6 +120,11 @@ export const en = {
     //     "today": "Today",
     //     "value": "Meal Statistics"
     // },
+    "meals": {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner"
+    },
     // "model_data": {
     //     "a_m": "@:{a_m}",
     //     "academic_id": "@:{academic_id}",
@@ -147,7 +154,7 @@ export const en = {
     // },
     // "money": "Money",
     // "my info": "My Information",
-    // "next": "Next",
+    "next": "Next",
     // "no file or description": "@:no_file or description",
     // "no_file": "There isn't any file",
     "page": "Page",
@@ -155,7 +162,7 @@ export const en = {
     // "periodLabel": "Period",
     // "pleaseSelect": "Please select one",
     // "preview": "Preview",
-    // "previous": "Previous",
+    "previous": "Previous",
     // "provide_valid_card": "Provide a valid academic card",
     "purchase": {
     //     "coupon_form": "coupon sale form",
@@ -163,7 +170,7 @@ export const en = {
     //     "unsuccessful": "Unsuccessful sale",
         "value": "Sale"
     },
-    // "receiver": "Receiver",
+    "receiver": "Receiver",
     // "request_failed": "Request failed",
     // "request_failed_status_wont_change": "@:required_failed : @:request_failed_status_wont_change",
     // "retrieving_application_failed": "@:required_failed : Retrieving application has failed ",
@@ -203,15 +210,17 @@ export const en = {
     // "time period": "Time Period",
     "theme": {"select": "Select theme"},
     // "to": "To",
-    // "transaction": {
+    "transaction": {
     //     "buying": "Buying",
+        "info": "Transaction Info",
     //     "kind": "Transaction type",
-    //     "new": "New transaction",
+        "new": "New transaction",
     //     "receiving": "Receiving",
     //     "sending": "Sending",
+        'summary': 'Transaction Summary'
     //     "successful": "Successful transaction",
     //     "using": "Using"
-    // },
+    },
     // "transactions": "Transactions",
     "transfer": {
     //     "coupon_form": "Transfer Coupon Form",

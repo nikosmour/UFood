@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TransactionCouponConformationDetallRequest;
+use App\Http\Requests\TransactionCouponConformationDetailRequest;
 use App\Models\Academic;
 use Illuminate\Http\JsonResponse;
 
@@ -18,7 +18,7 @@ class TransactionCouponConformationDetailsController extends Controller
 
     }
 
-    public function __invoke(TransactionCouponConformationDetallRequest $request): JsonResponse
+    public function __invoke(TransactionCouponConformationDetailRequest $request): JsonResponse
     {
         $receiver = Academic::whereAcademicId($request['receiver_id'])->get(['name', 'status'])->first();
         $receiver->name = $this->stringToSecret($receiver->name);

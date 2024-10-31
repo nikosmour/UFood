@@ -7,7 +7,7 @@ use App\Rules\AtLeastOneNoZero;
 use App\Rules\IsUserActive;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TransactionCouponConformationDetallRequest extends FormRequest
+class TransactionCouponConformationDetailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

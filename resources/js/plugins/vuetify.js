@@ -19,4 +19,9 @@ export const Vuetify = createVuetify({
             mdi,
         },
     },
+    defaults: {
+        VTextField: {
+            variant: 'outlined'
+        }
+    }
 });

@@ -16,10 +16,10 @@ class IsUserActive implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $User = Academic::whereAcademicId($value)->select('is_active')->first();
-        if (!$User)
+        $isActive = Academic::whereAcademicId($value)->value('is_active');
+        if (null === $isActive)
             $fail(__('validation.exists'));
-        elseif (!$User->is_active)
+        elseif (!$isActive)
             $fail(__('validation.not_active'));
 
     }

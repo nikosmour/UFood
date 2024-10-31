@@ -1,134 +1,155 @@
 <template>
-    <div :class="customClass" class="container h-100">
-        <div class=" row justify-content-center h-100">
-            <div class="h-100">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title">{{
-                                $t(`${transaction}.value`) + ' - ' + $t(
-                                    submitted ? "transaction.successful" : (disableForm ? 'verification' : 'edit')
-                                )
-                            }}</h5>
-                    </div>
+    <v-container :class="customClass" fluid>
+        <v-row justify="center">
+            <v-col cols="12" md="8">
+                <v-stepper v-if="this.couponOwner" v-model="step"
+                           :items="[$t('receiver'), $t('confirmation'), $t('transaction.summary')]" hide-actions>
+                    <template v-slot:item.1>
+                        <v-card :loading="isLoading" :title="$t('transaction.info')" flat>
+                            <v-form ref="receiverForm" v-model="isFormValid" validate-on="invalid-input lazy"
+                                    @submit.prevent="confirmDataTransactions">
+                                <v-row>
+                                    <v-col class="mt-10" cols="12" md="8" offset-md="2">
+                                        <v-text-field
+                                            v-model.number="receiver.id"
+                                            :error-messages="errors.receiver_id"
+                                            :label="$t('receiver')"
+                                            :rules="rules.receiver"
+                                            autofocus
+                                            outlined
+                                            required
+                                            type="number"
+                                            validate-on-blur
+                                            @input="errors.receiver_id=null"
+                                            density="compact"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col v-for="(meal, index) in mealPlanPeriods" :key="index" cols="12" md="8"
+                                           offset-md="2">
+                                        <v-text-field
+                                            v-model.number="mealQuantities[meal]"
+                                            :error-messages="errors[meal] || errors.sumValidation"
+                                            :label="$t('meals.'+meal.toLowerCase())"
+                                            :max="couponOwner[meal] ?? null"
+                                            :rules="rules['meals'][meal]"
+                                            min="0"
+                                            outlined
+                                            type="number"
+                                            @input="errors[meal]=null"
+                                            density="compact"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col class="d-flex justify-end" cols="12">
+                                        <v-btn :disabled="!isFormValid" color="primary" type="submit">
+                                            {{ $t('next') }}
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
+                        </v-card>
+                    </template>
+                    <template v-slot:item.2>
+                        <v-card :loading="isLoading" :title="$t('transaction.info')">
+                            <v-card-text>
+                                <showListItem :list-items="listItems"/>
+                            </v-card-text>
 
-                    <div class="card-body">
-                        <form :aria-label="$t(`${transaction}.coupon_form`)" @submit.prevent="handleSubmit">
-                            <loading v-if="isLoading"/>
-                            <div class="row mb-3">
-                                <label class="col-md-4 col-form-label text-md-end" for="receiverId">
-                                    {{ $t('receiver') }} </label>
-                                <div class="col-md-6">
-                                    <div v-if="disableForm">
-                                        <span v-if="submitted">{{ receiver.transaction }}</span>
-                                        <br/>
-                                        {{ receiver.name }}
-                                        <br/>
-                                        {{ receiver.status }}
+                            <v-card-actions class="d-flex justify-space-between" cols="12">
+                                <v-btn color="primary" variant="text" @click="step--">{{ $t('previous') }}</v-btn>
+                                <v-btn color="primary" type='submit' variant="elevated" @click="handleSubmit">{{
+                                        $t('confirm')
+                                    }}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </template>
+                    <template v-slot:item.3>
+                        <v-card :title="$t('transaction.info')">
+                            <v-card-text>
+                                <showListItem :list-items="listItems"/>
+                            </v-card-text>
 
-                                    </div>
-                                    <input id="receiverId" v-model.number.trim="receiver.id"
-                                           :class="[{ 'is-invalid': errors.receiver_id,'is-valid': valid.receiver_id && !errors.receiver_id  },
-                                                disableForm ? 'form-control-plaintext' : 'form-control',
-                                           ]" :readonly="disableForm"
-                                           required
-                                           type="number">
-                                    <div v-for=" error in errors.receiver_id" class="invalid-feedback" role="alert">
-                                        {{ $t(error) }}
-                                    </div>
+                            <v-card-actions class="justify-center">
+                                <v-btn color="primary"
+                                       variant="elevated" @click="resetForm">
+                                    {{ $t('transaction.new') }}
 
-                                </div>
-                            </div>
-
-                            <div v-for="(meal, index) in mealPlanPeriods" :key="index" class="row mb-3">
-                                <label :for="meal" class="col-md-4 col-form-label text-md-end">{{
-                                        $t(meal.toLowerCase())
-                                    }} </label>
-                                <div class="col-md-6">
-                                    <input :id="meal" v-model.number.trim="mealQuantities[meal]"
-                                           :class="[{ 'is-invalid': errors[meal] ||errors.total_meals,
-                                         'is-valid': valid[meal]  },
-                                           disableForm ? 'form-control-plaintext' : 'form-control',
-                                           ]"
-                                           :disabled="!receiver.id" :max="couponOwner[meal] ?? null"
-                                           :name="meal" :readonly="disableForm "
-                                           min="0" required
-                                           type="number" value="0">
-                                    <div v-for=" error in errors[meal] || errors.total_meals" class="invalid-feedback"
-                                         role="alert">
-                                        {{ $t(error) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-0">
-                                <div class="col-md-8 offset-md-4 ">
-                                    <template v-if="disableForm &&!submitted">
-                                        <button class="btn btn-primary me-3" type="submit">
-                                            {{ $t('submit') }}
-                                        </button>
-                                        <button class="btn btn-outline-secondary" type="button"
-                                                v-on:click="disableForm=false">
-                                            {{ $t('back') }}
-                                        </button>
-                                    </template>
-                                    <button v-else-if="submitted" class="btn btn-primary" type="button"
-                                            v-on:click="resetForm">
-                                        {{ $t('transaction.new') }}
-                                    </button>
-                                    <button v-else :disabled="!result.success " class="btn btn-primary"
-                                            type="button" v-on:click="validateForm">
-                                        {{ $t('next') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <message v-bind="result"></message>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </template>
+                </v-stepper>
+            </v-col>
+        </v-row>
+    </v-container>
+    <!--    <message v-bind="result"></message>-->
 </template>
 
 <script>
+import ShowListItem from "./ShowListItem.vue";
 
 export default {
+    components: {ShowListItem},
     props: {
         customClass: {
-            type: Array || Object || String
+            type: [Array, Object, String],
+            default: ''
         },
         couponOwner: {
             type: Object,
-            default: {}
+            default: () => ({})
         },
         transaction: String
     },
     data() {
         return {
-            result: {
+            /*result: {
                 message: this.$t('test.message'),
                 success: false,
                 hide: true,
                 errors: []
-            },
-            receiver: {
-                'id': '',
-                'name': null,
-                "transaction": null,
-                'status': null
-            },
+            },*/
+            step: 1,
+            receiver: {transaction: null, id: '', name: null, status: null},
             mealQuantities: {}, // Object to store meal quantities
-            errors: {},
+            errors: {
+                sumValidation: null,
+            },
+            isFormValid: true,
             isLoading: false,
-            disableForm: false,
             url: this.route(`coupons.${this.transaction}.store`),
-            valid: {},
-            submitted: false
+            rules: {
+                receiver: [
+                    value => {
+                        if (value) return true;
+                        return this.$t('validation.required', {'attribute': this.$t('receiver')});
+                    },
+                    value => {
+                        if (value > 0) return true
+
+                        return this.$t('validation.exists', {'attribute': this.$t('validation.attributes.receiver_id')});
+                    },
+                    value => {
+                        if (!this.couponOwner || value !== this.couponOwner.academic_id) return true
+
+                        return this.$t('errors.transfer.myself')
+                    },
+                    // this.confirmDataTransactions
+                ],
+                meals: {},
+            }
         };
     },
     computed: {
-        mealPlanPeriods: function () {
+        listItems() {
+            return {
+                receiver: this.receiver,
+                meals: this.mealQuantities
+            }
+        },
+        mealPlanPeriods() {
             return Object.keys(this.$enums.MealPlanPeriodEnum);
-        },//Object.values(\App\Enum\MealPlanPeriodEnum::names()), // Get meal plan periods as array
+        }
     },
     methods: {
         handleSubmit() {
@@ -141,59 +162,52 @@ export default {
                 let json = responseJson.data;
                 this.receiver.name = json.receiver;
                 this.receiver.transaction = json.transaction;
-                this.result.message = this.$t(`${this.transaction}.successful`);
+                // this.result.message = this.$t(`${this.transaction}.successful`);
                 this.$emit(`new_${this.transaction}`, this.mealQuantities);
-                this.submitted = true;
+                this.step = 3;
 
 
             }).catch(errors => {
                 if (errors.response && errors.response.status === 422)
                     this.errors = errors.response.data.errors;
-                else
-                    this.result.errors = errors;
-                this.result.message = this.$t('request_failed');
-                this.disableForm = false;
+                /*else
+                    this.result.errors = errors;*/
+                // this.result.message = this.$t('request_failed');
+                this.step = 1;
             }).finally(() => {
                 this.isLoading = false;
             });
         },
-        resetForm() {
-            this.mealPlanPeriods.forEach(key => {
-                this.mealQuantities[key] = 0;
-            });
-            this.receiver.name = this.receiver.id = '';
-            this.disableForm = this.submitted = false;
-            this.errors = {};
-
-        },
-        validateMeals(newValue, oldValue, key) {
-            if (this.submitted) return;
-            this.valid[key] = false;
-            if (this.couponOwner && newValue > this.couponOwner[key]) {
-                this.errors[key] = [this.$t('validation.max.numeric', {
-                    'max': this.couponOwner[key],
-                    'attribute': this.$t(`validation.attributes.${key}`)
-                })]
-            } else if (newValue < 0 || newValue === '') {
-                this.errors[key] = [this.$t('validation.min.numeric', {
-                    'min': 0,
-                    'attribute': this.$t(`validation.attributes.${key}`)
-                })]
-            } else if (newValue === 0 && (Object.keys(this.mealQuantities).reduce((sum, key) => sum + this.mealQuantities[key], 0) === 0)) {
-                this.errors.total_meals = [this.$t('validation.at_least_one_greater_than_zero')];
-            } else {
-                delete this.errors.total_meals;
-                delete this.errors[key];
-                this.valid[key] = newValue
+        validateMeals(key) {
+            return newValue => {
+                if (this.couponOwner && newValue > this.couponOwner[key]) {
+                    return this.$t('validation.max.numeric', {
+                        'max': this.couponOwner[key],
+                        'attribute': this.$t(`meals.${key}`)
+                    });
+                }
+                if (newValue < 0) {
+                    return this.$t('validation.min.numeric', {
+                        'min': 0,
+                        'attribute': this.$t(`meals.${key}`)
+                    });
+                }
+                if (newValue === 0 && (Object.keys(this.mealQuantities).reduce((sum, key) => sum + this.mealQuantities[key], 0) === 0)) {
+                    this.errors.sumValidation = this.$t('validation.at_least_one_greater_than_zero');
+                    return true;
+                }
+                this.errors.sumValidation = null;
+                return true;
             }
         },
-        validateForm() {
-            this.errors = {};
-            this.confirmDataTransactions();
-
-            this.disableForm = this.result.success
-        },
-        confirmDataTransactions() {
+        async confirmDataTransactions() {
+            await this.$refs.receiverForm.validate();
+            if (!this.isFormValid) {
+                return;
+            }
+            this.mealPlanPeriods.forEach((key) => {
+                this.mealQuantities[key] = this.mealQuantities[key] || 0;
+            });
             const data = {
                 receiver_id: this.receiver.id,
                 ...this.mealQuantities,
@@ -205,74 +219,30 @@ export default {
                 console.log(json)
                 this.receiver.name = json.data.name;
                 this.receiver.status = json.data.status;
-                // this.result.message = this.$t(`${this.transaction}.successful`);
-                // this.$emit(`new_${this.transaction}`, this.mealQuantities);
-                // this.submitted = true;
-                this.disableForm = true;
-
-
+                this.step = 2;
             }).catch(errors => {
                 if (errors.response && errors.response.status === 422)
                     this.errors = errors.response.data.errors;
-                else
-                    this.result.errors = errors;
-                this.result.message = this.$t('request_failed');
-                this.disableForm = false;
+                /*else
+                    this.result.errors = errors;*/
+                // this.result.message = this.$t('request_failed');
             }).finally(() => {
                 this.isLoading = false;
             });
         },
-    },
-    watch: {
-        'receiver.id'(newValue) {
-            this.valid['receiver_id'] = false;
-            if (this.couponOwner && newValue === this.couponOwner.academic_id) {
-                // Vue.set(this.errors,'receiver_id',[this.$t('errors.transfer.myself')])
-                this.errors.receiver_id = [this.$t('errors.transfer.myself')];
-            } else if (newValue < 1) {
-                this.errors.receiver_id = [this.$t('validation.exists', {'attribute': this.$t('validation.attributes.receiver_id')})];
-            } else {
-                this.valid['receiver_id'] = true;
-                delete this.errors.receiver_id;
-            }
-        },
-        errors: {
-            handler(newValue) {
-                console.log(newValue);
-                if (Object.keys(newValue).length === 0) {
-                    this.result.message = '';
-                    this.result.success = true;
-                    this.result.errors = null;
-                } else {
-                    this.result.success = false;
-                    // this.result.message = this.$t('request_failed');
-                }
-            },
-            deep: true,  // Enable deep watching
-        },
-
-
+        resetForm() {
+            this.$refs.receiverForm.reset();
+            this.step = 1;
+            this.receiver.transaction = null;
+            this.receiver.name = null;
+            this.receiver.status = null;
+        }
     },
     created() {
-        this.mealPlanPeriods.forEach(key => {
-            this.mealQuantities[key] = 0;
-            this.$watch(`mealQuantities.${key}`, (newValue, oldValue) => {
-                this.validateMeals(newValue, oldValue, key);
-
-            })
+        this.mealPlanPeriods.forEach((key) => {
+            this.rules['meals'][key] = [this.validateMeals(key.toLocaleLowerCase())];
         });
     }
 };
 </script>
 
-<style scoped>
-/* Ensure sufficient color contrast */
-button.btn-primary {
-    background-color: #0056b3; /* Darken the primary color */
-    color: #ffffff;
-}
-
-button.btn-primary:hover {
-    background-color: #004494; /* Darken the hover color */
-}
-</style>
