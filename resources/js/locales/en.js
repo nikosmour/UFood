@@ -170,7 +170,14 @@ export const en = {
     //     "unsuccessful": "Unsuccessful sale",
         "value": "Sale"
     },
-    "receiver": "Receiver",
+    "receiver": {
+        "value": "Receiver",
+        "id": "Receiver id",
+        "name": "Receiver's name",
+        "status": "Receiver's status",
+        "transaction_id": "@:transaction.id",
+
+    },
     // "request_failed": "Request failed",
     // "request_failed_status_wont_change": "@:required_failed : @:request_failed_status_wont_change",
     // "retrieving_application_failed": "@:required_failed : Retrieving application has failed ",
@@ -212,6 +219,7 @@ export const en = {
     // "to": "To",
     "transaction": {
     //     "buying": "Buying",
+        "id": "Transaction id",
         "info": "Transaction Info",
     //     "kind": "Transaction type",
         "new": "New transaction",

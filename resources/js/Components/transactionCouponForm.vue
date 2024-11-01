@@ -3,7 +3,7 @@
         <v-row justify="center">
             <v-col cols="12" md="8">
                 <v-stepper v-if="this.couponOwner" v-model="step"
-                           :items="[$t('receiver'), $t('confirmation'), $t('transaction.summary')]" hide-actions>
+                           :items="[$t('receiver.value'), $t('confirmation'), $t('transaction.summary')]" hide-actions>
                     <template v-slot:item.1>
                         <v-card :loading="isLoading" :title="$t('transaction.info')" flat>
                             <v-form ref="receiverForm" v-model="isFormValid" validate-on="invalid-input lazy"
@@ -13,7 +13,7 @@
                                         <v-text-field
                                             v-model.number="receiver.id"
                                             :error-messages="errors.receiver_id"
-                                            :label="$t('receiver')"
+                                            :label="$t('receiver.value')"
                                             :rules="rules.receiver"
                                             autofocus
                                             outlined
@@ -40,7 +40,7 @@
                                         ></v-text-field>
                                     </v-col>
                                     <v-col class="d-flex justify-end" cols="12">
-                                        <v-btn :disabled="!isFormValid" color="primary" type="submit">
+                                        <v-btn :disabled="isFormValid === false" color="primary" type="submit">
                                             {{ $t('next') }}
                                         </v-btn>
                                     </v-col>
@@ -103,7 +103,7 @@ export default {
     data() {
         return {
             step: 1,
-            receiver: {transaction: null, id: '', name: null, status: null},
+            receiver: {transaction_id: null, id: '', name: null, status: null},
             mealQuantities: {}, // Object to store meal quantities
             errors: {
                 meals: null,
@@ -115,7 +115,7 @@ export default {
                 receiver: [
                     value => {
                         if (value) return true;
-                        return this.$t('validation.required', {'attribute': this.$t('receiver')});
+                        return this.$t('validation.required', {'attribute': this.$t('receiver.value')});
                     },
                     value => {
                         if (value > 0) return true
@@ -154,7 +154,7 @@ export default {
             this.$axios.post(this.url, data).then(responseJson => {
                 let json = responseJson.data;
                 this.receiver.name = json.receiver;
-                this.receiver.transaction = json.transaction;
+                this.receiver.transaction_id = json.transaction;
                 // this.result.message = this.$t(`${this.transaction}.successful`);
                 this.$emit(`new_${this.transaction}`, this.mealQuantities);
                 this.step = 3;
@@ -227,7 +227,7 @@ export default {
         resetForm() {
             this.$refs.receiverForm.reset();
             this.step = 1;
-            this.receiver.transaction = null;
+            this.receiver.transaction_id = null;
             this.receiver.name = null;
             this.receiver.status = null;
         }

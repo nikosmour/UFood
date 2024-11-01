@@ -105,7 +105,7 @@ export default {
                         &nbsp;{{ $t('sender') }}: {{ transaction.academic_id }}
                     </template>
                     <template v-else-if="transaction.transaction === 'sending'">
-                        &nbsp;{{ $t('receiver') }}: {{ transaction.academic_id }}
+                        &nbsp;{{ $t('receiver.value') }}: {{ transaction.academic_id }}
                     </template>
                 </td>
                 <td>{{ transaction.totalMoney }} €</td>
