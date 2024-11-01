@@ -46,6 +46,6 @@ class AtLeastOneNoZero implements ValidationRule, DataAwareRule
         foreach ($this->params as $param)
             if (0 < $this->data[$param])
                 return;
-        $fail(__('validation.at_least_one_greater_than_zero'));
+        $fail('validation.at_least_one_greater_than_zero')->translate();
     }
 }

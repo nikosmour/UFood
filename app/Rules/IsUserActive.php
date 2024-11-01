@@ -18,9 +18,9 @@ class IsUserActive implements ValidationRule
     {
         $isActive = Academic::whereAcademicId($value)->value('is_active');
         if (null === $isActive)
-            $fail(__('validation.exists'));
+            $fail('validation.exists')->translate();
         elseif (!$isActive)
-            $fail(__('validation.not_active'));
+            $fail('validation.not_active')->translate();
 
     }
 }
