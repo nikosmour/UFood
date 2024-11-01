@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
-class StorePurchaseCouponRequest extends TransactionRequest
+use App\Models\Academic;
+use App\Models\CouponStaff;
+
+class TransactionConfirmationCouponRequest extends TransactionRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -11,7 +14,8 @@ class StorePurchaseCouponRequest extends TransactionRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = auth()->user();
+        return ($user instanceof Academic) || ($user instanceof CouponStaff);
     }
 
 }
