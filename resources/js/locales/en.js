@@ -106,7 +106,7 @@ export const en = {
     // "logo": "Logo",
     "logout": "Logout",
     // "lunch": "Lunch",
-    // "meal": "Meal | Meals",
+    "meal": "Meal | Meals",
     // "meal_statistics": {
     //     "adapted": "Adapted",
     //     "breakfast": "@:breakfast",

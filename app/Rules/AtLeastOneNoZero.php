@@ -17,6 +17,12 @@ class AtLeastOneNoZero implements ValidationRule, DataAwareRule
     protected $data = [];
 
     private array $params = [];
+    /**
+     * Indicates whether the rule should be implicit.
+     *
+     * @var bool
+     */
+    public bool $implicit = true;
 
     public function __construct(...$params)
     {

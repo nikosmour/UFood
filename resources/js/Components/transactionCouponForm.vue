@@ -28,14 +28,14 @@
                                            offset-md="2">
                                         <v-text-field
                                             v-model.number="mealQuantities[meal]"
-                                            :error-messages="errors[meal] || errors.sumValidation"
+                                            :error-messages="errors[meal] || errors.meals"
                                             :label="$t('meals.'+meal.toLowerCase())"
                                             :max="couponOwner[meal] ?? null"
                                             :rules="rules['meals'][meal]"
                                             min="0"
                                             outlined
                                             type="number"
-                                            @input="errors[meal]=null"
+                                            @input="errors[meal]=errors['meals']=null"
                                             density="compact"
                                         ></v-text-field>
                                     </v-col>
@@ -82,7 +82,6 @@
             </v-col>
         </v-row>
     </v-container>
-    <!--    <message v-bind="result"></message>-->
 </template>
 
 <script>
@@ -103,17 +102,11 @@ export default {
     },
     data() {
         return {
-            /*result: {
-                message: this.$t('test.message'),
-                success: false,
-                hide: true,
-                errors: []
-            },*/
             step: 1,
             receiver: {transaction: null, id: '', name: null, status: null},
             mealQuantities: {}, // Object to store meal quantities
             errors: {
-                sumValidation: null,
+                meals: null,
             },
             isFormValid: true,
             isLoading: false,
@@ -193,10 +186,12 @@ export default {
                     });
                 }
                 if (newValue === 0 && (Object.keys(this.mealQuantities).reduce((sum, key) => sum + this.mealQuantities[key], 0) === 0)) {
-                    this.errors.sumValidation = this.$t('validation.at_least_one_greater_than_zero');
+                    this.errors.meals = this.$t('validation.at_least_one_greater_than_zero', {
+                        'attribute': this.$t(`meal`, 2).toLocaleLowerCase()
+                    });
                     return true;
                 }
-                this.errors.sumValidation = null;
+                this.errors.meals = null;
                 return true;
             }
         },
@@ -223,9 +218,8 @@ export default {
             }).catch(errors => {
                 if (errors.response && errors.response.status === 422)
                     this.errors = errors.response.data.errors;
-                /*else
-                    this.result.errors = errors;*/
-                // this.result.message = this.$t('request_failed');
+                else
+                    console.log(errors);
             }).finally(() => {
                 this.isLoading = false;
             });

@@ -115,13 +115,14 @@
     "url": "The {attribute} must be a valid URL.",
     "uuid": "The {attribute} must be a valid UUID.",
     "not_active": "The selected {attribute} belong to a not active user.",
-    "at_least_one_greater_than_zero": "One of the values must be greater than 0.",
+    "at_least_one_greater_than_zero": "One of the {attribute} must be greater than 0.",
     "custom": {
         "attribute-name": {
             "rule-name": "custom-message"
         }
     },
     "attributes": {
+        "meals": "meals",
         "receiver_id": "receiver id"
     }
 }

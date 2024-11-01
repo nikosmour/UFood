@@ -140,7 +140,7 @@ return [
 
 
     'not_active' => 'The selected :attribute  belong to a not active user.',
-    'at_least_one_greater_than_zero' => 'One of the values must be greater than 0',
+    'at_least_one_greater_than_zero' => 'One of the :attribute must be greater than 0',
 
     /*
     |--------------------------------------------------------------------------
@@ -175,7 +175,8 @@ return [
         'receiver_id' => 'Receiver id',
         'BREAKFAST' => 'Breakfast',
         'LUNCH' => 'Lunch',
-        'DINNER' => 'Dinner'
+        'DINNER' => 'Dinner',
+        'meals' => 'meals'
     ],
 
 ];

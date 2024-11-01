@@ -26,7 +26,8 @@ abstract class TransactionRequest extends FormRequest
                 'integer', 'min:0'
             ];
         }
-        $rules[$periods[0]][] = new AtLeastOneNoZero(...$periods);
+        // Ensure that at least one of the period values is non-zero
+        $rules["meals"] = new AtLeastOneNoZero(...$periods);
         $user = auth()->user();
         if ($user instanceof Academic) {
             $couponOwner = $user->couponOwner;
