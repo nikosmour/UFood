@@ -133,6 +133,9 @@ export default {
             }
         };
     },
+    emits: [
+        'new_transaction_coupon',
+    ],
     computed: {
         listItems() {
             return {
@@ -156,7 +159,6 @@ export default {
                 this.receiver.name = json.receiver;
                 this.receiver.transaction_id = json.transaction;
                 // this.result.message = this.$t(`${this.transaction}.successful`);
-                this.$emit(`new_${this.transaction}`, this.mealQuantities);
                 this.step = 3;
 
 
@@ -169,6 +171,7 @@ export default {
                 this.step = 1;
             }).finally(() => {
                 this.isLoading = false;
+                this.$emit(`new_transaction_coupon`, this.mealQuantities);
             });
         },
         validateMeals(key) {

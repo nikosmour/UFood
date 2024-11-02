@@ -1,5 +1,6 @@
 <template>
-    <transaction-coupon-form :couponOwner="couponOwner" transaction='transfer' @new_transfer="new_transfer($event)"/>
+    <transaction-coupon-form :couponOwner="couponOwner" transaction='transfer'
+                             @new_transaction_coupon="new_transfer($event)"/>
 </template>
 
 <script>
