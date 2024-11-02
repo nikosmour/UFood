@@ -5,10 +5,10 @@
 
 <script>
 
-import CouponsTransactions from "../Components/CouponsTransactions.vue";
+import TransactionCouponForm from "../components/transactionCouponForm.vue";
 
 export default {
-    components: {CouponsTransactions},
+    components: {TransactionCouponForm},
     props: {
         couponOwner: {
             type: Object,

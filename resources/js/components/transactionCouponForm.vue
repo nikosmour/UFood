@@ -1,5 +1,5 @@
 <template>
-    <v-container :class="customClass" fluid>
+    <v-container fluid>
         <v-row justify="center">
             <v-col cols="12" md="8">
                 <v-stepper v-if="this.couponOwner" v-model="step"
@@ -94,10 +94,6 @@ import ShowListItem from "./ShowListItem.vue";
 export default {
     components: {ShowListItem},
     props: {
-        customClass: {
-            type: [Array, Object, String],
-            default: ''
-        },
         couponOwner: {
             type: Object,
             default: () => ({})

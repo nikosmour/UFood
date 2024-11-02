@@ -1,6 +1,6 @@
 <template>
     <div class="row h-100">
-        <transaction-coupon-form :customClass="['col-xm-12',' col-sm-6 ','col-md-7','col-lg-8'] " transaction='purchase'
+        <transaction-coupon-form transaction='purchase'
                                  @new_transaction_coupon="newPurchase($event)"></transaction-coupon-form>
         <export-statistics-form :statistics="statistics"></export-statistics-form>
     </div>
@@ -8,7 +8,12 @@
 
 <script>
 
+import TransactionCouponForm from "../components/transactionCouponForm.vue";
+
 export default {
+    components: {
+        TransactionCouponForm,
+    },
     props: {
         statisticsServer: {
             type: Object,

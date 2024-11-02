@@ -12,7 +12,7 @@ const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.v
 const CardApplication = () => import("../Pages/CardApplicationEditForm.vue");
 const CardApplicationCreate = () => import("../Pages/CardApplicationCreateForm.vue");
 const Transactions = () => import("../Pages/Transactions.vue");
-const TransferCoupons = () => import("../Pages/TransferCoupon.vue");
+const TransferCoupons = () => import("../pages/TransferCoupon.vue");
 const CouponOwner = () => import("../Pages/CouponOwner.vue");
 const CouponTransactions = () => import("../Components/CouponsTransactions.vue")
 const CardApplicationCheckingSearch = () => import("../Components/CardApplicationCheckingSearch.vue")
