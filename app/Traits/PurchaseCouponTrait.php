@@ -21,9 +21,10 @@ trait PurchaseCouponTrait
     private function canBuy(array $data): array
     {
         $transaction = PurchaseCoupon::create($data);
-        return ['success' => true,
-            'receiver' => Academic::whereAcademicId($data['academic_id'])->value('name'),
-            'transaction' => "P$transaction->id"];
+        return [
+            'name' => Academic::whereAcademicId($data['academic_id'])->value('name'),
+            'transaction' => "P$transaction->id"
+        ];
     }
 
     /**

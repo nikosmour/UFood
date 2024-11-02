@@ -11,6 +11,7 @@
                                 <v-row>
                                     <v-col class="mt-10" cols="12" md="8" offset-md="2">
                                         <v-text-field
+                                            :ref="'receiverId'"
                                             v-model.number="receiver.id"
                                             :error-messages="errors.receiver_id"
                                             :label="$t('receiver.value')"
@@ -24,10 +25,13 @@
                                             density="compact"
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col v-for="(meal, index) in mealPlanPeriods" :key="index" cols="12" md="8"
+                                    <v-col v-for="(meal, index) in mealPlanPeriods" :key="'form.meals.'+index" cols="12"
+                                           md="8"
                                            offset-md="2">
                                         <v-text-field
+                                            :ref="`meals-${meal}`"
                                             v-model.number="mealQuantities[meal]"
+                                            :disabled="mealsDisable"
                                             :error-messages="errors[meal] || errors.meals"
                                             :label="$t('meals.'+meal.toLowerCase())"
                                             :max="couponOwner[meal] ?? null"
@@ -50,7 +54,7 @@
                     </template>
                     <template v-slot:item.2>
                         <v-card :loading="isLoading" :title="$t('transaction.info')">
-                            <v-card-text>
+                            <v-card-text @keydown.enter="handleSubmit">
                                 <showListItem :list-items="listItems"/>
                             </v-card-text>
 
@@ -65,7 +69,7 @@
                     </template>
                     <template v-slot:item.3>
                         <v-card :title="$t('transaction.info')">
-                            <v-card-text>
+                            <v-card-text @keydown.enter="handleSubmit">
                                 <showListItem :list-items="listItems"/>
                             </v-card-text>
 
@@ -145,32 +149,55 @@ export default {
         },
         mealPlanPeriods() {
             return Object.keys(this.$enums.MealPlanPeriodEnum);
-        }
+        },
+        mealsDisable() {
+            return !this.receiver.id;
+        },
     },
     methods: {
+        focusOnError() {
+            if (!this.$refs.receiverId.isValid) {
+                this.$refs.receiverId.focus();
+                return; // Exit after focusing on receiverId if it's invalid
+            }
+            // Loop through meal plan periods
+            // Focus on the first invalid meal input
+            for (const meal of this.mealPlanPeriods) {
+                const mealRef = this.$refs[`meals-${meal}`][0];
+                console.log(meal, mealRef, mealRef.isValid)
+                if (mealRef && !mealRef.isValid) {
+                    mealRef.focus();
+                    return; // Exit after focusing on the first invalid input
+                }
+            }
+        },
+        async submitData(url, data) {
+            this.isLoading = true;
+            try {
+                const responseData = (await this.$axios.post(url, data)).data;
+                this.receiver.name = responseData.name;
+                this.step++
+                return responseData;
+            } catch (error) {
+                if (error.response && error.response.status === 422) {
+                    this.errors = error.response.data.errors;
+                } else {
+                    throw error;
+                }
+                this.step = 1;
+                this.$nextTick(this.focusOnError).then(r => {
+                });
+            } finally {
+                this.isLoading = false;
+            }
+        },
         handleSubmit() {
             const data = {
                 receiver_id: this.receiver.id,
                 ...this.mealQuantities,
             };
-            this.isLoading = true;
-            this.$axios.post(this.url, data).then(responseJson => {
-                let json = responseJson.data;
-                this.receiver.name = json.receiver;
+            this.submitData(this.url, data).then(json => {
                 this.receiver.transaction_id = json.transaction;
-                // this.result.message = this.$t(`${this.transaction}.successful`);
-                this.step = 3;
-
-
-            }).catch(errors => {
-                if (errors.response && errors.response.status === 422)
-                    this.errors = errors.response.data.errors;
-                /*else
-                    this.result.errors = errors;*/
-                // this.result.message = this.$t('request_failed');
-                this.step = 1;
-            }).finally(() => {
-                this.isLoading = false;
                 this.$emit(`new_transaction_coupon`, this.mealQuantities);
             });
         },
@@ -211,20 +238,8 @@ export default {
                 ...this.mealQuantities,
             };
             this.isLoading = true;
-            this.$axios.post(this.route(`transaction.confirm`), data).then(responseJson => {
-                console.log(responseJson)
-                let json = responseJson.data;
-                console.log(json)
-                this.receiver.name = json.data.name;
-                this.receiver.status = json.data.status;
-                this.step = 2;
-            }).catch(errors => {
-                if (errors.response && errors.response.status === 422)
-                    this.errors = errors.response.data.errors;
-                else
-                    console.log(errors);
-            }).finally(() => {
-                this.isLoading = false;
+            this.submitData(this.route(`transaction.confirm`), data).then(json => {
+                this.receiver.status = json.status;
             });
         },
         resetForm() {
@@ -233,13 +248,16 @@ export default {
             this.receiver.transaction_id = null;
             this.receiver.name = null;
             this.receiver.status = null;
-        }
+            this.$nextTick(() => {
+                this.$refs.receiverId.focus();
+            });
+        },
     },
     created() {
         this.mealPlanPeriods.forEach((key) => {
             this.rules['meals'][key] = [this.validateMeals(key.toLocaleLowerCase())];
         });
-    }
+    },
 };
 </script>
 

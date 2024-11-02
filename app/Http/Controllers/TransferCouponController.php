@@ -41,8 +41,7 @@ class TransferCouponController extends Controller
 
         return $request->expectsJson()
             ? response()->json([
-                'success' => true,
-                "receiver" => Academic::whereAcademicId($validatedData['receiver_id'])->value('name'),
+                "name" => Academic::whereAcademicId($validatedData['receiver_id'])->value('name'),
                 'transaction' => "T$transaction->id"
             ])
             : redirect(route('coupons.transfer.create'));

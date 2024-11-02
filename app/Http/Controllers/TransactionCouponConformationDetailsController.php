@@ -23,7 +23,7 @@ class TransactionCouponConformationDetailsController extends Controller
         $receiver = Academic::whereAcademicId($request['receiver_id'])->get(['name', 'status'])->first();
         $receiver->name = $this->stringToSecret($receiver->name);
         return response()->json(
-            ["data" => $receiver, "success" => true]
+            $receiver
         );
     }
 
