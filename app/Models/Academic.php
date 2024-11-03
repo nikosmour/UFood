@@ -37,4 +37,14 @@ class Academic extends User
     {
         return $this->hasOne(CouponOwner::class, 'academic_id');
     }
+
+    public function isCouponCategory(int $category): bool
+    {
+        return $this->getCouponCategory() === $category;
+    }
+
+    public function getCouponCategory(): int
+    {
+        return $this->status->getCouponCategory();
+    }
 }

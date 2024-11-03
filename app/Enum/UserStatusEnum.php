@@ -68,4 +68,10 @@ enum UserStatusEnum: string implements Enum, HasAbilities
     {
         return $this->role()->getAbilities();
     }
+
+    public function getCouponCategory(): int|null
+    {
+        return $this->role()->getCouponCategory();
+    }
+
 }

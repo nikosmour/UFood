@@ -33,4 +33,16 @@ enum UserRoleEnum: string implements Enum, HasAbilities
             UserRoleEnum::STAFF_CARD => [UserAbilityEnum::CARD_APPLICATION_CHECK]
         };
     }
+
+    public function getCouponCategory(): int|null
+    {
+        return match ($this) {
+            UserRoleEnum::STUDENT => 1,
+            UserRoleEnum::RESEARCHER => 2,
+            UserRoleEnum::STAFF_COUPON,
+            UserRoleEnum::STAFF_ENTRY,
+            UserRoleEnum::STAFF_CARD => null
+        };
+    }
+
 }
