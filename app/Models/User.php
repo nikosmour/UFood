@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\UserAbilityEnum;
 use App\Enum\UserStatusEnum;
 use App\Interfaces\Ability;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -35,6 +36,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -46,6 +50,12 @@ class User extends Authenticatable
         'status' => UserStatusEnum::class,
         'is_active' => 'boolean',
     ];
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['abilities'];
 
     /**
      * @param UserAbilityEnum $ability
@@ -67,10 +77,18 @@ class User extends Authenticatable
     }
 
     /**
-     * @return Ability[]|array
+     * @return Ability[]
      */
     public function getAbilities(): array
     {
         return $this->status->getAbilities();
     }
+
+    protected function abilities(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getAbilities(),
+        );
+    }
+
 }

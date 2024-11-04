@@ -39,7 +39,6 @@ class UserInfoController extends Controller
             $user->statistics;
         return response()->json([
             'message' => 'Login Successful',
-            'abilities' => $user->getAbilities(),
             'user' => $user,
         ]);
 

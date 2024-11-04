@@ -1,18 +1,38 @@
-
+/**
+ * @typedef {Object} UserData
+ * @property {number} id - The unique identifier for the user.
+ * @property {string} name - The user's full name.
+ * @property {string} email - The user's email address.
+ * @property {string} status - The user's role (e.g., "phd", "staff entry", "staff coupon").
+ * @property {Array<string>} abilities - List of abilities assigned to the user.
+ * @property {number|null} couponCategory
+ * Only for Academic users; --
+ * @property {boolean} [is_active] - indicates if the user is active.
+ * @property {number} [a_m] - Unique student number
+ * @property {number} [academic_id] - Unique academic ID
+ * @property {CouponOwner}  [couponOwner]
+ */
+/**
+ * @typedef {Object} CouponOwner
+ * @property {number} academic_id
+ * @property {number} breakfast
+ * @property {number} lunch
+ * @property {number} dinner
+ */
+/**
+ * @type {{ isLoggedIn: boolean, user: UserData | null }}
+ */
 export const state = {
         isLoggedIn: false,
         user: null,
-    abilities: null,
 };
 
 export const mutations = {
     setLogin(state, payload) {
-        state.user = payload.user;
-        state.abilities = payload.abilities;
+        state.user =/** @type {UserData} */  payload.user;
     },
     setLogout(state) {
         state.user = null;
-        state.abilities = null;
     },
 };
 
@@ -25,7 +45,7 @@ export const actions = {
         });
 
     },
-    async getUser({state, commit}) {
+    async getUser({commit}) {
         // Send login request to Laravel backend
 
         const data = await axios.get('/api/user').then(response => {
@@ -42,7 +62,6 @@ export const actions = {
             localStorage.setItem('user', JSON.stringify(data.user)); // Store user data
             return true;
         } else {
-            // dispach('logout');
             localStorage.removeItem('user'); // Store user data
             commit('setLogout');
             return false
@@ -56,17 +75,19 @@ export const actions = {
 };
 
 export const getters = {
+    /** @type {boolean} */
     isAuthenticated(state) {
         console.log('auth/isAuthenticated', state);
         return state.user != null;
     },
+    /** @type {?UserData} */
     currentUser(state) {
         return state.user;
     },
     hasAbility(state) {
         return (ability) => {
-            console.log('auth/hasAbility', state);
-            return state.user && state.abilities.includes(ability);
+            console.log('auth/hasAbility', ability);
+            return state.user !== null && state.user.abilities.includes(ability);
         };
     },
 
