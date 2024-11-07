@@ -112,8 +112,12 @@
             </v-card-text>
         </v-card>
 
-        <statistics v-if="shouldShowStatics" v-bind:html="new_page"
-                    v-on:destroy="shouldShowStatics = false"></statistics>
+        <!-- Statistics Modal -->
+        <statistics
+            v-model:overlay="overlayStatistics"
+            v-bind:html="new_page"
+            v-on:update:overlay="overlayStatistics = false"
+        />
     </v-container>
 </template>
 
@@ -148,7 +152,7 @@ export default {
             },
             new_page: null,
             isLoading: false,
-            shouldShowStatics: false,
+            overlayStatistics: false,
             isValid: true,
             errors: {},
             rules: {

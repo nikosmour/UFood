@@ -1,16 +1,30 @@
 <template>
-    <div class="message-container">
-        <div v-html="html"></div>
-        <button class="close-button" @click="$emit('destroy')">x</button>
-    </div>
+    <v-overlay class="align-center justify-center" v-bind:model-value="overlay"
+               v-on:update:model-value="$emit('update:overlay')">
+        <v-card max-width="400">
+            <v-card-title class="d-flex justify-end">
+                <v-btn icon size="x-small" @click="$emit('update:overlay')">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+            <v-card-text>
+                <div v-html="html"></div>
+            </v-card-text>
+
+        </v-card>
+    </v-overlay>
 </template>
 
 <script>
 export default {
     props: {
         html: String,
-    }
-}
+        overlay: Boolean,
+    },
+    emits: [
+        'update:overlay',
+    ],
+};
 </script>
 
 <style scoped>
