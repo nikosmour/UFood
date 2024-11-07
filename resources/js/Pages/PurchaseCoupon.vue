@@ -1,17 +1,25 @@
 <template>
-    <div class="row h-100">
-        <transaction-coupon-form transaction='purchase'
-                                 @new_transaction_coupon="newPurchase($event)"></transaction-coupon-form>
-        <export-statistics-form :statistics="statistics"></export-statistics-form>
-    </div>
+    <v-row>
+        <v-col cols="12" md="8">
+            <transaction-coupon-form
+                transaction="purchase"
+                @new_transaction_coupon="newPurchase"
+            ></transaction-coupon-form>
+        </v-col>
+        <v-col class="d-flex align-center" cols="12" md="4">
+            <export-statistics-form :statistics="statistics"></export-statistics-form>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
 
 import TransactionCouponForm from "../components/transactionCouponForm.vue";
+import ExportStatisticsForm from "../Components/ExportStatisticsForm.vue";
 
 export default {
     components: {
+        ExportStatisticsForm,
         TransactionCouponForm,
     },
     props: {
@@ -46,15 +54,4 @@ export default {
 </script>
 
 <style scoped>
-/* Ensure responsive design */
-.row.my_flex_height {
-    display: flex;
-    flex-direction: column;
-}
-
-@media (min-width: 768px) {
-    .row.my_flex_height {
-        flex-direction: row;
-    }
-}
 </style>
