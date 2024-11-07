@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import ModelsToTable from "./modelsToTable.vue";
+import ModelsToTable from "../components/modelsToTable.vue";
 import CardApplicantInfo from "./cardApplicantInfo.vue";
 import {mapGetters} from "vuex"
 
@@ -147,7 +147,6 @@ export default {
         },
         updateApplicationStatus(application) {
             let params = new FormData();
-            let vue = this;
             params.append('status', application.card_last_update.status);
             params.append('card_application_id', application.id);
             if (this.expirationDate && application.card_last_update.status === this.$enums.CardStatusEnum.ACCEPTED) {

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ModelsToTable from "../Components/modelsToTable.vue";
+import ModelsToTable from "../components/modelsToTable.vue";
 
 export default {
     components: {ModelsToTable},
