@@ -9,7 +9,7 @@
             </v-card-title>
             <v-card-text>
                 <v-container fluid>
-                    <models-to-table :caption="$t('statistics')" :models="received_statistics"/>
+                    <models-to-table :caption="$t('statistics.meals')" :models="received_statistics"/>
                 </v-container>
             </v-card-text>
 
