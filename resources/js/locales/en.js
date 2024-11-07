@@ -92,9 +92,9 @@ export const en = {
     //     "success": "File has destroyed successfully!",
     //     "failed": "File has not be destroyed successfully, please retry"
     // },
-    // "form": "Form",
+    "form": "Form",
     "found": "Not Found | Found | Found",
-    // "from": "From",
+    "from": "From",
     "history": "History",
     // "id": "ID",
     // "incomplete": "Incomplete",
@@ -123,7 +123,8 @@ export const en = {
     "meals": {
         "breakfast": "Breakfast",
         "lunch": "Lunch",
-        "dinner": "Dinner"
+        "dinner": "Dinner",
+        "category": "Categories of meals",
     },
     // "model_data": {
     //     "a_m": "@:{a_m}",
@@ -162,6 +163,7 @@ export const en = {
     // "periodLabel": "Period",
     // "pleaseSelect": "Please select one",
     // "preview": "Preview",
+    "period.time": "Time Period",
     "previous": "Previous",
     // "provide_valid_card": "Provide a valid academic card",
     "purchase": {
@@ -172,9 +174,9 @@ export const en = {
     },
     "receiver": {
         "value": "Receiver",
-        "id": "Receiver id",
-        "name": "Receiver's name",
-        "status": "Receiver's status",
+        "id": "Academic ID",
+        "name": "Name",
+        "status": "Status",
         "transaction_id": "@:transaction.id",
 
     },
@@ -184,6 +186,9 @@ export const en = {
     // "retrieving_application_files_failed": "@:required_failed: Retrieving files of this  application has failed ",
     // "sale_coupons": "Sale Coupons",
     // "save": "Save",
+    "select": {
+        'all': "Select All",
+    },
     // "select_file": "Select file",
     // "sender": "Sender",
     "settings": "Settings",
@@ -208,7 +213,17 @@ export const en = {
     //     "temporary_checked": "Temporarily checked",
     //     "temporary_saved": "Temporarily saved"
     // },
-    // "submit": "Submit",
+    "statistics": {
+        "adapted": "Adapted",
+        //     "cards": "@:card.value",
+        //     "coupons": "@:coupon.value",
+        "current meal": "Current meal",
+        "export": "Export Statistics",
+        "export_form": "Form for @:statistics.export",
+        "today": "Today",
+        "meals": "Meals Statistics"
+    },
+    "submit": "Submit",
     // "submitted": "Submitted",
     // "successful_sale": "Successful sale",
     // "test": {
@@ -216,10 +231,10 @@ export const en = {
     // },
     // "time period": "Time Period",
     "theme": {"select": "Select theme"},
-    // "to": "To",
+    "to": "To",
     "transaction": {
     //     "buying": "Buying",
-        "id": "Transaction id",
+        "id": "Transaction ID",
         "info": "Transaction Info",
     //     "kind": "Transaction type",
         "new": "New transaction",

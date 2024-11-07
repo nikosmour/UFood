@@ -4,12 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\MealPlanPeriodEnum;
 use App\Http\Requests\CreateExportStatisticsRequest;
-use App\Models\PurchaseCoupon;
-use App\Models\UsageCard;
-use App\Models\UsageCoupon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ExportStatisticsController extends Controller
 {
@@ -23,7 +17,10 @@ class ExportStatisticsController extends Controller
      */
     public function __invoke(CreateExportStatisticsRequest $request)
     {
-        $vData = $request->validated();
+        $vData = $request->has('current') ? ['meal_category' => [MealPlanPeriodEnum::getCurrentMealPeriod()->value],
+            'from_date' => now()->toDateString(),
+            'to_date' => now()->toDateString(),
+        ] : $request->validated();
         $caption = 'Statistics';
         $models = auth()->user()->takeStatistics($vData)->get();
         return view('PDFS.statistics', compact('models', 'caption'));

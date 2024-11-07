@@ -26,11 +26,13 @@ class CreateExportStatisticsRequest extends FormRequest
      */
     public function rules(): array
     {
-        $array = ['from_date' => ["required", "date"],
+
+        $array = (!$this->input('current')) ? [
+            'from_date' => ["required", "date"],
             'to_date' => ["required", "date"],
             'meal_category' => ['required', 'array', 'min:1'],
             'meal_category.*' => ['required', new Enum(MealPlanPeriodEnum::class)]
-        ];
+        ] : [];
         return $array;
     }
 }

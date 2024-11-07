@@ -20,7 +20,7 @@ enum MealPlanPeriodEnum: string implements Enum
     public static function getCurrentMealPeriod(): MealPlanPeriodEnum
     {
         $hours = (int)date('H');
-        if ($hours < 12)
+        if ($hours < 11)
             return MealPlanPeriodEnum::BREAKFAST;
         elseif ($hours < 18)
             return MealPlanPeriodEnum::LUNCH;
