@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row justify="center">
-            <v-col cols="12" md="8">
+            <v-col cols="12">
                 <v-stepper v-if="this.couponOwner" v-model="step"
                            :items="[$t('receiver.value'), $t('confirmation'), $t('transaction.summary')]" hide-actions>
                     <template v-slot:item.1>
