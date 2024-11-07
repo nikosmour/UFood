@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,8 +34,17 @@ class CardApplicant extends Model
      * @var string[]
      */
     protected $with = [
-        'addresses', 'department'
+        'addresses', 'departmentRelation'
     ];
+    protected $hidden = ['department_id', 'departmentRelation', 'created_at', 'updated_at'];
+    protected $appends = ['department'];
+
+    protected function department(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->departmentRelation->name,
+        );
+    }
 
     public function academic(): BelongsTo
     {
@@ -59,9 +69,9 @@ class CardApplicant extends Model
         return $this->hasOne(CardApplication::class, 'academic_id')->latestOfMany()->where('created_at', '>', now()->subMonths(12)->format('Y-m-d'));
     }
 
-    public function department(): BelongsTo
+    public function departmentRelation(): BelongsTo
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function usageCard(): HasMany
