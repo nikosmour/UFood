@@ -11,9 +11,26 @@
                 <v-toolbar-title>{{ caption }}</v-toolbar-title>
             </v-toolbar>
         </template>
-        <template v-slot:expanded-row="{ columns, item }">
-            <models-to-table v-for="(relationship, index) in relationships" :key="'relationship-' + index"
-                             :caption="$t('model_data.'+relationship)" :models="relationshipData(item[relationship])"/>
+        <template v-slot:expanded-row="{item }">
+            <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
+                <td :colspan="tableHeaders.length+1">
+                    <models-to-table v-if="typeof relationshipData(item[relationship])[0] === 'object'"
+                                     :caption="$t('model_data.'+relationship)"
+                                     :models="relationshipData(item[relationship])"/>
+                    <v-list v-else>
+                        <v-list-subheader :title="relationship"/>
+                        <v-list-item v-for="(value, index2) in relationshipData(item[relationship])"
+                                     :key="relationship + '-' + index2" :title="value"/>
+
+                    </v-list>
+                </td>
+            </tr>
+        </template>
+        <template v-slot:item.created_at="{item}">
+            {{ (new Date(item.created_at)).toLocaleDateString() }}
+        </template>
+        <template v-slot:item.updated_at="{item}">
+            {{ (new Date(item.updated_at)).toLocaleDateString() }}
         </template>
 
     </v-data-table>
