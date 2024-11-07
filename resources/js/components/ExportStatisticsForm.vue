@@ -67,7 +67,7 @@
                             <!--                        </v-text-field>-->
                         </v-row>
                         <v-messages
-                            :active="!!errors.meal_category"
+                            :active="errors.meal_category"
                             :messages="errors.meal_category"
                             color="error"
                         />
@@ -115,7 +115,7 @@
         <!-- Statistics Modal -->
         <statistics
             v-model:overlay="overlayStatistics"
-            v-bind:html="new_page"
+            v-bind:received_statistics="received_statistics"
             v-on:update:overlay="overlayStatistics = false"
         />
     </v-container>
@@ -150,7 +150,7 @@ export default {
                 hide: false,
                 errors: [''],
             },
-            new_page: null,
+            received_statistics: null,
             isLoading: false,
             overlayStatistics: false,
             isValid: true,
@@ -241,7 +241,7 @@ export default {
             this.$axios
                 .post(this.route('statistics'), params)
                 .then((responseJson) => {
-                    this.new_page = responseJson['data'];
+                    this.received_statistics = responseJson['data'];
                     this.overlayStatistics = true;
                 })
                 .catch((error) => {

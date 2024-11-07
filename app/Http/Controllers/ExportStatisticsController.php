@@ -21,8 +21,7 @@ class ExportStatisticsController extends Controller
             'from_date' => now()->toDateString(),
             'to_date' => now()->toDateString(),
         ] : $request->validated();
-        $caption = 'Statistics';
         $models = auth()->user()->takeStatistics($vData)->get();
-        return view('PDFS.statistics', compact('models', 'caption'));
+        return $models;
     }
 }
