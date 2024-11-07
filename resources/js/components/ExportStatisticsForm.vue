@@ -123,7 +123,7 @@
 
 <script>
 // import ShowListItem from "../components/ShowListItem.vue";
-import Statistics from "./Statistics.vue";
+import Statistics from "./ExportStatisticsForm/Statistics.vue";
 
 export default {
     components: {

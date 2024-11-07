@@ -15,7 +15,7 @@
 <script>
 
 import TransactionCouponForm from "../components/transactionCouponForm.vue";
-import ExportStatisticsForm from "../Components/ExportStatisticsForm.vue";
+import ExportStatisticsForm from "../components/ExportStatisticsForm.vue";
 
 export default {
     components: {

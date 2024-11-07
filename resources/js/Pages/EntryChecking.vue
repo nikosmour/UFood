@@ -6,7 +6,12 @@
 </template>
 
 <script>
+import ExportStatisticsForm from "../components/ExportStatisticsForm.vue";
+
 export default {
+    components: {
+        ExportStatisticsForm
+    },
     props: {
         statisticsServer: {
             type: Object,
