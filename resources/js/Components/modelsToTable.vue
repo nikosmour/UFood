@@ -1,60 +1,33 @@
 <template>
-    <div>
-        <!--        <h3>{{ caption }}</h3>
-                        <template v-for="(model, index) in models" :key="caption +'-model-' + index">
-                            <show-a-data v-for="key in attributes" :key="key" :name="$t('model_data.' + key.toLowerCase())"
-                                         :value=" model[key]" class="col-auto row"/>
-                            <template v-for="(relationship, index) in relationships"
-                                      :key="caption +'-model-' + index +'relationship-' + index">
-                                <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
-                                    {{ $t('model_data.' + relationship) }}
-                                    <span v-if="expandedRelationships.includes(index)">&#9650;</span>
-                                    <span v-else>&#9660;</span>
-                                </button>
-                                <models-to-table v-if="expandedRelationships.includes(index)"
-                                                 :caption="$t('model_data.'+relationship)" :models="dataToArray(model[relationship])">
-                                </models-to-table>
-                            </template>
-                        </template>-->
-        <table class="table table-hover table-bordered caption-top">
-            <caption>{{ caption }}</caption>
-            <thead class="thead-dark">
-            <tr>
-                <th v-for="key in attributes" :key="key" scope="col">{{ $t("model_data." + key.toLowerCase()) }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <template v-for="(model, index) in models" :key="'model-' + index">
-                <tr>
-                    <td v-for="key in attributes" :key="'model-' + index + '-attribute-' + key">{{ model[key] }}</td>
-                </tr>
-                <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
-                    <td :colspan="attributes.length" class="p-0">
-                        <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
-                            {{ $t('model_data.' + relationship) }}
-                            <span v-if="expandedRelationships.includes(index)">&#9650;</span>
-                            <span v-else>&#9660;</span>
-                        </button>
-                        <div v-if="expandedRelationships.includes(index)">
-                            <models-to-table :caption="$t('model_data.'+relationship)"
-                                             :models="dataToArray(model[relationship])"/>
-                        </div>
-                    </td>
-                </tr>
-            </template>
-            </tbody>
+    <v-data-table
+        :headers="tableHeaders"
+        :items="models"
+        :show-expand="relationships.length !== 0"
+        hide-default-footer
+        items-per-page=-1
+    >
+        <template v-slot:top>
+            <v-toolbar flat>
+                <v-toolbar-title>{{ caption }}</v-toolbar-title>
+            </v-toolbar>
+        </template>
+        <template v-slot:expanded-row="{ columns, item }">
+            <models-to-table v-for="(relationship, index) in relationships" :key="'relationship-' + index"
+                             :caption="$t('model_data.'+relationship)" :models="relationshipData(item[relationship])"/>
+        </template>
 
-        </table>
-    </div>
+    </v-data-table>
 </template>
 
 <script>
+// import ModelsToTableComponent from './modelsToTable.vue';
 export default {
+    name: 'ModelsToTable',
+    // components: {ModelsToTable: ModelsToTableComponent},
     props: {
         models: {
             type: Array,
-            required: false,
-            default: () => [],
+            required: true,
         },
         caption: {
             type: String,
@@ -63,7 +36,7 @@ export default {
     },
     data() {
         return {
-            expandedRelationships: [],
+            expandedRelationships: new Set(),
         };
     },
     computed: {
@@ -76,55 +49,25 @@ export default {
         relationships() {
             return Object.keys(this.firstModel).filter(key => typeof this.firstModel[key] === 'object');
         },
+        tableHeaders() {
+            return this.attributes.map(key => ({
+                title: this.$t("model_data." + key.toLowerCase()),
+                value: key,
+                key: key
+            }));
+        },
     },
     methods: {
-        dataToArray(data) {
+        relationshipData(data) {
             return Array.isArray(data) ? data : [data];
         },
         toggleRelationship(index) {
-            const pos = this.expandedRelationships.indexOf(index);
-            if (pos > -1) {
-                this.expandedRelationships.splice(pos, 1);
+            if (this.expandedRelationships.has(index)) {
+                this.expandedRelationships.delete(index);
             } else {
-                this.expandedRelationships.push(index);
+                this.expandedRelationships.add(index);
             }
         },
     },
 };
 </script>
-
-<style scoped>
-.table {
-    table-layout: auto;
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-}
-
-.table th,
-.table td {
-    padding: 0.75rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-}
-
-.table-hover tbody tr:hover {
-    color: #495057;
-    background-color: rgba(0, 0, 0, 0.075);
-}
-
-.table-bordered {
-    border: 1px solid #dee2e6;
-}
-
-.table-bordered th,
-.table-bordered td {
-    border: 1px solid #dee2e6;
-}
-
-.thead-dark th {
-    color: #fff;
-    background-color: #343a40;
-    border-color: #454d55;
-}
-</style>
