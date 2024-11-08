@@ -29,8 +29,9 @@
                         hide-details
                     ></v-select>
                     <!-- Meal Category Selection (Checkboxes) -->
-                    <v-sheet v-if="meal_period !== 'current meal'" :aria-label="$t('meals.category')" border="lg"
-                             class='mb-3'>
+                    <v-sheet :aria-hidden="!showMeals" :aria-label="$t('meals.category')"
+                             :class="showMeals ? 'opacity-100':'opacity-0'"
+                             border="lg" class='mb-3'>
 
                         <v-checkbox
                             v-model="selectAll"
@@ -73,8 +74,9 @@
                         />
                     </v-sheet>
                     <!-- Date Range Selection for Adapted Period -->
-                    <v-row v-if="meal_period === 'adapted'" class="mb-3">
-                        <v-col>
+                    <v-row :aria-hidden="!showDates" :class="showDates ? 'opacity-100':'opacity-0'"
+                           class="justify-center">
+                        <v-col cols="auto">
                             <v-text-field
                                 v-model="from_date"
                                 :error-messages="errors.from_date"
@@ -85,7 +87,7 @@
                                 @input="errors.from_date=null"
                             ></v-text-field>
                         </v-col>
-                        <v-col>
+                        <v-col cols="auto">
                             <v-text-field
                                 v-model="to_date"
                                 :error-messages="errors.to_date"
@@ -103,7 +105,7 @@
                     <!-- Submission Button -->
                     <v-row justify="center">
                         <v-col cols="auto">
-                            <v-btn :disabled="!isValid" color="primary" type="submit">
+                            <v-btn :disabled="!isValid" :loading="isLoading" color="primary" type="submit">
                                 {{ $t('submit') }}
                             </v-btn>
                         </v-col>
@@ -131,32 +133,43 @@ export default {
         // ShowListItem
     },
     props: {
+        /**
+         * Statistics data object passed as a prop.
+         * @type {Object}
+         */
         statistics: Object,
+
+        /**
+         * Period options for meal statistics.
+         * @type {Array<string>}
+         * @default ['today', 'adapted']
+         */
+        periods: {
+            type: Array,
+            default: ['today', 'adapted']
+        }
     },
     data() {
         let now = new Date().toISOString().slice(0, 10);
         let $t = this.$t;
         return {
-            meal_period: 'current meal',
+            meal_period: null,
             meal_category: [],
             selectAll: false,
             isIndeterminate: false,
             now_date: now,
             from_date: now,
             to_date: now,
-            result: {
-                message: this.$t('test.message'),
-                success: true,
-                hide: false,
-                errors: [''],
-            },
             received_statistics: null,
             isLoading: false,
             overlayStatistics: false,
             isValid: true,
             errors: {},
             rules: {
-                // Rule for from_date
+                /**
+                 * Validation rules for the 'from_date' field.
+                 * @type {Array<Function>}
+                 */
                 fromDateRules: [
                     v => !!v && !isNaN(new Date(v).valueOf()) || $t(
                         'validation.date', {'attribute': $t('from')}
@@ -165,7 +178,10 @@ export default {
                         'validation.before_or_equal', {'date': this.to_date, 'attribute': $t('from')}
                     ),
                 ],
-                // Rule for to_date
+                /**
+                 * Validation rules for the 'to_date' field.
+                 * @type {Array<Function>}
+                 */
                 toDateRules: [
                     v => !!v && !isNaN(new Date(v).valueOf()) || $t(
                         'validation.date', {'attribute': $t('to')}
@@ -177,6 +193,10 @@ export default {
                         'validation.before_or_equal', {'date': this.now_date, 'attribute': $t('to')}
                     ),
                 ],
+                /**
+                 * Validation rules for selecting meal categories.
+                 * @type {Array<Function>}
+                 */
                 meal_category: [
                     v => (v.length) || $t(
                         'validation.min.array', {'min': 1, 'attribute': $t('meals')}
@@ -186,41 +206,72 @@ export default {
         };
     },
     watch: {
+        /**
+         * Watcher for changes to 'meal_period'. Updates meal categories based on selected period.
+         */
         meal_period() {
             this.meal_category = this.meal_period === 'current meal' ? ['breakfast'] : ['breakfast', 'lunch', 'dinner'];
         },
+
+        /**
+         * Watcher for changes to 'meal_category'. Updates 'selectAll' and 'isIndeterminate' states.
+         * @param {Array<string>} newVal - New meal categories selected.
+         */
         meal_category(newVal) {
-            // Set selectAll to true if all checkboxes are selected, otherwise false
             const length = newVal.length;
             this.selectAll = length === this.meal_categories.length;
             this.isIndeterminate = !this.selectAll && (length > 0);
         },
     },
     computed: {
+        /**
+         * Returns the available meal categories.
+         * @type {Array<string>}
+         */
         meal_categories() {
             return ['breakfast', 'lunch', 'dinner'];
         },
-        meal_export_periods() {
-            const menus = ['current meal', 'today', 'adapted'];
 
-            return menus.reduce((arr, menu) => {
-                arr.push({
-                    title: this.$t('statistics.' + menu),
-                    value: menu,
-                });
-                return arr;
-            }, []);
+        /**
+         * Returns the periods available for meal export.
+         * @type {Array<Object>}
+         */
+        meal_export_periods() {
+            return this.periods.map(period => ({
+                title: this.$t('statistics.' + period),
+                value: period,
+            }));
+        },
+
+        /**
+         * Determines whether to show the date range selection based on selected meal period.
+         * @type {boolean}
+         */
+        showDates() {
+            return this.meal_period === 'adapted';
+        },
+
+        /**
+         * Determines whether to show the meal categories based on selected meal period.
+         * @type {boolean}
+         */
+        showMeals() {
+            return this.meal_period !== 'current meal';
         },
     },
     methods: {
+        /**
+         * Toggles the 'selectAll' state for meal categories.
+         * Selects all meal categories if 'selectAll' is true, or clears the selection if false.
+         */
         toggleSelectAll() {
-            // Toggle all checkboxes based on "Select All" state
-            if (this.selectAll) {
-                this.meal_category = [...this.meal_categories]
-            } else {
-                this.meal_category = []
-            }
+            this.meal_category = this.selectAll ? [...this.meal_categories] : [];
         },
+
+        /**
+         * Handles the submission of the statistics form.
+         * Sends a POST request with selected meal period, categories, and date range.
+         */
         receive_statistics() {
             let params = new FormData();
             if (this.meal_period === 'current meal') {
@@ -228,16 +279,12 @@ export default {
             } else {
                 params.append('from_date', this.from_date);
                 params.append('to_date', this.to_date);
-                this.meal_category.forEach((category) => {
+                this.meal_category.forEach(category => {
                     params.append('meal_category[]', category);
                 });
             }
 
-
-            // params.append('meal_category',JSON.stringify(this.meal_category));
-            this.result.message = ''; //#todo more clever way to show if the value is the same
             this.isLoading = true;
-
             this.$axios
                 .post(this.route('statistics'), params)
                 .then((responseJson) => {
@@ -256,42 +303,10 @@ export default {
         },
     },
     mounted() {
-        this.meal_category = [this.meal_export_periods[0].title];
-
+        /**
+         * Sets the initial value for 'meal_period' when the component is mounted.
+         */
+        this.meal_period = this.periods[0];
     },
 };
 </script>
-
-<style scoped>
-/*.meal-selection-container {
-    border: 2px solid black;  !* Adds a black border around the div *!
-    padding: 16px;  !* Adds some padding inside the div *!
-    border-radius: 8px;  !* Optional: rounded corners for the div *!
-    margin-bottom: 16px;  !* Optional: adds some space below the div *!
-}
-.meal-selection-container::before {
-    content: '';                    !* Empty content *!
-    position: absolute;             !* Absolutely position it inside the div *!
-    top: 50%;                        !* Vertically center it relative to the div *!
-    left: 0;
-    right: 0;
-    height: 2px;                    !* Set the height of the border line *!
-    background-color: black;        !* Set the color of the border *!
-    transform: translateY(-50%);     !* Align the border to the middle *!
-    z-index: -1;                    !* Ensure the border is behind the checkbox *!
-}
-
-.v-checkbox {
-    z-index: 1;                     !* Ensure checkboxes appear above the border *!
-}*/
-
-
-/*.v-row {
-    margin-top: 50px;     !* Add some margin so that the checkboxes don't overlap the Select All *!
-}
-
-.v-checkbox {
-    margin-top: 10px;     !* Space out the individual checkboxes *!
-}*/
-
-</style>
