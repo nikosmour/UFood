@@ -20,6 +20,8 @@ class Address extends Model
     #public $timestamps = false;
     public $fillable = ['academic_id', 'location', 'is_permanent'];
 
+    protected $hidden = ['created_at', 'updated_at', 'id', 'academic_id'];
+
     public function cardApplicant()
     {
         return $this->belongsTo(CardApplicant::class, 'academic_id');

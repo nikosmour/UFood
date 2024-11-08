@@ -18,6 +18,8 @@ class CouponOwner extends Model
     public $incrementing = false;
     protected $primaryKey = 'academic_id';
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     public function getMoneyAttribute($money): float|int
     {
         return $money / 100;
