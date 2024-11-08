@@ -1,38 +1,40 @@
 <template>
-    <div class="container col-12 col-sm-6 col-md-7 col-lg-8 h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-8 d-flex flex-column h-100">
-                <div class="card  flex-grow-1">
-                    <div class="card-header">
-                        <h5 class="card-title">{{ $t('entry_check') }}</h5>
-                    </div>
+    <v-container>
+        <v-card :loading="isLoading" class="pa-5">
+            <!--            <v-card-title class="mb-10">{{ $t("entry_check") }}</v-card-title>-->
 
-                    <div class="card-body ">
-                        <form :aria-label="$t('entry_check_form')" @submit.prevent="check_id">
-                            <div class="row mb-3">
-                                <label class="col-md-4 col-form-label text-md-end" for="academic_id">
-                                    {{ $t('entry_input') }}</label>
-                                <div class="col-md-6">
-                                    <input id="academic_id" v-model.number.trim="academic_id"
-                                           :class="{ 'is-invalid': errors.academic_id  }"
-                                           class="form-control " required
-                                           type="number">
-                                    <div v-for=" error in errors.academic_id" class="invalid-feedback" role="alert">
-                                        {{ $t(error) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <loading v-if="isLoading"/>
-                        </form>
-                        <div v-if="result.success && show" class="alert alert-success mt-3" role="alert">
-                            {{ $t(result.message) }}
-                        </div>
+            <v-card-text>
+                <v-form aria-label="$t('entry_check_form')" @submit.prevent="check_id">
+                    <v-text-field
+                        v-model.number.trim="academic_id"
+                        :error-messages="errors.academic_id"
+                        :label="$t('id')"
+                        max-width="50em"
+                        outlined
+                        required
+                        type="number"
+                    />
+                    <!--                    :class="{'text-field&#45;&#45;error':result.success}"
+                                        :style=" 'border-color:' + (result.success) ?  'green;' : 'red;'"-->
+                </v-form>
+                <v-alert
+                    :aria-hidden="!show"
+                    :class="{'opacity-100' :show,'opacity-0':!show,'mt-4':true}"
+                    :title="result.message "
+                    :type="result.success ? 'success' : 'error'"
+                    dismissible
+                    @input="show = false"
+                />
+            </v-card-text>
+            <v-card-actions class="justify-center">
+                <v-btn :loading="isLoading" color="primary" @click="check_id">
+                    {{ $t("submit") }}
+                </v-btn>
+            </v-card-actions>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+        </v-card>
+    </v-container>
 </template>
 
 <script>
@@ -40,7 +42,7 @@ export default {
     data() {
         return {
             academic_id: '',
-          url: this.route('entryChecking.store'),
+            url: this.route('entryChecking.store'),
             result: {
                 message: this.$t("test.message"),
                 success: true,
@@ -62,32 +64,36 @@ export default {
             this.result.message = '';
             this.isLoading = true;
             this.errors = {};
-          this.$axios.post(this.url, params)
+            this.$axios.post(this.url, params)
                 .then(response => {
                     let json = response.data;
                     this.result.success = json.success;
                     if (json.success) {
                         this.result.message = json.passWith;
                         this.$emit('newEntry', json.passWith + 's');
-                        this.errors = [];
+                        this.errors = {};
                     } else {
-                        this.result.message = this.$t('request_failed');
-                        this.errors = {'academic_id': [json['card']['message'], json['coupon']['message']]};
+                        this.result.message = this.$t("request_failed");
+                        this.errors = {academic_id: [json.card.message, json.coupon.message]};
                     }
                     this.show = true;
                 })
-                .catch(errors => {
-                    this.result.success = false;
-                    this.errors = errors.response.data.errors;
-                    this.result.message = this.$t('request_failed');
-                }).finally(() => {
-                this.isLoading = false;
-                setTimeout(() => {
-                    this.show = false;
-                    this.errors = {};
-
-                }, this.time);
-            });
+                .catch(error => {
+                    this.result.success = false
+                    this.show = true
+                    this.result.message = this.$t("request_failed");
+                    if (error.response && error.response.status === 422)
+                        this.errors = error.response.data.errors;
+                    else
+                        throw error
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                    setTimeout(() => {
+                        this.show = false;
+                        this.errors = {};
+                    }, this.time);
+                });
         }
     }
 };
