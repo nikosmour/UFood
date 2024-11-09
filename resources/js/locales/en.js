@@ -94,7 +94,7 @@ export const en = {
     "found": "Not Found | Found | Found",
     "from": "From",
     "history": "History",
-    // "id": "ID",
+    "id": "ID",
     // "incomplete": "Incomplete",
     // "incomplete file": "This file is incomplete. You must submit more documents or to replace it.",
     // "invalid.credentials": "invalid credentials",

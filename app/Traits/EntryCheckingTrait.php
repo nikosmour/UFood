@@ -7,11 +7,11 @@ use App\Models\CardApplication;
 use App\Models\CouponOwner;
 use App\Models\UsageCard;
 use App\Models\UsageCoupon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use JetBrains\PhpStorm\ArrayShape;
-use Throwable;
 
 trait EntryCheckingTrait
 {
@@ -25,47 +25,44 @@ trait EntryCheckingTrait
      */
     private function canPass(array $data): JsonResponse
     {
-        $json = ['success' => false];
+        $status = 422;
         try {
-            if ($this->canPassAsCardApplicant($data))
-                return response()->json(['success' => true,
-                    'passWith' => 'card']);
-            else
-                $json += ['card' => ['message' => 'expired or not exist card ']];
+            $this->canPassAsCardApplicant($data);
+            return response()->json(['passWith' => 'card'], 200);
         } catch (ModelNotFoundException) {
-            $json += ['card' => ['message' => 'not have a card']];
+            $cardErrorMessage = __('validation.card_expired_or_not_exist');
         } catch (QueryException $e) {
-            // check if the error is for duplicate entry
-            if (23000 == $e->getCode())
-                $json += ['card' => ['message' => 'already use the card']];
-            else
-                $json += ['card' => $e];
-        } catch (Throwable $e) {
-            $json += ['card' => $e];
+            if ($e->getCode() != 23000)
+                throw $e;
+            $cardErrorMessage = __('validation.card_had_used');
+            $status = 409;
         }
 
         try {
             $this->canPassAsCouponOwner($data);
-            return response()->json(['success' => true,
-                    'passWith' => 'coupon'] + $json);
+            return response()->json(['passWith' => 'coupon'], 200);
         } catch (ModelNotFoundException) {
-            $json += $json + ['coupon' => ['message' => 'not be a coupon owner']];
+            $couponErrorMessage = __('validation.exist', ['attribute' => 'coupon_owner']);
         } catch (QueryException $e) {
-            // check if the error is for negative
-            if (22003 == $e->getCode())//1690
-                $json += $json + ['coupon' => ['message' => 'not have enough coupons']];
-            else
-                $json += $json + ['coupon' => $e];
-        } catch (Throwable $e) {
-            $json += $json + ['coupon' => $e];
+            if ($e->getCode() != 22003)
+                throw $e;
+            $couponErrorMessage = __('validation.coupon_insufficient');
+            $status = 409;
         }
-        return response()->json(['errors' => ['academic_id' => [$json['card']['message'], $json['coupon']['message']]]], 422);
+        return response()->json([
+            'errors' => [
+                'academic_id' => [
+                    $cardErrorMessage . ' ' . $couponErrorMessage,
+                ]
+            ]
+        ], $status);
     }
 
     /**
      * Check if the user can pass the entry point as couponOwner
      * @param array $data
      * @return bool
+     * @throws ModelNotFoundException<Model>
      * <p>
      * A boolean that define if the user pass
      * </p>
@@ -73,9 +70,7 @@ trait EntryCheckingTrait
     private function canPassAsCardApplicant(array $data): bool
     {
 
-        $cardApplications = CardApplication::whereAcademicId($data['academic_id'])->where('expiration_date', '>=', now()->toDateString())->first();
-        if (is_null($cardApplications))
-            return false;
+        CardApplication::whereAcademicId($data['academic_id'])->where('expiration_date', '>=', now()->toDateString())->firstOrFail();
         UsageCard::create($data);
         return true;
     }
@@ -84,6 +79,7 @@ trait EntryCheckingTrait
      * Check if the user can pass the entry point as couponOwner
      * @param array $data
      * @return bool
+     * @throws ModelNotFoundException<Model>
      * <p>
      * A string that define how the user pass the entry point or if didn't poss
      * </p>

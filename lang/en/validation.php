@@ -142,6 +142,9 @@ return [
     'not_active' => 'The selected :attribute  belong to a not active user.',
     'at_least_one_greater_than_zero' => 'One of the :attribute must be greater than 0',
     'differentCategoryCoupons' => 'You are not have the same kind of coupons.',
+    'coupon_insufficient' => 'There is Insufficient amount of coupons',
+    'card_had_used' => 'Card has already been used for the current meal',
+    'card_expired_or_not_exist' => 'Card has expired or not exist',
 
     /*
     |--------------------------------------------------------------------------
@@ -174,6 +177,7 @@ return [
     'attributes' => [
         'academic_id' => 'Academic id',
         'receiver_id' => 'Receiver id',
+        'coupon_owner' => 'Coupon owner',
         'BREAKFAST' => 'Breakfast',
         'LUNCH' => 'Lunch',
         'DINNER' => 'Dinner',

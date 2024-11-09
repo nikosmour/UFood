@@ -116,6 +116,7 @@
     "uuid": "The {attribute} must be a valid UUID.",
     "not_active": "The selected {attribute} belong to a not active user.",
     "at_least_one_greater_than_zero": "One of the {attribute} must be greater than 0.",
+    "entry_same_user": "This id had just try to enter,hit ctr+alt+space to see it again",
     "custom": {
         "attribute-name": {
             "rule-name": "custom-message"
