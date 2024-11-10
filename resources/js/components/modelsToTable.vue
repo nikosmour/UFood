@@ -7,9 +7,7 @@
         items-per-page=-1
     >
         <template v-slot:top>
-            <v-toolbar flat>
-                <v-toolbar-title>{{ caption }}</v-toolbar-title>
-            </v-toolbar>
+            <v-toolbar :title="caption" flat/>
         </template>
         <template v-slot:expanded-row="{item }">
             <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">

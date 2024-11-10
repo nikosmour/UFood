@@ -1,26 +1,43 @@
 <template>
-    <transaction-coupon-form :couponOwner="couponOwner" transaction='transfer'
-                             @new_transaction_coupon="new_transfer($event)"/>
+    <transaction-coupon-form
+        :couponOwner="couponOwner"
+        transaction="transfer"
+        @new_transaction_coupon="handleNewTransfer"
+    />
 </template>
 
 <script>
-
 import TransactionCouponForm from "../components/transactionCouponForm.vue";
 
 export default {
-    components: {TransactionCouponForm},
+    components: {
+        TransactionCouponForm
+    },
     props: {
+        /**
+         * The owner of the coupon, containing data about their balance per meal period.
+         */
         couponOwner: {
             type: Object,
-            default: {}
-        },
+            required: true
+        }
     },
     methods: {
-        new_transfer(data) {
-            for (let meal in this.$enums.MealPlanPeriodEnum)
-                this.couponOwner[meal] -= data[meal];
+        /**
+         * Updates the balance of each meal period for the coupon owner
+         * based on the values in the new transaction data.
+         *
+         * @param {Object} transactionData - Object containing changes in balance per meal period.
+         */
+        handleNewTransfer(transactionData) {
+            Object.keys(this.$enums.MealPlanPeriodEnum).forEach(mealPeriod => {
+                if (this.couponOwner.hasOwnProperty(mealPeriod)) {
+                    this.couponOwner[mealPeriod] -= transactionData[mealPeriod] || 0;
+                } else {
+                    console.warn(`Meal period '${mealPeriod}' not found in couponOwner.`);
+                }
+            });
         }
     }
-
-}
+};
 </script>

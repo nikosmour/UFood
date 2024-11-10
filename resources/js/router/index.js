@@ -5,7 +5,7 @@ import {Enums} from "../plugins/enums.js";
 const Unauthorized = () => import('../pages/Errors/403.vue');
 const NotFound = () => import('../pages/Errors/404.vue')
 const PurchaseCoupon = () => import('../pages/PurchaseCoupon.vue');
-const EntryChecking = () => import('../Pages/EntryChecking.vue');
+const EntryChecking = () => import('../pages/EntryChecking.vue');
 const Login = () => import('../pages/Auth/Login.vue');
 const UserProfile = () => import("../Pages/UserProfile.vue");
 const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.vue");

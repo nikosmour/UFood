@@ -257,6 +257,7 @@ export const en = {
     // "uploadedNot": "Not uploaded",
     "user": {
         "information": "User Information",
+        "profile": "User Profile"
     //     "value": "User"
     },
     // "verification": "Verification",

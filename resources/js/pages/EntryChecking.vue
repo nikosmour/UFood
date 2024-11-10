@@ -1,13 +1,13 @@
 <template>
     <v-row class="h-75">
-        <v-col class="h-100" cols="12" lg=8 md="6" sm="6">
-            <entry-checking-form
-                @newEntry="newEntry($event)"
-            />
+        <v-col class="h-100" cols="12" lg="8" md="6" sm="6">
+            <entry-checking-form @newEntry="handleNewEntry"/>
         </v-col>
         <v-col class="d-flex align-center" cols="12" lg="4" md="6" sm="6">
-            <export-statistics-form :periods="['current meal', 'today', 'adapted']"
-                                    :statistics="statistics" class="h-100"
+            <export-statistics-form
+                :periods="['current meal', 'today', 'adapted']"
+                :statistics="statistics"
+                class="h-100"
             />
         </v-col>
     </v-row>
@@ -23,31 +23,60 @@ export default {
         ExportStatisticsForm
     },
     props: {
+        /**
+         * Initial statistics data passed from the server.
+         * This will be used to populate the statistics object if provided.
+         */
         statisticsServer: {
             type: Object,
+            required: false,
+            default: null
         }
-
     },
-    data: function () {
+    data() {
         return {
-            statistics: null,
-        }
+            /**
+             * Local statistics data used for displaying counts in the export form.
+             * This is initialized either from server data or fetched via API.
+             */
+            statistics: null
+        };
     },
     methods: {
-        async fetchData() {
-            return await this.$axios.get(this.route('entryChecking.create')).then(
-                response => {
-                    return response.data
-                }
-            );
-            // return {cards: 0, coupons: 0,}
+        /**
+         * Fetches statistics data from the server if not provided via props.
+         * @returns {Object} The statistics data from the server.
+         */
+        async fetchStatisticsData() {
+            try {
+                const response = await this.$axios.get(this.route('entryChecking.create'));
+                return response.data;
+            } catch (error) {
+                console.error('Failed to fetch statistics data:', error);
+                return {};
+            }
         },
-        newEntry(entryCategory) {
-            this.statistics[entryCategory] += 1;
-        },
+
+        /**
+         * Updates the statistics count for a specific entry category.
+         * This method is triggered by the EntryCheckingForm component.
+         * @param {String} entryCategory - The category of the new entry to increment.
+         */
+        handleNewEntry(entryCategory) {
+            if (this.statistics && this.statistics[entryCategory] !== undefined) {
+                this.statistics[entryCategory] += 1;
+            } else {
+                console.warn(`Invalid entry category: ${entryCategory}`);
+            }
+        }
     },
     async mounted() {
-        this.statistics = this.statisticsServer || (await this.fetchData())
-    },
-}
+        /**
+         * Initialize statistics data on component mount.
+         * If statistics data is provided via props, it is used directly;
+         * otherwise, data is fetched from the server.
+         */
+        this.statistics = this.statisticsServer || await this.fetchStatisticsData();
+    }
+};
 </script>
