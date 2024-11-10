@@ -15,7 +15,7 @@
 
 <script>
 import ExportStatisticsForm from "../components/ExportStatisticsForm.vue";
-import EntryCheckingForm from "../Components/EntryCheckingForm.vue";
+import EntryCheckingForm from "./EntryChecking/EntryCheckingForm.vue";
 
 export default {
     components: {
