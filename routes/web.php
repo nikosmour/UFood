@@ -4,7 +4,6 @@ use App\Enum\CardStatusEnum;
 use App\Http\Controllers\CardApplicationCheckingController;
 use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardHistoryController;
-use App\Http\Controllers\CouponOwnerController;
 use App\Http\Controllers\DailyMealPlanController;
 use App\Http\Controllers\EntryCheckingController;
 use App\Http\Controllers\ExportStatisticsController;
@@ -33,7 +32,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('card/history', CardHistoryController::class)->name('card.history');// invoke
-Route::get('coupons/history', CouponOwnerController::class)->name('coupons.history');// invoke
 Route::get('myInfo', UserInfoController::class)->name('myInfo');
 Route::resource('mealPlan', DailyMealPlanController::class)->parameter('mealPlan', 'dailyMealPlan');
 Route::redirect('coupons/purchase', '/coupons/purchase/create');

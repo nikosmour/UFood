@@ -6,6 +6,7 @@ use App\Http\Controllers\CardApplicantController;
 use App\Http\Controllers\CardApplicationCheckingController;
 use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardApplicationDocumentController;
+use App\Http\Controllers\CouponTransactionController;
 use App\Http\Controllers\EntryCheckingController;
 use App\Http\Controllers\PurchaseCouponController;
 use App\Http\Controllers\TransactionCouponConformationDetailsController;
@@ -39,4 +40,6 @@ Route::get('cardApplication/checking/search', [CardApplicationCheckingController
 Route::post('login', [LoginController::class, 'login']);//->name('login');
 Route::post('/transaction/confirm', [TransactionCouponConformationDetailsController::class, '__invoke'])->name('transaction.confirm');
 Route::post('card-applicant', [CardApplicantController::class, '__invoke']);
+Route::get('coupons/history', CouponTransactionController::class)->name('coupons.history');// invoke
+
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-class CouponOwnerController extends Controller
+class CouponTransactionController extends Controller
 {
     public function __construct()
     {
@@ -40,9 +40,7 @@ class CouponOwnerController extends Controller
         $buying = $couponOwner->purchaseCoupon()->select('id', DB::raw(' "buying" as transaction,0 as other_person_id,money/100 as money'), 'created_at', ...$meals);
         $using = $couponOwner->usageCoupon()->select('id', DB::raw('"using" as transaction,0 as other_person_id,0 as money'), 'created_at', DB::raw($mealColumnsUsing));
         $transactions = $sending->union($receiving)->union($buying)->union($using)->orderByDesc('created_at')->simplePaginate(10);
-        return $request->expectsJson()
-            ? response()->json(["transactions" => $transactions, 'success' => true])
-            : view('couponOwner.index', compact('couponOwner', 'transactions'));
+        return response()->json(["transactions" => $transactions]);
 
     }
 }
