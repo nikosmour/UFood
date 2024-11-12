@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -46,5 +47,10 @@ class Academic extends User
     public function getCouponCategory(): int
     {
         return $this->status->getCouponCategory();
+    }
+
+    public function couponTransactions(): HasMany
+    {
+        return $this->couponOwner->couponTransactions();
     }
 }
