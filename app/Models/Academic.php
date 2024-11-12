@@ -51,6 +51,6 @@ class Academic extends User
 
     public function couponTransactions(): HasMany
     {
-        return $this->couponOwner->couponTransactions();
+        return $this->hasMany(CouponTransaction::class, 'academic_id');
     }
 }
