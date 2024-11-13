@@ -14,7 +14,7 @@ const CardApplicationCreate = () => import("../Pages/CardApplicationCreateForm.v
 const Transactions = () => import("../Pages/Transactions.vue");
 const TransferCoupons = () => import("../pages/TransferCoupon.vue");
 const CouponOwner = () => import("../Pages/CouponOwner.vue");
-const CouponTransactions = () => import("../Components/CouponsTransactions.vue")
+const CouponTransactions = () => import("../pages/CouponOwner/CouponsTransactions.vue")
 const CardApplicationCheckingSearch = () => import("../Components/CardApplicationCheckingSearch.vue")
 
 const routes = [

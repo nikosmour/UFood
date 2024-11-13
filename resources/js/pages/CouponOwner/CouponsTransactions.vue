@@ -1,6 +1,6 @@
 <script>
-import CouponTransactionService from "../services/CouponTransactionService";
-import MyInfiniteScroll from "../components/MyInfiniteScroll.vue";
+import CouponTransactionService from "../../services/CouponTransactionService.js";
+import MyInfiniteScroll from "../../components/MyInfiniteScroll.vue";
 
 export default {
     name: "CouponsTransactions",
