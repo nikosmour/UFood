@@ -1,135 +1,159 @@
 <script>
-import {mapActions} from "vuex";
+import CouponTransactionService from "../services/CouponTransactionService";
 
 export default {
     name: "CouponsTransactions",
     props: {
-        couponOwner: Object
+        /**
+         * The owner of the coupon, containing balance information for each meal period.
+         * @type {Object}
+         */
+        couponOwner: {
+            type: Object,
+            required: true,
+            default: () => ({}),
+        },
     },
     data() {
         return {
             transactions: [],
-          temp: {...this.couponOwner},
-            // url: this.route('coupons.history'),
+            expanded: [],
+            isLoading: false,
+            transactionService: null,
         };
     },
     computed: {
-        url() {
-            return this.route('coupons.history');
+        /**
+         * Table headers for the transactions data table.
+         * @returns {Array<Object>} List of headers for v-data-table
+         */
+        tableHeaders() {
+            return [
+                {title: this.$t("transaction.kind"), value: "transaction"},
+                {title: this.$t("date"), value: "date"},
+                {title: this.$t("quantity", 2), value: "quantities"},
+                {title: this.$t("balance"), value: "balance"},
+                /*{title: this.$t("money"), value: "totalMoney"},
+                ...Object.keys(this.$enums.MealPlanPeriodEnum).map(meal => ({
+                    title: this.$t("meals." + meal.toLowerCase()),
+                    value: `total.${meal}`,
+                })),*/
+            ];
         },
     },
     methods: {
-        ...mapActions('auth', [
-            'getUser'
-        ]),
-        fetchData() {
-            if (this.url)
-                this.$axios.get(this.url).then(
-                    response => {
-                        console.log(response.data);
-                        let transactions = response.data.transactions.data;
-                        transactions = Array.isArray(transactions) ? transactions : [transactions]
-                        this.url = response.data.transactions.next_page_url;
-                        // transactions = this.reformatTransactions(transactions);
-                        /*if (new Date(transactions[0].created_at) > new Date(this.couponOwner.updated_at))
-                            this.getUser().then(response => {
-                                this.temp = {...this.couponOwner};
-                                this.transactions.push(...this.reformatTransactions(transactions));
-                            });
-                        else*/
-                        this.transactions.push(...this.reformatTransactions(transactions));
-                    }
-                );
+        /**
+         * Fetches transaction data from the server and formats it for display.
+         * Pushes newly fetched transactions to the transactions array.
+         */
+        async fetchData() {
+            if (this.isLoading || !this.transactionService) return;
+            this.isLoading = true;
+
+            try {
+                const data = await this.transactionService.fetchTransactions()
+                this.transactions.push(...data);
+            } finally {
+                this.isLoading = false;
+            }
         },
-        calculateMoney(amount, transaction) {
-            if (transaction === 'buying' || transaction === 'sending')
-                this.temp.money += amount;
-            else if (transaction === 'receiving')
-                this.temp.money -= amount;
-            return this.temp.money;
-        },
-        calculateMeal(amount, transaction, meal) {
-            if (transaction === 'buying' || transaction === 'receiving')
-                this.temp[meal] -= amount;
-            else if (transaction === 'sending' || transaction === 'using')
-                this.temp[meal] += amount;
-            return this.temp[meal];
-        },
-        getMealValue(data, meal) {
-            return Number(data[meal]) || 0;
-        },
-        reformatTransactions(transactions) {
-            transactions.forEach(transaction => {
-                for (let meal in this.$enums.MealPlanPeriodEnum) {
-                    transaction[meal] = this.getMealValue(transaction, meal);
-                    transaction['total.' + meal] = this.calculateMeal(transaction[meal], transaction.transaction, meal);
-                }
-                transaction.totalMoney = this.calculateMoney(Number(transaction.money), transaction.transaction);
-            });
-            return transactions;
+
+        handleScroll() {
+            const bottomReached = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+            if (bottomReached) this.fetchData();
         },
     },
     mounted() {
+        this.transactionService = new CouponTransactionService(this.$axios, this.route("coupons.history"), this.$enums, this.couponOwner);
         this.fetchData();
+        window.addEventListener('scroll', this.handleScroll);
     },
-}
+    beforeDestroy() {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+};
 </script>
-<template>
-  <div v-if="transactions">
-      <table :aria-label="$t('transactions')"
-             class="table text-center table-hover table-bordered table-col-to-row-sm caption-top">
-            <caption>{{ $t('transactions') }}</caption>
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">{{ $t('transaction.kind') }}</th>
-                <th scope="col">{{ $t('comment.value', 2) }}</th>
-                <th scope="col">{{ $t('money') }}</th>
-                <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal" scope="col">
-                    {{ $t('meal_statistics.' + meal.toLowerCase()) }}
-                </th>
-                <th scope="col">{{ $t('date') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="transaction in transactions" :key="transaction.id">
-                <th scope="row">{{ $t('transaction.' + transaction.transaction) }}</th>
-                <td>
-                    <span v-if="transaction.money != 0">{{ transaction.money }}€</span>
-                    <template v-for="(value, meal) in $enums.MealPlanPeriodEnum">
-                        &nbsp;{{ $t('meal_statistics.' + meal.toLowerCase()) }}: {{ transaction[meal] }}
-                    </template>
-                    <template v-if="transaction.transaction === 'receiving'">
-                        &nbsp;{{ $t('sender') }}: {{ transaction.academic_id }}
-                    </template>
-                    <template v-else-if="transaction.transaction === 'sending'">
-                        &nbsp;{{ $t('receiver.value') }}: {{ transaction.academic_id }}
-                    </template>
-                </td>
-                <td>{{ transaction.totalMoney }} €</td>
-                <td v-for="(value, meal) in $enums.MealPlanPeriodEnum"
-                    :key="'transaction.' + transaction.id + '.meal.' + meal">
-                    {{ transaction['total.' + meal] }}
-                </td>
-                <td>{{ new Date(transaction.created_at).toLocaleDateString() }}</td>
-            </tr>
-            </tbody>
-      </table>
-      <button v-if="this.url" v-on:click="fetchData">More</button>
-  </div>
-</template>
-<style scoped>
-.table {
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 1rem;
-  background-color: transparent;
-}
 
-@media (max-width: 576px) {
-  .table {
-    display: block;
-    overflow-x: auto;
-    width: 100%;
-  }
-}
-</style>
+<template>
+    <v-container>
+        <!-- Table for Transactions -->
+        <v-data-table-virtual
+            v-model:expanded="expanded"
+            :aria-label="$t('transactions')"
+            :headers="tableHeaders"
+            :item-key="'id'"
+            :items="transactions"
+            class="elevation-1"
+            hide-default-footer
+            show-expand
+        >
+            <template #top>
+                <v-toolbar :title="$t('transactions')" flat/>
+            </template>
+
+            <template #expanded-row="{ item }">
+                <tr>
+                    <td :colspan="tableHeaders.length + 1">
+                        <v-row>
+                            <v-col cols="6">
+                                <span>
+                                    {{ $t('transaction.id') }}: {{ item.id }}
+                                </span>
+                            </v-col>
+                            <v-col v-if="item.transaction === 'receiving'" cols="auto">
+                                <span>
+                                    {{ $t('sender') }}: {{ item.other_person_id }}
+                                </span>
+                            </v-col>
+                            <v-col v-else-if="item.transaction === 'sending'" cols="auto">
+                                <span>
+                                    {{ $t('receiver.value') }}: {{ item.other_person_id }}
+                                </span>
+                            </v-col>
+                        </v-row>
+                    </td>
+                </tr>
+            </template>
+
+            <template #item.transaction="{ item }">
+                <span>{{ $t('transaction.' + item.transaction) }}</span>
+            </template>
+
+            <template #item.quantities="{ item }">
+                <div>
+                    <span v-if="item.money !== 0">{{ item.money }}€</span>
+                    <span v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal">
+                        {{ item[meal] }}&nbsp;{{ $t('meals.' + meal.toLowerCase()) }}&nbsp;
+                    </span>
+                </div>
+            </template>
+
+            <template #item.balance="{ item }">
+                <div>
+                    <span v-if="item.totalMoney !== 0">{{ item.totalMoney }}€ </span>
+                    <span v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal">
+                        {{ item['total.' + meal] }}&nbsp;{{ $t('meals.' + meal.toLowerCase()) }}&nbsp;
+                    </span>
+                </div>
+            </template>
+
+            <template #item.date="{ item }">
+                <span>{{ new Date(item.created_at).toLocaleDateString() }}</span>
+            </template>
+
+            <!--            <template #item.totalMoney="{ item }">-->
+            <!--                <span>{{ item.totalMoney }}€</span>-->
+            <!--            </template>-->
+
+            <!--            <template v-for="(value, meal) in $enums.MealPlanPeriodEnum" #[`item.total.${meal}`]="{ item }">-->
+            <!--                <span>{{ item['total.' + meal] }}</span>-->
+            <!--            </template>-->
+            <!--            -->
+        </v-data-table-virtual>
+        <v-progress-linear
+            v-if="isLoading"
+            color="primary"
+            indeterminate
+        ></v-progress-linear>
+    </v-container>
+</template>

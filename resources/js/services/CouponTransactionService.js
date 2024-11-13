@@ -1,0 +1,130 @@
+// CouponTransactionService.js
+
+
+export default class CouponTransactionService {
+
+    _tempBalances;
+    _url;
+
+    /**
+     * Initialize the service with necessary data.
+     * @param {Object} axios - Axios instance for making HTTP requests.
+     * @param {string} url - The initial URL to fetch transactions.
+     * @param {Object} enums - Enum containing meal plan periods.
+     * @param tempBalances
+     */
+    constructor(axios, url, enums, tempBalances) {
+        this.axios = axios;
+        this._url = url;
+        this.enums = enums;
+        this._tempBalances = {...tempBalances};
+    }
+
+    /**
+     * Fetches transaction data from the server and updates the transactions array.
+     */
+    async fetchTransactions() {
+        if (!this._url) return;
+
+        try {
+            const response = await this.axios.get(this._url);
+            const transactions = response.data.transactions.data;
+            this._url = response.data.transactions.next_page_url;
+            return this.reformatTransactions(transactions);
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Formats transactions, updating id, meal and money totals based on transaction type.
+     * @param {Array<Object>} transactions - List of transactions to format.
+     * @returns {Array<Object>} Formatted transactions with calculated totals.
+     */
+    reformatTransactions(transactions) {
+        return transactions.map(transaction => {
+            transaction.id = this._calculateID(transaction.id, transaction.transaction);
+            transaction.money = Number(transaction.money)
+            transaction.totalMoney = this._calculateMoney(transaction.money, transaction.transaction);
+            for (const meal in this.enums.MealPlanPeriodEnum) {
+                transaction[meal] = Number(transaction[meal]);
+
+                /**
+                 * for showing the balance before the transaction
+                 */
+                //transaction[`total.${meal}`] = this._calculateMeal(transaction[meal], transaction.transaction, meal);
+
+                /**
+                 * for showing the balance after the transaction
+                 */
+                transaction[`total.${meal}`] = this._tempBalances[meal];
+                this._calculateMeal(transaction[meal], transaction.transaction, meal);
+            }
+            return transaction;
+        });
+    }
+
+    /**
+     * Calculates and updates the meal balance for a specific transaction and meal type.
+     * @param {number} id - id of the transaction.
+     * @param {string} transactionType - Type of transaction.
+     * @returns {string} Updated meal balance.
+     */
+    _calculateID(id, transactionType) {
+        let type = null;
+        if (transactionType === 'buying') {
+            type = 'P';
+        } else if (transactionType === 'sending' || transactionType === 'receiving') {
+            type = 'T';
+        } else if (transactionType === 'using')
+            type = 'U';
+        return type + id;
+    }
+
+    /**
+     * Calculates the total money based on transaction type.
+     * @param {number} amount - Transaction amount.
+     * @param {string} transactionType - Type of transaction (e.g., buying, receiving).
+     * @returns {number} Updated money balance.
+     */
+    _calculateMoney(amount, transactionType) {
+        if (transactionType === 'buying' || transactionType === 'sending') {
+            this._tempBalances.money += amount;
+        } else if (transactionType === 'receiving') {
+            this._tempBalances.money -= amount;
+        }
+        return this._tempBalances.money;
+    }
+
+    /**
+     * Calculates and updates the meal balance for a specific transaction and meal type.
+     * @param {number} amount - Quantity of meal involved.
+     * @param {string} transactionType - Type of transaction.
+     * @param {string} meal - Meal type to update (e.g., breakfast, lunch).
+     * @returns {number} Updated meal balance.
+     */
+    _calculateMeal(amount, transactionType, meal) {
+        this._tempBalances[meal] -= amount;
+        return this._tempBalances[meal];
+    }
+
+    /*
+        /!**
+         * Calculates and updates the meal balance for a specific transaction and meal type
+         * if we choose to not do it on backed or DB
+         * @param {number} amount - Quantity of meal involved.
+         * @param {string} transactionType - Type of transaction.
+         * @param {boolean} isUsing - is Using the current meal only for transactionType === 'using'
+         * @returns {number} Updated meal balance.
+         *!/
+        _calculateMealValue(amount,transactionType, isUsing) {
+            if (transactionType === 'buying' || transactionType === 'receiving')
+                return Number(amount);
+            //else if (transactionType === 'sending' || transactionType === 'using')
+            return -Number(amount);
+
+        }
+        */
+
+}

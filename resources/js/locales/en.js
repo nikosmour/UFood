@@ -175,6 +175,7 @@ export const en = {
     //     "unsuccessful": "Unsuccessful sale",
         "value": "Sale"
     },
+    "quantity": "Quantity|Quantities",
     "receiver": {
         "value": "Receiver",
         "id": "Academic ID",
@@ -236,16 +237,16 @@ export const en = {
     "theme": {"select": "Select theme"},
     "to": "To",
     "transaction": {
-    //     "buying": "Buying",
+        "buying": "Buying",
         "id": "Transaction ID",
         "info": "Transaction Info",
-    //     "kind": "Transaction type",
+        "kind": "Transaction type",
         "new": "New transaction",
-    //     "receiving": "Receiving",
-    //     "sending": "Sending",
-        'summary': 'Transaction Summary'
+        "receiving": "Receiving",
+        "sending": "Sending",
+        'summary': 'Transaction Summary',
     //     "successful": "Successful transaction",
-    //     "using": "Using"
+        "using": "Using",
     },
     // "transactions": "Transactions",
     "transfer": {
