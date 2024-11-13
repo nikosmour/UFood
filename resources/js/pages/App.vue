@@ -1,6 +1,7 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import NavView from "./navView.vue";
+import { setupAxiosInterceptor, setupSessionTimeout } from "../utilities/sessionManager.js";
 
 export default {
     components: {NavView},
@@ -62,50 +63,17 @@ export default {
     mounted() {
         console.log('App.vue/mounted');
 
-        // Redirect to the user profile if logged in and on login page
+        // Redirect logic if user is already authenticated
         if (this.isAuthenticated && this.$route.name === 'login') {
             this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
         }
 
-        // Session timeout setup with environment variable
-        let timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
-        let timeout = (timeoutMin - 1) * 60000;
-        if (timeoutMin < 2) timeout = 60000;
+        // Session timeout setup
+        const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
+        setupSessionTimeout(timeoutMin, this.$axios, this);
 
-        // CSRF token refresh interval
-        setInterval(() => {
-            this.$axios.get(this.route('sanctum.csrf-cookie'));
-        }, timeout);
-
-        // User data refresh interval if authenticated
-        setInterval(() => {
-            console.log('setInterval', this.isAuthenticated);
-            if (this.isAuthenticated) this.getUser();
-        }, timeout);
-
-        // Axios response interceptor for handling errors
-        this.$axios.interceptors.response.use(
-            response => response,
-            error => {
-                if (error.response.status === 419) {
-                    // Handle CSRF token expiration
-                    return this.$axios.get(this.route('sanctum.csrf-cookie'))
-                        .then(() => this.$axios(error.config))
-                        .catch(refreshError => {
-                            console.error('Failed to refresh CSRF token:', refreshError);
-                            return Promise.reject(error);
-                        });
-                } else if (error.response.status === 401) {
-                    // Handle unauthorized error
-                    this.$store.commit('auth/setLogout');
-                    return Promise.reject(error);
-                } else if (error.response.status === 403) {
-                    // Redirect to 403 error page
-                    this.$router.push({name: 'error.403'});
-                }
-                return Promise.reject(error);
-            }
-        );
+        // Set up Axios interceptors
+        setupAxiosInterceptor(this.$axios, this.$store, this.$router);
     },
 };
 </script>
