@@ -84,12 +84,11 @@
 </template>
 
 <script>
-import ModelsToTable from "../components/modelsToTable.vue";
 import CardApplicantInfo from "./cardApplicantInfo.vue";
 import {mapGetters} from "vuex"
 
 export default {
-    components: {CardApplicantInfo, ModelsToTable},
+    components: {CardApplicantInfo},
     props: {
         application: Object
     },

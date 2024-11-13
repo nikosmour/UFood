@@ -1,9 +1,9 @@
 <script>
 import {mapState} from "vuex";
-import ModelsToTable from "../components/modelsToTable.vue";
+import MyModelsToTable from "../components/MyModelsToTable.vue";
 
 export default {
-    components: {ModelsToTable},
+    components: {MyModelsToTable},
     computed: {
         ...mapState({
             couponOwner: state => state.auth.user.coupon_owner, // Assuming couponOwner data is in Vuex state
@@ -14,7 +14,11 @@ export default {
 
 <template>
     <div>
-        <models-to-table :aria-label="$t('coupon.owner.info')" :caption="$t('coupon.owner')" :models="[couponOwner]"/>
+        <my-models-to-table
+            :aria-label="$t('coupon.owner.info')"
+            :caption="$t('coupon.owner')"
+            :models="[couponOwner]"
+        />
         <router-view :couponOwner="couponOwner"/>
     </div>
 </template>

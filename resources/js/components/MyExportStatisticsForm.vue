@@ -115,7 +115,7 @@
         </v-card>
 
         <!-- Statistics Modal -->
-        <statistics
+        <my-statistics
             v-model:overlay="overlayStatistics"
             v-bind:received_statistics="received_statistics"
             v-on:update:overlay="overlayStatistics = false"
@@ -124,12 +124,12 @@
 </template>
 
 <script>
-// import ShowListItem from "../components/ShowListItem.vue";
-import Statistics from "./ExportStatisticsForm/Statistics.vue";
+import MyStatistics from "./MyExportStatisticsForm/MyStatistics.vue";
 
 export default {
+    name: "MyExportStatisticsForm",
     components: {
-        Statistics,
+        MyStatistics,
         // ShowListItem
     },
     props: {

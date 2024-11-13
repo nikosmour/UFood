@@ -1,14 +1,14 @@
 <template>
     <div>
-        <models-to-table v-if="transactions" :caption="$t('transactions')" :models="transactions"/>
+        <my-models-to-table v-if="transactions" :caption="$t('transactions')" :models="transactions"/>
     </div>
 </template>
 
 <script>
-import ModelsToTable from "../components/modelsToTable.vue";
+import MyModelsToTable from "../components/MyModelsToTable.vue";
 
 export default {
-    components: {ModelsToTable},
+    components: {MyModelsToTable},
     props: {
         urlName: String
     },

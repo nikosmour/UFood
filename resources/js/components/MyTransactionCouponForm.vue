@@ -70,7 +70,7 @@
                     <template v-slot:item.2>
                         <v-card :loading="isLoading" :title="$t('transaction.info')">
                             <v-card-text @keydown.enter="handleSubmit">
-                                <showListItem :list-items="listItems"/>
+                                <my-show-list-item :list-items="listItems"/>
                             </v-card-text>
                             <v-card-actions class="d-flex justify-space-between">
                                 <v-btn
@@ -94,7 +94,7 @@
                     <template v-slot:item.3>
                         <v-card :title="$t('transaction.info')">
                             <v-card-text @keydown.enter="handleSubmit">
-                                <showListItem :list-items="listItems"/>
+                                <my-show-list-item :list-items="listItems"/>
                             </v-card-text>
                             <v-card-actions class="justify-center">
                                 <v-btn
@@ -113,10 +113,11 @@
 </template>
 
 <script>
-import ShowListItem from "./ShowListItem.vue";
+import MyShowListItem from "./MyShowListItem.vue";
 
 export default {
-    components: {ShowListItem},
+    name: "MyTransactionCouponForm",
+    components: {MyShowListItem},
 
     /**
      * Props passed to the component

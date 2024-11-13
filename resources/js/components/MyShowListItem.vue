@@ -17,16 +17,16 @@
 </template>
 <script>
 export default {
-    name: 'showListItem',
+    name: 'MyShowListItem',
     props: {
         listItems: {},
         showAlwaysItems: false,
     },
     created() {
-        console.log('showListItem created')
+        console.log('MyShowListItem created')
     },
     mounted() {
-        console.log('showListItem created')
+        console.log('MyShowListItem created')
     }
 }
 </script>

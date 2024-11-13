@@ -9,7 +9,7 @@
             </v-card-title>
             <v-card-text>
                 <v-container fluid>
-                    <models-to-table :caption="$t('statistics.meals')" :models="received_statistics"/>
+                    <my-models-to-table :caption="$t('statistics.meals')" :models="received_statistics"/>
                 </v-container>
             </v-card-text>
 
@@ -18,10 +18,11 @@
 </template>
 
 <script>
-import ModelsToTable from "../modelsToTable.vue";
+import MyModelsToTable from "../MyModelsToTable.vue";
 
 export default {
-    components: {ModelsToTable},
+    name: "MyStatistics",
+    components: {MyModelsToTable},
     props: {
         received_statistics: Array,
         overlay: Boolean,

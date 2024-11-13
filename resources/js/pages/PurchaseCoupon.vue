@@ -1,25 +1,25 @@
 <template>
     <v-row>
         <v-col cols="12" md="8">
-            <transaction-coupon-form
+            <my-transaction-coupon-form
                 transaction="purchase"
                 @new_transaction_coupon="handleNewPurchase"
             />
         </v-col>
         <v-col class="d-flex align-center" cols="12" md="4">
-            <export-statistics-form :statistics="statistics"/>
+            <my-export-statistics-form :statistics="statistics"/>
         </v-col>
     </v-row>
 </template>
 
 <script>
-import TransactionCouponForm from "../components/transactionCouponForm.vue";
-import ExportStatisticsForm from "../components/ExportStatisticsForm.vue";
+import MyTransactionCouponForm from "../components/MyTransactionCouponForm.vue";
+import MyExportStatisticsForm from "../components/MyExportStatisticsForm.vue";
 
 export default {
     components: {
-        ExportStatisticsForm,
-        TransactionCouponForm,
+        MyExportStatisticsForm,
+        MyTransactionCouponForm,
     },
     props: {
         /**

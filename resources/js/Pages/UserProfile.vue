@@ -1,16 +1,16 @@
 <template>
     <div>
       <h1>{{ $t('Welcome') }}, {{ currentUser?.name }}!</h1>
-      <models-to-table :caption="$t('user.information')" :models="currentUser? [currentUser]:[]"/>
+        <my-models-to-table :caption="$t('user.information')" :models="currentUser? [currentUser]:[]"/>
     </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex';
-import ModelsToTable from "../components/modelsToTable.vue";
+import MyModelsToTable from "../components/MyModelsToTable.vue";
 
 export default {
-    components: {ModelsToTable},
+    components: {MyModelsToTable},
     computed: {
         ...mapGetters('auth', [
             'currentUser',

@@ -13,7 +13,7 @@
         <template v-slot:expanded-row="{item }">
             <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
                 <td :colspan="tableHeaders.length+1">
-                    <models-to-table v-if="typeof relationshipData(item[relationship])[0] === 'object'"
+                    <my-models-to-table v-if="typeof relationshipData(item[relationship])[0] === 'object'"
                                      :caption="$t('model_data.'+relationship)"
                                      :models="relationshipData(item[relationship])"/>
                     <v-list v-else>
@@ -36,10 +36,8 @@
 </template>
 
 <script>
-// import ModelsToTableComponent from './modelsToTable.vue';
 export default {
-    name: 'ModelsToTable',
-    // components: {ModelsToTable: ModelsToTableComponent},
+    name: 'MyModelsToTable',
     props: {
         models: {
             type: Array,

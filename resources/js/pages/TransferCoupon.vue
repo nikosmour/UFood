@@ -1,5 +1,5 @@
 <template>
-    <transaction-coupon-form
+    <my-transaction-coupon-form
         :couponOwner="couponOwner"
         transaction="transfer"
         @new_transaction_coupon="handleNewTransfer"
@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import TransactionCouponForm from "../components/transactionCouponForm.vue";
+import MyTransactionCouponForm from "../components/MyTransactionCouponForm.vue";
 
 export default {
     components: {
-        TransactionCouponForm
+        MyTransactionCouponForm
     },
     props: {
         /**

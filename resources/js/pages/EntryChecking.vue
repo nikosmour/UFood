@@ -4,7 +4,7 @@
             <entry-checking-form @newEntry="handleNewEntry"/>
         </v-col>
         <v-col class="d-flex align-center" cols="12" lg="4" md="6" sm="6">
-            <export-statistics-form
+            <my-export-statistics-form
                 :periods="['current meal', 'today', 'adapted']"
                 :statistics="statistics"
                 class="h-100"
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import ExportStatisticsForm from "../components/ExportStatisticsForm.vue";
+import MyExportStatisticsForm from "../components/MyExportStatisticsForm.vue";
 import EntryCheckingForm from "./EntryChecking/EntryCheckingForm.vue";
 
 export default {
     components: {
         EntryCheckingForm,
-        ExportStatisticsForm
+        MyExportStatisticsForm
     },
     props: {
         /**
