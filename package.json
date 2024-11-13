@@ -2,7 +2,8 @@
     "private": true,
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "preview": "vite preview"
     },
     "type": "module",
     "devDependencies": {
