@@ -22,19 +22,28 @@ export default class CouponTransactionService {
 
     /**
      * Fetches transaction data from the server and updates the transactions array.
+     * If there are more transactions to fetch, the next page URL is updated for future requests.
+     *
+     * @returns {Promise<Object>} A promise that resolves to an object containing:
+     *   @property {Array<Object>} transactions - Formatted transactions with calculated totals.
+     *   @property {boolean} stopFetch - Boolean indicating if there are more transactions to fetch.
+     *
+     * @throws {Error} Throws an error if the fetch request fails.
      */
     async fetchTransactions() {
-        if (!this._url) return;
+        if (!this._url)
+            return {
+                transactions: [],
+                stopFetch: true,
+            };
 
-        try {
-            const response = await this.axios.get(this._url);
-            const transactions = response.data.transactions.data;
-            this._url = response.data.transactions.next_page_url;
-            return this.reformatTransactions(transactions);
-
-        } catch (error) {
-            throw error;
-        }
+        const response = await this.axios.get(this._url);
+        const transactions = response.data.transactions.data;
+        this._url = response.data.transactions.next_page_url;
+        return {
+            transactions: this.reformatTransactions(transactions),
+            stopFetch: !this._url
+        };
     }
 
     /**

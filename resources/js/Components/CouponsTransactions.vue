@@ -1,8 +1,10 @@
 <script>
 import CouponTransactionService from "../services/CouponTransactionService";
+import MyInfiniteScroll from "../components/MyInfiniteScroll.vue";
 
 export default {
     name: "CouponsTransactions",
+    components: {MyInfiniteScroll},
     props: {
         /**
          * The owner of the coupon, containing balance information for each meal period.
@@ -20,6 +22,7 @@ export default {
             expanded: [],
             isLoading: false,
             transactionService: null,
+            stopFetch: false,
         };
     },
     computed: {
@@ -45,32 +48,28 @@ export default {
         /**
          * Fetches transaction data from the server and formats it for display.
          * Pushes newly fetched transactions to the transactions array.
+         *
+         * @returns {void} This method doesn't return anything. It updates the state of the component.
+         * @throws {Error} Throws an error if the fetch request fails.
          */
         async fetchData() {
+            console.log('CouponTransactions.FetchData');
             if (this.isLoading || !this.transactionService) return;
             this.isLoading = true;
 
             try {
-                const data = await this.transactionService.fetchTransactions()
-                this.transactions.push(...data);
+                const {transactions, stopFetch} = await this.transactionService.fetchTransactions()
+                this.transactions.push(...transactions);
+                this.stopFetch = stopFetch;
             } finally {
                 this.isLoading = false;
             }
-        },
-
-        handleScroll() {
-            const bottomReached = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
-            if (bottomReached) this.fetchData();
         },
     },
     mounted() {
         this.transactionService = new CouponTransactionService(this.$axios, this.route("coupons.history"), this.$enums, this.couponOwner);
         this.fetchData();
-        window.addEventListener('scroll', this.handleScroll);
     },
-    beforeDestroy() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
 };
 </script>
 
@@ -150,10 +149,9 @@ export default {
             <!--            </template>-->
             <!--            -->
         </v-data-table-virtual>
-        <v-progress-linear
-            v-if="isLoading"
-            color="primary"
-            indeterminate
-        ></v-progress-linear>
+        <my-infinite-scroll
+            :loading="isLoading"
+            :stopScroll="stopFetch"
+            @load="fetchData"/>
     </v-container>
 </template>
