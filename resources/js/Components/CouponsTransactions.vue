@@ -56,9 +56,6 @@ export default {
             return this.temp[meal];
         },
         getMealValue(data, meal) {
-            if (data.transaction === 'using' && data.academic_id === this.$enums.MealPlanPeriodEnum[meal]) {
-                return 1;
-            }
             return Number(data[meal]) || 0;
         },
         reformatTransactions(transactions) {
