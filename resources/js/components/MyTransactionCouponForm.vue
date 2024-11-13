@@ -137,7 +137,10 @@ export default {
          * Transaction type identifier
          * @type {String}
          */
-        transaction: String
+        transaction: {
+            type: String,
+            required: true
+        },
     },
 
     /**

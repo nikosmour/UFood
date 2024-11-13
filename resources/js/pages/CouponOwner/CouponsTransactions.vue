@@ -121,7 +121,7 @@ export default {
             <template #item.quantities="{ item }">
                 <div>
                     <span v-if="item.money !== 0">{{ item.money }}€</span>
-                    <span v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal">
+                    <span v-for="meal in Object.keys($enums.MealPlanPeriodEnum)" :key="'quantities-'.meal">
                         {{ item[meal] }}&nbsp;{{ $t('meals.' + meal.toLowerCase()) }}&nbsp;
                     </span>
                 </div>
@@ -130,7 +130,7 @@ export default {
             <template #item.balance="{ item }">
                 <div>
                     <span v-if="item.totalMoney !== 0">{{ item.totalMoney }}€ </span>
-                    <span v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal">
+                    <span v-for="meal in Object.keys($enums.MealPlanPeriodEnum)" :key="'balance-'.meal ">
                         {{ item['total.' + meal] }}&nbsp;{{ $t('meals.' + meal.toLowerCase()) }}&nbsp;
                     </span>
                 </div>
