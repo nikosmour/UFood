@@ -1,5 +1,6 @@
 <template>
     <v-data-table
+        v-model:expanded="expanded"
         :headers="tableHeaders"
         :items="models"
         :show-expand="relationships.length !== 0"
@@ -51,7 +52,7 @@ export default {
     },
     data() {
         return {
-            expandedRelationships: new Set(),
+            expanded: [],
         };
     },
     computed: {
@@ -75,13 +76,6 @@ export default {
     methods: {
         relationshipData(data) {
             return Array.isArray(data) ? data : [data];
-        },
-        toggleRelationship(index) {
-            if (this.expandedRelationships.has(index)) {
-                this.expandedRelationships.delete(index);
-            } else {
-                this.expandedRelationships.add(index);
-            }
         },
     },
 };
