@@ -1,12 +1,12 @@
 <script>
 import {mapState} from "vuex";
-import MyModelsToTable from "../components/MyModelsToTable.vue";
+import MyCouponOwnerBalance from "../components/MyCouponOwnerBalance.vue";
 
 export default {
-    components: {MyModelsToTable},
+    components: {MyCouponOwnerBalance},
     computed: {
         ...mapState({
-            couponOwner: state => state.auth.user.coupon_owner, // Assuming couponOwner data is in Vuex state
+            couponOwner: state => state.auth.user.coupon_owner,
         }),
     },
 }
@@ -14,15 +14,8 @@ export default {
 
 <template>
     <div>
-        <my-models-to-table
-            :aria-label="$t('coupon.owner.info')"
-            :caption="$t('coupon.owner')"
-            :models="[couponOwner]"
-        />
+        <my-coupon-owner-balance :coupon-owner="couponOwner"/>
         <router-view :couponOwner="couponOwner"/>
     </div>
 </template>
 
-<style scoped>
-
-</style>
