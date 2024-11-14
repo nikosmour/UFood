@@ -18,7 +18,7 @@ class EnumToVueJsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Make available Enums const to vue js';
+    protected $description = 'Generate JavaScript enum files for Vue.js from PHP enums';
 
     /**
      * Execute the console command.
@@ -26,13 +26,17 @@ class EnumToVueJsCommand extends Command
     public function handle()
     {
         $enumDirectory = app_path('Enum');
-        $enumObjects = [];
+        $outputDirectory = resource_path('js/enums');
+        $outputDirectoryOfTotal = resource_path('js/plugins');
+        $this->ensureDirectoryExists($outputDirectory);
 
         $this->info("Searching enum files in directory: $enumDirectory");
 
         $enumFiles = glob($enumDirectory . '/*.php');
-
         $this->info("Found " . count($enumFiles) . " enum files.");
+
+        $importStatements = [];
+        $registryEntries = [];
 
         foreach ($enumFiles as $enumFile) {
             $className = basename($enumFile, '.php');
@@ -41,35 +45,82 @@ class EnumToVueJsCommand extends Command
             if (class_exists($enumClass)) {
                 $this->info("Loading enum class: $enumClass");
 
-//                $reflection = new ReflectionClass($enumClass);
-//                $constants = $reflection->getConstants();
+                // Assuming `toArray` returns constants as ['KEY' => 'value']
+                $constants = $enumClass::toArray();
+                $jsConstants = $this->convertToJsEnum($className, $constants);
 
-                // Create an object for the enum class with its constants
-                $enumObjects[$className] = $enumClass::toArray();
+                // Write each enum to its own file
+                $enumFilePath = "$outputDirectory/{$className}.js";
+                file_put_contents($enumFilePath, $jsConstants);
+
+                $this->info("Enum saved to: $enumFilePath");
+
+                // Prepare import statements and registry entries
+                $importStatements[] = "import { $className } from '../enums/{$className}';";
+                $registryEntries[] = "    $className,";
             } else {
-                $this->info("Enum class not found: $enumClass");
+                $this->error("Enum class not found: $enumClass");
             }
         }
 
-        // Serialize enum objects to JSON
-        $json = json_encode($enumObjects, JSON_PRETTY_PRINT);
-        foreach ($enumObjects as $className => $enumObject) {
-            $this->info("Enum Class: $className");
-            $this->line('');
-        }
+        // Generate enums.js with all imports and registry setup
+        $this->generateEnumsJs($outputDirectoryOfTotal, $importStatements, $registryEntries);
 
-        // Write JSON to Vue.js file
-        $vueFile = resource_path('js/plugins/enums.js');
-        $content = "
-export const Enums = $json
-export const EnumPlugin = {
-    install(app) {
-        app.config.globalProperties.\$enums = Enums ;
+        $this->info("Enum generation complete!");
     }
-};
-";
-        file_put_contents($vueFile, $content);
 
-        $this->info("Enum objects saved to $vueFile");
+    /**
+     * Ensures the output directory exists.
+     */
+    protected function ensureDirectoryExists($directory)
+    {
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+    }
+
+    /**
+     * Converts PHP enum constants to JavaScript enum class content.
+     */
+    protected function convertToJsEnum($className, $constants)
+    {
+        $entries = [];
+        foreach ($constants as $key => $value) {
+            $key = strtoupper($key); // Ensure uppercase keys
+            $entries[] = "    static {$key} = new EnumUnit('{$key}', '{$value}');";
+        }
+        $entries = implode("\n", $entries);
+
+        return
+            "import { BaseEnum } from '../utilities/enums/BaseEnum';
+import { EnumUnit } from '../utilities/enums/EnumUnit';
+
+export class {$className} extends BaseEnum {
+$entries
+}";
+    }
+
+    /**
+     * Generates enums.js that registers all enums.
+     */
+    protected function generateEnumsJs($outputDirectory, $importStatements, $registryEntries)
+    {
+        $imports = implode("\n", $importStatements);
+        $registry = implode("\n", $registryEntries);
+
+        $content =
+            $imports . "
+
+export const Enums = {
+$registry
+}
+
+export default Enums;
+";
+
+        file_put_contents("$outputDirectory/enums.js", $content);
+        $this->info("Generated central enums.js file at $outputDirectory/enums.js");
     }
 }
+
+
