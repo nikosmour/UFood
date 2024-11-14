@@ -14,6 +14,7 @@ export const en = {
     // "application_status_not_allow_submission": "@:{required_failed}: The status of the application does not allow submission",
     // "applicationStatus": "Application Status",
     // "back": "Back",
+    "balance": "Balance",
     // "cancel adding file": "Cancel adding file",
     "card": {
     //     "edit": "Edit Card",
@@ -39,7 +40,7 @@ export const en = {
     // "confirm_purchase": "Purchase coupons from user with academic ID: {academic_id} Breakfast: {BREAKFAST} Lunch: {LUNCH} Dinner: {DINNER}",
     "coupon": {
         "owner": "Coupon Owner",
-    //     "owner.info": "Coupon Owner Information",
+        "owner-balance": "Coupon Owner Balance",
         "value": "Coupon | Coupons"
     },
     "date": "Date",
@@ -101,7 +102,7 @@ export const en = {
     // "keep old file?": "Would you like to keep the old file? If yes, you will see the new file at the end",
     // "loading": "Loading",
     "login": "Login",
-    // "logo": "Logo",
+    "logo": "Logo",
     "logout": "Logout",
     "meal": "Meal | Meals",
     // "meal_statistics": {
@@ -150,8 +151,8 @@ export const en = {
         "coupon_owner": "@:coupon.owner",
         "card_applicant": "@:card.value @:applicant",
         "address": "@:model_data.location",
-        "usage_card": "@:transactions",
-        "card.history": "@:transactions",
+        /*"usage_card": "@:transactions",
+        "card.history": "@:transactions",*/
         "applicant_info": "@:applicant info",
         "category": "category",
 
@@ -248,7 +249,7 @@ export const en = {
     //     "successful": "Successful transaction",
         "using": "Using",
     },
-    // "transactions": "Transactions",
+    "transactions": "Transactions",
     "transfer": {
     //     "coupon_form": "Transfer Coupon Form",
     //     "successful": "Successful transfer",
