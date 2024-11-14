@@ -11,7 +11,7 @@ const UserProfile = () => import("../Pages/UserProfile.vue");
 const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.vue");
 const CardApplication = () => import("../Pages/CardApplicationEditForm.vue");
 const CardApplicationCreate = () => import("../Pages/CardApplicationCreateForm.vue");
-const Transactions = () => import("../Pages/Transactions.vue");
+const CardTransactions = () => import("../pages/Card/CardTransactions.vue");
 const TransferCoupons = () => import("../pages/Coupons/TransferCoupon.vue");
 const CouponOwner = () => import("../pages/Coupons.vue");
 const CouponTransactions = () => import("../pages/Coupons/CouponsTransactions.vue")
@@ -66,7 +66,7 @@ const routes = [
             {
                 path: 'transactions',
                 name: 'card.History',
-                component: Transactions,
+                component: CardTransactions,
                 props: {
                     urlName: 'card.history',
                 }
