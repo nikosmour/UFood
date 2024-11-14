@@ -13,6 +13,7 @@ export const en = {
     // "application_id": "Application ID",
     // "application_status_not_allow_submission": "@:{required_failed}: The status of the application does not allow submission",
     // "applicationStatus": "Application Status",
+    'applied.not': "You haven't applied for the current period.",
     // "back": "Back",
     "balance": "Balance",
     // "cancel adding file": "Cancel adding file",
@@ -75,6 +76,7 @@ export const en = {
     //     "some_files_not_updated": "@:some_files_not_updated"
     },
     // "expiration date": "Expiration @:date",
+    "expiration.date.is": "The expiration date is {date}",
     // "file": "File | Files",
     // "file_cant_edited": "File can't be edited.",
     // "file_status": "File status",
@@ -100,6 +102,7 @@ export const en = {
     // "incomplete file": "This file is incomplete. You must submit more documents or to replace it.",
     // "invalid.credentials": "invalid credentials",
     // "keep old file?": "Would you like to keep the old file? If yes, you will see the new file at the end",
+    "latest-application-is": "Your latest application is {status}.",
     // "loading": "Loading",
     "login": "Login",
     "logo": "Logo",
@@ -181,7 +184,7 @@ export const en = {
         "value": "Receiver",
         "id": "Academic ID",
         "name": "Name",
-        "status": "Status",
+        "status": "@:status",
         "transaction_id": "@:transaction.id",
 
     },
@@ -199,25 +202,25 @@ export const en = {
     "settings": "Settings",
     // "some_files_not_updated": "@:{required_failed}: Some files were not uploaded or deleted on the server. @:request_failed_status_wont_change",
     // "staff": "Staff",
-    // "status": {
-    //     "accepted": "Approved",
-    //     "category": {
-    //         "accepted": "Approved",
-    //         "checking": "Under review",
-    //         "incomplete": "Incomplete",
-    //         "rejected": "Rejected",
-    //         "submitted": "Submitted",
-    //         "temporary_checked": "Temporarily checked",
-    //         "temporary_saved": "Temporarily saved"
-    //     },
-    //     "checking": "Under review",
-    //     "delete": "Delete",
-    //     "incomplete": "Incomplete",
-    //     "rejected": "Rejected",
-    //     "submitted": "@:submit",
-    //     "temporary_checked": "Temporarily checked",
-    //     "temporary_saved": "Temporarily saved"
-    // },
+    "status": {
+        "accepted": "Approved",
+        /*"category": {
+            "accepted": "Approved",
+            "checking": "Under review",
+            "incomplete": "Incomplete",
+            "rejected": "Rejected",
+            "submitted": "Submitted",
+            "temporary_checked": "Temporarily checked",
+            "temporary_saved": "Temporarily saved"
+        },*/
+        "checking": "Under review",
+        "delete": "Delete",
+        "incomplete": "Incomplete",
+        "rejected": "Rejected",
+        "submitted": "@:submit",
+        "temporary_checked": "Temporarily checked",
+        "temporary_saved": "Temporarily saved"
+    },
     "statistics": {
         "adapted": "Adapted",
         //     "cards": "@:card.value",

@@ -32,7 +32,7 @@ class UserInfoController extends Controller
             $user->load([
                 'couponOwner',
                 'cardApplicant',
-                'cardApplicant.currentCardApplication',//:expiration_date
+                'cardApplicant.validCardApplication',//:expiration_date
                 'cardApplicant.currentCardApplication.cardLastUpdate' //:status
             ]);
         else if ($user instanceof CardApplicationStaff)
