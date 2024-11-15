@@ -4,13 +4,13 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 // import 'bootstrap';
-import _ from 'lodash';
+import _ from "lodash";
 import AxiosInstance from "./plugins/axios.js";
-import {createApp} from 'vue';
-import router from './router';
-import App from './pages/App.vue';
-import store from './store';
-import {plugins} from './plugins';
+import { createApp } from "vue";
+import router from "./router";
+import App from "./pages/App.vue";
+import store from "./store";
+import { plugins } from "./plugins";
 
 window._ = _;
 window.axios = AxiosInstance;
@@ -33,7 +33,7 @@ if (window.isAuthenticated) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = createApp(App);
+const app = createApp( App );
 
 /**
  * The following block of code may be used to automatically register your
@@ -43,23 +43,24 @@ const app = createApp(App);
  * Eg. ./Components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-const requireComponent = import.meta.glob('./Components/**/*.vue');
+const requireComponent = import.meta.glob( "./Components/**/*.vue" );
 // Register each component globally
-for (const [fileName, component] of Object.entries(requireComponent)) {
-    component().then((componentConfig) => {
-        const componentName = fileName
-            .split('/')
-            .pop()
-            .replace(/\.\w+$/, ''); // Remove the file extension
-
-        app.component(componentName, componentConfig.default || componentConfig);
-    });
+for ( const [ fileName, component ] of Object.entries( requireComponent ) ) {
+	component()
+		.then( ( componentConfig ) => {
+			const componentName = fileName
+				.split( "/" )
+				.pop()
+				.replace( /\.\w+$/, "" ); // Remove the file extension
+			
+			app.component( componentName, componentConfig.default || componentConfig );
+		} );
 }
 
 // Use any plugins
-app.use(router);
-app.use(plugins);
-app.use(store);
+app.use( router );
+app.use( plugins );
+app.use( store );
 
 /**
  * The following block will waiting  the request to the server to
@@ -75,5 +76,5 @@ app.use(store);
  * in which page will  direct or redirect
  */
 // Mount the app to the DOM
-app.mount('#app');
-console.log(Date.now() % 10000, ' app mount 3');
+app.mount( "#app" );
+console.log( Date.now() % 10000, " app mount 3" );

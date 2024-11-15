@@ -3,7 +3,7 @@
         <v-list>
             <v-list-item>
                 <v-list-item-action>
-                    <select-theme class="mt-4"/>
+                    <select-theme class = "mt-4" />
                 </v-list-item-action>
             </v-list-item>
         </v-list>
@@ -14,7 +14,7 @@
 import SelectTheme from "./selectTheme.vue";
 
 export default {
-    name: "Settings",
-    components: {SelectTheme}
+	name :       "Settings",
+	components : { SelectTheme },
 };
 </script>

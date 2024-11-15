@@ -4,105 +4,105 @@ import NavView from "./navView.vue";
 import { setupAxiosInterceptor, setupSessionTimeout } from "../utilities/sessionManager.js";
 
 export default {
-    components: {NavView},
+	components : { NavView },
 
-    computed: {
-        ...mapGetters('auth', [
-            /**
-             * Determines if the user is currently authenticated.
-             * @returns {Boolean} - True if authenticated, false otherwise.
-             */
-            'isAuthenticated',
-        ]),
+	computed : {
+		...mapGetters( "auth", [
+			/**
+			 * Determines if the user is currently authenticated.
+			 * @returns {Boolean} - True if authenticated, false otherwise.
+			 */
+			"isAuthenticated",
+		] ),
 
-        /**
-         * Path to the logo image used in the footer.
-         * @returns {String} - The relative path to the logo image.
-         */
-        imageUrl() {
-            return '/img/big_logo_Upatras.png';
-        },
-    },
+		/**
+		 * Path to the logo image used in the footer.
+		 * @returns {String} - The relative path to the logo image.
+		 */
+		imageUrl() {
+			return "/img/big_logo_Upatras.png";
+		},
+	},
 
-    methods: {
-        ...mapActions('auth', [
-            /**
-             * Fetches the current authenticated user data.
-             */
-            'getUser',
-        ]),
+	methods : {
+		...mapActions( "auth", [
+			/**
+			 * Fetches the current authenticated user data.
+			 */
+			"getUser",
+		] ),
 
-        /**
-         * Redirects users based on authentication status and route requirements.
-         * @param {Boolean} isAuthenticated - Current authentication state.
-         */
-        redirectAuth(isAuthenticated) {
-            console.log('App.vue/redirectAuth', this.$route.fullPath, isAuthenticated, this.$route.meta.requiresAuth);
-            if (!isAuthenticated && (this.$route.meta.requiresAuth || this.$route.meta.requiresAbility)) {
-                this.$router.push({
-                    name: 'login',
-                    query: {redirect: this.$route.fullPath},
-                });
-            } else if (isAuthenticated && this.$route.name === 'login') {
-                this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
-            }
-        },
-    },
+		/**
+		 * Redirects users based on authentication status and route requirements.
+		 * @param {Boolean} isAuthenticated - Current authentication state.
+		 */
+		redirectAuth( isAuthenticated ) {
+			console.log( "App.vue/redirectAuth", this.$route.fullPath, isAuthenticated, this.$route.meta.requiresAuth );
+			if ( !isAuthenticated && ( this.$route.meta.requiresAuth || this.$route.meta.requiresAbility ) ) {
+				this.$router.push( {
+					                   name :  "login",
+					                   query : { redirect : this.$route.fullPath },
+				                   } );
+			} else if ( isAuthenticated && this.$route.name === "login" ) {
+				this.$router.push( this.$route.query.redirect || { name : "userProfile" } );
+			}
+		},
+	},
 
-    watch: {
-        /**
-         * Watches the `isAuthenticated` state and redirects based on changes.
-         * @param {Boolean} newValue - New value for `isAuthenticated`.
-         */
-        isAuthenticated(newValue) {
-            console.log('App.vue/watch/isAuthenticated', this.$route.fullPath);
-            this.redirectAuth(newValue);
-        },
-    },
+	watch : {
+		/**
+		 * Watches the `isAuthenticated` state and redirects based on changes.
+		 * @param {Boolean} newValue - New value for `isAuthenticated`.
+		 */
+		isAuthenticated( newValue ) {
+			console.log( "App.vue/watch/isAuthenticated", this.$route.fullPath );
+			this.redirectAuth( newValue );
+		},
+	},
 
-    mounted() {
-        console.log('App.vue/mounted');
+	mounted() {
+		console.log( "App.vue/mounted" );
 
-        // Redirect logic if user is already authenticated
-        if (this.isAuthenticated && this.$route.name === 'login') {
-            this.$router.push(this.$route.query.redirect || {name: 'userProfile'});
-        }
+		// Redirect logic if user is already authenticated
+		if ( this.isAuthenticated && this.$route.name === "login" ) {
+			this.$router.push( this.$route.query.redirect || { name : "userProfile" } );
+		}
 
-        // Session timeout setup
-        const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
-        setupSessionTimeout(timeoutMin, this.$axios, this);
+		// Session timeout setup
+		const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
+		setupSessionTimeout( timeoutMin, this.$axios, this );
 
-        // Set up Axios interceptors
-        setupAxiosInterceptor(this.$axios, this.$store, this.$router);
-    },
+		// Set up Axios interceptors
+		setupAxiosInterceptor( this.$axios, this.$store, this.$router );
+	},
 };
 </script>
 
 <template>
     <v-app>
         <!-- Main navigation component -->
-        <nav-view role="navigation"/>
+        <nav-view role = "navigation" />
 
         <v-main>
             <!-- Main content area with role for accessibility -->
-            <v-container fluid role="main">
-                <router-view/>
+            <v-container fluid role = "main">
+                <router-view />
             </v-container>
         </v-main>
 
-        <v-footer :app="false" color="primary">
-            <v-row justify="center">
-                <v-col class="text-center" cols="12">
-                    <div>© {{ (new Date()).getFullYear() + ' - ' + $t('company.name') }}</div>
-                    <div>{{ $t('company.department') }}</div>
-                    <div>{{ $t('developedBy') }}</div>
+        <v-footer :app = "false" color = "primary">
+            <v-row justify = "center">
+                <v-col class = "text-center" cols = "12">
+                    <div>© {{ ( new Date() ).getFullYear() + " - " + $t( "company.name" ) }}</div>
+                    <div>{{ $t( "company.department" ) }}</div>
+                    <div>{{ $t( "developedBy" ) }}</div>
 
                     <!-- Logo image with translated alt text for accessibility -->
                     <v-img
-                        :alt="$t('logo') + ' ' + $t('company.name')"
-                        :src="imageUrl"
-                        class="mx-auto"
-                        max-width="200"
+                        :alt = "$t('logo') + ' ' + $t('company.name')"
+                        :src = "imageUrl"
+                        class = "mx-auto"
+                        max-width = "200"
                     />
                 </v-col>
             </v-row>
