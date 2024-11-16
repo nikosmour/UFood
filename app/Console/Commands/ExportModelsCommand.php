@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use BackedEnum;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -45,8 +46,6 @@ class ExportModelsCommand extends Command
                 if (class_exists($className)) {
                     $reflection = new ReflectionClass($className);
 
-                    // Collect public properties or fillable fields
-                    $fillable = $reflection->getDefaultProperties()['fillable'] ?? [];
                     $properties = $this->getClassPropertiesWithSchemaAndTypes($reflection);
 
                     $models[$reflection->getShortName()] = $properties;
@@ -70,13 +69,16 @@ class ExportModelsCommand extends Command
      */
     private function generateJsClass(string $modelName, array $properties, string $outputPath)
     {
+        $enums = $this->getEnumImports($properties);
+        $enumImports = $this->generateEnumImports($enums, false);
+
         $classContent = <<<JS
 import BaseModel from '../utilities/BaseModel';
+{$enumImports}
 
 /**
  * Class representing a $modelName model.
  * 
- * @property {number|null} id
 {$this->generateJsDocProperties($properties)}
  */
 class $modelName extends BaseModel {
@@ -155,8 +157,19 @@ JS;
      */
     private function mapLaravelTypeToJs(string $type): string
     {
+        if ($this->isEnum($type)) {
+            $enumName = (new ReflectionClass($type))->getShortName();
+            // Return the type for enum classes
+            return "{$enumName}|null";
+        }
+        if (str_starts_with($type, 'date')) {
+//            $format = explode(':', $type)[1] ?? 'Y-m-d H:i:s';
+//            return "Date|null /* format: $format */";
+            return "Date|null";
+
+        }
         return match ($type) {
-            'int', 'integer' => 'number|null',
+            'int', 'integer',
             'float', 'double', 'decimal' => 'number|null',
             'string' => 'string|null',
             'bool', 'boolean' => 'boolean|null',
@@ -220,29 +233,52 @@ JS;
 
         // Override schema types with Laravel-defined casts or dates
         foreach ($modelInstance->getCasts() as $field => $cast) {
-            if (isset($schemaAttributes[$field])) {
-                $schemaAttributes[$field] = $this->mapLaravelTypeToJs($cast);
-            }
+            $schemaAttributes[$field] = $this->mapLaravelTypeToJs($cast);
         }
 
         foreach ($modelInstance->getDates() as $dateField) {
             $schemaAttributes[$dateField] = 'Date|null';
         }
 
+        foreach ($modelInstance->getHidden() as $hiddenField) {
+            unset($schemaAttributes[$hiddenField]);
+        }
+
         return $schemaAttributes;
     }
 
+    /**
+     * Detect if a property type is a Laravel enum.
+     */
+    private function isEnum(string $type): bool
+    {
+        return class_exists($type) && is_subclass_of($type, BackedEnum::class);
+    }
 
+    /**
+     * Extract enum names for JavaScript imports.
+     */
+    private function getEnumImports(array $properties): array
+    {
+        return collect($properties)
+            ->filter(fn($type) => $this->isEnum('App\\Enum\\' . str_replace('|null', '', $type)))
+            ->map(fn($type) => str_replace('|null', '', $type))
+            ->unique()
+            ->values()
+            ->toArray();
+    }
 
+    /**
+     * Generate imports for enums.
+     */
+    private function generateEnumImports(array $enums, bool $usePlugin = false): string
+    {
+        if ($usePlugin) {
+            return "import { enums } from '../plugins/enums';";
+        }
 
-
-
-
-
-
-
-
-
-
-
+        return collect($enums)
+            ->map(fn($enum) => "import { $enum } from '../enums/$enum';")
+            ->implode("\n");
+    }
 }
