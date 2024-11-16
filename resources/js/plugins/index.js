@@ -6,6 +6,7 @@ import { I18n } from "./i18n";
 import { Vuetify } from "./vuetify";
 import { Ziggy } from "./ziggy";
 import { ZiggyVue } from "../../../vendor/tightenco/ziggy";
+import { ErrorManager } from "./errorManager.js";
 
 
 AxiosInstance.interceptors.request.use( config => {
@@ -37,6 +38,7 @@ export const plugins = {
 		
 		app.use( I18n );
 		app.use( Vuetify );
+		app.use( ErrorManager );
 		
 		app.use( ZiggyVue, Ziggy );
 	},
