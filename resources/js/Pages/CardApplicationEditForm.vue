@@ -133,11 +133,9 @@ export default {
 
                 this.broadcasting();
             }).catch(errors => {
-                if (errors.response.status === 404)
+	            if ( errors.response?.status === 404 )
                     return this.$router.push({name: 'card.application.create'});
-                this.result.message = this.$t('retrieving_application_failed');
-                this.result.errors = errors;
-                this.result.success = false;
+	            throw errors;
             });
 
         },
