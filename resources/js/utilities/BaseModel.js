@@ -1,22 +1,5 @@
 class BaseModel {
-	/**
-	 * Construct a model instance from raw data.
-	 * @param {Object} data - The raw data from the server.
-	 */
-	constructor( data = {} ) {
-		this.fill( data );
-	}
 	
-	/**
-	 * Fill the model properties with data.
-	 * @param {Object} data - The raw data to assign to the model.
-	 */
-	fill( data ) {
-		Object.keys( data )
-		      .forEach( ( key ) => {
-			      this[ key ] = data[ key ];
-		      } );
-	}
 	
 	/**
 	 * Serialize the model instance to JSON.
@@ -32,6 +15,78 @@ class BaseModel {
 	 */
 	toObject() {
 		return { ...this };
+	}
+	
+	/**
+	 * Initializes an array of related objects if data exists.
+	 *
+	 * This method maps an array of raw data objects to an array of instantiated objects of the specified class.
+	 *
+	 * @param {Array<Object>|null} data - The raw data to initialize objects with, or null if no data is available.
+	 * @param {typeof BaseModel} ClassRef - The class constructor to instantiate each object.
+	 * @returns {Array<BaseModel>} An array of instantiated objects of the specified class.
+	 */
+	initRelatedArray( data, ClassRef ) {
+		return Array.isArray( data )
+		       ? data.map( item => new ClassRef( item ) )
+		       : [];
+	}
+	
+	/**
+	 * Initialize a related object if data exists.
+	 * @param {Object|null} data - The data to initialize the object with.
+	 * @param {typeof BaseModel} ClassRef - The class to instantiate.
+	 * @returns {BaseModel|null} The initialized object or null.
+	 */
+	initRelatedObject( data, ClassRef ) {
+		return data
+		       ? new ClassRef( data )
+		       : null;
+	}
+	
+	/**
+	 * Safely convert a value to a Date.
+	 * @param {*} value - The value to convert.
+	 * @returns {Date|null} The converted number or null if invalid.
+	 */
+	initToDate( value ) {
+		return value
+		       ? new Date( value )
+		       : null;
+	}
+	
+	/**
+	 * Safely convert a value to a number.
+	 * @param {*} value - The value to convert.
+	 * @returns {number|null} The converted number or null if invalid.
+	 */
+	initToNumber( value ) {
+		return value
+		       ? Number( value )
+		       : null;
+	}
+	
+	/**
+	 * Safely convert a value to a Boolean.
+	 * @param {*} value - The value to convert.
+	 * @returns {Boolean|null} The converted number or null if invalid.
+	 */
+	initToBoolean( value ) {
+		return value
+		       ? Boolean( value )
+		       : null;
+	}
+	
+	/**
+	 * Safely convert a value to a EnumUnit of the correspond enumClass statics Value .
+	 * @param {typeof BaseEnum} enumClass - The enum
+	 * @param {*} value - The value to convert.
+	 * @returns {EnumUnit|null} The converted number or null if invalid.
+	 */
+	initToEnum( enumClass, value ) {
+		return value
+		       ? enumClass.findByValue( value )
+		       : null;
 	}
 }
 

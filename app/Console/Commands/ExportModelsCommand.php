@@ -4,9 +4,13 @@ namespace App\Console\Commands;
 
 use BackedEnum;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use ReflectionClass;
+use Symfony\Component\Console\Command\Command as CommandAlias;
+use Throwable;
 
 
 class ExportModelsCommand extends Command
@@ -16,7 +20,7 @@ class ExportModelsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:export-models';
+    protected $signature = 'app:export-models // {typeOfClass=base : The category of commands to run (base, main, all)}';
 
     /**
      * The console command description.
@@ -29,35 +33,52 @@ class ExportModelsCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): bool
     {
+        $typeOfClass = $this->argument('typeOfClass');
+        $allowedTypes = ['base', 'main', 'all'];
+
+        if (!in_array($typeOfClass, $allowedTypes)) {
+            $this->error("Invalid typeOfClass value. Allowed values are: " . implode(', ', $allowedTypes));
+            return CommandAlias::FAILURE;
+        }
         $modelsPath = app_path('Models');
         $jsOutputPath = base_path('resources/js/models');
 
-        if (!is_dir($jsOutputPath)) {
+        if ($typeOfClass !== 'base' && !is_dir($jsOutputPath)) {
             mkdir($jsOutputPath, 0755, true);
         }
+        if ($typeOfClass !== 'main' && !is_dir($jsOutputPath . '/Base')) {
+            mkdir($jsOutputPath . '/Base', 0755, true);
+        }
 
-        $models = [];
+//        $models = [];
 
         foreach (scandir($modelsPath) as $file) {
             if (str_ends_with($file, '.php')) {
                 $className = "App\\Models\\" . pathinfo($file, PATHINFO_FILENAME);
                 if (class_exists($className)) {
+                    echo PHP_EOL . 'model ' . $className . PHP_EOL;
                     $reflection = new ReflectionClass($className);
 
-                    $properties = $this->getClassPropertiesWithSchemaAndTypes($reflection);
-
-                    $models[$reflection->getShortName()] = $properties;
-
                     // Generate JS class
-                    $this->generateJsClass($reflection->getShortName(), $properties, $jsOutputPath);
+                    if ($typeOfClass != 'main') {
+                        $properties = $this->getClassPropertiesWithSchemaAndTypes($reflection);
+                        $relationships = $this->getModelRelationships($reflection);
+                        $this->generateJsBaseClass($reflection->getShortName() . 'Base', $properties, $relationships, $jsOutputPath . '/Base');
+                    }
+                    // Generate JS class
+                    if ($typeOfClass != 'base')
+                        $this->generateJsMainClass($reflection->getShortName(), $jsOutputPath);
+
+
                 }
             }
         }
 
-        File::put(base_path('models.json'), json_encode($models, JSON_PRETTY_PRINT));
-        $this->info('Models exported to models.json and JavaScript classes generated.');
+//        File::put(base_path('models.json'), json_encode($models, JSON_PRETTY_PRINT));
+        $this->info('Models JavaScript classes has generated.');
+        return CommandAlias::SUCCESS;
     }
 
     /**
@@ -65,39 +86,80 @@ class ExportModelsCommand extends Command
      *
      * @param string $modelName
      * @param array $properties
+     * @param array $relationships
      * @param string $outputPath
      */
-    private function generateJsClass(string $modelName, array $properties, string $outputPath)
+    private function generateJsBaseClass(string $modelName, array $properties, array $relationships, string $outputPath)
     {
         $enums = $this->getEnumImports($properties);
         $enumImports = $this->generateEnumImports($enums, false);
+        $relationshipsImports = $this->generateRelationshipImports($relationships);
 
         $classContent = <<<JS
-import BaseModel from '../utilities/BaseModel';
+import BaseModel from '../../utilities/BaseModel';
 {$enumImports}
+{$relationshipsImports}
 
 /**
  * Class representing a $modelName model.
- * 
+ * @class
+ * @extends BaseModel
 {$this->generateJsDocProperties($properties)}
+{$this->generateJsDocRelationships($relationships)}
  */
-class $modelName extends BaseModel {
+export class $modelName extends BaseModel {
     constructor(data = {}) {
-        super(data);
-        this.initialize();
+		super();
+        Object.assign(this, this.prepareProperties(data));
     }
 
     /**
-     * Initialize default values.
+     * Prepare properties based on input data and return an object with these properties.
+     * @param {Object} data - The data of the object.
+     * @returns {Object} An object containing initialized properties.
      */
-    initialize() {
+    prepareProperties(data) {
+		return {
 {$this->generatePropertyInitialization($properties)}
+{$this->generatePropertyRelationshipsInitialization($relationships)}
+        }
     }
 }
 
 export default $modelName;
 JS;
         File::put("{$outputPath}/{$modelName}.js", $classContent);
+        echo PHP_EOL . "{$outputPath}/{$modelName}.js" . PHP_EOL;
+    }
+
+    /**
+     * Generate JavaScript class for a model.
+     *
+     * @param string $modelName
+     * @param array $properties
+     * @param array $relationships
+     * @param string $outputPath
+     * @param string $parentClass
+     * @param string $parentLocation
+     */
+    private function generateJsMainClass(string $modelName, string $outputPath)
+    {
+        $parentClass = $modelName . 'Base';
+        $classContent = <<<JS
+import {$parentClass} from "./Base/{$parentClass}";
+
+/**
+ * Class representing a $modelName model.
+ * @class
+ * @extends {$parentClass}
+ */
+export class $modelName extends {$parentClass} {
+}
+
+export default $modelName;
+JS;
+        File::put("{$outputPath}/{$modelName}.js", $classContent);
+        echo PHP_EOL . "{$outputPath}/{$modelName}.js" . PHP_EOL;
     }
 
     /**
@@ -109,7 +171,44 @@ JS;
     private function generatePropertyInitialization(array $properties)
     {
         return collect($properties)
-            ->map(fn($yf, $prop) => "        this.{$prop} = this.{$prop} ?? null;")
+            ->map(function ($type, $prop) {
+                // Handle Enums
+                if (str_ends_with($type, 'Enum')) {
+                    return "            {$prop} : this.initToEnum({$type}, data.{$prop}),";
+                }
+
+                // Handle Date/DateTime properties
+                if ($type === 'Date') {
+                    return "            {$prop} : this.initToDate( data.{$prop} ),";
+                }
+
+                // Handle numeric properties
+                if ($type === 'number') {
+                    return "            {$prop} : this.initToNumber( data.{$prop} ),";
+                }
+
+                if ($type === 'boolean') {
+                    return "            {$prop} : this.initToBoolean( data.{$prop} ),";
+                }
+
+                // Handle default case (string,  etc.)
+                return "            {$prop} : data.{$prop} ?? null,";
+            })
+            ->implode("\n");
+    }
+
+    /**
+     * Generate property initialization code.
+     *
+     * @param array $relationships
+     * @return string
+     */
+    private function generatePropertyRelationshipsInitialization(array $relationships): string
+    {
+        return collect($relationships)
+            ->map(fn($prop, $relationship) => (str_starts_with($prop['definition'], 'Array')) ?
+                "            {$relationship} : this.initRelatedArray( data.{$relationship} , {$prop['model']} )," :
+                "            {$relationship} : this.initRelatedObject( data.{$relationship} , {$prop['model']} ),")
             ->implode("\n");
     }
 
@@ -136,17 +235,17 @@ JS;
                 // Map Laravel casts to JavaScript types
                 $properties[$attribute] = $this->mapLaravelTypeToJs($casts[$attribute]);
             } elseif (in_array($attribute, $dates)) {
-                $properties[$attribute] = 'Date|null';
+                $properties[$attribute] = 'Date';
             } else {
-                // Default to string|null if no type information is available
-                $properties[$attribute] = 'string|null';
+                // Default to string if no type information is available
+                $properties[$attribute] = 'string';
             }
         }
 
         // Add timestamps if they exist
         if ($reflection->hasProperty('timestamps') && $modelInstance->timestamps) {
-            $properties['created_at'] = 'Date|null';
-            $properties['updated_at'] = 'Date|null';
+            $properties['created_at'] = 'Date';
+            $properties['updated_at'] = 'Date';
         }
 
         return $properties;
@@ -160,23 +259,23 @@ JS;
         if ($this->isEnum($type)) {
             $enumName = (new ReflectionClass($type))->getShortName();
             // Return the type for enum classes
-            return "{$enumName}|null";
+            return "{$enumName}";
         }
         if (str_starts_with($type, 'date')) {
 //            $format = explode(':', $type)[1] ?? 'Y-m-d H:i:s';
-//            return "Date|null /* format: $format */";
-            return "Date|null";
+//            return "Date /* format: $format */";
+            return "Date";
 
         }
         return match ($type) {
             'int', 'integer',
-            'float', 'double', 'decimal' => 'number|null',
-            'string' => 'string|null',
-            'bool', 'boolean' => 'boolean|null',
-            'array', 'json' => 'Array|null',
-            'object' => 'Object|null',
-            'datetime', 'date' => 'Date|null',
-            default => 'any|null',
+            'float', 'double', 'decimal' => 'number',
+            'string' => 'string',
+            'bool', 'boolean' => 'boolean',
+            'array', 'json' => 'Array',
+            'object' => 'Object',
+            'datetime', 'date' => 'Date',
+            default => 'any',
         };
     }
 
@@ -189,7 +288,20 @@ JS;
     private function generateJsDocProperties(array $properties): string
     {
         return collect($properties)
-            ->map(fn($type, $prop) => " * @property {{$type}} $prop")
+            ->map(fn($type, $prop) => " * @property {{$type}|null} $prop")
+            ->implode("\n");
+    }
+
+    /**
+     * Generate JSDoc properties for relationships of a model with accurate types.
+     *
+     * @param array $relationships
+     * @return string
+     */
+    private function generateJsDocRelationships(array $relationships): string
+    {
+        return collect($relationships)
+            ->map(fn($rel, $key) => " * @property { $rel[definition]|null } {$key}")
             ->implode("\n");
     }
 
@@ -213,13 +325,13 @@ JS;
     {
         return match ($type) {
             'integer', 'bigint', 'smallint', 'tinyint', 'int',
-            'decimal', 'float', 'double', 'mediumint' => 'number|null',
-            'string', 'text', 'char', 'varchar' => 'string|null',
-            'boolean' => 'boolean|null',
-            'date', 'datetime', 'timestamp' => 'Date|null',
-            'year', 'time' => 'string|null',
-            'enum' => 'Object|null',
-            default => 'any|null',
+            'decimal', 'float', 'double', 'mediumint' => 'number',
+            'string', 'text', 'char', 'varchar' => 'string',
+            'boolean' => 'boolean',
+            'date', 'datetime', 'timestamp' => 'Date',
+            'year', 'time' => 'string',
+            'enum' => 'Object',
+            default => 'any',
         };
     }
 
@@ -237,7 +349,7 @@ JS;
         }
 
         foreach ($modelInstance->getDates() as $dateField) {
-            $schemaAttributes[$dateField] = 'Date|null';
+            $schemaAttributes[$dateField] = 'Date';
         }
 
         foreach ($modelInstance->getHidden() as $hiddenField) {
@@ -261,8 +373,8 @@ JS;
     private function getEnumImports(array $properties): array
     {
         return collect($properties)
-            ->filter(fn($type) => $this->isEnum('App\\Enum\\' . str_replace('|null', '', $type)))
-            ->map(fn($type) => str_replace('|null', '', $type))
+            ->filter(fn($type) => $this->isEnum('App\\Enum\\' . $type))
+            ->map(fn($type) => $type)
             ->unique()
             ->values()
             ->toArray();
@@ -274,11 +386,67 @@ JS;
     private function generateEnumImports(array $enums, bool $usePlugin = false): string
     {
         if ($usePlugin) {
-            return "import { enums } from '../plugins/enums';";
+            return "import { enums } from '../../plugins/enums';";
         }
 
         return collect($enums)
-            ->map(fn($enum) => "import { $enum } from '../enums/$enum';")
+            ->map(fn($enum) => "import { $enum } from '../../enums/$enum';")
+            ->unique()
             ->implode("\n");
     }
+
+
+    /**
+     * Generate imports for modelRelationships.
+     */
+    private function generateRelationshipImports(array $relationships): string
+    {
+        return collect($relationships)
+            ->map(fn($relationship) => "import { $relationship[model] } from '../{$relationship['model']}';")
+            ->unique()
+            ->implode("\n");
+    }
+
+    private function getModelRelationships(ReflectionClass $reflection): array
+    {
+        $relationships = [];
+        $methods = $reflection->getMethods();
+        foreach ($methods as $key => $method) {
+            // Skip methods that are not public or not defined in the model's class
+            if (!$method->isPublic() || $method->class !== $reflection->getName()) {
+                continue;
+            }
+
+            // Ignore methods with parameters
+            if ($method->getNumberOfParameters() > 0) {
+                continue;
+            }
+
+            try {
+                // Call the method and check if it returns a Relation instance
+                $modelInstance = $reflection->newInstanceWithoutConstructor();
+                $result = $method->invoke($modelInstance);
+                if ($result instanceof Relation) {
+                    $relationType = (new ReflectionClass($result))->getShortName();
+                    $relatedModel = basename(str_replace('\\', '/', get_class($result->getRelated())));
+                    $size = str_ends_with($relationType, 'Many') ? 'many' : 'one';
+                    $definition = $size === 'one' ? $relatedModel : "Array<$relatedModel>";
+                    $relationship = Str::snake($method->getName());
+                    $relationships[$relationship] = [
+                        'type' => $relationType,
+                        'model' => $relatedModel,
+                        'size' => $size,
+                        'definition' => $definition,
+                    ];
+                    echo " method: " . $relationship;
+                }
+            } catch (Throwable $e) {
+                // Skip methods that throw errors
+                continue;
+            }
+        }
+        return $relationships;
+    }
+
+
 }
