@@ -19,9 +19,9 @@
  * @property {number} lunch
  * @property {number} dinner
  */
+
+import { getModelClass } from "../../utilities/modelUserMapper.js";
 import { UserAbilityEnum } from "../../enums/UserAbilityEnum.js";
-import { UserStatusEnum } from "../../enums/UserStatusEnum.js";
-import { CardStatusEnum } from "../../enums/CardStatusEnum.js";
 
 /**
  * Vuex state for authentication.
@@ -38,17 +38,13 @@ export const mutations = {
 	 * @param {Object} payload - The payload containing user data.
 	 */
 	setLogin( state, payload ) {
-		const user = { ...payload.user };
+		const ModelClass = getModelClass( payload.model ); // Pass the model name from the backend
+		const user = ModelClass
+		             ? new ModelClass( payload.user )
+		             : payload.user;
+		user.abilities = UserAbilityEnum.findByValueMany( payload.user.abilities );
+		state.user = user;
 		
-		// Initialize enums
-		user.abilities = UserAbilityEnum.findByValueMany( user.abilities );
-		user.status = UserStatusEnum.findByValue( user.status );
-		
-		const cardLastUpdate = user.card_applicant?.current_card_application?.card_last_update;
-		if ( cardLastUpdate ) {
-			cardLastUpdate.status = CardStatusEnum.findByValue( cardLastUpdate.status );
-		}
-		state.user =/** @type {UserData} */ user;
 	},
 	
 	/**

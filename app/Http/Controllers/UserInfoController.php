@@ -40,6 +40,7 @@ class UserInfoController extends Controller
         return response()->json([
             'message' => 'Login Successful',
             'user' => $user,
+            'model' => class_basename($user),
         ]);
 
     }
