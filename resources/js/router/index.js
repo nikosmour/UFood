@@ -84,9 +84,6 @@ const routes = [
 				path :      "transactions",
 				name :      "card.History",
 				component : CardTransactions,
-				props :     {
-					urlName : "card.history",
-				},
 			},
 			{
 				path :      "application",

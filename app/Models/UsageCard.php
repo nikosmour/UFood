@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Enum\MealPlanPeriodEnum;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +37,7 @@ class UsageCard extends Model
     protected $casts = [
         'date' => 'date:Y-m-d',
         'time' => 'date:H:m',
+        'period' => MealPlanPeriodEnum::class,
     ];
 
     protected static function boot()
