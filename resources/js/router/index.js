@@ -16,6 +16,7 @@ const TransferCoupons = () => import("../pages/Coupons/TransferCoupon.vue");
 const CouponOwner = () => import("../pages/Coupons.vue");
 const CouponTransactions = () => import("../pages/Coupons/CouponsTransactions.vue");
 const CardApplicationCheckingSearch = () => import("../Components/CardApplicationCheckingSearch.vue");
+const Card = () => import("../pages/Card.vue");
 
 const routes = [
 	{
@@ -78,6 +79,7 @@ const routes = [
 	},
 	{
 		path :     "/card",
+		component : Card,
 		meta :     { requiresAbility : Enums.UserAbilityEnum.CARD_OWNERSHIP },
 		children : [
 			{

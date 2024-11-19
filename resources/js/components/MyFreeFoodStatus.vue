@@ -2,7 +2,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-	name : "FreeFoodStatus",
+	name : "MyFreeFoodStatus",
 
 	computed : {
 		...mapGetters( "auth", {

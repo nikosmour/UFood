@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <free-food-status />
-        <v-container>
+    <v-container>
             <!-- Table for Transactions -->
             <v-data-table-virtual
                 :aria-label = "$t('transactions')"
@@ -30,11 +28,9 @@
                 @load = "fetchData"
             />
         </v-container>
-    </div>
 </template>
 
 <script>
-import FreeFoodStatus from "../../components/FreeFoodStatus.vue";
 import MyInfiniteScroll from "../../components/MyInfiniteScroll.vue";
 import UsageCard from "../../models/UsageCard.js";
 
@@ -42,7 +38,6 @@ export default {
 	name :       "CardTransactions",
 	components : {
 		MyInfiniteScroll,
-		FreeFoodStatus,
 	},
 	data() {
 		return {

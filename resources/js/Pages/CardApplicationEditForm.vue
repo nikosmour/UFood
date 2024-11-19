@@ -6,9 +6,6 @@
     </div>
     <div v-else>
         <!-- Display application status and expiration date -->
-        <p>{{ $t('applicationStatus') }} : {{ $t(status) + ' ' + $t('and') + ' ' + $t('expiration date') }} : {{
-                expiration_date
-            }}</p>
         <div class='row '>
             <div class='col-5'>
                 <!-- Application form -->
