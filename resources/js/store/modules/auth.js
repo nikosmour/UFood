@@ -139,6 +139,28 @@ export const getters = {
 			return state.user !== null && state.user.abilities.includes( ability );
 		};
 	},
+	/**
+	 * Get the card status of the user.
+	 * @param {Object} state
+	 * @returns {EnumUnit | null}
+	 */
+	cardStatus : ( state ) => {
+		return (
+			state.user?.card_applicant?.current_card_application?.card_last_update?.status ||
+			null
+		);
+	},
+	
+	/**
+	 * Get the expiration date of the user's valid card application.
+	 * @param {Object} state
+	 * @returns {Date | null}
+	 */
+	cardExpirationDate : ( state ) => {
+		return (
+			state.user?.card_applicant?.valid_card_application?.expiration_date || null
+		);
+	},
 };
 
 export default {

@@ -1,29 +1,14 @@
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
 	name : "FreeFoodStatus",
 
 	computed : {
-		...mapState(
-			{
-				/**
-				 * Card status of the user.
-				 * @returns {EnumUnit | null}
-				 */
-				card_status( state ) {
-					return state.auth.user?.card_applicant?.current_card_application?.card_last_update?.status ||
-					       null;
-				},
-
-				/**
-				 * Expiration date of the user's valid card application.
-				 * @returns {Date | null}
-				 */
-				card_expiration_date( state ) {
-					return state.auth.user?.card_applicant?.valid_card_application?.expiration_date || null;
-				},
-			} ),
+		...mapGetters( "auth", {
+			card_status :          "cardStatus",
+			card_expiration_date : "cardExpirationDate",
+		} ),
 
 		/**
 		 * Constructs the card status text based on the current card status and expiration date.
@@ -33,26 +18,66 @@ export default {
 			let text = this.$t( "applied.not" );
 
 			if ( this.card_status ) {
-				text = this.$t( "latest-application-is", {
-					status : this.$t( `status.${ this.card_status.key.toLowerCase() }` )
-					             .toLowerCase(),
+				const statusKey = this.card_status.key?.toLowerCase();
+				const statusTranslation = this.$t( `status.${ statusKey }` )
+				                              .toLowerCase();
+
+				text = this.$t( "application-status-is.current", {
+					status : statusTranslation,
 				} );
 			}
 
 			if ( this.card_expiration_date ) {
-				text += ` ${ this.$t( "expiration.date.is", {
-					date : this.card_expiration_date.toLocaleDateString(),
-				} ) }`;
+				const expirationDate = this.card_expiration_date;
+				const today = new Date();
+				today.setHours( 0, 0, 0, 0 );
+
+				if ( this.card_expiration_date >= today ) {
+					text += ` ${ this.$t( "expiration.date.is", {
+						date : expirationDate.toLocaleDateString(),
+					} ) }`;
+				}
 			}
 
 			return text;
+		},
+
+		/**
+		 * Returns the alert type based on the current card status.
+		 * @returns {string | undefined}
+		 */
+		alert_type() {
+			const CardStatusEnum = this.$enums.CardStatusEnum;
+			return {
+				[ CardStatusEnum.ACCEPTED ] :          "success",
+				[ CardStatusEnum.INCOMPLETE ] :        "warning",
+				[ CardStatusEnum.REJECTED ] :          "error",
+				[ CardStatusEnum.SUBMITTED ] :         "info",
+				[ CardStatusEnum.TEMPORARY_SAVED ] :   "info",
+				[ CardStatusEnum.CHECKING ] :          "info",
+				[ CardStatusEnum.TEMPORARY_CHECKED ] : "info",
+			}[ this.card_status ];
+		},
+
+		/**
+		 * Checks if the current route name matches "card.application".
+		 * @returns {boolean}
+		 */
+		isCardApplicationRoute() {
+			return this.$route.name === "card.application";
 		},
 	},
 };
 </script>
 
 <template>
-    <v-container>
+    <v-alert
+        v-if = "isCardApplicationRoute"
+        :text = "card_info"
+        :type = "alert_type"
+        dismissible
+    />
+    <v-container v-else>
         <v-card :aria-label = "$t('card.info')" :title = "$t('card.value')">
             <v-card-item>
                 <v-list>

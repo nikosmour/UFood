@@ -10,6 +10,10 @@ export const en = {
 	// "and": "and",
 	"applicant" :   "Applicant",
 	"application" : "Application | Applications",
+	"application-status-is" : {
+		"current" : "Your current application is {status}.",
+		"latest" :  "Your latest application is {status}.",
+	},
 	// "application_id": "Application ID",
 	// "application_status_not_allow_submission": "@:{required_failed}: The status of the application does not allow submission",
 	// "applicationStatus": "Application Status",
@@ -77,7 +81,7 @@ export const en = {
 		//     "some_files_not_updated": "@:some_files_not_updated"
 	},
 	// "expiration date": "Expiration @:date",
-	"expiration.date.is" : "The expiration date is {date}",
+	"expiration.date.is" : "You have free food until {date}",
 	// "file": "File | Files",
 	// "file_cant_edited": "File can't be edited.",
 	// "file_status": "File status",
