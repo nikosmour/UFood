@@ -13,7 +13,6 @@ export default {
 		couponOwner : {
 			type :     Object,
 			required : true,
-			default :  () => ( {} ),
 		},
 	},
 	data() {
@@ -55,6 +54,17 @@ export default {
                 })),*/
 			];
 		},
+		/**
+		 * Precomputed translations for meal names to avoid recalculating them.
+		 * @returns {Object} A dictionary of translated meal names.
+		 */
+		mealTranslations() {
+			return Object.keys( this.$enums.MealPlanPeriodEnum )
+			             .reduce( ( acc, meal ) => {
+				             acc[ meal ] = this.$t( "meals." + meal.toLowerCase() );
+				             return acc;
+			             }, {} );
+		},
 	},
 	methods :  {
 		/**
@@ -79,6 +89,28 @@ export default {
 			} finally {
 				this.isLoading = false;
 			}
+		},
+
+		/**
+		 * Computes quantities for all meal plans in an item, based on a given prefix.
+		 *
+		 * @param {Object} item - The data item containing meal quantities.
+		 * @param {string} prefix - A prefix to prepend to meal keys (e.g., "total.").
+		 * @returns {Array<MealQuantity>} An array of objects representing meal quantities.
+		 * @typedef {Object} MealQuantity
+		 * @property {string} key - A unique key for the meal quantity (e.g., item ID and meal name).
+		 * @property {number} quantity - The quantity of the meal.
+		 * @property {string} name - The translated name of the meal.
+		 */
+		mealQuantities( item, prefix = "" ) {
+			const mealNames = this.mealTranslations; // Precompute translations
+			return Object.keys( this.$enums.MealPlanPeriodEnum )
+			             .filter( ( meal ) => item[ prefix + meal ] ) // Only include meals with a quantity
+			             .map( ( meal ) => ( {
+				             key :      `${ item.id }-${ prefix }${ meal }`,
+				             quantity : item[ prefix + meal ],
+				             name :     mealNames[ meal ], // Translated meal name,
+			             } ) );
 		},
 	},
 	mounted() {
@@ -137,8 +169,8 @@ export default {
             <template #item.quantities = "{ item }">
                 <div>
                     <span v-if = "item.money !== 0">{{ item.money }}€</span>
-                    <span v-for = "meal in Object.keys($enums.MealPlanPeriodEnum)" :key = "'quantities-'.meal">
-                        {{ item[ meal ] }}&nbsp;{{ $t( "meals." + meal.toLowerCase() ) }}&nbsp;
+                    <span v-for = "meal in mealQuantities(item)" :key = "meal.key">
+                        {{ meal.quantity }}&nbsp;{{ meal.name }}&nbsp;
                     </span>
                 </div>
             </template>
@@ -146,14 +178,14 @@ export default {
             <template #item.balance = "{ item }">
                 <div>
                     <span v-if = "item.totalMoney !== 0">{{ item.totalMoney }}€ </span>
-                    <span v-for = "meal in Object.keys($enums.MealPlanPeriodEnum)" :key = "'balance-'.meal ">
-                        {{ item[ "total." + meal ] }}&nbsp;{{ $t( "meals." + meal.toLowerCase() ) }}&nbsp;
+                    <span v-for = "meal in mealQuantities(item,'total.')" :key = "meal.key">
+                        {{ meal.quantity }}&nbsp;{{ meal.name }}&nbsp;
                     </span>
                 </div>
             </template>
 
             <template #item.date = "{ item }">
-                <span>{{ new Date( item.created_at ).toLocaleDateString() }}</span>
+                <span>{{ item.created_at.toLocaleDateString() }}</span>
             </template>
 
             <!--            <template #item.totalMoney="{ item }">-->
