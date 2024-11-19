@@ -18,12 +18,13 @@ export const en = {
 	"balance" : "Balance",
 	// "cancel adding file": "Cancel adding file",
 	"card" : {
-		//     "edit": "Edit Card",
-		//     "show": "Show Card",
-		"value" :       "Card | Cards",
 		"application" : {
 			"submitted" : " Submitted Applications",
 		},
+		//     "edit": "Edit Card",
+		"info" : "Card Application Information",
+		//     "show": "Show Card",
+		"value" :       "Card | Cards",
 	},
 	// "changeFromTo": "Changed from @:{from1} to @:{to1} ",
 	// "comment": {

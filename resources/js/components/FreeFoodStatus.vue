@@ -18,11 +18,10 @@ export default {
 
 				/**
 				 * Expiration date of the user's valid card application.
-				 * @returns {string | null}
+				 * @returns {Date | null}
 				 */
 				card_expiration_date( state ) {
-					return state.auth.user?.card_applicant?.valid_card_application?.expiration_date ||
-					       null;
+					return state.auth.user?.card_applicant?.valid_card_application?.expiration_date || null;
 				},
 			} ),
 
@@ -30,7 +29,7 @@ export default {
 		 * Constructs the card status text based on the current card status and expiration date.
 		 * @returns {string}
 		 */
-		cardStatus() {
+		card_info() {
 			let text = this.$t( "applied.not" );
 
 			if ( this.card_status ) {
@@ -42,7 +41,7 @@ export default {
 
 			if ( this.card_expiration_date ) {
 				text += ` ${ this.$t( "expiration.date.is", {
-					date : new Date( this.card_expiration_date ).toLocaleDateString(),
+					date : this.card_expiration_date.toLocaleDateString(),
 				} ) }`;
 			}
 
@@ -54,11 +53,11 @@ export default {
 
 <template>
     <v-container>
-        <v-card :aria-label = "$t('card.status')" :title = "$t('card')">
+        <v-card :aria-label = "$t('card.info')" :title = "$t('card.value')">
             <v-card-item>
                 <v-list>
                     <v-list-item
-                        :title = "cardStatus"
+                        :title = "card_info"
                     />
                 </v-list>
             </v-card-item>
