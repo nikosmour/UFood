@@ -1,6 +1,8 @@
 // CouponTransactionService.js
 
 
+import CouponTransaction from "../models/CouponTransaction.js";
+
 export default class CouponTransactionService {
 	
 	_tempBalances;
@@ -96,12 +98,10 @@ export default class CouponTransactionService {
 	 * @returns {Array<Object>} Formatted transactions with calculated totals.
 	 */
 	reformatTransactions( transactions ) {
-		return transactions.map( transaction => {
-			transaction.id = this._calculateID( transaction.id, transaction.transaction );
-			transaction.money = Number( transaction.money );
+		return transactions.map( temp => {
+			const transaction = new CouponTransaction( temp );
 			transaction.totalMoney = this._calculateMoney( transaction.money, transaction.transaction );
 			for ( const meal in this.enums.MealPlanPeriodEnum ) {
-				transaction[ meal ] = Number( transaction[ meal ] );
 				
 				/**
 				 * for showing the balance before the transaction
