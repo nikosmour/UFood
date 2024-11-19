@@ -28,13 +28,17 @@ class UserInfoController extends Controller
     public function __invoke(?Authenticatable $user): JsonResponse
     {
         $user = ($user) ?: auth()->user();
-        if ($user instanceof Academic)
+        if ($user instanceof Academic) {
             $user->load([
                 'couponOwner',
                 'cardApplicant',
-                'cardApplicant.validCardApplication',//:expiration_date
                 'cardApplicant.currentCardApplication.cardLastUpdate' //:status
             ]);
+            if (!$user->cardApplicant->currentCardApplication) // we have define the new cardApplication to receive the expiration of the  valid application minimum
+                $user->load(
+                    'cardApplicant.validCardApplication',//:expiration_date
+                );
+        }
         else if ($user instanceof CardApplicationStaff)
             $user->statistics;
         return response()->json([

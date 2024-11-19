@@ -24,6 +24,8 @@ class CardApplication extends Model
         'expiration_date' => 'date:Y-m-d',
     ];
 
+    protected $fillable = ['expiration_date'];
+
     public function Academic(): BelongsTo
     {
         return $this->belongsTo(Academic::class, 'academic_id');

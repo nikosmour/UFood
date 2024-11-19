@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enum\CardStatusEnum;
 use App\Events\CardApplicationUpdated;
 use App\Http\Requests\UpdateCardApplicationRequest;
+use App\Models\Academic;
+use App\Models\CardApplicant;
 use App\Models\CardApplication;
 use App\Traits\DocumentTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -34,16 +36,14 @@ class CardApplicationController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', CardApplication::class);
-        $cardApplicant = Auth::user()->cardApplicant;
-//        $user->load('cardApplicant.currentCardApplication.cardLastUpdate');
-        if ($cardApplicant->currentCardApplication) {
-            $update = $cardApplicant->currentCardApplication->cardLastUpdate;
+        /** @var Academic $user */
+        $user = Auth::user();
+        $user->load('cardApplicant.currentCardApplication.cardLastUpdate');
+        $currentCardApplication = $user->cardApplicant->currentCardApplication;
+        if ($currentCardApplication) {
             $responseData = [
-                "cardApplication" => $cardApplicant->currentCardApplication
+                "cardApplication" => $currentCardApplication
             ];
-            if ($update->status !== CardStatusEnum::ACCEPTED)
-                $responseData['lastExpiration'] = ($cardApplicant->validCardApplication()->value('expiration_date') ?: now()->subCenturies(1))->format('Y-m-d');
-//            value('status')->first();
             return response()->json($responseData, 200);
         }
 
@@ -73,10 +73,15 @@ class CardApplicationController extends Controller
     {
         $this->authorize('create', CardApplication::class);
         DB::transaction(function () {
-            $cardApplication = new CardApplication();
-            $cardApplication->academic_id = Auth::user()->cardApplicant->academic_id;
-            $cardApplication->expiration_date = now()->subDay()->format('Y-m-d');
-            $cardApplication->saveOrFail();
+            /** @var CardApplicant $cardApplicant */
+            $cardApplicant = Auth::user()->cardApplicant;
+            $last_expiration = $cardApplicant->validCardApplication()->value('expiration_date');
+            if (!$last_expiration)
+                $last_expiration = now()->subDay();
+            /** @var CardApplication $cardApplication */
+            $cardApplication = $cardApplicant->currentCardApplication()->create([
+                "expiration_date" => $last_expiration
+            ]);
             $cardApplication->applicantComments()->create(['comment' => '']);
         });
         return response()->json(["message " => 'the application has created', 'success' => true], 201);
