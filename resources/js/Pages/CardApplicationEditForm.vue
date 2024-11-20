@@ -2,11 +2,24 @@
     <v-card :loading = "isLoading">
         <!-- Card Application Section -->
         <v-row v-if = "!isLoading">
-            <v-col cols = "5">
+            <v-col cols = "12">
                 <v-card>
+
                     <v-card-title>
                         <h4 class = "text-center">{{ title }}</h4>
+
+
                     </v-card-title>
+                    <v-fab
+                        :aria-label = "$t('add_file')"
+                        absolute
+                        class = "mr-3"
+                        color = "primary"
+                        icon = "mdi-file-plus"
+                        location = "right"
+                        offset
+                        @click = "addFile"
+                    />
                     <v-card-actions class = "justify-space-between">
                         <v-btn
                             v-if = "status === $enums.CardStatusEnum.TEMPORARY_SAVED"
@@ -44,7 +57,7 @@
                         <!-- Comment Input -->
                         <v-text-field
                             v-model = "commentStudent"
-                            label = "{{ $t('comment.enter') }}"
+                            :label = "$t('comment.enter')"
                             outlined
                         />
                         <!-- Submit Button -->
@@ -65,7 +78,7 @@
             </v-col>
 
             <!-- PDF Viewer -->
-            <v-col>
+            <v-col v-if = "docLink">
                 <v-sheet class = "pa-4" elevation = "1">
                     <object
                         :data = "docLink"
@@ -125,6 +138,9 @@ export default {
 		},
 	},
 	methods :  {
+		addFile() {
+			return this.$refs.CardDocuments.openAddFileDialog();
+		},
 		// Method to listen for updates
 		broadcasting() {
 			if ( typeof this.$echo !== "undefined" )
@@ -221,4 +237,5 @@ export default {
 		this.startingData();
 	},
 };
+
 </script>
