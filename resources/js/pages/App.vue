@@ -49,11 +49,13 @@ export default {
 		
 		/**
 		 * Redirects users based on authentication status and route requirements.
+		 * Leave all the echo channels if the user logout;
 		 * @param {Boolean} isAuthenticated - Current authentication state.
 		 */
 		redirectAuth( isAuthenticated ) {
 			console.log( "App.vue/redirectAuth", this.$route.fullPath, isAuthenticated, this.$route.meta.requiresAuth );
 			if ( !isAuthenticated && ( this.$route.meta.requiresAuth || this.$route.meta.requiresAbility ) ) {
+				this.$echo.leaveAllChannels();
 				this.$router.push( {
 					                   name :  "login",
 					                   query : { redirect : this.$route.fullPath },
@@ -89,6 +91,10 @@ export default {
 		
 		// Set up Axios interceptors
 		setupAxiosInterceptor( this.$axios, this.$store, this.$router );
+	},
+	unmounted() {
+		//Leave all the echo channels if the user leave the site;
+		this.$echo.leaveAllChannels();
 	},
 };
 </script>
