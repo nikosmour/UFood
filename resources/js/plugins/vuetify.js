@@ -26,7 +26,7 @@ export const Vuetify = createVuetify( {
 		                                      VTextField : {
 			                                      variant : "outlined",
 		                                      },
-		                                      VSelect : {
+		                                      VSelect :    {
 			                                      variant : "outlined",
 		                                      },
 		                                      VCheckbox :  {

@@ -8,8 +8,8 @@ export const en = {
 	//     "temporary": "Temporary @:model_data.location"
 	// },
 	// "and": "and",
-	"applicant" :   "Applicant",
-	"application" : "Application | Applications",
+	"applicant" :             "Applicant",
+	"application" :           "Application | Applications",
 	"application-status-is" : {
 		"current" : "Your current application is {status}.",
 		"latest" :  "Your latest application is {status}.",
@@ -28,7 +28,7 @@ export const en = {
 		//     "edit": "Edit Card",
 		"info" : "Card Application Information",
 		//     "show": "Show Card",
-		"value" :       "Card | Cards",
+		"value" : "Card | Cards",
 	},
 	// "changeFromTo": "Changed from @:{from1} to @:{to1} ",
 	// "comment": {

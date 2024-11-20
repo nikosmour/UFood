@@ -1,33 +1,33 @@
 <template>
     <v-container>
-            <!-- Table for Transactions -->
-            <v-data-table-virtual
-                :aria-label = "$t('transactions')"
-                :headers = "tableHeaders"
-                :item-key = "'id'"
-                :items = "transactions"
-                class = "elevation-1"
-                hide-default-footer
-            >
-                <template #top>
-                    <v-toolbar :title = "$t('transactions')" flat />
-                </template>
+        <!-- Table for Transactions -->
+        <v-data-table-virtual
+            :aria-label = "$t('transactions')"
+            :headers = "tableHeaders"
+            :item-key = "'id'"
+            :items = "transactions"
+            class = "elevation-1"
+            hide-default-footer
+        >
+            <template #top>
+                <v-toolbar :title = "$t('transactions')" flat />
+            </template>
 
-                <template #item.quantity = "{ item }">
-                    -1&nbsp;{{ $t( "meals." + item.period.key.toLowerCase() ) }}
-                </template>
+            <template #item.quantity = "{ item }">
+                -1&nbsp;{{ $t( "meals." + item.period.key.toLowerCase() ) }}
+            </template>
 
-                <template #item.date = "{ item }">
-                    {{ item.date.toLocaleDateString() }}
-                </template>
-            </v-data-table-virtual>
+            <template #item.date = "{ item }">
+                {{ item.date.toLocaleDateString() }}
+            </template>
+        </v-data-table-virtual>
 
-            <my-infinite-scroll
-                :loading = "isLoading"
-                :stopScroll = "stopFetch"
-                @load = "fetchData"
-            />
-        </v-container>
+        <my-infinite-scroll
+            :loading = "isLoading"
+            :stopScroll = "stopFetch"
+            @load = "fetchData"
+        />
+    </v-container>
 </template>
 
 <script>

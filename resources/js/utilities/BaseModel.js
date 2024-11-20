@@ -2,22 +2,6 @@ class BaseModel {
 	
 	
 	/**
-	 * Serialize the model instance to JSON.
-	 * @returns {string} JSON string representation of the model.
-	 */
-	toJSON() {
-		return JSON.stringify( this.toObject() );
-	}
-	
-	/**
-	 * Convert the model instance to a plain object.
-	 * @returns {Object} Plain object representation of the model.
-	 */
-	toObject() {
-		return { ...this };
-	}
-	
-	/**
 	 * Initializes an array of related objects if data exists.
 	 *
 	 * This method maps an array of raw data objects to an array of instantiated objects of the specified class.
@@ -45,6 +29,17 @@ class BaseModel {
 	}
 	
 	/**
+	 * Safely convert a value to a Boolean.
+	 * @param {*} value - The value to convert.
+	 * @returns {Boolean|null} The converted number or null if invalid.
+	 */
+	initToBoolean( value ) {
+		return value
+		       ? Boolean( value )
+		       : null;
+	}
+	
+	/**
 	 * Safely convert a value to a Date.
 	 * @param {*} value - The value to convert.
 	 * @returns {Date|null} The converted number or null if invalid.
@@ -52,6 +47,18 @@ class BaseModel {
 	initToDate( value ) {
 		return value
 		       ? new Date( value )
+		       : null;
+	}
+	
+	/**
+	 * Safely convert a value to a EnumUnit of the correspond enumClass statics Value .
+	 * @param {typeof BaseEnum} enumClass - The enum
+	 * @param {*} value - The value to convert.
+	 * @returns {EnumUnit|null} The converted number or null if invalid.
+	 */
+	initToEnum( enumClass, value ) {
+		return value
+		       ? enumClass.findByValue( value )
 		       : null;
 	}
 	
@@ -67,26 +74,19 @@ class BaseModel {
 	}
 	
 	/**
-	 * Safely convert a value to a Boolean.
-	 * @param {*} value - The value to convert.
-	 * @returns {Boolean|null} The converted number or null if invalid.
+	 * Serialize the model instance to JSON.
+	 * @returns {string} JSON string representation of the model.
 	 */
-	initToBoolean( value ) {
-		return value
-		       ? Boolean( value )
-		       : null;
+	toJSON() {
+		return JSON.stringify( this.toObject() );
 	}
 	
 	/**
-	 * Safely convert a value to a EnumUnit of the correspond enumClass statics Value .
-	 * @param {typeof BaseEnum} enumClass - The enum
-	 * @param {*} value - The value to convert.
-	 * @returns {EnumUnit|null} The converted number or null if invalid.
+	 * Convert the model instance to a plain object.
+	 * @returns {Object} Plain object representation of the model.
 	 */
-	initToEnum( enumClass, value ) {
-		return value
-		       ? enumClass.findByValue( value )
-		       : null;
+	toObject() {
+		return { ...this };
 	}
 }
 

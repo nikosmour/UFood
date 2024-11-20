@@ -55,7 +55,7 @@ export default {
 			console.log( "App.vue/redirectAuth", this.$route.fullPath, isAuthenticated, this.$route.meta.requiresAuth );
 			if ( !isAuthenticated && ( this.$route.meta.requiresAuth || this.$route.meta.requiresAbility ) ) {
 				this.$router.push( {
-					                   name : "login",
+					                   name :  "login",
 					                   query : { redirect : this.$route.fullPath },
 				                   } );
 			} else if ( isAuthenticated && this.$route.name === "login" ) {

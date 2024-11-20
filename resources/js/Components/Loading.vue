@@ -1,14 +1,14 @@
 <script>
 export default {
-    name: "Loading.vue",
+	name : "Loading.vue",
 
-}
+};
 </script>
 
 <template>
-    <div class="text-center mb-3">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">{{ $t("loading") }}...</span>
+    <div class = "text-center mb-3">
+        <div class = "spinner-border text-primary" role = "status">
+            <span class = "visually-hidden">{{ $t( "loading" ) }}...</span>
         </div>
     </div>
 

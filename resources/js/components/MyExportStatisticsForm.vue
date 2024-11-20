@@ -43,9 +43,9 @@
                             v-model = "selectAll"
                             :indeterminate = "isIndeterminate"
                             :label = "$t('select.all')"
+                            class = "custom-checkbox "
                             hide-details = "true"
                             @change = "toggleSelectAll"
-                            class = "custom-checkbox "
                             @input = "errors.meal_category=null"
                         />
                         <v-row class = "justify-space-between mt-1 mr-1">

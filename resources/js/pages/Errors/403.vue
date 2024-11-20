@@ -19,10 +19,10 @@ export default {
 		},
 	},
 	methods :  {
-        navigateToProfile() {
-	        this.$router.push( { name : "userProfile" } ); // Use router.push for navigation
-        },
-    },
+		navigateToProfile() {
+			this.$router.push( { name : "userProfile" } ); // Use router.push for navigation
+		},
+	},
 	computed : {
 		imageUrl() {
 			return "/img/big_logo_Upatras.png";
