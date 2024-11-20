@@ -1,4 +1,19 @@
 export class MockEcho {
+	constructor() {
+		return new Proxy( this, {
+			get( target, prop ) {
+				// Return a function for any property access
+				if ( typeof target[ prop ] === "undefined" ) {
+					return ( ...args ) => {
+						console.warn( `MocEcho Called method: ${ prop } with arguments:`, args );
+						return target; // Always return the instance
+					};
+				}
+				return target[ prop ];
+			},
+		} );
+	}
+
 	/**
 	 * Simulates subscribing to a public channel.
 	 * @param {string} channel - The name of the public channel.
@@ -30,6 +45,16 @@ export class MockEcho {
 	}
 	
 	/**
+	 * Mock method to simulate leaving a channel.
+	 * @param {string} channel - The name of the channel to leave
+	 * @returns {MockEcho} Returns the MockEcho instance itself.
+	 */
+	leaveAllChannels( channel ) {
+		console.warn( `[MockEcho] Left channel: ${ channel }` );
+		return this;
+	}
+	
+	/**
 	 * Simulates subscribing to a private channel.
 	 * @param {string} channel - The name of the private channel.
 	 * @returns {MockChannel}
@@ -52,6 +77,18 @@ class MockChannel {
 	constructor( channelName ) {
 		this.channelName = channelName;
 		console.warn( `[MockChannel] Initialized for channel: ${ channelName }` );
+		return new Proxy( this, {
+			get( target, prop ) {
+				// Return a function for any property access
+				if ( typeof target[ prop ] === "undefined" ) {
+					return ( ...args ) => {
+						console.warn( `MockChannel Called method: ${ prop } with arguments:`, args );
+						return target; // Always return the instance
+					};
+				}
+				return target[ prop ];
+			},
+		} );
 	}
 	
 	/**
