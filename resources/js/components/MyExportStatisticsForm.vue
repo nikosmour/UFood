@@ -34,7 +34,9 @@
                     <v-sheet
                         :aria-hidden = "!showMeals" :aria-label = "$t('meals.category')"
                         :class = "showMeals ? 'opacity-100':'opacity-0'"
-                        border = "lg" class = "mb-3"
+                        border = "md"
+                        class = " mt-8 mb-2 "
+                        position = "relative"
                     >
 
                         <v-checkbox
@@ -43,9 +45,10 @@
                             :label = "$t('select.all')"
                             hide-details = "true"
                             @change = "toggleSelectAll"
+                            class = "custom-checkbox "
                             @input = "errors.meal_category=null"
                         />
-                        <v-row class = "justify-space-between">
+                        <v-row class = "justify-space-between mt-1 mr-1">
                             <!--                        <v-text-field variant="outlined">
                                                         <template v-slot:label>
                                                     <v-checkbox
@@ -344,3 +347,14 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.custom-checkbox {
+    position: absolute;
+    top: -1.8rem;
+    left: 1rem;
+    background: inherit;
+    padding: 0 0.5rem;
+}
+
+</style>
