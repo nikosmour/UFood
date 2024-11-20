@@ -76,33 +76,6 @@ export default {
 		},
 	},
 	methods :  {
-		startingData() {
-
-		},
-		getDocuments() {
-			let vue = this;
-			let url = this.route( "document.index", { "cardApplication" : this.cardApplication } );
-
-			this.$axios.get( url )
-			    .then( function ( responseJson ) {
-				    let documents = responseJson[ "data" ][ "documents" ];
-				    vue.docFiles = documents;
-				    documents.forEach( ( file, index ) => {
-					    vue.addFileUpload( null, file.status, file.description, file.id, this.route( "document.show", {
-						    "document" : file.id,
-					    } ) );
-				    } );
-				    if ( 0 == documents.length && this.applicationEdit )
-					    vue.addFileUpload();
-				    console.log( vue.files );
-			    } )
-			    .catch( function ( errors ) {
-				    vue.result.success = false;
-				    vue.result.message = vue.$t( "retrieving_application_files_failed" );
-				    vue.result.errors = errors.response.data.errors;
-			    } );
-
-		},
 		addFileUpload( file = null, status = null, description = "", id = 0, link = "", message = "", success = null ) {
 			if ( id === 0 )
 				this.docFiles.push( {
@@ -124,26 +97,6 @@ export default {
 					                        errors :  [],
 				                        },
 			                        } );
-		},
-		onFileChange( event, index ) {
-			let file = this.files[ index ];
-			file.file = event.target.files[ 0 ];
-			if ( !file.file || !file.description )
-				return file.result.message = this.$t( "no file or description" );
-			if ( 0 == file.id ) {
-				this.docFiles[ index ].status = file.status;
-				this.docFiles[ index ].description = file.description;
-				return;
-			}
-			file.id = 0;
-			this.files.push( file ); // Add the new file
-			this.docFiles.push( file ); // Add the new file
-			let oldFile = this.files[ index ] = this.docFiles[ index ]; // Restore the old file
-			oldFile.status = ( !confirm( this.$t( "keep old file?" ) ) )
-			                 ? "to delete"
-			                 : ( oldFile.status !== "incomplete" )
-			                   ? oldFile.status
-			                   : "submitted";
 		},
 		async fileUpload( file, index ) {
 			let params = new FormData();
@@ -212,6 +165,50 @@ export default {
 					                 : " " + this.$t( "uploadedNot" );
 				                 return file.result.success;
 			                 } );
+		},
+		getDocuments() {
+			let vue = this;
+			let url = this.route( "document.index", { "cardApplication" : this.cardApplication } );
+
+			this.$axios.get( url )
+			    .then( function ( responseJson ) {
+				    let documents = responseJson[ "data" ][ "documents" ];
+				    vue.docFiles = documents;
+				    documents.forEach( ( file, index ) => {
+					    vue.addFileUpload( null, file.status, file.description, file.id, this.route( "document.show", {
+						    "document" : file.id,
+					    } ) );
+				    } );
+				    if ( 0 == documents.length && this.applicationEdit )
+					    vue.addFileUpload();
+				    console.log( vue.files );
+			    } )
+			    .catch( function ( errors ) {
+				    vue.result.success = false;
+				    vue.result.message = vue.$t( "retrieving_application_files_failed" );
+				    vue.result.errors = errors.response.data.errors;
+			    } );
+
+		},
+		onFileChange( event, index ) {
+			let file = this.files[ index ];
+			file.file = event.target.files[ 0 ];
+			if ( !file.file || !file.description )
+				return file.result.message = this.$t( "no file or description" );
+			if ( 0 == file.id ) {
+				this.docFiles[ index ].status = file.status;
+				this.docFiles[ index ].description = file.description;
+				return;
+			}
+			file.id = 0;
+			this.files.push( file ); // Add the new file
+			this.docFiles.push( file ); // Add the new file
+			let oldFile = this.files[ index ] = this.docFiles[ index ]; // Restore the old file
+			oldFile.status = ( !confirm( this.$t( "keep old file?" ) ) )
+			                 ? "to delete"
+			                 : ( oldFile.status !== "incomplete" )
+			                   ? oldFile.status
+			                   : "submitted";
 		},
 		previewFile( event, index ) {
 			const file = this.files[ index ];
