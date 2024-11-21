@@ -90,7 +90,7 @@ export default {
 		setupSessionTimeout( timeoutMin, this.$axios, this );
 		
 		// Set up Axios interceptors
-		setupAxiosInterceptor( this.$axios, this.$store, this.$router );
+		setupAxiosInterceptor( this.$axios, this.$store, this.$router, this.route );
 	},
 	unmounted() {
 		//Leave all the echo channels if the user leave the site;

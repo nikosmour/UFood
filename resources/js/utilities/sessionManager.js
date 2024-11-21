@@ -29,8 +29,9 @@ export function setupSessionTimeout( timeoutMin, axios, vueInstance ) {
  * @param {import("axios").AxiosInstance} axios - The axios instance.
  * @param {Object} store - The Vuex store instance.
  * @param {Object} router - The Vue Router instance.
+ * @param route
  */
-export function setupAxiosInterceptor( axios, store, router ) {
+export function setupAxiosInterceptor( axios, store, router, route ) {
 	axios.interceptors.response.use(
 		response => response,
 		error => {
