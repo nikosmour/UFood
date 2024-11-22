@@ -1,0 +1,191 @@
+<script>
+import CardApplicationDocument from "../models/CardApplicationDocument.js";
+
+export default {
+	name : "MyNewOrEditFile",
+
+	/**
+	 * Emits:
+	 * - `addFile`: Triggered when a new file is added.
+	 */
+	emits : [ "addFile" ],
+
+	data() {
+		return {
+			/**
+			 * Indicates the visibility of the dialog for adding or editing files.
+			 * @type {boolean}
+			 */
+			showFileDialog : false,
+
+			/**
+			 * Indicates if the dialog is in editing mode.
+			 * @type {boolean}
+			 */
+			isEditingFile : false,
+
+			/**
+			 * Holds the current file input data.
+			 * @type {Object}
+			 * @property {File|null} file - The file to be uploaded.
+			 * @property {string} description - Description of the file.
+			 */
+			fileInput : {
+				file :        null,
+				description : "",
+			},
+
+			/**
+			 * Indicates the validity of the form.
+			 * @type {boolean}
+			 */
+			isFormValid : false,
+
+			/**
+			 * The file being edited (if in editing mode).
+			 * @type {CardApplicationDocument|null}
+			 */
+			file : null,
+		};
+	},
+
+	computed : {
+		/**
+		 * Validation rules for the form inputs.
+		 * @return {Object} An object containing validation rules for `description` and `file`.
+		 * @property {Array<function>} description - Validation rules for the file description.
+		 * @property {Array<function>} file - Validation rules for the file input.
+		 */
+		rules() {
+			return {
+				description : [
+					( value ) =>
+						!!value ||
+						this.$t( "validation.required", {
+							attribute : this.$t( "description" ),
+						} ),
+				],
+				file :        [
+					( value ) => !!value || this.$t( "validation.file" ),
+				],
+			};
+		},
+	},
+
+	methods : {
+		/**
+		 * Opens the dialog to add a new file.
+		 * Resets the `fileInput` state and switches to adding mode.
+		 */
+		openAddFileDialog() {
+			this.isEditingFile = false;
+			this.fileInput = {
+				file :        null,
+				description : "",
+			};
+			this.showFileDialog = true;
+		},
+
+		/**
+		 * Opens the dialog to edit an existing file.
+		 * Populates the `fileInput` with the file's description.
+		 *
+		 * @param {CardApplicationDocument} file - The file to be edited.
+		 * @param {string} file.description - The description of the file.
+		 */
+		openEditFileDialog( file ) {
+			this.isEditingFile = true;
+			this.fileInput = {
+				file : null, // No file upload required when editing
+				description : file.description,
+			};
+			this.file = file;
+			this.showFileDialog = true;
+		},
+
+		/**
+		 * Closes the file dialog and resets the input state.
+		 */
+		closeFileDialog() {
+			this.showFileDialog = false;
+			this.fileInput = {
+				file :        null,
+				description : "",
+			};
+			this.file = null;
+		},
+
+		/**
+		 * Handles submission of the file form.
+		 * Validates the form, updates an existing file's description if editing,
+		 * or emits a new file object for adding.
+		 */
+		handleFileSubmit() {
+			if ( !this.fileInput.description ) {
+				alert( this.$t( "please_enter_description" ) );
+				return;
+			}
+
+			if ( this.isEditingFile ) {
+				// Update the description of the existing file
+				this.file.description = this.fileInput.description;
+			} else {
+				// Create a new file and emit it
+				const newFile = CardApplicationDocument.newDocument( this.fileInput );
+				this.$emit( "addFile", newFile );
+			}
+
+			this.closeFileDialog();
+		},
+	},
+};
+</script>
+
+<template>
+    <v-dialog v-model = "showFileDialog" max-width = "600">
+        <v-card>
+            <v-card-title>
+                {{ isEditingFile
+                   ? $t( "file.edit" )
+                   : $t( "file.add" ) }}
+            </v-card-title>
+
+            <v-card-text>
+                <v-form ref = "fileForm" v-model = "isFormValid">
+                    <!-- File Description -->
+                    <v-text-field
+                        v-model = "fileInput.description"
+                        :label = "$t('description')"
+                        :rules = "rules.description"
+                        outlined
+                        required
+                    />
+
+                    <!-- File Upload (only for new files) -->
+                    <v-file-input
+                        v-if = "!isEditingFile"
+                        v-model = "fileInput.file"
+                        :label = "$t('file.select')"
+                        :rules = "rules.file"
+                        accept = "application/pdf"
+                        outlined
+                        required
+                    />
+                </v-form>
+            </v-card-text>
+
+            <v-card-actions class = "justify-end">
+                <v-btn color = "secondary" @click = "closeFileDialog">
+                    {{ $t( "cancel" ) }}
+                </v-btn>
+                <v-btn
+                    :disabled = "!isFormValid || (!isEditingFile && !fileInput.file)"
+                    color = "primary"
+                    @click = "handleFileSubmit"
+                >
+                    {{ $t( "confirm" ) }}
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>

@@ -6,6 +6,106 @@ import CardApplicationDocumentBase from "./Base/CardApplicationDocumentBase";
  * @extends CardApplicationDocumentBase
  */
 export class CardApplicationDocument extends CardApplicationDocumentBase {
+	/**
+	 * @static
+	 * @type {string}
+	 */
+	static _CREATE = "create";
+	
+	/**
+	 * @static
+	 * @type {string}
+	 */
+	static _DELETE = "delete";
+	
+	/**
+	 * @static
+	 * @type {string}
+	 */
+	static _EDIT = "edit";
+	
+	/**
+	 * @static
+	 * @type {string}
+	 */
+	static _UPDATE_STATUS = "updateStatus";
+	
+	/**
+	 * @private
+	 * @type {?string}
+	 */
+	_change = null;
+	
+	/**
+	 * Get the value of `change`.
+	 * @type {?string}
+	 */
+	get change() {
+		return this._change;
+	}
+	
+	/**
+	 * Set the value of `description` and mark the change as "edit".
+	 * @param {string} updateValue - The new description value.
+	 */
+	set description( updateValue ) {
+		super.description = updateValue;
+		this._setChange( CardApplicationDocument._EDIT );
+	}
+	
+	/**
+	 * Set the value of `status` and mark the change as "updateStatus".
+	 * @param {CardDocumentStatusEnum} status - The new status value.
+	 */
+	set status( status ) {
+		super.status = status;
+		this._setChange( CardApplicationDocument._UPDATE_STATUS );
+	}
+	
+	/**
+	 * Create a new CardApplicationDocument instance.
+	 * @static
+	 * @param {Object} data - The data for the new document.
+	 * @param {string} data.description - The document's description.
+	 * @param {File} data.file - The file associated with the document.
+	 * @returns {CardApplicationDocument} A new CardApplicationDocument instance.
+	 */
+	static newDocument( data ) {
+		data = {
+			description : data.description,
+			file_name :   data.file.name,
+			change :      CardApplicationDocument._CREATE,
+			file :        data.file,
+		};
+		return new CardApplicationDocument( data );
+	}
+	
+	/**
+	 * Set the value of `change` internally.
+	 * @private
+	 * @param {string|null} value - The new value of `change`.
+	 * @returns {void}
+	 */
+	_setChange( value ) {
+		if (
+			value === CardApplicationDocument._UPDATE_STATUS &&
+			this.change === CardApplicationDocument._CREATE
+		)
+			return;
+		this._change = value;
+	}
+	
+	/**
+	 * Extend the `prepareProperties` method to include new properties.
+	 * @param {Object} data - The data of the object.
+	 * @returns {Object} An object containing initialized properties, including the formatted ID.
+	 */
+	prepareProperties( data ) {
+		const superObject = super.prepareProperties( data );
+		superObject.change = superObject.change ?? null;
+		superObject.file = superObject.file ?? null;
+		return superObject;
+	}
 }
 
 export default CardApplicationDocument;
