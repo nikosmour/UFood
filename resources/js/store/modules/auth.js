@@ -83,13 +83,15 @@ export const actions = {
 	 * @returns {Promise<boolean>}
 	 */
 	async getUser( { commit } ) {
-		
-		const { data } = await axios.get( "/api/user" );
-		
-		if ( data ) {
-			localStorage.setItem( "user", JSON.stringify( data.user ) ); // Store user data
-			await commit( "setLogin", data );
-			return true;
+		try {
+			const { data } = await axios.get( "/api/user" );
+			
+			if ( data ) {
+				localStorage.setItem( "user", JSON.stringify( data.user ) ); // Store user data
+				await commit( "setLogin", data );
+				return true;
+			}
+		} catch ( error ) {
 		}
 		localStorage.removeItem( "user" ); // Store user data
 		commit( "setLogout" );
