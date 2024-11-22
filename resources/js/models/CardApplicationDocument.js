@@ -53,13 +53,28 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 		this._setChange( CardApplicationDocument._EDIT );
 	}
 	
+	get description() {
+		return super.description;
+	}
+	
+	
 	/**
 	 * Set the value of `status` and mark the change as "updateStatus".
 	 * @param {CardDocumentStatusEnum} status - The new status value.
 	 */
 	set status( status ) {
-		super.status = status;
+		console.log( "cardApplicationDocument set status", status, this.status );
+		if ( status === this.status ) return;
+		this._status = status;
 		this._setChange( CardApplicationDocument._UPDATE_STATUS );
+	}
+	
+	/**
+	 * Get the value of `status`
+	 * @return {CardDocumentStatusEnum} - The new status value.
+	 */
+	get status() {
+		return super.status;
 	}
 	
 	/**
@@ -87,12 +102,25 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * @returns {void}
 	 */
 	_setChange( value ) {
+		if ( value === this.change ) return;
 		if (
 			value === CardApplicationDocument._UPDATE_STATUS &&
 			this.change === CardApplicationDocument._CREATE
 		)
 			return;
+		if ( this.change === CardApplicationDocument._CREATE &&
+		     value === CardApplicationDocument._EDIT ) return;
+		if ( this.change === CardApplicationDocument._CREATE &&
+		     value === CardApplicationDocument._DELETE )
+			value = null;
 		this._change = value;
+	}
+	
+	/**
+	 * Set the value of `status` to _delete.
+	 */
+	delete() {
+		this._setChange( CardApplicationDocument._DELETE );
 	}
 	
 	/**
@@ -102,10 +130,11 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 */
 	prepareProperties( data ) {
 		const superObject = super.prepareProperties( data );
-		superObject.change = superObject.change ?? null;
-		superObject.file = superObject.file ?? null;
+		superObject._change = data.change ?? null;
+		superObject.file = data.file ?? null;
 		return superObject;
 	}
+	
 }
 
 export default CardApplicationDocument;
