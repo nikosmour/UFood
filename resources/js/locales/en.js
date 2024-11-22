@@ -1,5 +1,5 @@
 export const en = {
-	// "add File": "Add File",
+	
 	"a_m" :         "Student ID Number",
 	"academic_id" : "Academic id",
 	// "accept": "Accept",
@@ -21,6 +21,7 @@ export const en = {
 	// "back": "Back",
 	"balance" : "Balance",
 	// "cancel adding file": "Cancel adding file",
+	"cancel" :           "Cancel",
 	"card" : {
 		"application" : {
 			"submitted" : " Submitted Applications",
@@ -50,8 +51,10 @@ export const en = {
 		"value" :         "Coupon | Coupons",
 	},
 	"date" :   "Date",
-	// "description": "Description",
+	"description" :      "Description",
 	"developedBy" : "Developed by Nikolaos Mouratidis",
+	"document" : "Document|Documents",
+	"documents.upload" : "Upload Documents",
 	// "edit": "Edit",
 	"email" :       "Email",
 	"entry_check" : "Entry Check",
@@ -82,6 +85,18 @@ export const en = {
 	},
 	// "expiration date": "Expiration @:date",
 	"expiration.date.is" : "You have free food until {date}",
+	"file" :             {
+		"add" :            "Add a new file",
+		"delete" :         "Delete the file",
+		"edit" :           "Change file description",
+		"hide" : " Hide File",
+		"markAccepted" :   "Mark as accepted",
+		"markIncomplete" : "Mark as incomplete",
+		"markRejected" :   "Mark as rejected",
+		"preview" :        "Preview file",
+		"select" :         "Select a file",
+		
+	},
 	// "file": "File | Files",
 	// "file_cant_edited": "File can't be edited.",
 	// "file_status": "File status",
@@ -172,10 +187,12 @@ export const en = {
 	// "no_file": "There isn't any file",
 	"page" :     "Page",
 	"password" : "Password",
+	"pendingReview" :    "Pending Review",
 	// "periodLabel": "Period",
 	// "pleaseSelect": "Please select one",
 	// "preview": "Preview",
 	"period.time" : "Time Period",
+	"personalInfo" :     "Personal info",
 	"previous" :    "Previous",
 	// "provide_valid_card": "Provide a valid academic card",
 	"purchase" : {
@@ -198,7 +215,7 @@ export const en = {
 	// "retrieving_application_failed": "@:required_failed : Retrieving application has failed ",
 	// "retrieving_application_files_failed": "@:required_failed: Retrieving files of this  application has failed ",
 	// "sale_coupons": "Sale Coupons",
-	// "save": "Save",
+	"save" : "Save",
 	"select" : {
 		"all" : "Select All",
 	},
