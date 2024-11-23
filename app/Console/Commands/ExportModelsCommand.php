@@ -81,6 +81,41 @@ class ExportModelsCommand extends Command
         return CommandAlias::SUCCESS;
     }
 
+
+    /**
+     * Generate getters and setters for properties.
+     *
+     * @param array $properties
+     * @return string
+     */
+    private function generateGettersAndSetters(array $properties): string
+    {
+        return collect($properties)
+            ->map(function ($type, $prop) {
+                $methodName = $prop;
+                return <<<JS
+
+    /**
+     * Get the value of {$prop}.
+     * @returns {{$type}|null}
+     */
+    get {$methodName}() {
+        return this._{$prop};
+    }
+
+    /**
+     * Set the value of {$prop}.
+     * @param {{$type}|null} value - The new value.
+     */
+    set {$methodName}(value) {
+        this._{$prop} = value;
+    }
+JS;
+            })
+            ->implode("\n");
+    }
+
+
     /**
      * Generate JavaScript class for a model.
      *
@@ -94,6 +129,8 @@ class ExportModelsCommand extends Command
         $enums = $this->getEnumImports($properties);
         $enumImports = $this->generateEnumImports($enums, false);
         $relationshipsImports = $this->generateRelationshipImports($relationships);
+
+        $gettersAndSetters = $this->generateGettersAndSetters($properties);
 
         $classContent = <<<JS
 import BaseModel from '../../utilities/BaseModel';
@@ -109,7 +146,7 @@ import BaseModel from '../../utilities/BaseModel';
  */
 export class $modelName extends BaseModel {
     constructor(data = {}) {
-		super();
+        super();
         Object.assign(this, this.prepareProperties(data));
     }
 
@@ -119,15 +156,18 @@ export class $modelName extends BaseModel {
      * @returns {Object} An object containing initialized properties.
      */
     prepareProperties(data) {
-		return {
+        return {
 {$this->generatePropertyInitialization($properties)}
 {$this->generatePropertyRelationshipsInitialization($relationships)}
         }
     }
+
+{$gettersAndSetters}
 }
 
 export default $modelName;
 JS;
+
         File::put("{$outputPath}/{$modelName}.js", $classContent);
         echo PHP_EOL . "{$outputPath}/{$modelName}.js" . PHP_EOL;
     }
@@ -288,7 +328,15 @@ JS;
     private function generateJsDocProperties(array $properties): string
     {
         return collect($properties)
-            ->map(fn($type, $prop) => " * @property {{$type}|null} $prop")
+            ->map(function ($type, $prop) {
+                $privateProp = "_{$prop}";
+
+                return <<<JS
+ * @property {{$type}|null} {$privateProp} (Private property for {$prop})
+ * @property {{$type}|null} {$prop} (Getter for {$prop})
+ * @method void {$prop}(value) (Setter for {$prop})
+JS;
+            })
             ->implode("\n");
     }
 
