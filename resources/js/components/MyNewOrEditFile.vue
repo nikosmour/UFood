@@ -31,7 +31,7 @@ export default {
 			 * @property {string} description - Description of the file.
 			 */
 			fileInput : {
-				file :        null,
+				file : [],
 				description : "",
 			},
 
@@ -65,8 +65,13 @@ export default {
 							attribute : this.$t( "description" ),
 						} ),
 				],
-				file :        [
-					( value ) => !!value || this.$t( "validation.file" ),
+				file : [
+					( files ) => files.length || this.$t( "validation.file" ),
+					( files ) => !files || !files.some( file => file.size > 2_097_152 ) ||
+					             this.$t( "validation.lt.file", {
+						             attribute : this.$t( "file.value" ),
+						             value :     2_048,
+					             } ),
 				],
 			};
 		},
@@ -80,7 +85,7 @@ export default {
 		openAddFileDialog() {
 			this.isEditingFile = false;
 			this.fileInput = {
-				file :        null,
+				file : null,
 				description : "",
 			};
 			this.showFileDialog = true;
@@ -109,7 +114,7 @@ export default {
 		closeFileDialog() {
 			this.showFileDialog = false;
 			this.fileInput = {
-				file :        null,
+				file : null,
 				description : "",
 			};
 			this.file = null;
