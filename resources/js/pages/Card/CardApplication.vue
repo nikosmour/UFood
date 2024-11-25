@@ -176,6 +176,7 @@ export default {
 		];
 		this.application = new CardApplication(
 			{
+				id : 1,
 				card_application_document : files,
 			} );
 	},
