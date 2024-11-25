@@ -95,6 +95,7 @@ export const en = {
 		"markRejected" :   "Mark as rejected",
 		"preview" :        "Preview file",
 		"select" :         "Select a file",
+		"value" : "file",
 		
 	},
 	// "file": "File | Files",
