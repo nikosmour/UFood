@@ -87,7 +87,7 @@ class EnumToVueJsCommand extends Command
         $entries = [];
         foreach ($constants as $key => $value) {
             $key = strtoupper($key); // Ensure uppercase keys
-            $entries[] = "    static {$key} = new EnumUnit('{$key}', '{$value}');";
+            $entries[] = "    static {$key} = new {$className}('{$key}', '{$value}');";
         }
         $entries = implode("\n", $entries);
 

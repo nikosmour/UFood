@@ -8,7 +8,7 @@ import { EnumUnit } from "./EnumUnit.js";
  * It provides utility methods to work with enums like getting keys, values,
  * and finding corresponding enum units by their key or value.
  */
-export class BaseEnum {
+export class BaseEnum extends EnumUnit {
 	
 	/**
 	 * @param {Object} enumEntries - An object containing key-value pairs to initialize the enum.
