@@ -29,7 +29,6 @@ class StoreCardApplicationDocumentRequest extends FormRequest
                 'file',
                 'mimes:pdf',
                 'mimetypes:application/pdf',
-                'extension:pdf',
                 'max:2048', // Maximum file size in kilobytes (2MB)
             ],
             'description' => [
