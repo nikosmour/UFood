@@ -29,6 +29,16 @@ class CardApplicationDocument extends Model
         'status' => CardDocumentStatusEnum::class,
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'card_application_id',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function cardApplication(): BelongsTo
     {
         return $this->belongsTo(CardApplication::class);

@@ -34,7 +34,7 @@ class CardApplicationDocumentController extends Controller
         $this->authorize('viewAny', [CardApplicationDocument::class, $cardApplication]);
 //        return  CardApplicationDocument::whereCardApplicationId($cardApplication->id)->select($select)->get();
         return response()->json([
-            'documents' => $cardApplication->cardApplicationDocument()->select(['id', 'description', 'status'])->get()
+            'documents' => $cardApplication->cardApplicationDocument()->get()
         ]);
     }
 
