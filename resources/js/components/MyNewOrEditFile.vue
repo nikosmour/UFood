@@ -64,6 +64,13 @@ export default {
 						this.$t( "validation.required", {
 							attribute : this.$t( "description" ),
 						} ),
+					( value ) =>
+						!value || value.length < 28 ||
+						this.$t( "validation.max.string", {
+							attribute : this.$t( "description" ),
+							max :       27,
+						} ),
+
 				],
 				file : [
 					( files ) => files.length || this.$t( "validation.file" ),
@@ -83,12 +90,17 @@ export default {
 		 * Resets the `fileInput` state and switches to adding mode.
 		 */
 		openAddFileDialog() {
-			this.isEditingFile = false;
-			this.fileInput = {
-				file : null,
-				description : "",
-			};
-			this.showFileDialog = true;
+			this.openFileDialog( null, false );
+		},
+
+		/**
+		 * Reopens the dialog to add a new file for the case something went wrong.
+		 * Populates the `fileInput` with the file's description and file data.
+		 * @param {CardApplicationDocument} file - The file to be edited.
+		 * @param {string} file.description - The description of the file.
+		 */
+		reOpenAddFileDialog( file ) {
+			this.openFileDialog( file, false );
 		},
 
 		/**
@@ -99,10 +111,22 @@ export default {
 		 * @param {string} file.description - The description of the file.
 		 */
 		openEditFileDialog( file ) {
-			this.isEditingFile = true;
+			this.openFileDialog( file, true );
+		},
+
+		/**
+		 * Opens the dialog to add a new or edit an existing file.
+		 * Populates the `fileInput` with the appropriate data.
+		 *
+		 * @param {CardApplicationDocument} file - The file to be edited.
+		 * @param {boolean} isEditingFile -Is edit mode ?
+		 * @param {string} file.description - The description of the file.
+		 */
+		openFileDialog( file, isEditingFile ) {
+			this.isEditingFile = isEditingFile;
 			this.fileInput = {
-				file : null, // No file upload required when editing
-				description : file.description,
+				file :        file?.file ?? null,
+				description : file?.description ?? "",
 			};
 			this.file = file;
 			this.showFileDialog = true;
