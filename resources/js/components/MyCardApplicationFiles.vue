@@ -71,11 +71,14 @@ export default {
 
 		/**
 		 * Adds a new file to the application and updates the UI.
-		 * @param {Object} file - The new file object.
+		 * @param {CardApplicationDocument} document - The new file object.
 		 */
-		newFile( file ) {
-			this.application.addNewFile( file );
-			this.files.push( file );
+		newFile( document ) {
+			console.log( document, document.file );
+			this.application.addNewFile( document )
+			    .then( () =>
+				           this.files.push( document ),
+			    );
 		},
 
 		/**
