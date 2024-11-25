@@ -7,6 +7,7 @@ import { Vuetify } from "./vuetify";
 import { Ziggy } from "./ziggy";
 import { ZiggyVue } from "../../../vendor/tightenco/ziggy";
 import { ErrorManager } from "./errorManager.js";
+import BaseModel from "../utilities/BaseModel.js";
 
 
 AxiosInstance.interceptors.request.use( config => {
@@ -41,5 +42,8 @@ export const plugins = {
 		app.use( ErrorManager );
 		
 		app.use( ZiggyVue, Ziggy );
+		
+		// Set up BaseModel dependencies
+		BaseModel.setup( app.config.globalProperties.route, AxiosInstance );
 	},
 };

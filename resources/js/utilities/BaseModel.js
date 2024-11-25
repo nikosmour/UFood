@@ -1,5 +1,32 @@
 class BaseModel {
+	static $axios = null;
+	static route = null;
 	
+	/**
+	 * Get the Axios instance.
+	 * @returns {axios.AxiosInstance} The Axios instance.
+	 */
+	get $axios() {
+		return this.constructor.$axios;
+	}
+	
+	/**
+	 * Get the Ziggy route helper function.
+	 * @returns {Function} The route helper.
+	 */
+	get route() {
+		return this.constructor.route;
+	}
+	
+	/**
+	 * Set up dependencies for the BaseModel.
+	 * @param {Function} route - The Ziggy route helper function.
+	 * @param {axios.AxiosInstance} axios - The Axios instance.
+	 */
+	static setup( route, axios ) {
+		this.route = route;
+		this.$axios = axios;
+	}
 	
 	/**
 	 * Initializes an array of related objects if data exists.
