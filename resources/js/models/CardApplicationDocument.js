@@ -125,6 +125,21 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	}
 	
 	/**
+	 * Fetches the document list from the backend and initializes related documents.
+	 *
+	 
+	 * @returns {Promise<axios.AxiosResponse<Array<CardApplicationDocument>>>} A promise that resolves to the list of documents.
+	 */
+	static async fetchDocumentsByApplicationId( cardApplicationId ) {
+		const url = this.route( "document.index", { cardApplication : cardApplicationId } );
+		const documents = await CardApplicationDocument.$axios.get( url )
+		                                               .then( response => response.data.documents );
+		return documents.map(
+			document => new CardApplicationDocument( document ),
+		);
+	}
+	
+	/**
 	 * Extend the `prepareProperties` method to include new properties.
 	 * @param {Object} data - The data of the object.
 	 * @returns {Object} An object containing initialized properties, including the formatted ID.

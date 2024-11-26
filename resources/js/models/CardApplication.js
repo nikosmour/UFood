@@ -52,34 +52,15 @@ export class CardApplication extends CardApplicationBase {
 	}
 	
 	/**
-	 * Fetches the document list from the backend and initializes related documents.
-	 *
-	 
-	 * @returns {Promise<axios.AxiosResponse<Array<CardApplicationDocument>>>} A promise that resolves to the list of documents.
-	 */
-	fetchDocuments() {
-		const url = this.route( "document.index", { cardApplication : this.id } );
-		return CardApplication.$axios.get( url )
-		                      .then( response => {
-			                      const documents = response.data.documents;
-			                      
-			                      // Initialize related document objects
-			                      this.card_application_document =
-				                      this.initRelatedArray( documents, CardApplicationDocument );
-			                      return this.card_application_document;
-		                      } );
-	}
-	
-	/**
 	 * Retrieves the documents for the card application.
 	 * If already fetched, returns the cached data. Otherwise, fetches it from the backend.
 	 *
 	 * @returns {Promise<axios.AxiosResponse<Array<CardApplicationDocument>>>}
 	 */
-	getDocuments() {
-		return this.card_application_document.length
-		       ? this.card_application_document
-		       : this.fetchDocuments();
+	async getDocuments() {
+		if ( this.card_application_document === undefined )
+			this.card_application_document = await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
+		return this.card_application_document;
 	}
 }
 

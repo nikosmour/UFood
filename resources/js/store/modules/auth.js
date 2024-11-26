@@ -164,7 +164,7 @@ export const getters = {
 		);
 	},
 	cardApplication : ( state ) => {
-		return state.user?.card_applicant?.current_card_application;
+		return state.user?.card_applicant?.current_card_application; 
 	},
 };
 

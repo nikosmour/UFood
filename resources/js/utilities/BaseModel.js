@@ -40,7 +40,7 @@ class BaseModel {
 	initRelatedArray( data, ClassRef ) {
 		return Array.isArray( data )
 		       ? data.map( item => new ClassRef( item ) )
-		       : [];
+		       : undefined;
 	}
 	
 	/**
@@ -52,7 +52,7 @@ class BaseModel {
 	initRelatedObject( data, ClassRef ) {
 		return data
 		       ? new ClassRef( data )
-		       : null;
+		       : data;
 	}
 	
 	/**
