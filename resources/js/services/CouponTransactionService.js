@@ -19,7 +19,7 @@ export default class CouponTransactionService {
 		this.axios = axios;
 		this._url = url;
 		this.enums = enums;
-		this._tempBalances = { ...tempBalances };
+		this._tempBalances = new tempBalances.constructor( tempBalances );
 	}
 	
 	/**
