@@ -56,6 +56,10 @@ export default {
 			type : CardApplication,
 			required : true,
 		},
+		loadings : {
+			type :     Array,
+			required : true,
+		},
 	},
 	data() {
 		return {
@@ -70,6 +74,20 @@ export default {
 	methods : {
 
 		/**
+		 * Fetches document data from the backend or from vuex.
+		 */
+		async getDocuments() {
+			this.loadings.push( true );
+			try {
+				const files = await this.application.getDocuments();
+				this.files = [ ...files ];
+			} finally {
+				this.loadings.pop();
+			}
+
+		},
+
+		/**
 		 * Adds a new file to the application and updates the UI.
 		 * @param {CardApplicationDocument} document - The new file object.
 		 */
@@ -78,6 +96,11 @@ export default {
 			this.application.addNewFile( document )
 			    .then( () =>
 				           this.files.push( document ),
+			    )
+			    .catch( ( error ) => {
+				            this.$refs.fileDialog.reOpenAddFileDialog( document );
+				            throw error;
+			            },
 			    );
 		},
 
@@ -155,7 +178,7 @@ export default {
 	},
 
 	created() {
-		this.files = [ ...this.application.card_application_document ];
+		this.getDocuments();
 	},
 };
 </script>

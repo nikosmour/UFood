@@ -1,4 +1,5 @@
 import CardApplicationDocumentBase from "./Base/CardApplicationDocumentBase";
+import { CardDocumentStatusEnum } from "../enums/CardDocumentStatusEnum.js";
 
 /**
  * Class representing a CardApplicationDocument model.
@@ -44,6 +45,10 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 		return this._change;
 	}
 	
+	get description() {
+		return super.description;
+	}
+	
 	/**
 	 * Set the value of `description` and mark the change as "edit".
 	 * @param {string} updateValue - The new description value.
@@ -53,28 +58,27 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 		this._setChange( CardApplicationDocument._EDIT );
 	}
 	
-	get description() {
-		return super.description;
-	}
-	
-	
-	/**
-	 * Set the value of `status` and mark the change as "updateStatus".
-	 * @param {CardDocumentStatusEnum} status - The new status value.
-	 */
-	set status( status ) {
-		console.log( "cardApplicationDocument set status", status, this.status );
-		if ( status === this.status ) return;
-		this._status = status;
-		this._setChange( CardApplicationDocument._UPDATE_STATUS );
-	}
-	
 	/**
 	 * Get the value of `status`
 	 * @return {CardDocumentStatusEnum} - The new status value.
 	 */
 	get status() {
 		return super.status;
+	}
+	
+	/**
+	 * Set the value of `status` and mark the change as "updateStatus".
+	 * @param {CardDocumentStatusEnum||string} status - The new status value or the key for it.
+	 */
+	set status( status ) {
+		console.log( "cardApplicationDocument set status", status, this.status );
+		if ( typeof status === "string" ) status = CardDocumentStatusEnum[ status ];
+		if ( status === this.status ) return;
+		this._status = status;
+		const change = status !== CardDocumentStatusEnum.SUBMITTED
+		               ? CardApplicationDocument._UPDATE_STATUS
+		               : null;
+		this._setChange( change );
 	}
 	
 	/**
@@ -102,18 +106,15 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * @returns {void}
 	 */
 	_setChange( value ) {
-		if ( value === this.change ) return;
-		if (
-			value === CardApplicationDocument._UPDATE_STATUS &&
-			this.change === CardApplicationDocument._CREATE
-		)
-			return;
-		if ( this.change === CardApplicationDocument._CREATE &&
-		     value === CardApplicationDocument._EDIT ) return;
-		if ( this.change === CardApplicationDocument._CREATE &&
-		     value === CardApplicationDocument._DELETE )
-			value = null;
-		this._change = value;
+		const abort = value === this.change || ( this.change === CardApplicationDocument._CREATE &&
+		                                         [
+			                                         CardApplicationDocument._EDIT,
+			                                         CardApplicationDocument._UPDATE_STATUS,
+		                                         ].includes( value ) );
+		if ( abort ) return;
+		this._change = this.change !== CardApplicationDocument._CREATE || value !== CardApplicationDocument._DELETE
+		               ? value
+		               : null;
 	}
 	
 	/**
@@ -130,6 +131,9 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 */
 	prepareProperties( data ) {
 		const superObject = super.prepareProperties( data );
+		// to not initiate  setter of the status;
+		superObject._status = superObject.status;
+		delete superObject.status;
 		superObject._change = data.change ?? null;
 		superObject.file = data.file ?? null;
 		return superObject;
