@@ -163,6 +163,9 @@ export const getters = {
 			state.user?.card_applicant?.valid_card_application?.expiration_date || null
 		);
 	},
+	cardApplication : ( state ) => {
+		return state.user?.card_applicant?.current_card_application;
+	},
 };
 
 export default {

@@ -8,9 +8,13 @@
                     hide-actions
                 >
                     <template v-slot:item.2>
-                        <v-card :title = " $t('documents.upload')" class = "justify-content-around">
+                        <v-card
+                            v-if = "application" :loading = "isLoading" :title = " $t('documents.upload')"
+                            class = "justify-content-around"
+                        >
                             <MyCardApplicationFiles
                                 :application = "application"
+                                :loadings = "loadings"
                             />
                             <v-card-actions class = "justify-space-between">
                                 <v-btn
@@ -141,44 +145,24 @@
 // import MyShowListItem from "./MyShowListItem.vue";
 
 import MyCardApplicationFiles from "../../components/MyCardApplicationFiles.vue";
-import CardApplication from "../../models/CardApplication.js";
+import { mapGetters } from "vuex";
 
 export default {
 	name :       "CardApplication",
 	components : { MyCardApplicationFiles },
+	computed : {
+		...mapGetters( "auth", {
+			application : "cardApplication",
+		} ),
+		isLoading() {
+			return this.loadings.length !== 0;
+		},
+	},
 	data() {
 		return {
-			application : null,
 			step :  2,
+			loadings : [],
 		};
-	},
-	created() {
-		const files = [
-			...this.$enums.CardDocumentStatusEnum
-			       .toArray()
-			       .map( ( status, index ) => new Object(
-				             {
-					             file_name :   "name " + index,
-					             description : "description " + index,
-					             status :      status.value,
-				             },
-			             ),
-			       ),
-			...this.$enums.CardDocumentStatusEnum
-			       .toArray()
-			       .map( ( status, index ) => new Object(
-				       {
-					       file_name :   "name " + index,
-					       description : "description " + index,
-					       status :      status.value,
-				       } ),
-			       ),
-		];
-		this.application = new CardApplication(
-			{
-				id : 1,
-				card_application_document : files,
-			} );
 	},
 	methods : {
 		saveApplication() {
