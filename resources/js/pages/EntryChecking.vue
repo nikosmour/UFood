@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import MyExportStatisticsForm from "../components/MyExportStatisticsForm.vue";
+import MyExportStatisticsForm from "@components/MyExportStatisticsForm.vue";
 import EntryCheckingForm from "./EntryChecking/EntryCheckingForm.vue";
 
 export default {

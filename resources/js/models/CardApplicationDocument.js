@@ -1,5 +1,5 @@
 import CardApplicationDocumentBase from "./Base/CardApplicationDocumentBase";
-import { CardDocumentStatusEnum } from "../enums/CardDocumentStatusEnum.js";
+import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum.js";
 
 /**
  * Class representing a CardApplicationDocument model.

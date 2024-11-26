@@ -1,6 +1,6 @@
 import CardApplicationBase from "./Base/CardApplicationBase";
 import CardApplicationDocument from "./CardApplicationDocument.js";
-import { CardDocumentStatusEnum } from "../enums/CardDocumentStatusEnum.js";
+import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum.js";
 
 export class CardApplication extends CardApplicationBase {
 	/**

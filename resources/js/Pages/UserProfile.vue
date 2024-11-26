@@ -7,7 +7,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import MyModelsToTable from "../components/MyModelsToTable.vue";
+import MyModelsToTable from "@components/MyModelsToTable.vue";
 
 export default {
 	components : { MyModelsToTable },

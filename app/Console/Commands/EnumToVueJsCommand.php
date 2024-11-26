@@ -92,8 +92,7 @@ class EnumToVueJsCommand extends Command
         $entries = implode("\n", $entries);
 
         return
-            "import { BaseEnum } from '../utilities/enums/BaseEnum';
-import { EnumUnit } from '../utilities/enums/EnumUnit';
+            "import { BaseEnum } from '@utilities/enums/BaseEnum';
 
 export class {$className} extends BaseEnum {
 $entries

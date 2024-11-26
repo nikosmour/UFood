@@ -1,7 +1,7 @@
 // CouponTransactionService.js
 
 
-import CouponTransaction from "../models/CouponTransaction.js";
+import CouponTransaction from "@models/CouponTransaction.js";
 
 export default class CouponTransactionService {
 	

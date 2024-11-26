@@ -1,5 +1,5 @@
 // authGuard.js
-import store from "../store";
+import store from "@store";
 
 export default async ( to, from ) => {
 	console.log( Date.now() % 10000, "AuthGuard" );

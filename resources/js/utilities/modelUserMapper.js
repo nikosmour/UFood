@@ -1,9 +1,9 @@
 // modelUserMapper.js
 
-import Academic from "../models/Academic";
-import CouponStaff from "../models/CouponStaff.js";
-import EntryStaff from "../models/EntryStaff.js";
-import CardApplicationStaff from "../models/CardApplicationStaff.js";
+import Academic from "@models/Academic";
+import CouponStaff from "@models/CouponStaff.js";
+import EntryStaff from "@models/EntryStaff.js";
+import CardApplicationStaff from "@models/CardApplicationStaff.js";
 
 // Map of model names to JavaScript classes
 const modelMapping = {

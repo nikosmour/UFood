@@ -1,6 +1,6 @@
 <script>
 import { mapState } from "vuex";
-import MyCouponOwnerBalance from "../components/MyCouponOwnerBalance.vue";
+import MyCouponOwnerBalance from "@components/MyCouponOwnerBalance.vue";
 
 export default {
 	components : { MyCouponOwnerBalance },

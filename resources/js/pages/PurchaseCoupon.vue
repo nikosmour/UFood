@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import MyTransactionCouponForm from "../components/MyTransactionCouponForm.vue";
-import MyExportStatisticsForm from "../components/MyExportStatisticsForm.vue";
+import MyTransactionCouponForm from "@components/MyTransactionCouponForm.vue";
+import MyExportStatisticsForm from "@components/MyExportStatisticsForm.vue";
 
 export default {
 	components : {

@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import MyInfiniteScroll from "../../components/MyInfiniteScroll.vue";
-import UsageCard from "../../models/UsageCard.js";
+import MyInfiniteScroll from "@components/MyInfiniteScroll.vue";
+import UsageCard from "@models/UsageCard.js";
 
 export default {
 	name :       "CardTransactions",

@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
-import GlobalError from "../components/GlobalError.vue";
+import GlobalError from "@components/GlobalError.vue";
 import NavView from "./navView.vue";
-import { setupAxiosInterceptor, setupSessionTimeout } from "../utilities/sessionManager.js";
+import { setupAxiosInterceptor, setupSessionTimeout } from "@utilities/sessionManager.js";
 
 export default {
 	errorCaptured( error, vm, info ) {

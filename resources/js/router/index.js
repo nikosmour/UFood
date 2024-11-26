@@ -2,21 +2,21 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import authGuard from "../guards/AuthGuard";
 import { Enums } from "../plugins/enums.js";
 
-const Unauthorized = () => import("../pages/Errors/403.vue");
-const NotFound = () => import("../pages/Errors/404.vue");
-const PurchaseCoupon = () => import("../pages/PurchaseCoupon.vue");
-const EntryChecking = () => import("../pages/EntryChecking.vue");
-const Login = () => import("../pages/Auth/Login.vue");
+const Unauthorized = () => import("@pages/Errors/403.vue");
+const NotFound = () => import("@pages/Errors/404.vue");
+const PurchaseCoupon = () => import("@pages/PurchaseCoupon.vue");
+const EntryChecking = () => import("@pages/EntryChecking.vue");
+const Login = () => import("@pages/Auth/Login.vue");
 const UserProfile = () => import("../Pages/UserProfile.vue");
 const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.vue");
 const CardApplication = () => import("../Pages/CardApplicationEditForm.vue");
 const CardApplicationCreate = () => import("../Pages/CardApplicationCreateForm.vue");
-const CardTransactions = () => import("../pages/Card/CardTransactions.vue");
-const TransferCoupons = () => import("../pages/Coupons/TransferCoupon.vue");
-const CouponOwner = () => import("../pages/Coupons.vue");
-const CouponTransactions = () => import("../pages/Coupons/CouponsTransactions.vue");
+const CardTransactions = () => import("@pages/Card/CardTransactions.vue");
+const TransferCoupons = () => import("@pages/Coupons/TransferCoupon.vue");
+const CouponOwner = () => import("@pages/Coupons.vue");
+const CouponTransactions = () => import("@pages/Coupons/CouponsTransactions.vue");
 const CardApplicationCheckingSearch = () => import("../Components/CardApplicationCheckingSearch.vue");
-const Card = () => import("../pages/Card.vue");
+const Card = () => import("@pages/Card.vue");
 
 const routes = [
 	{

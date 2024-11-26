@@ -5,9 +5,9 @@ import { capitalize, formatDate, formatNumber, truncate } from "./filters";
 import { I18n } from "./i18n";
 import { Vuetify } from "./vuetify";
 import { Ziggy } from "./ziggy";
-import { ZiggyVue } from "../../../vendor/tightenco/ziggy";
+import { ZiggyVue } from "ziggy-js";
 import { ErrorManager } from "./errorManager.js";
-import BaseModel from "../utilities/BaseModel.js";
+import BaseModel from "@utilities/BaseModel.js";
 
 
 AxiosInstance.interceptors.request.use( config => {

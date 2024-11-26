@@ -133,7 +133,7 @@ JS;
         $gettersAndSetters = $this->generateGettersAndSetters($properties);
 
         $classContent = <<<JS
-import BaseModel from '../../utilities/BaseModel';
+import BaseModel from '@utilities/BaseModel';
 {$enumImports}
 {$relationshipsImports}
 
@@ -434,11 +434,11 @@ JS;
     private function generateEnumImports(array $enums, bool $usePlugin = false): string
     {
         if ($usePlugin) {
-            return "import { enums } from '../../plugins/enums';";
+            return "import { enums } from '@/plugins/enums';";
         }
 
         return collect($enums)
-            ->map(fn($enum) => "import { $enum } from '../../enums/$enum';")
+            ->map(fn($enum) => "import { $enum } from '@enums/$enum';")
             ->unique()
             ->implode("\n");
     }
@@ -450,7 +450,7 @@ JS;
     private function generateRelationshipImports(array $relationships): string
     {
         return collect($relationships)
-            ->map(fn($relationship) => "import { $relationship[model] } from '../{$relationship['model']}';")
+            ->map(fn($relationship) => "import { $relationship[model] } from '@models/{$relationship['model']}';")
             ->unique()
             ->implode("\n");
     }

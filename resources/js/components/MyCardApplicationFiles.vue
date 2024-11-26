@@ -35,7 +35,7 @@
 <script>
 import MyShowFile from "./MyShowFile.vue";
 import MyNewOrEditFile from "./MyNewOrEditFile.vue";
-import CardApplication from "../models/CardApplication.js";
+import CardApplication from "@models/CardApplication.js";
 
 export default {
 	name :       "MyCardApplicationFiles",

@@ -144,7 +144,7 @@
 <script>
 // import MyShowListItem from "./MyShowListItem.vue";
 
-import MyCardApplicationFiles from "../../components/MyCardApplicationFiles.vue";
+import MyCardApplicationFiles from "@components/MyCardApplicationFiles.vue";
 import { mapGetters } from "vuex";
 
 export default {

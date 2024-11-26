@@ -20,8 +20,8 @@
  * @property {number} dinner
  */
 
-import { getModelClass } from "../../utilities/modelUserMapper.js";
-import { UserAbilityEnum } from "../../enums/UserAbilityEnum.js";
+import { getModelClass } from "@utilities/modelUserMapper.js";
+import { UserAbilityEnum } from "@enums/UserAbilityEnum.js";
 
 /**
  * Vuex state for authentication.

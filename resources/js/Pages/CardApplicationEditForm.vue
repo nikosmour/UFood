@@ -94,7 +94,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import CardApplication from "../models/CardApplication.js";
+import CardApplication from "@models/CardApplication.js";
 import CardDocumentsShow from "../Components/CardDocumentsShow.vue";
 
 export default {

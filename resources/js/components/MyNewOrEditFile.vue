@@ -1,5 +1,5 @@
 <script>
-import CardApplicationDocument from "../models/CardApplicationDocument.js";
+import CardApplicationDocument from "@models/CardApplicationDocument.js";
 
 export default {
 	name : "MyNewOrEditFile",

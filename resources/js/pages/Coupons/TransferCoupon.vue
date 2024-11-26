@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import MyTransactionCouponForm from "../../components/MyTransactionCouponForm.vue";
+import MyTransactionCouponForm from "@components/MyTransactionCouponForm.vue";
 
 export default {
 	components : {
