@@ -1,0 +1,1 @@
+type PropertyType<T> = T | undefined | null;

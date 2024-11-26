@@ -20,7 +20,8 @@
         "pusher-js": "^8.4.0-rc2",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.32.11",
-        "vite": "^5.4.9"
+        "vite"      : "^5.4.9",
+        "typescript": "^5.0.0"
     },
     "dependencies": {
         "@mdi/font": "^7.4.47",

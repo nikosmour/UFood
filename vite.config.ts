@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue"; // Import the Vue plugin
 import vuetify from "vite-plugin-vuetify";
@@ -51,7 +51,7 @@ export default defineConfig( ( { mode } ) => {
 					// Remove all debugger statements
 					drop_debugger : true,
 				},
-				output :   {
+				format: {
 					// Remove all comments from the final output
 					comments : false,
 				},
