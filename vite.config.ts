@@ -29,6 +29,7 @@ export default defineConfig( ( { mode } ) => {
 				"@pages" :      path.resolve( path2, "pages" ),
 				"@models" :     path.resolve( path2, "models" ),
 				"@enums" :      path.resolve( path2, "enums" ),
+                "@types": path.resolve(path2, "types"),
 				"ziggy-js" :    path.resolve( __dirname, "vendor", "tightenco", "ziggy" ),
 			},
 		},

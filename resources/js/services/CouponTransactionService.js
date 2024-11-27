@@ -1,7 +1,7 @@
 // CouponTransactionService.js
 
 
-import CouponTransaction from "@models/CouponTransaction.js";
+import CouponTransaction from "@models/CouponTransaction";
 
 export default class CouponTransactionService {
 	
@@ -13,32 +13,18 @@ export default class CouponTransactionService {
 	 * @param {Object} axios - Axios instance for making HTTP requests.
 	 * @param {string} url - The initial URL to fetch transactions.
 	 * @param {Object} enums - Enum containing meal plan periods.
+	 * @param {import("@types/models/CouponOwner.d.ts").CouponOwner} tempBalances - Enum containing meal plan periods.
 	 * @param tempBalances
 	 */
 	constructor( axios, url, enums, tempBalances ) {
 		this.axios = axios;
 		this._url = url;
 		this.enums = enums;
-		this._tempBalances = new tempBalances.constructor( tempBalances );
+		this._tempBalances = tempBalances.copy();
+		console.log( this._tempBalances, tempBalances );
 	}
 	
-	/**
-	 * Calculates and updates the meal balance for a specific transaction and meal type.
-	 * @param {number} id - id of the transaction.
-	 * @param {string} transactionType - Type of transaction.
-	 * @returns {string} Updated meal balance.
-	 */
-	_calculateID( id, transactionType ) {
-		let type = null;
-		if ( transactionType === "buying" ) {
-			type = "P";
-		} else if ( transactionType === "sending" || transactionType === "receiving" ) {
-			type = "T";
-		} else if ( transactionType === "using" )
-			type = "U";
-		return type + id;
-	}
-	
+
 	/**
 	 * Calculates and updates the meal balance for a specific transaction and meal type.
 	 * @param {number} amount - Quantity of meal involved.
@@ -58,12 +44,16 @@ export default class CouponTransactionService {
 	 * @returns {number} Updated money balance.
 	 */
 	_calculateMoney( amount, transactionType ) {
-		if ( transactionType === "buying" || transactionType === "sending" ) {
-			this._tempBalances.money += amount;
-		} else if ( transactionType === "receiving" ) {
-			this._tempBalances.money -= amount;
+		try {
+			if ( transactionType === "buying" || transactionType === "sending" ) {
+				this._tempBalances.money += amount;
+			} else if ( transactionType === "receiving" ) {
+				this._tempBalances.money -= amount;
+			}
+			return this._tempBalances.money;
+		} catch ( error ) {
+			console.log( this._tempBalances.money, amount, "_calculateMoney error", this._tempBalances );
 		}
-		return this._tempBalances.money;
 	}
 	
 	/**
@@ -100,7 +90,7 @@ export default class CouponTransactionService {
 	reformatTransactions( transactions ) {
 		return transactions.map( temp => {
 			const transaction = new CouponTransaction( temp );
-			transaction.totalMoney = this._calculateMoney( transaction.money, transaction.transaction );
+			transaction.totalMoney = this._calculateMoney( transaction.money ?? 0, transaction.transaction );
 			for ( const meal in this.enums.MealPlanPeriodEnum ) {
 				
 				/**

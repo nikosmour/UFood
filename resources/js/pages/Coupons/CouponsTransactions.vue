@@ -1,6 +1,8 @@
-<script>
+<script lang = "ts">
 import CouponTransactionService from "@services/CouponTransactionService.js";
 import MyInfiniteScroll from "@components/MyInfiniteScroll.vue";
+import type CouponOwner from "@types/models/CouponOwner";
+import type CouponTransaction from "@types/models/CouponTransaction";
 
 export default {
 	name :       "CouponsTransactions",
@@ -8,17 +10,17 @@ export default {
 	props :      {
 		/**
 		 * The owner of the coupon, containing balance information for each meal period.
-		 * @type {Object}
+         o	 * @type {CouponOwner}
 		 */
 		couponOwner : {
-			type :     Object,
+            type: Object as () => CouponOwner,
 			required : true,
 		},
 	},
 	data() {
 		return {
-			transactions :       [],
-			expanded :           [],
+            transactions: [] as () => Array<CouponTransaction>,
+            expanded: [] as () => Array<boolean>,
 			isLoading :          false,
 			transactionService : null,
 			stopFetch :          false,
@@ -144,7 +146,7 @@ export default {
                         <v-row>
                             <v-col cols = "6">
                                 <span>
-                                    {{ $t( "transaction.id" ) }}: {{ item.id }}
+                                    {{ $t( "transaction.id" ) }}: {{ item.foul_id }}
                                 </span>
                             </v-col>
                             <v-col v-if = "item.transaction === 'receiving'" cols = "auto">

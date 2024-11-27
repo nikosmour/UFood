@@ -29,6 +29,13 @@ class Academic extends User
 //
 //    }
 
+    protected function casts(): array
+    {
+        $casts = parent::casts();
+        $casts['is_active'] = 'boolean';
+        return $casts;
+    }
+
     public function cardApplicant(): HasOne
     {
         return $this->hasOne(CardApplicant::class, 'academic_id');

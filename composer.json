@@ -45,7 +45,8 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
             "@php artisan ziggy:generate resources/js/plugins/",
-            "@php artisan app:enum-to-vue-js"
+            "@php artisan app:enum-to-vue-js",
+            "@php artisan app:export-models"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

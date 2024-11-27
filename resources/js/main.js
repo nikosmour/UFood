@@ -4,16 +4,16 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 // import 'bootstrap';
-import _ from "lodash";
-import AxiosInstance from "./plugins/axios.js";
+// import _ from "lodash";
+//import AxiosInstance from "./plugins/axios.js";
 import { createApp } from "vue";
-import router from "./router";
-import App from "./pages/App.vue";
-import store from "./store";
-import { plugins } from "./plugins";
+import router from "@/router";
+import App from "@pages/App.vue";
+import store from "@/store";
+import { plugins } from "@/plugins";
 
-window._ = _;
-window.axios = AxiosInstance;
+// window._ = _;
+//window.axios = AxiosInstance;
 
 /**
  * The following block of create a request to the server to receive if

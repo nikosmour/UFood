@@ -22,6 +22,7 @@
 
 import { getModelClass } from "@utilities/modelUserMapper.js";
 import { UserAbilityEnum } from "@enums/UserAbilityEnum.js";
+import AxiosInstance from "@/plugins/axios.js";
 
 /**
  * Vuex state for authentication.
@@ -65,7 +66,7 @@ export const actions = {
 	 */
 	async loginUser( { dispatch }, credentials ) {
 		// Send login request to Laravel backend
-		return await axios.post( "api/login", credentials )
+		return await AxiosInstance.post( "api/login", credentials )
 		                  .then( response => {
 			                  console.log( "status", response );
 			                  return ( response.status === 204 )
@@ -84,7 +85,7 @@ export const actions = {
 	 */
 	async getUser( { commit } ) {
 		try {
-			const { data } = await axios.get( "/api/user" );
+			const { data } = await AxiosInstance.get( "/api/user" );
 			
 			if ( data ) {
 				localStorage.setItem( "user", JSON.stringify( data.user ) ); // Store user data
@@ -104,7 +105,7 @@ export const actions = {
 	 * @returns {Promise<void>}
 	 */
 	async logout( { commit } ) {
-		await axios.post( "/logout" );
+		await AxiosInstance.post( "/logout" );
 		localStorage.removeItem( "user" );
 		commit( "setLogout" );
 	},

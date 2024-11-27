@@ -141,17 +141,22 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	
 	/**
 	 * Extend the `prepareProperties` method to include new properties.
-	 * @param {Object} data - The data of the object.
-	 * @returns {Object} An object containing initialized properties, including the formatted ID.
+	 * @param {any} data - The data of the object.
 	 */
-	prepareProperties( data ) {
-		const superObject = super.prepareProperties( data );
+	constructor( data ) {
+		super( data );
 		// to not initiate  setter of the status;
-		superObject._status = superObject.status;
-		delete superObject.status;
-		superObject._change = data.change ?? null;
-		superObject.file = data.file ?? null;
-		return superObject;
+		this._status = data.status;
+		this._change = data.change ?? null;
+		this.file = data.file ?? null;
+	}
+	
+	properties() {
+		const props = super.properties();
+		const index = props.findIndex( "status" );
+		if ( index !== -1 )
+			delete props[ index ];
+		return props;
 	}
 	
 }

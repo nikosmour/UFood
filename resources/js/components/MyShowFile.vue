@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { EnumUnit } from "@utilities/enums/EnumUnit.js";
+import { EnumUnit } from "@utilities/enums/EnumUnit";
 
 /**
  * @component MyShowFile

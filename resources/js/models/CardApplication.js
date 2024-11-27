@@ -11,7 +11,10 @@ export class CardApplication extends CardApplicationBase {
 	 * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves when the request is completed.
 	 */
 	addNewFile( document ) {
-		this.card_application_document.push( document );
+		if ( this.card_application_document )
+			this.card_application_document.push( document );
+		else
+			this.card_application_document = [ document ];
 		// Prepare request data
 		const params = new FormData();
 		params.append( "file", document.file );

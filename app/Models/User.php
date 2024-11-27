@@ -43,13 +43,15 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be cast.
-     * @var string[]
+     * @returns string[]
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'status' => UserStatusEnum::class,
-        'is_active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'status' => UserStatusEnum::class,
+        ];
+    }
     /**
      * The accessors to append to the model's array form.
      *

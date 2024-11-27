@@ -31,6 +31,27 @@ class ExportModelsCommand extends Command
 
 
     /**
+     * Define the relative path to the app that is the models
+     *
+     * @var string
+     */
+    protected string $modelsPath = 'Models';
+
+    /**
+     * Define the relative path to the app that will store the models
+     * the interface on the ./Interfaces and the BaseModes on ./Base
+     * @var string
+     */
+    protected string $modelsOutputPath = 'resources/js/models';
+
+    /**
+     * Define the path on js that has stored the BaseModel
+     * @var string
+     */
+    protected string $baseModel = '@utilities/BaseModel';
+
+
+    /**
      * Execute the console command.
      */
     public function handle(): bool
@@ -42,8 +63,9 @@ class ExportModelsCommand extends Command
             $this->error("Invalid typeOfClass value. Allowed values are: " . implode(', ', $allowedTypes));
             return CommandAlias::FAILURE;
         }
-        $modelsPath = app_path('Models');
-        $jsOutputPath = base_path('resources/js/models');
+        $this->modelsPath = app_path($this->modelsPath);
+
+        $jsOutputPath = base_path($this->modelsOutputPath);
 
         if ($typeOfClass !== 'base' && !is_dir($jsOutputPath)) {
             mkdir($jsOutputPath, 0755, true);
@@ -51,64 +73,171 @@ class ExportModelsCommand extends Command
         if ($typeOfClass !== 'main' && !is_dir($jsOutputPath . '/Base')) {
             mkdir($jsOutputPath . '/Base', 0755, true);
         }
+        if ($typeOfClass !== 'main' && !is_dir($jsOutputPath . '/Interfaces')) {
+            mkdir($jsOutputPath . '/Interfaces', 0755, true);
+        }
+        $interfaces = [];
 
-//        $models = [];
-
-        foreach (scandir($modelsPath) as $file) {
+        foreach (scandir($this->modelsPath) as $file) {
             if (str_ends_with($file, '.php')) {
                 $className = "App\\Models\\" . pathinfo($file, PATHINFO_FILENAME);
                 if (class_exists($className)) {
                     echo PHP_EOL . 'model ' . $className . PHP_EOL;
                     $reflection = new ReflectionClass($className);
 
-                    // Generate JS class
+                    // Generate JS class and interface
                     if ($typeOfClass != 'main') {
                         $properties = $this->getClassPropertiesWithSchemaAndTypes($reflection);
                         $relationships = $this->getModelRelationships($reflection);
                         $this->generateJsBaseClass($reflection->getShortName() . 'Base', $properties, $relationships, $jsOutputPath . '/Base');
+                        $interfaces[] = $this->generateInterface($reflection->getShortName(), $properties, $relationships);
                     }
                     // Generate JS class
                     if ($typeOfClass != 'base')
                         $this->generateJsMainClass($reflection->getShortName(), $jsOutputPath);
-
-
                 }
             }
         }
+        $this->generateInterfaces($interfaces, $jsOutputPath . '/Interfaces');
 
-//        File::put(base_path('models.json'), json_encode($models, JSON_PRETTY_PRINT));
-        $this->info('Models JavaScript classes has generated.');
+        $this->info('Models JavaScript classes and interfaces have been generated.');
         return CommandAlias::SUCCESS;
     }
 
 
-    /**
-     * Generate getters and setters for properties.
-     *
-     * @param array $properties
-     * @return string
-     */
-    private function generateGettersAndSetters(array $properties): string
+    private function generateInterface(string $modelName, array $properties, array $relationships)
+    {
+        return <<<TS
+export interface I{$modelName}BaseInterface {
+{$this->generateInterfaceProperties($properties)}
+{$this->generateInterfaceRelationships($relationships)}
+}
+export interface I{$modelName}BaseData extends Pick<I{$modelName}BaseInterface, keyof I{$modelName}BaseInterface> {
+{$this->generateInterfaceProperties($properties)}
+{$this->generateInterfaceRelationships($relationships)}
+}
+
+TS;
+
+    }
+
+    private function generateInterfaces(array $interfaces, $outputPath)
+    {
+        $Interfacess = collect($interfaces)
+            ->map(fn($interface, $key) => $interface)
+            ->implode("\n");
+        $InterfacesContent = <<<TS
+import * as Enums from '@/plugins/enums';
+{$Interfacess}
+
+TS;
+        File::put("{$outputPath}/index.d.ts", $InterfacesContent);
+        echo PHP_EOL . "{$outputPath}/index.d.ts" . PHP_EOL;
+
+    }
+
+    private function generateInterfaceProperties(array $properties): string
     {
         return collect($properties)
             ->map(function ($type, $prop) {
+                if (str_ends_with($type['type'], 'Enum')) {
+                    return "    {$prop} : typeof Enums.{$type['type']} | null;";
+                }
+
+                return "    {$prop}: {$type['definition']};";
+            })
+            ->implode("\n\n");
+    }
+
+    private function generateInterfaceRelationships(array $relationships): string
+    {
+        return collect($relationships)
+            ->map(function ($rel, $key) {
+                return "    {$key}: {$rel['definition']}";
+            })
+            ->implode("\n");
+    }
+
+    /**
+     * Generate getters and setters for properties.
+     *
+     */
+    private function generateGettersAndSettersProperties(array $properties): string
+    {
+        return collect($properties)
+            ->map(function ($typeInfo, $prop) {
                 $methodName = $prop;
+                $type = $typeInfo['type'];
+                $definition = $typeInfo['definition'];
+                // Handle Enums
+                $setter = "value ?? null";
+                if (str_contains($type, 'Enum')) {
+                    $setter = "this.initToEnum({$type}, value )";
+                } // Handle Date/DateTime properties
+                elseif (str_contains($type, 'Date')) {
+                    $setter = "this.initToDate( value )";
+                } // Handle numeric properties
+                elseif (str_contains($type, 'number')) {
+                    $setter = "this.initToNumber( value )";
+                } elseif (str_contains($type, 'boolean')) {
+                    $setter = "this.initToBoolean( value )";
+                }
+
+                // Handle default case (string,  etc.)
+
                 return <<<JS
 
     /**
      * Get the value of {$prop}.
-     * @returns {{$type}|null}
      */
-    get {$methodName}() {
+    get {$methodName}(): {$definition} {
         return this._{$prop};
     }
 
     /**
      * Set the value of {$prop}.
-     * @param {{$type}|null} value - The new value.
+     * @param value - The new value.
+     */
+    set {$methodName}(value : {$definition} ) {
+        this._{$prop} = {$setter};
+    }
+JS;
+            })
+            ->implode("\n");
+    }
+
+
+    /**
+     * Generate getters and setters for relationships.
+     *
+     */
+    private function generateGettersAndSettersRelationships(array $properties): string
+    {
+        return collect($properties)
+            ->map(function ($prop, $relationship) {
+                $methodName = $relationship;
+                // Handle Enums
+                $setter = ($prop['size'] === 'many') ?
+                    "this.initRelatedArray( value as any[] | null, {$prop['model']} )" :
+                    "this.initRelatedObject( value , {$prop['model']} )";
+
+                // Handle default case (string,  etc.)
+
+                return <<<JS
+
+    /**
+     * Get the value of {$relationship}.
+     */
+    get {$methodName}() : {$prop['definitionModel']} {
+        return this._{$relationship};
+    }
+
+    /**
+     * Set the value of {$relationship}.
+     * @param { {$prop['definition']} } value - The new value.
      */
     set {$methodName}(value) {
-        this._{$prop} = value;
+        this._{$relationship} = {$setter};
     }
 JS;
             })
@@ -119,10 +248,6 @@ JS;
     /**
      * Generate JavaScript class for a model.
      *
-     * @param string $modelName
-     * @param array $properties
-     * @param array $relationships
-     * @param string $outputPath
      */
     private function generateJsBaseClass(string $modelName, array $properties, array $relationships, string $outputPath)
     {
@@ -130,10 +255,13 @@ JS;
         $enumImports = $this->generateEnumImports($enums, false);
         $relationshipsImports = $this->generateRelationshipImports($relationships);
 
-        $gettersAndSetters = $this->generateGettersAndSetters($properties);
-
-        $classContent = <<<JS
-import BaseModel from '@utilities/BaseModel';
+        $gettersAndSettersProperties = $this->generateGettersAndSettersProperties($properties);
+        $gettersAndSettersRelationships = $this->generateGettersAndSettersRelationships($relationships);
+        $interfaceData = "I{$modelName}Data";
+        $interface = "I{$modelName}Interface";
+        $classContent = <<<TS
+import BaseModel from '{$this->baseModel}';
+import type { {$interface} , {$interfaceData} } from "../Interfaces";
 {$enumImports}
 {$relationshipsImports}
 
@@ -144,43 +272,43 @@ import BaseModel from '@utilities/BaseModel';
 {$this->generateJsDocProperties($properties)}
 {$this->generateJsDocRelationships($relationships)}
  */
-export class $modelName extends BaseModel {
-    constructor(data = {}) {
-        super();
-        Object.assign(this, this.prepareProperties(data));
-    }
+export class $modelName extends BaseModel<{$interfaceData},{$interface}> implements {$interface} {
+{$this->generateProperty($properties)}
+{$this->generatePropertyRelationships($relationships)}
 
-    /**
-     * Prepare properties based on input data and return an object with these properties.
-     * @param {Object} data - The data of the object.
-     * @returns {Object} An object containing initialized properties.
-     */
-    prepareProperties(data) {
-        return {
-{$this->generatePropertyInitialization($properties)}
-{$this->generatePropertyRelationshipsInitialization($relationships)}
+    constructor(data : {$interfaceData} ) {
+            super();
+            this.initiation(data);
         }
-    }
 
-{$gettersAndSetters}
+    protected properties() : Array< keyof {$interfaceData}> {
+        return [
+{$this->generatePropertyInitialization($properties)}
+        ];
+    }
+    
+    protected relationships() : Array< keyof {$interfaceData}> {
+        return [
+{$this->generatePropertyRelationshipsInitialization($relationships)}
+        ];
+    }
+    
+
+{$gettersAndSettersProperties}
+
+{$gettersAndSettersRelationships}
 }
 
 export default $modelName;
-JS;
+TS;
 
-        File::put("{$outputPath}/{$modelName}.js", $classContent);
-        echo PHP_EOL . "{$outputPath}/{$modelName}.js" . PHP_EOL;
+        File::put("{$outputPath}/{$modelName}.ts", $classContent);
+        echo PHP_EOL . "{$outputPath}/{$modelName}.ts" . PHP_EOL;
     }
 
     /**
      * Generate JavaScript class for a model.
      *
-     * @param string $modelName
-     * @param array $properties
-     * @param array $relationships
-     * @param string $outputPath
-     * @param string $parentClass
-     * @param string $parentLocation
      */
     private function generateJsMainClass(string $modelName, string $outputPath)
     {
@@ -205,34 +333,46 @@ JS;
     /**
      * Generate property initialization code.
      *
-     * @param array $properties
-     * @return string
      */
-    private function generatePropertyInitialization(array $properties)
+    private function generateProperty(array $properties): string
+    {
+        return collect($properties)
+            ->map(function ($typeInfo, $prop) {
+                // Handle Enums
+                return
+                    <<<TS
+            protected _{$prop} : {$typeInfo['definition']} = undefined;
+TS;
+            })
+            ->implode("\n");
+    }
+
+    private function generatePropertyRelationships(array $properties): string
     {
         return collect($properties)
             ->map(function ($type, $prop) {
                 // Handle Enums
-                if (str_ends_with($type, 'Enum')) {
-                    return "            {$prop} : this.initToEnum({$type}, data.{$prop}),";
-                }
+                return
+                    <<<TS
+            protected _{$prop} : {$type['definitionModel']} = undefined;
+TS;
+            })
+            ->implode("\n");
+    }
 
-                // Handle Date/DateTime properties
-                if ($type === 'Date') {
-                    return "            {$prop} : this.initToDate( data.{$prop} ),";
-                }
-
-                // Handle numeric properties
-                if ($type === 'number') {
-                    return "            {$prop} : this.initToNumber( data.{$prop} ),";
-                }
-
-                if ($type === 'boolean') {
-                    return "            {$prop} : this.initToBoolean( data.{$prop} ),";
-                }
-
-                // Handle default case (string,  etc.)
-                return "            {$prop} : data.{$prop} ?? null,";
+    /**
+     * Generate property initialization code.
+     *
+     */
+    private function generatePropertyInitialization(array $properties): string
+    {
+        return collect($properties)
+            ->map(function ($typeInfo, $prop) {
+                // Handle Enums
+                return
+                    <<<TS
+            "{$prop}",
+TS;
             })
             ->implode("\n");
     }
@@ -246,9 +386,10 @@ JS;
     private function generatePropertyRelationshipsInitialization(array $relationships): string
     {
         return collect($relationships)
-            ->map(fn($prop, $relationship) => (str_starts_with($prop['definition'], 'Array')) ?
-                "            {$relationship} : this.initRelatedArray( data.{$relationship} , {$prop['model']} )," :
-                "            {$relationship} : this.initRelatedObject( data.{$relationship} , {$prop['model']} ),")
+            ->map(fn($prop, $relationship) => <<<TS
+            "{$relationship}",
+TS
+            )
             ->implode("\n");
     }
 
@@ -302,8 +443,8 @@ JS;
             return "{$enumName}";
         }
         if (str_starts_with($type, 'date')) {
-//            $format = explode(':', $type)[1] ?? 'Y-m-d H:i:s';
-//            return "Date /* format: $format */";
+            $format = explode(':', $type)[1] ?? 'Y-m-d H:i:s';
+//            return "Date - format: $format ";
             return "Date";
 
         }
@@ -322,20 +463,19 @@ JS;
     /**
      * Generate JSDoc properties for a model with accurate types.
      *
-     * @param array $properties
-     * @return string
      */
     private function generateJsDocProperties(array $properties): string
     {
         return collect($properties)
-            ->map(function ($type, $prop) {
+            ->map(function ($typeInfo, $prop) {
                 $privateProp = "_{$prop}";
 
                 return <<<JS
- * @property {{$type}|null} {$privateProp} (Private property for {$prop})
- * @property {{$type}|null} {$prop} (Getter for {$prop})
- * @method void {$prop}(value) (Setter for {$prop})
+ * @property {{$typeInfo['definition']}} {$privateProp} (Private property for {$prop})
+ * @property {{$typeInfo['definition']}} {$prop} (Getter for {$prop})
 JS;
+                // * @method void {$prop}(value) (Setter for {$prop})
+
             })
             ->implode("\n");
     }
@@ -349,7 +489,7 @@ JS;
     private function generateJsDocRelationships(array $relationships): string
     {
         return collect($relationships)
-            ->map(fn($rel, $key) => " * @property { $rel[definition]|null } {$key}")
+            ->map(fn($rel, $key) => " * @property { $rel[definition] } {$key}")
             ->implode("\n");
     }
 
@@ -395,7 +535,6 @@ JS;
         foreach ($modelInstance->getCasts() as $field => $cast) {
             $schemaAttributes[$field] = $this->mapLaravelTypeToJs($cast);
         }
-
         foreach ($modelInstance->getDates() as $dateField) {
             $schemaAttributes[$dateField] = 'Date';
         }
@@ -404,7 +543,7 @@ JS;
             unset($schemaAttributes[$hiddenField]);
         }
 
-        return $schemaAttributes;
+        return $this->updatePropertiesTypes($schemaAttributes);
     }
 
     /**
@@ -421,8 +560,8 @@ JS;
     private function getEnumImports(array $properties): array
     {
         return collect($properties)
-            ->filter(fn($type) => $this->isEnum('App\\Enum\\' . $type))
-            ->map(fn($type) => $type)
+            ->filter(fn($type) => $this->isEnum('App\\Enum\\' . $type['type']))
+            ->map(fn($type) => $type['type'])
             ->unique()
             ->values()
             ->toArray();
@@ -470,6 +609,7 @@ JS;
                 continue;
             }
 
+
             try {
                 // Call the method and check if it returns a Relation instance
                 $modelInstance = $reflection->newInstanceWithoutConstructor();
@@ -477,14 +617,28 @@ JS;
                 if ($result instanceof Relation) {
                     $relationType = (new ReflectionClass($result))->getShortName();
                     $relatedModel = basename(str_replace('\\', '/', get_class($result->getRelated())));
+                    // Check if the related model exists in the Models directory
+                    $relatedModelPath = $this->modelsPath . '/' . $relatedModel . '.php';
+
+                    if (!file_exists($relatedModelPath)) {
+                        // Related model doesn't exist in the Models path
+                        $this->error("Related model '{$relatedModel}' not found in Models directory.");
+                        continue;
+                    }
+
                     $size = str_ends_with($relationType, 'Many') ? 'many' : 'one';
-                    $definition = $size === 'one' ? $relatedModel : "Array<$relatedModel>";
+                    $definition = 'PropertyType<I' . $relatedModel . 'BaseInterface>';
+                    $definitionModel = 'PropertyType<' . $relatedModel . '>';
+
+                    $definitionModel = $size === 'one' ? $definitionModel : "PropertyType<Array<" . $definitionModel . '>>';
+                    $definition = $size === 'one' ? $definition : "PropertyType<Array<" . $definition . '>>';
                     $relationship = Str::snake($method->getName());
                     $relationships[$relationship] = [
                         'type' => $relationType,
                         'model' => $relatedModel,
                         'size' => $size,
                         'definition' => $definition,
+                        'definitionModel' => $definitionModel,
                     ];
                     echo " method: " . $relationship;
                 }
@@ -494,6 +648,16 @@ JS;
             }
         }
         return $relationships;
+    }
+
+    private function updatePropertiesTypes(array $properties): array
+    {
+        return array_map(function ($type) {
+            return [
+                'definition' => 'PropertyType<' . $type . '>',
+                'type' => $type,
+            ];
+        }, $properties);
     }
 
 
