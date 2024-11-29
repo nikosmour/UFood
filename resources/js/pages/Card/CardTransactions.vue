@@ -32,7 +32,7 @@
 
 <script>
 import MyInfiniteScroll from "@components/MyInfiniteScroll.vue";
-import UsageCard from "@models/UsageCard.js";
+import UsageCard from "@models/UsageCard";
 
 export default {
 	name :       "CardTransactions",

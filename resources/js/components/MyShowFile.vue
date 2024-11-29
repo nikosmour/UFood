@@ -31,9 +31,13 @@
     </v-list-item>
 </template>
 
-<script>
-import { EnumUnit } from "@utilities/enums/EnumUnit";
+<script lang = "ts">
+import type CardApplicationDocument from "@models/CardApplicationDocument";
+import type { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
+import type { PropertyType } from "@types/globals";
 
+
+type colorStyle = "success" | "error" | "warning" | "primary";
 /**
  * @component MyShowFile
  * @description Displays a file item with dynamic actions based on user type and file status.
@@ -48,7 +52,7 @@ import { EnumUnit } from "@utilities/enums/EnumUnit";
  * @properties
  * @property {string} description - The description of the file. (Required)
  * @property {string} name - The name of the file. (Required)
- * @property {EnumUnit} status - The status of the file. Possible values: "ACCEPTED", "SUBMITTED", "REJECTED", "INCOMPLETE". (Required)
+ * @property {CardDocumentStatusEnum} status - The status of the file. Possible values: "ACCEPTED", "SUBMITTED", "REJECTED", "INCOMPLETE". (Required)
  * @property {boolean} isAcademic - Indicates if the user is academic. (Required)
  */
 export default {
@@ -70,7 +74,7 @@ export default {
 		 * Emitted when the status of the file is updated.
 		 *
 		 * @event new-status
-		 * @type {EnumUnit} newStatus - The new status of the file.
+		 * @type {CardDocumentStatusEnum} newStatus - The new status of the file.
 		 */
 		"new-status",
 
@@ -127,7 +131,7 @@ export default {
 		 * @required
 		 */
 		file : {
-			type :     Object,
+			type : Object as CardApplicationDocument,
 			required : true,
 		},
 
@@ -152,10 +156,9 @@ export default {
 		},
 
 		/**
-		 * The status of the file.
-		 * @return {EnumUnit|null}
+		 * @returns The status of the file.
 		 */
-		status() {
+		status() : PropertyType<CardDocumentStatusEnum> {
 			return this.file.status;
 		},
 
@@ -165,7 +168,7 @@ export default {
 		 * @property {boolean} isHidden Determines whether the icon should be hidden (`true`) or visible (`false`).
 		 * @property {String|null} color Specifies the button's color (e.g., "primary", "success"). Use `null` for no specific color.
 		 * @property {String} icon Name of the Material Design icon to display (e.g., "mdi-eye", "mdi-pencil").
-		 * @property {String | EnumUnit} actionOrStatus The emitted action name (e.g., "edit", "delete") or status value (e.g., "ACCEPTED").
+		 * @property {String | CardDocumentStatusEnum} actionOrStatus The emitted action name (e.g., "edit", "delete") or status value (e.g., "ACCEPTED").
 		 * @property {String} ariaLabel A text description of the icon's action for screen readers.
 		 */
 
@@ -285,7 +288,7 @@ export default {
 	methods : {
 		/**
 		 * Handles click events for action icons.
-		 * @param {string|EnumUnit} actionOrStatus - The action or new status for the file.
+		 * @param {string|CardDocumentStatusEnum} actionOrStatus - The action or new status for the file.
 		 * @fires MyShowFile#new-status
 		 */
 		iconClick( actionOrStatus ) {
@@ -296,13 +299,16 @@ export default {
 				 * new status event
 				 *
 				 * @event MyShowFile#new-status
-				 * @type {EnumUnit}
+				 * @type {CardDocumentStatusEnum}
 				 */
 				this.$emit( "new-status", actionOrStatus );
 			} else {
 				this.$emit( actionOrStatus );
 			}
 		},
+	},
+	created() {
+		console.log( this.file );
 	},
 };
 

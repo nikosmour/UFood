@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enum\MealPlanPeriodEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,6 +41,10 @@ class UsageCard extends Model
         'time' => 'date:H:m',
         'period' => MealPlanPeriodEnum::class,
     ];
+
+    protected $hidden = ['date', 'time'];
+
+    protected $appends = ['datetime'];
 
     protected static function boot()
     {
@@ -92,6 +98,23 @@ class UsageCard extends Model
         return $query->select($selectColumns)
             ->whereBetween('date', [$vData['from_date'], $vData['to_date']])
             ->groupBy('date');
+    }
+
+    protected function datetime(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getCombinedDateTime(),
+        );
+    }
+
+    // Method to combine the 'date' and 'time' fields into a datetime string
+    public function getCombinedDateTime(): string
+    {
+        $date = $this->attributes['date']; // 'Y-m-d' format
+        $time = $this->attributes['time']; // 'H:m' format
+
+        // Combine date and time into a datetime string (assuming 'time' is in 'H:m' format)
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . $time)->toDateTimeString();
     }
 
 }

@@ -1,21 +1,22 @@
-import {IEnumUnit} from "@/types";
+import type { IEnumUnit } from "@types/globals";
+
 
 export class EnumUnit<T = any> implements IEnumUnit<T> {
-    private readonly _key: string;
-    private readonly _value: T;
+    readonly #key : string;
+    readonly #value : T;
 
     constructor(name: string, value: T) {
-        this._key = name;
-        this._value = value;
+        this.#key = name;
+        this.#value = value;
         Object.freeze(this); // Make the instance immutable
     }
 
     get key(): string {
-        return this._key;
+        return this.#key;
     }
 
     get value(): T {
-        return this._value;
+        return this.#value;
     }
 
     toString(): string {

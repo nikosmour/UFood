@@ -1,5 +1,5 @@
 import CardApplicationDocumentBase from "./Base/CardApplicationDocumentBase";
-import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum.js";
+import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
 
 /**
  * Class representing a CardApplicationDocument model.
@@ -30,6 +30,18 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * @type {string}
 	 */
 	static _UPDATE_STATUS = "updateStatus";
+	
+	/**
+	 * Extend the `prepareProperties` method to include new properties.
+	 * @param {any} data - The data of the object.
+	 */
+	constructor( data ) {
+		super( data );
+		// to not initiate  setter of the status;
+		this._status = this.initToEnum( CardDocumentStatusEnum, data.status );
+		this._change = data.change ?? null;
+		this.file = data.file ?? null;
+	}
 	
 	/**
 	 * @private
@@ -68,17 +80,30 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	
 	/**
 	 * Set the value of `status` and mark the change as "updateStatus".
-	 * @param {CardDocumentStatusEnum||string} status - The new status value or the key for it.
+	 * @param {CardDocumentStatusEnum|string} status - The new status value or the key for it.
 	 */
 	set status( status ) {
+		const current = this.status;
 		console.log( "cardApplicationDocument set status", status, this.status );
-		if ( typeof status === "string" ) status = CardDocumentStatusEnum[ status ];
-		if ( status === this.status ) return;
-		this._status = status;
+		super.status = status;
+		if ( current === this.status ) return;
 		const change = status !== CardDocumentStatusEnum.SUBMITTED
 		               ? CardApplicationDocument._UPDATE_STATUS
 		               : null;
 		this._setChange( change );
+	}
+	
+	/**
+	 * Fetches the document list from the backend and initializes related documents.
+	 *
+	 
+	 * @returns {Promise<axios.AxiosResponse<Array<CardApplicationDocument>>>} A promise that resolves to the list of documents.
+	 */
+	static async fetchDocumentsByApplicationId( cardApplicationId ) {
+		const url = this.route( "document.index", { cardApplication : cardApplicationId } );
+		const documents = await CardApplicationDocument.$axios.get( url )
+		                                               .then( response => response.data.documents );
+		return documents.map( document => new CardApplicationDocument( document ) );
 	}
 	
 	/**
@@ -106,11 +131,10 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * @returns {void}
 	 */
 	_setChange( value ) {
-		const abort = value === this.change || ( this.change === CardApplicationDocument._CREATE &&
-		                                         [
-			                                         CardApplicationDocument._EDIT,
-			                                         CardApplicationDocument._UPDATE_STATUS,
-		                                         ].includes( value ) );
+		const abort = value === this.change || ( this.change === CardApplicationDocument._CREATE && [
+			CardApplicationDocument._EDIT,
+			CardApplicationDocument._UPDATE_STATUS,
+		].includes( value ) );
 		if ( abort ) return;
 		this._change = this.change !== CardApplicationDocument._CREATE || value !== CardApplicationDocument._DELETE
 		               ? value
@@ -124,39 +148,9 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 		this._setChange( CardApplicationDocument._DELETE );
 	}
 	
-	/**
-	 * Fetches the document list from the backend and initializes related documents.
-	 *
-	 
-	 * @returns {Promise<axios.AxiosResponse<Array<CardApplicationDocument>>>} A promise that resolves to the list of documents.
-	 */
-	static async fetchDocumentsByApplicationId( cardApplicationId ) {
-		const url = this.route( "document.index", { cardApplication : cardApplicationId } );
-		const documents = await CardApplicationDocument.$axios.get( url )
-		                                               .then( response => response.data.documents );
-		return documents.map(
-			document => new CardApplicationDocument( document ),
-		);
-	}
-	
-	/**
-	 * Extend the `prepareProperties` method to include new properties.
-	 * @param {any} data - The data of the object.
-	 */
-	constructor( data ) {
-		super( data );
-		// to not initiate  setter of the status;
-		this._status = data.status;
-		this._change = data.change ?? null;
-		this.file = data.file ?? null;
-	}
-	
 	properties() {
-		const props = super.properties();
-		const index = props.findIndex( "status" );
-		if ( index !== -1 )
-			delete props[ index ];
-		return props;
+		return super.properties()
+		            .filter( value => value !== "status" );
 	}
 	
 }

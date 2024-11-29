@@ -45,7 +45,7 @@
 		// "rootDir": "./",                                  /* Specify the root folder within your source files. */
 		"moduleResolution"   : "node",
 		/* Specify how TypeScript looks up a file from a given module specifier. */
-		"baseUrl"                         : "resources/js",
+		"baseUrl"             : "./resources/js",
 		/* Specify the base directory to resolve non-relative module names. */
 		"paths"              : {
 			"@/*"          : [
@@ -85,9 +85,15 @@
 		/* Specify a set of entries that re-map imports to additional lookup locations. */
 		// "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
 		// "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
-		"types"                           : [
-			"vite/client"
+		"typeRoots"           : [
+			"./node_modules/@types",
+			"./resources/ts/types"
 		],
+		/* Specify multiple folders that act like './node_modules/@types'. */
+		/*		"types": [
+					"../../vite/client",  // Automatically resolves from node_modules
+					"/ts/types"
+				],*/
 		/* Specify type package names to be included without being referenced in a source file. */
 		// "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
 		// "moduleSuffixes": [],                             /* List of file name suffixes to search when resolving a module. */
@@ -141,7 +147,8 @@
 		/* Interop Constraints */
 		"isolatedModules"                 : true,
 		/* Ensure that each file can be safely transpiled without relying on other imports. */
-		// "verbatimModuleSyntax": true,                     /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
+		"verbatimModuleSyntax": true,
+		/* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
 		// "isolatedDeclarations": true,                     /* Require sufficient annotation on exports so other tools can trivially generate declaration files. */
 		"allowSyntheticDefaultImports"    : true,
 		/* Allow 'import x from y' when a module doesn't have a default export. */
@@ -176,18 +183,13 @@
 
 		/* Completeness */
 		// "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-		"skipLibCheck"                    : true,
+		"skipLibCheck"                    : true
 		/* Skip type checking all .d.ts files. */
-		//		"types": ["node"], // Add any custom types here, if needed
-		"typeRoots"          : [
-			"node_modules/@types",
-			"resources/ts/types"
-		]
 	},
 	"include"        : [
-		"resources/js/**/*",
-		"resources/ts/**/*",
-		"resources/ts/types/**/*.d.ts"
+		"./resources/js/**/*",
+		"./resources/ts/types/**/*.d.ts"
+
 		// Include any custom type definitions.
 	],
 	"exclude"        : [

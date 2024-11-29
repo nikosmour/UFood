@@ -1,6 +1,6 @@
 import CardApplicationBase from "./Base/CardApplicationBase";
-import CardApplicationDocument from "./CardApplicationDocument.js";
-import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum.js";
+import CardApplicationDocument from "./CardApplicationDocument";
+import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
 
 export class CardApplication extends CardApplicationBase {
 	/**
@@ -62,7 +62,8 @@ export class CardApplication extends CardApplicationBase {
 	 */
 	async getDocuments() {
 		if ( this.card_application_document === undefined )
-			this.card_application_document = await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
+			return this.card_application_document =
+				await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
 		return this.card_application_document;
 	}
 }

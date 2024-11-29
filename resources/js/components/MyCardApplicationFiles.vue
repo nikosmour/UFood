@@ -20,7 +20,7 @@
                 v-for = "(file, index) in files"
                 :key = "'files-' + index"
                 :file = "file"
-                :is-academic = "false"
+                :is-academic = "true"
                 :is-previewing = "showFileIndex === index"
                 @delete = "fileDelete(file, index)"
                 @edit = "fileEdit(file)"
@@ -32,16 +32,19 @@
     </div>
 </template>
 
-<script>
+<script lang = "ts">
 import MyShowFile from "./MyShowFile.vue";
 import MyNewOrEditFile from "./MyNewOrEditFile.vue";
-import CardApplication from "@models/CardApplication.js";
+import type CardApplication from "@models/CardApplication";
+import type CardApplicationDocument from "@models/CardApplicationDocument";
+import type { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
+
 
 export default {
 	name :       "MyCardApplicationFiles",
 	emits :      [
 		/**
-		 * Emitted when a file  previewed.
+		 * Emitted when a file is previewed.
 		 * @event preview
 		 * @type {?string} link - The preview link.
 		 */
@@ -53,26 +56,27 @@ export default {
 	},
 	props :      {
 		application : {
-			type : CardApplication,
+			type : Object as () => CardApplication,
 			required : true,
 		},
-		loadings : {
-			type :     Array,
+		loadings :    {
+			type : Array as () => boolean[],
 			required : true,
 		},
 	},
 	data() {
 		return {
 			/**
-			 * The list of files from the application model that the user see.
-			 * @returns {Array<Object>}
+			 * The list of files from the application model that the user sees.
 			 */
-			files :         [],
-			showFileIndex : null, // Index of the file currently being previewed
+			files : [] as CardApplicationDocument[],
+			/**
+			 * Index of the file currently being previewed
+			 */
+			showFileIndex : null as number | null,
 		};
 	},
 	methods : {
-
 		/**
 		 * Fetches document data from the backend or from vuex.
 		 */
@@ -84,14 +88,13 @@ export default {
 			} finally {
 				this.loadings.pop();
 			}
-
 		},
 
 		/**
 		 * Adds a new file to the application and updates the UI.
-		 * @param {CardApplicationDocument} document - The new file object.
+		 * @param document - The new file object.
 		 */
-		newFile( document ) {
+		newFile( document : CardApplicationDocument ) {
 			console.log( document, document.file );
 			this.application.addNewFile( document )
 			    .then( () =>
@@ -109,17 +112,19 @@ export default {
 		 */
 		fileAdd() {
 			console.log( "fileAdd" );
-			this.$refs.fileDialog.openAddFileDialog();
+			if ( this.$refs.fileDialog ) {
+				this.$refs.fileDialog.openAddFileDialog();
+			}
 		},
 
 		/**
 		 * Updates the status of a file.
-		 * @param {CardApplicationDocument} file - The file to update.
-		 * @param {CardDocumentStatusEnum} status - The new status.
+		 * @param file - The file to update.
+		 * @param status - The new status.
 		 */
-		fileChangeStatus( file, status ) {
+		fileChangeStatus( file : CardApplicationDocument, status : CardDocumentStatusEnum ) {
 			file.status = status;
-			console.log( "changeStatus" );
+			console.log( "changeStatus", status );
 		},
 
 		/**
@@ -127,7 +132,7 @@ export default {
 		 * @param {CardApplicationDocument} file - The file to delete.
 		 * @param {number} index - The index of the file in the list.
 		 */
-		fileDelete( file, index ) {
+		fileDelete( file : CardApplicationDocument, index : number ) {
 			this.application.deleteFile( file );
 			this.files.splice( index, 1 );
 			console.log( "fileDelete", index );
@@ -137,8 +142,10 @@ export default {
 		 * Opens the dialog to edit an existing file.
 		 * @param {CardApplicationDocument} file - The file to edit.
 		 */
-		fileEdit( file ) {
-			this.$refs.fileDialog.openEditFileDialog( file );
+		fileEdit( file : CardApplicationDocument ) {
+			if ( this.$refs.fileDialog ) {
+				this.$refs.fileDialog.openEditFileDialog( file );
+			}
 			console.log( "fileEdit" );
 		},
 
@@ -155,12 +162,12 @@ export default {
 		 * @param {CardApplicationDocument} file - The file to preview.
 		 * @param {number} index - The index of the file.
 		 */
-		filePreview( file, index ) {
+		filePreview( file : CardApplicationDocument, index : number ) {
 			console.log( "filePreview", file );
 			if ( file.file ) {
 				const reader = new FileReader();
 				reader.onload = ( e ) => {
-					const docLink = e.target.result;
+					const docLink = e.target?.result;
 					this.$emit( "preview", docLink );
 					this.showFileIndex = index;
 					console.log( index );

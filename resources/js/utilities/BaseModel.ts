@@ -1,5 +1,5 @@
 import type { AxiosInstance } from "axios";
-import type route from "ziggy-js";
+import type { route } from "ziggy-js";
 import type { BaseEnum } from "@/utilities/enums/BaseEnum";
 import { InvalidModelDataError } from "@/errors/InvalidDataError";
 
@@ -7,8 +7,7 @@ import { InvalidModelDataError } from "@/errors/InvalidDataError";
  * Base class for models in the application.
  * Provides utility methods and setup for Axios and Ziggy routes.
  */
-export default abstract class BaseModel<TData extends Pick<TInterface, keyof TInterface>
-	, TInterface> {
+export default abstract class BaseModel<TData extends Pick<TInterface, keyof TInterface>, TInterface> {
 	static $axios : AxiosInstance | null = null;
 	static route : typeof route | null = null;
 	
@@ -38,11 +37,9 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 			if ( relatedValue instanceof BaseModel ) {
 				temp[ prop ] = relatedValue.copy() as TInterface[keyof TInterface]; // Ensure it's a copy of the relationship
 			} else if ( Array.isArray( relatedValue ) ) {
-				temp[ prop ] = relatedValue.map( ( item ) =>
-					                                 item instanceof BaseModel
-					                                 ? item.copy()
-					                                 : item,
-				) as TInterface[keyof TInterface];
+				temp[ prop ] = relatedValue.map( ( item ) => item instanceof BaseModel
+				                                             ? item.copy()
+				                                             : item ) as TInterface[keyof TInterface];
 			} else {
 				temp[ prop ] = relatedValue; // Fallback for other cases
 			}
@@ -103,13 +100,10 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 			...this.properties(),
 			...this.relationships(),
 		];
-		const temp = Object.fromEntries(
-			Object.entries( data as Object )
-			      .filter(
-				      ( [ key, value ] ) => value !== null && value !== undefined &&
-				                            properties.includes( key as keyof TData ),
-			      )
-		) as TData;
+		const temp = Object.fromEntries( Object.entries( data as Object )
+		                                       .filter( ( [ key, value ] ) => value !== null && value !== undefined &&
+		                                                                      properties.includes(
+			                                                                      key as keyof TData ) ) ) as TData;
 		Object.assign( this, temp );
 	}
 	
@@ -131,10 +125,8 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 		       ? data.map( item => new ClassRef( item ) )
 		       : undefined;
 	}*/
-	protected initRelatedArray<T extends BaseModel>(
-		data : null | Array<ConstructorParameters<new ( data : any ) => T>[0]>,
-		ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T,
-	) : PropertyType<Array<PropertyType<T>>> {
+	protected initRelatedArray<T extends BaseModel>( data : null | Array<ConstructorParameters<new ( data : any ) => T>[0]>,
+	                                                 ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T ) : PropertyType<Array<PropertyType<T>>> {
 		return Array.isArray( data )
 		       ? data.map( ( item ) => new ClassRef( item ) ) as PropertyType<T>[]
 		       : null;
@@ -147,10 +139,8 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	 * @param ClassRef - The class to instantiate.A class extending BaseModel
 	 * @returns The initialized object or null.
 	 */
-	protected initRelatedObject<T extends BaseModel<any, any>>(
-		data : ConstructorParameters<new ( data : any ) => T>[0] | null,
-		ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T,
-	) : PropertyType<T> {
+	protected initRelatedObject<T extends BaseModel<any, any>>( data : ConstructorParameters<new ( data : any ) => T>[0] | null,
+	                                                            ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T ) : PropertyType<T> {
 		return data
 		       ? new ClassRef( data )
 		       : null;
@@ -174,7 +164,9 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	 */
 	protected initToDate( value : any ) : Date {
 		const date = new Date( value );
+		console.log( date, value, date.toLocaleDateString(), date.getTime() );
 		if ( !isNaN( date.getTime() ) ) return date;
+		console.log( date, value, date.toLocaleDateString(), date.getTime() );
 		throw ( new InvalidModelDataError( { type : "date" } ) );
 	}
 	
@@ -187,9 +179,7 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	 * @returns An instance of the enum class or null if the value is invalid
 	 */
 	protected initToEnum<E extends typeof BaseEnum>( enumClass : E, value : any ) : InstanceType<E> | null {
-		if ( value instanceof enumClass ) {
-			value = value.value;
-		}
+		if ( value instanceof enumClass ) return value;
 		const enumI = enumClass.findByValue( value );
 		if ( enumI ) return enumI;
 		throw ( new InvalidModelDataError( { type : enumClass.name } ) );
@@ -204,6 +194,6 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 		if ( !isNaN( value ) ) return Number( value );
 		throw ( new InvalidModelDataError( { type : "number" } ) );
 	}
-
+	
 	
 }

@@ -20,9 +20,9 @@
  * @property {number} dinner
  */
 
-import { getModelClass } from "@utilities/modelUserMapper.js";
-import { UserAbilityEnum } from "@enums/UserAbilityEnum.js";
-import AxiosInstance from "@/plugins/axios.js";
+import { getModelClass } from "@utilities/modelUserMapper";
+import { UserAbilityEnum } from "@enums/UserAbilityEnum";
+import AxiosInstance from "@/plugins/axios";
 
 /**
  * Vuex state for authentication.

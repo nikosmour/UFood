@@ -1,9 +1,16 @@
 <script lang = "ts">
 import CouponTransactionService from "@services/CouponTransactionService.js";
 import MyInfiniteScroll from "@components/MyInfiniteScroll.vue";
-import type CouponOwner from "@types/models/CouponOwner";
-import type CouponTransaction from "@types/models/CouponTransaction";
+import type CouponOwner from "@models/CouponOwner";
+import type CouponTransaction from "@models/CouponTransaction";
 
+interface DataState {
+	transactions : Array<CouponTransaction>;
+	expanded : Array<boolean>;
+	isLoading : boolean;
+	transactionService : CouponTransactionService | null; // Replace `any` with the correct type if available
+	stopFetch : boolean;
+}
 export default {
 	name :       "CouponsTransactions",
 	components : { MyInfiniteScroll },
@@ -17,10 +24,10 @@ export default {
 			required : true,
 		},
 	},
-	data() {
+	data() : DataState {
 		return {
-            transactions: [] as () => Array<CouponTransaction>,
-            expanded: [] as () => Array<boolean>,
+			transactions : [],
+			expanded :     [],
 			isLoading :          false,
 			transactionService : null,
 			stopFetch :          false,
@@ -29,9 +36,9 @@ export default {
 	computed : {
 		/**
 		 * Table headers for the transactions data table.
-		 * @returns {Array<Object>} List of headers for v-data-table
+		 * @returns List of headers for v-data-table
 		 */
-		tableHeaders() {
+		tableHeaders() : { title : string, value : string }[] {
 			return [
 				{
 					title : this.$t( "transaction.kind" ),
