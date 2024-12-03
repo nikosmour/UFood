@@ -38,7 +38,8 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	constructor( data ) {
 		super( data );
 		// to not initiate  setter of the status;
-		this._status = this.initToEnum( CardDocumentStatusEnum, data.status );
+		if ( data.status )
+			this._status = this.initToEnum( CardDocumentStatusEnum, data.status );
 		this._change = data.change ?? null;
 		this.file = data.file ?? null;
 	}
@@ -101,9 +102,8 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 */
 	static async fetchDocumentsByApplicationId( cardApplicationId ) {
 		const url = this.route( "document.index", { cardApplication : cardApplicationId } );
-		const documents = await CardApplicationDocument.$axios.get( url )
-		                                               .then( response => response.data.documents );
-		return documents.map( document => new CardApplicationDocument( document ) );
+		return await CardApplicationDocument.$axios.get( url )
+		                                    .then( response => response.data.documents );
 	}
 	
 	/**

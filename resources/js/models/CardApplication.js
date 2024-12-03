@@ -58,13 +58,16 @@ export class CardApplication extends CardApplicationBase {
 	 * Retrieves the documents for the card application.
 	 * If already fetched, returns the cached data. Otherwise, fetches it from the backend.
 	 *
-	 * @returns {Promise<axios.AxiosResponse<Array<CardApplicationDocument>>>}
+	 * @returns {Promise<PropertyType<Array<PropertyType<CardApplicationDocument>>>>}
 	 */
 	async getDocuments() {
-		if ( this.card_application_document === undefined )
-			return this.card_application_document =
-				await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
+		if ( this.card_application_document !== undefined )
+			return this.card_application_document;
+		this.card_application_document =
+			await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
 		return this.card_application_document;
+		
+		
 	}
 }
 
