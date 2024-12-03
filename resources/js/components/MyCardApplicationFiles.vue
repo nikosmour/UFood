@@ -96,6 +96,7 @@ export default {
 		 */
 		newFile( document : CardApplicationDocument ) {
 			console.log( document, document.file );
+			this.loadings.push( true );
 			this.application.addNewFile( document )
 			    .then( () =>
 				           this.files.push( document ),
@@ -104,7 +105,11 @@ export default {
 				            this.$refs.fileDialog.reOpenAddFileDialog( document );
 				            throw error;
 			            },
-			    );
+			    )
+			    .finally( () => {
+				              this.loadings.pop();
+			              },
+			    )
 		},
 
 		/**
