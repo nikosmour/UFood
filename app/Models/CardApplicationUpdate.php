@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enum\CardStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -22,6 +21,22 @@ class CardApplicationUpdate extends Pivot
     protected $casts = [
         'status' => CardStatusEnum::class,
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::creating(
+        /**
+         * define default card_application_staff_id when model is created and
+         * @param $model
+         * @return void
+         */
+            function ($model) {
+                $user = auth()->user();
+                if ($model->isClean('card_application_staff_id') && $user instanceof CardApplicationStaff)
+                    $model->card_application_staff_id = $user->id;
+            });
+    }
 
 
     public function cardApplicationStaff(): BelongsTo

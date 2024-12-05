@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\CardDocumentStatusEnum;
 use App\Enum\CardStatusEnum;
-use App\Events\CardApplicationUpdated;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\Academic;
 use App\Models\CardApplicant;
 use App\Models\CardApplication;
+use App\Models\CardApplicationDocument;
+use App\Models\CardApplicationStaff;
 use App\Traits\DocumentTrait;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -67,7 +70,7 @@ class CardApplicationController extends Controller
 
 
     /**
-     * @return Application|RedirectResponse|Redirector|JsonResponse
+     * @return JsonResponse
      */
     public function store()
     {
@@ -102,13 +105,35 @@ class CardApplicationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param CardApplication $cardApplication
-     * @return array|Application|Factory|View
+     * @param int $cardApplication
+     * @return JsonResponse
      */
-    public function edit(CardApplication $cardApplication)
+    public function edit(int $cardApplicationID): JsonResponse
     {
-        $this->authorize('update', $cardApplication);
-        return view('cardApplication/edit');
+        return DB::transaction(function () use ($cardApplicationID) {
+            $user = auth()->user();
+            $cardApplication = CardApplication::with('cardLastUpdate')
+                ->where('id', $cardApplicationID)
+                ->lockForUpdate()
+                ->first();
+            $this->authorize('update', $cardApplication);
+            $lastUpdate = $cardApplication->cardLastUpdate;
+
+            if ($user instanceof Academic)
+                if ($lastUpdate && in_array($lastUpdate->status, [CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED]))
+                    $lastUpdate->status = CardStatusEnum::TEMPORARY_SAVED;
+                else
+                    $lastUpdate = $cardApplication->cardLastUpdate()->make(['status' => CardStatusEnum::TEMPORARY_SAVED]);
+            elseif ($user instanceof CardApplicationStaff)
+                if ($lastUpdate->card_application_staff_id === $user->id)
+                    $lastUpdate->status = CardStatusEnum::CHECKING;
+                else
+                    $lastUpdate = $cardApplication->cardLastUpdate()->make(['status' => CardStatusEnum::CHECKING]);
+            $lastUpdate->save();
+
+            $cardApplication->touch();
+            return response()->json($cardApplication);
+        });
 
     }
 
