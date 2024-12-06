@@ -150,26 +150,108 @@ class CardApplicationController extends Controller
         $this->authorize('update', $cardApplication);
         $vData = $request->validated();
         $vData['status'] = CardStatusEnum::from($vData['status']);
-        if ($vData['status'] === CardStatusEnum::SUBMITTED && $cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0)
-            return response()->json(['success' => false, 'message' => 'You don\'t have update the wrong/incomplete documents '], 422);
 
 
-        DB::transaction(function () use ($vData, $cardApplication) {
-            $old_status = $cardApplication->cardLastUpdate->status ?? null;
-            $cardApplication->touch();
-            if ($old_status === $vData['status'])
-                return;
-            $cardApplication->applicantComments()->create($vData);
-            broadcast(event: new CardApplicationUpdated(
-                cardApplication: $cardApplication,
-                status: $vData['status'],
-                old_status: $old_status,
-                comment: $vData['comment'] ?? null))->toOthers();
+        $noUpdatedIds = DB::transaction(function () use ($vData, $cardApplication) {
+            $noUpdatedIds = $this->handleDocumentUpdates($vData['documents']['update'] ?? [], $cardApplication);
+
+            $noDeletedIds = $this->handleDocumentDeletions($vData['documents']['delete'] ?? [], $cardApplication);
+            if (!empty($noDeletedIds)) {
+                if ($noDeletedIds['unDeleted'])
+                    $noUpdatedIds['unDeleted'] = $noDeletedIds['unDeleted'];
+                if (isset($noDeletedIds['unFounded']))
+                    $noUpdatedIds['unFounded'] = array_merge($noUpdatedIds['unFounded'] ?? [], $noDeletedIds['unFounded']);
+            }
+            return $noUpdatedIds;
         });
 
-        return response()->json(['success' => true, 'message' => 'Application has been updated'], 201);
-        //return ['success' => false, 'message' => 'Application didn\'t saved',];
+        // Check for incomplete documents before submitting
+        if ($vData['status'] === CardStatusEnum::SUBMITTED && $this->hasIncompleteDocuments($cardApplication)) {
+            return response()->json(['success' => false, 'message' => 'You have incomplete documents. Please update or delete them.', 'noUpdatedIds' => $noUpdatedIds], 422);
+        }
+
+        // Update the application status and handle comments within a transaction
+        $this->updateApplicationStatus($vData, $cardApplication);
+
+        return response()->json(['message' => 'Application has been updated'], 200);
     }
+
+    /**
+     * @throws AuthorizationException
+     */
+    private function handleDocumentUpdates(array $documentsToUpdate, CardApplication $cardApplication): array
+    {
+        if (empty($documentsToUpdate)) return [];
+        $updates = array_column($documentsToUpdate, 'description', 'id');
+        $documents = $cardApplication->cardApplicationDocument()->whereIn('id', array_keys($updates))->select('id', 'status')->get();
+        $cantUpdateIds = [];
+        if (count($documents) !== count($documentsToUpdate)) {
+            $cantUpdateIds['unFounded'] = array_diff(array_keys($documentsToUpdate), $documents->pluck('id')->toArray());
+        }
+        $updatableDocuments = $documents->filter(function (CardApplicationDocument $document) {
+            return $document->status->canBeUpdated();
+        });
+        if (count($documents) !== count($updatableDocuments)) {
+            $cantUpdateIds['unUpdated'] = $documents->filter(function (CardApplicationDocument $document) {
+                return !$document->status->canBeUpdated();
+            })->pluck('id')->toArray();
+        }
+
+        // Update document descriptions and status
+        $updatableDocuments->each(function (CardApplicationDocument $document) use ($updates) {
+            $document->description = $updates[$document->id];
+            $document->status = CardDocumentStatusEnum::SUBMITTED;
+        });
+
+        $cardApplication->cardApplicationDocument()->saveMany($updatableDocuments);
+        return $cantUpdateIds;
+    }
+
+    private function handleDocumentDeletions(array $documentsToDelete, CardApplication $cardApplication): array
+    {
+        if (empty($documentsToDelete)) return [];
+        $documents = $cardApplication->cardApplicationDocument()->whereIn('id', $documentsToDelete)->select('id', 'status')->get();
+        $cantDeletedIds = [];
+        if (count($documents) !== count($documentsToDelete)) {
+            $cantDeletedIds['unFounded'] = array_diff($documentsToDelete, $documents->pluck('id')->toArray());
+        }
+        $deletableDocuments = $documents->filter(function (CardApplicationDocument $document) {
+            return $document->status->canBeDeleted();
+        });
+        if (count($documents) !== count($deletableDocuments)) {
+            $cantDeletedIds['unDeleted'] = $documents->filter(function (CardApplicationDocument $document) {
+                return !$document->status->canBeDeleted();
+            })->pluck('id')->toArray();
+        }
+
+        // Update document descriptions and status
+        $deletableDocuments->each(function (CardApplicationDocument $document) {
+            $document->delete();
+        });
+        return $cantDeletedIds;
+    }
+
+    private function hasIncompleteDocuments(CardApplication $cardApplication): bool
+    {
+        return $cardApplication->cardApplicationDocument()->where('status', CardDocumentStatusEnum::INCOMPLETE)->exists();
+    }
+
+    private function updateApplicationStatus(array $vData, CardApplication $cardApplication): void
+    {
+        DB::transaction(function () use ($vData, $cardApplication) {
+            $oldStatus = $cardApplication->cardLastUpdate->status ?? null;
+
+            if (!in_array($oldStatus, [CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED])) {
+                $cardApplication->applicantComments()->create(['comment' => $vData['comment'] ?? null, 'status' => $vData['status'],]);
+            } else {
+                $cardApplication->cardLastUpdate->comment = $vData['comment'] ?? $oldStatus;
+                $cardApplication->cardLastUpdate->status = $vData['status'];
+            }
+
+            $cardApplication->push();
+        });
+    }
+
 
     /**
      * Remove the specified resource from storage.

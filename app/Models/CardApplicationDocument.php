@@ -43,4 +43,9 @@ class CardApplicationDocument extends Model
     {
         return $this->belongsTo(CardApplication::class);
     }
+
+    public function canBeUpdated(): bool
+    {
+        return $this->status->canBeUpdated();
+    }
 }
