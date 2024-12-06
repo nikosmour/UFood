@@ -37,7 +37,7 @@ export default {
 				                              } );
 			this.$axios.post( this.url )
 			    .then( responseJson => {
-				    //for now
+				    // possible impact #future (Issue #001) Load Documents from Previous Application
 				    responseJson.data.card_application_document ??= [];
 				    ( this.user as Academic ).card_applicant.current_card_application = responseJson.data;
 			    } )

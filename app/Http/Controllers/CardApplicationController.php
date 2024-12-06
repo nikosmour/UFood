@@ -85,6 +85,8 @@ class CardApplicationController extends Controller
             ]);
             $cardApplication->applicantComments()->create(['comment' => '']);
             $cardApplication->load('cardLastUpdate');
+            //possible impact #future (Issue #1) - Load Documents from Previous Application
+            //see more on /docs/future-updates.md#001
             return $cardApplication;
         });
         return response()->json($cardApplication, 201);
