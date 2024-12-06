@@ -81,7 +81,7 @@ export default {
 			     this.application.card_application_document.length === 0 )
 				return alert( "you haven't upload any files" );
 			if ( -1 !== ( this.application.card_application_document as CardApplicationDocument[] )
-				.findIndex( ( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE,
+				.findIndex( ( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE && obj.change === null, //to be incomplete and   not change
 				) )
 				return alert( "there are incomplete files  update their description or delete them" );
 			const documents = this.getDocumentsForUpdate(); // Renamed for clarity

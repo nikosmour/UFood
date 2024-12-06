@@ -16,7 +16,7 @@ enum CardDocumentStatusEnum: string implements Enum
 
     public function canBeUpdated(): bool
     {
-        return $this == CardDocumentStatusEnum::SUBMITTED;
+        return $this == CardDocumentStatusEnum::SUBMITTED || $this == CardDocumentStatusEnum::INCOMPLETE;
     }
 
     public function canBeDeleted(): bool
