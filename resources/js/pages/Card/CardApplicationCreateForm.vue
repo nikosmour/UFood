@@ -1,68 +1,48 @@
 <template>
-    <loading v-if = "!user" />
-    <div v-else>
-        <card-applicant-info :applicant = "user" :aria-label = "$t('user.information')" :caption = "$t('user.value')" />
-        <form id = "accept-form" aria-label = "Accept Form" method = "POST" @submit.prevent = "createApplication">
-            <button aria-label = "Accept" class = "btn btn-primary">{{ $t( "accept" ) }}</button>
-        </form>
-        <message v-bind = "result" />
-    </div>
+    <v-card :loading = "!user" class = "justify-content-center">
+        <card-applicant-info :applicant = "user" :aria-label = "$t('personalInfo')" :caption = "$t('personalInfo')" />
+        <v-form id = "accept-form" aria-label = "Accept Form" class = "mt-5" @submit.prevent = "createApplication">
+            <v-btn
+                :aria-label = " $t('accept')" :text = "$t( 'accept' )" color = "primary" @click = "createApplication"
+            />
+        </v-form>
+    </v-card>
 </template>
 
 
-<script>
+<script lang = "ts">
 import { mapGetters } from "vuex";
+import CardApplicantInfo from "@/Components/cardApplicantInfo.vue";
+import { InformTheUserError } from "@/errors/InformTheUserError";
+import type Academic from "@models/Academic";
 
 export default {
+	components : { CardApplicantInfo },
 	data : function () {
 		return {
 			url :    this.route( "cardApplication.store" ),
-			result : {
-				message : this.$t( "test.Message" ),
-				success : true,
-				hide :    true,
-				errors :  [ "" ],
-			},
 		};
 	},
 
 	computed : {
-		...mapGetters( "auth", [
-			"currentUser",
-		] ),
-		user : function () {
-
-			return this.currentUser
-			       ? {
-					...this.currentUser,
-					address :  this.currentUser.card_applicant.address,
-					academic : this.currentUser,
-				}
-			       : null;
-		},
+		...mapGetters( "auth", {
+			user : "currentUser",
+		} ),
 	},
 	methods :  {
 		createApplication() {
-			if ( 0 === this.currentUser.academic_id ) return;
-			this.result.message = "";
+			if ( !this.user.academic_id )
+				throw new InformTheUserError( {
+					                              message : "noAcademicIDApplication",
+				                              } );
 			this.$axios.post( this.url )
 			    .then( responseJson => {
-				    let json = responseJson.data;
-				    this.result.success = json.success;
-				    if ( json.success ) {
-					    this.result.message = this.$t( "transfer.successful" );
-					    this.result.errors = [];
-					    setTimeout( () => this.$router.push( { name : "card.application" } ), 2000 );
-					    return;
-				    }
-				    this.result.message = this.$t( "request_failed" );
-				    this.result.errors = json;
+				    //for now
+				    responseJson.data.card_application_document ??= [];
+				    ( this.user as Academic ).card_applicant.current_card_application = responseJson.data;
 			    } )
-			    .catch( errors => {
-				    this.result.success = false;
-				    this.result.errors = errors.response.data.errors;
-				    console.log( errors.response.data.errors );
-				    this.result.message = this.$t( "request_failed" );
+			    .catch( () => {
+				    throw new InformTheUserError();
 			    } );
 		},
 	},

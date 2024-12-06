@@ -2,7 +2,7 @@ export const en = {
 	
 	"a_m" :         "Student ID Number",
 	"academic_id" : "Academic id",
-	// "accept": "Accept",
+	"accept" : "Accept",
 	"address" : {
 		"permanent" : "Permanent @:model_data.location",
 		"temporary" : "Temporary @:model_data.location",
@@ -71,6 +71,7 @@ export const en = {
 		//     "incomplete file": "@:{incomplete file}",
 		//     "keep old file?": "@:{keep old file?}",
 		"navigateAfter" : "Navigate to the start Page",
+		"noAcademicIDApplication" : "You must have an academic_id to apply",
 		//     "no file or description": "@:{no file or description}",
 		//     "no_file": "@:no_file",
 		"pageNotFound" : {

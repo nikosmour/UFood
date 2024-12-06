@@ -75,19 +75,19 @@ class CardApplicationController extends Controller
     public function store()
     {
         $this->authorize('create', CardApplication::class);
-        DB::transaction(function () {
+        $cardApplication = DB::transaction(function () {
             /** @var CardApplicant $cardApplicant */
-            $cardApplicant = Auth::user()->cardApplicant;
-            $last_expiration = $cardApplicant->validCardApplication()->value('expiration_date');
-            if (!$last_expiration)
-                $last_expiration = now()->subDay();
+            $cardApplicant = Auth::user()->cardApplicant()->withOnly('validCardApplication:id,expiration_date,academic_id')->first();
+            $last_expiration = $cardApplicant->validCardApplication?->expiration_date ?? now()->subDay();
             /** @var CardApplication $cardApplication */
             $cardApplication = $cardApplicant->currentCardApplication()->create([
                 "expiration_date" => $last_expiration
             ]);
             $cardApplication->applicantComments()->create(['comment' => '']);
+            $cardApplication->load('cardLastUpdate');
+            return $cardApplication;
         });
-        return response()->json(["message " => 'the application has created', 'success' => true], 201);
+        return response()->json($cardApplication, 201);
     }
 
     /**
