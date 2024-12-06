@@ -2,17 +2,18 @@
 import { mapActions, mapGetters } from "vuex";
 import GlobalError from "@components/GlobalError.vue";
 import NavView from "./navView.vue";
-import { setupAxiosInterceptor, setupSessionTimeout } from "@utilities/sessionManager.js";
+import { setupAxiosInterceptor, setupSessionTimeout } from "@utilities/sessionManager";
+import { InformTheUserError } from "@/errors/InformTheUserError";
 
 export default {
 	errorCaptured( error, vm, info ) {
 		console.info( `Error Captured by App.vue Info ${ info } Error message: ${ error.message }` );
-		this.$refs.globalErrorComponent.showError( error.message );
-		// Use the global error handler
+		if ( error instanceof InformTheUserError )
+			this.$refs.globalErrorComponent.showError( this.$t( error.message ) );		// Use the global error handler
 		// this.globalErrorHandler(error.message);
 		
 		// Return false to prevent the error from propagating further
-		return false;
+		return true;
 	},
 	
 	
