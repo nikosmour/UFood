@@ -63,6 +63,7 @@ export const en = {
 	"errors" : {
 		//     "application_status_not_allow_submission": "@:application_status_not_allow_submission",
 		//     "file_cant_edited": "@:file_cant_edited",
+		"canNotEdit" :         "The application can't be editing in the current status",
 		"forbiddenAccess" : {
 			"value" :   "Access Forbidden",
 			"details" : "You are not authorized to access this resource",
@@ -75,6 +76,7 @@ export const en = {
 		"pageNotFound" : {
 			"details" : "The page you requested could not be found.",
 		},
+		"somethingWentWrong" : "Something went wrong",
 		//     "request_failed_status_wont_change": "@:request_failed_status_wont_change",
 		//     "retrieving_application_failed": "@:retrieving_application_failed",
 		//     "retrieving_application_files_failed": "@:retrieving_application_files_failed",

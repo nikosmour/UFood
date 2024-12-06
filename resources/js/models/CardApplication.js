@@ -1,8 +1,23 @@
 import CardApplicationBase from "./Base/CardApplicationBase";
 import CardApplicationDocument from "./CardApplicationDocument";
 import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
+import { CardStatusEnum } from "@enums/CardStatusEnum";
+import { InformTheUserError } from "@/errors/InformTheUserError";
 
 export class CardApplication extends CardApplicationBase {
+	get canBeEdited() {
+		return [
+			CardStatusEnum.TEMPORARY_SAVED,
+			CardStatusEnum.SUBMITTED,
+			CardStatusEnum.INCOMPLETE,
+		]
+			.includes( this.card_last_update?.status );
+	}
+	
+	get isEditing() {
+		return CardStatusEnum.TEMPORARY_SAVED === this.card_last_update?.status;
+	}
+	
 	/**
 	 * Adds a new document file to the card application.
 	 * Sends the document data to the backend via a POST request.
@@ -11,10 +26,8 @@ export class CardApplication extends CardApplicationBase {
 	 * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves when the request is completed.
 	 */
 	addNewFile( document ) {
-		if ( this.card_application_document )
-			this.card_application_document.push( document );
-		else
-			this.card_application_document = [ document ];
+		if ( this.card_application_document ) this.card_application_document.push(
+			document ); else this.card_application_document = [ document ];
 		// Prepare request data
 		const params = new FormData();
 		params.append( "file", document.file );
@@ -44,8 +57,7 @@ export class CardApplication extends CardApplicationBase {
 	deleteFile( document ) {
 		document.delete();
 		// Skip removal if the document has unsaved changes on the server side
-		if ( document.change )
-			return;
+		if ( document.change ) return;
 		
 		// Find the document in the array and remove it
 		const index = this.card_application_document.findIndex( file => file === document );
@@ -61,13 +73,34 @@ export class CardApplication extends CardApplicationBase {
 	 * @returns {Promise<PropertyType<Array<PropertyType<CardApplicationDocument>>>>}
 	 */
 	async getDocuments() {
-		if ( this.card_application_document !== undefined )
-			return this.card_application_document;
-		this.card_application_document =
-			await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
+		if ( this.card_application_document !== undefined ) return this.card_application_document;
+		this.card_application_document = await CardApplicationDocument.fetchDocumentsByApplicationId( this.id );
 		return this.card_application_document;
 		
 		
+	}
+	
+	requestToEdit() {
+		if ( this.canBeEdited ) {
+			this.$axios.get( this.route( "cardApplication.edit", this.id ) )
+			    .then( ( response ) => {
+				    this.card_last_update = response.data;
+				    this.updated_at = response.data.updated_at;
+			    } )
+			    .catch( ( error ) => {
+				    const message = ( error.response?.status === 403 )
+				                    ? "canNotEdit"
+				                    : "somethingWentWrong";
+				    
+				    throw new InformTheUserError( {
+					                                  message : message,
+				                                  } );
+			    } );
+		} else {
+			throw new InformTheUserError( {
+				                              message : "canNotEdit",
+			                              } );
+		}
 	}
 }
 
