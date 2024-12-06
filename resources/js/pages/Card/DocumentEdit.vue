@@ -44,6 +44,7 @@ import { CardStatusEnum } from "@enums/CardStatusEnum";
 import CardApplicationDocument from "@models/CardApplicationDocument";
 import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
 import type CardApplication from "@models/CardApplication";
+import { InformTheUserError } from "@/errors/InformTheUserError";
 
 export default {
 	name :       "DocumentEdit",
@@ -74,16 +75,16 @@ export default {
 		},
 	},
 	methods :  {
-		saveApplication( event : Event | null, status = CardStatusEnum.TEMPORARY_SAVED ) {
+		async saveApplication( event : Event | null, status = CardStatusEnum.TEMPORARY_SAVED ) {
 			console.log( "status", status );
 
 			if ( !Array.isArray( this.application.card_application_document ) ||
 			     this.application.card_application_document.length === 0 )
-				return alert( "you haven't upload any files" );
+				throw new InformTheUserError( { message : "errors.files.absence" } );
 			if ( -1 !== ( this.application.card_application_document as CardApplicationDocument[] )
 				.findIndex( ( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE && obj.change === null, //to be incomplete and   not change
 				) )
-				return alert( "there are incomplete files  update their description or delete them" );
+				throw new InformTheUserError( { message : "errors.files.incomplete" } );
 			const documents = this.getDocumentsForUpdate(); // Renamed for clarity
 			const url = this.route( "cardApplication.update", this.application.id );
 
@@ -103,37 +104,37 @@ export default {
 				params[ "comment" ] = this.comment;
 			console.log( params, documents );
 			this.loadings.push( true );
-			this.$axios.post( url, params )
-			    .then( () => {
-				    // Update application status
-				    this.application.card_last_update = {
-					    status :  status,
-					    comment : null,
-				    };
-				    // Handle document deletions
-				    if ( documents.delete.length ) {
-					    const idsToDeleteSet = new Set( documents.delete );
-					    this.application.card_application_document =
-						    ( this.application.card_application_document as CardApplicationDocument[] )
-							    .filter( document => !idsToDeleteSet.has( document.id ) );
-				    }
-				    // Update the documents' status property to Submitted
-				    if ( documents.update.length ) {
-					    const idsToUpdateSet = new Set( documents.update.map( ( item ) => item.id ) );
-					    ( this.application.card_application_document as CardApplicationDocument[] )
-						    .forEach( ( document ) => {
-							              if ( idsToUpdateSet.has( document.id ) )
-								              document.status = CardDocumentStatusEnum.SUBMITTED;
-						              },
-						    );
-				    }
-			    } )
-			    .catch( ( error ) => {
-				    // Handle request error
-				    console.error( "Error updating application:", error );
-				    alert( "An error occurred while saving the application." );
-			    } )
-			    .finally( () => this.loadings.pop() );
+			try {
+				await this.$axios.post( url, params );
+// Update application status
+				this.application.card_last_update = {
+					status :  status,
+					comment : null,
+				};
+				// Handle document deletions
+				if ( documents.delete.length ) {
+					const idsToDeleteSet = new Set( documents.delete );
+					this.application.card_application_document =
+						( this.application.card_application_document as CardApplicationDocument[] )
+							.filter( document => !idsToDeleteSet.has( document.id ) );
+				}
+				// Update the documents' status property to Submitted
+				if ( documents.update.length ) {
+					const idsToUpdateSet = new Set( documents.update.map( ( item ) => item.id ) );
+					( this.application.card_application_document as CardApplicationDocument[] )
+						.forEach( ( document ) => {
+							          if ( idsToUpdateSet.has( document.id ) )
+								          document.status = CardDocumentStatusEnum.SUBMITTED;
+						          },
+						);
+				}
+			} catch ( error ) {
+				if ( error.response?.status === 422 )
+					throw new InformTheUserError( error.response.data );
+				throw error;
+			} finally {
+				this.loadings.pop();
+			}
 		},
 
 		getDocumentsForUpdate() {
@@ -161,8 +162,8 @@ export default {
 			return result;
 		},
 
-		submitDocuments() {
-			this.saveApplication( null, CardStatusEnum.SUBMITTED );
+		async submitDocuments() {
+			await this.saveApplication( null, CardStatusEnum.SUBMITTED );
 		},
 
 

@@ -169,8 +169,11 @@ class CardApplicationController extends Controller
 
         // Check for incomplete documents before submitting
         if ($vData['status'] === CardStatusEnum::SUBMITTED && $this->hasIncompleteDocuments($cardApplication)) {
-            return response()->json(['success' => false, 'message' => 'You have incomplete documents. Please update or delete them.', 'noUpdatedIds' => $noUpdatedIds], 422);
+            return response()->json(['message' => 'errors.files.incomplete', 'noUpdatedIds' => $noUpdatedIds], 422);
         }
+        if (!empty($noUpdatedIds))
+            return response()->json(['message' => 'errors.files.cantChange', 'noUpdatedIds' => $noUpdatedIds], 422);
+
 
         // Update the application status and handle comments within a transaction
         $this->updateApplicationStatus($vData, $cardApplication);

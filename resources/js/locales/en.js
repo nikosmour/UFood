@@ -69,6 +69,11 @@ export const en = {
 			"details" : "You are not authorized to access this resource",
 		},
 		//     "incomplete file": "@:{incomplete file}",
+		"files" : {
+			"absence" :    "you haven't upload any files",
+			"incomplete" : "You have incomplete documents. Please update or delete them",
+			"cantChange" : "You tried to update or delete files that is not possible",
+		},
 		//     "keep old file?": "@:{keep old file?}",
 		"navigateAfter" : "Navigate to the start Page",
 		"noAcademicIDApplication" : "You must have an academic_id to apply",
