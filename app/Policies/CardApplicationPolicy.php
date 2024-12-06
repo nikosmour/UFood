@@ -7,6 +7,7 @@ use App\Models\CardApplication;
 use App\Models\CardApplicationStaff;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class CardApplicationPolicy
 {
@@ -32,10 +33,10 @@ class CardApplicationPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
-    public function viewAny(User $user): \Illuminate\Auth\Access\Response|bool
+    public function viewAny(Academic $user): Response|bool
     {
         return true;
     }
@@ -43,11 +44,11 @@ class CardApplicationPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\CardApplication $cardApplication
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @param CardApplication $cardApplication
+     * @return Response|bool
      */
-    public function view(User $user, CardApplication $cardApplication): \Illuminate\Auth\Access\Response|bool
+    public function view(User $user, CardApplication $cardApplication): Response|bool
     {
         return true;
     }
@@ -55,10 +56,10 @@ class CardApplicationPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param \App\Models\Academic $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param Academic $user
+     * @return Response|bool
      */
-    public function create(Academic $user): \Illuminate\Auth\Access\Response|bool
+    public function create(Academic $user): Response|bool
     {
         return !$user->cardApplicant->currentCardApplication()->exists();
     }
@@ -66,23 +67,35 @@ class CardApplicationPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\CardApplication $cardApplication
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @param CardApplication $cardApplication
+     * @return Response|bool
      */
-    public function update(User $user, CardApplication $cardApplication): \Illuminate\Auth\Access\Response|bool
+    public function edit(User $user, CardApplication $cardApplication): Response|bool
     {
-        return $cardApplication->cardLastUpdate->status->canBeUpdated();
+        return $cardApplication->cardLastUpdate->status->canBeEdited($user instanceof Academic) || $user->id === $cardApplication->cardLastUpdate->card_application_staff_id;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param User $user
+     * @param CardApplication $cardApplication
+     * @return Response|bool
+     */
+    public function update(User $user, CardApplication $cardApplication): Response|bool
+    {
+        return $cardApplication->cardLastUpdate->status->canBeUpdated($user instanceof Academic) || $user->id === $cardApplication->cardLastUpdate->card_application_staff_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\CardApplication $cardApplication
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @param CardApplication $cardApplication
+     * @return Response|bool
      */
-    public function delete(User $user, CardApplication $cardApplication): \Illuminate\Auth\Access\Response|bool
+    public function delete(User $user, CardApplication $cardApplication): Response|bool
     {
         return false;
     }
@@ -90,11 +103,11 @@ class CardApplicationPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\CardApplication $cardApplication
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @param CardApplication $cardApplication
+     * @return Response|bool
      */
-    public function restore(User $user, CardApplication $cardApplication): \Illuminate\Auth\Access\Response|bool
+    public function restore(User $user, CardApplication $cardApplication): Response|bool
     {
         return false;
     }
@@ -102,11 +115,11 @@ class CardApplicationPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\CardApplication $cardApplication
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @param CardApplication $cardApplication
+     * @return Response|bool
      */
-    public function forceDelete(User $user, CardApplication $cardApplication): \Illuminate\Auth\Access\Response|bool
+    public function forceDelete(User $user, CardApplication $cardApplication): Response|bool
     {
         return false;
     }

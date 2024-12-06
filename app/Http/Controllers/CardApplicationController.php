@@ -118,7 +118,7 @@ class CardApplicationController extends Controller
                 ->where('id', $cardApplicationID)
                 ->lockForUpdate()
                 ->first();
-            $this->authorize('update', $cardApplication);
+            $this->authorize('edit', $cardApplication);
             $lastUpdate = $cardApplication->cardLastUpdate;
 
             if ($user instanceof Academic)

@@ -2,7 +2,6 @@
 
 namespace App\Enum;
 
-use App\Http\Controllers\CardApplicationController;
 use App\Interfaces\Enum;
 use App\Traits\Enums\EnumTrait;
 
@@ -19,16 +18,34 @@ enum CardStatusEnum: string implements Enum
     case INCOMPLETE = 'incomplete';
 
     /**
-     * Check if the applicant can update the card
-     * @param CardStatusEnum $statusEnum
+     * Check if the User can edit the card
+     * @param Boolean $isAcademic
      * @return bool
      */
-    public function canBeUpdated(): bool
+    public function canBeEdited($isAcademic = true): bool
     {
         return match ($this) {
-            CardStatusEnum::TEMPORARY_SAVED,
+            CardStatusEnum::TEMPORARY_SAVED => $isAcademic,
             CardStatusEnum::INCOMPLETE,
             CardStatusEnum::SUBMITTED => true,
+            CardStatusEnum::CHECKING => false,
+            CardStatusEnum::ACCEPTED,
+            CardStatusEnum::REJECTED,
+            CardStatusEnum::TEMPORARY_CHECKED => !$isAcademic
+        };
+    }
+
+    /**
+     * Check if the User can update the card
+     * @param Boolean $isAcademic
+     * @return bool
+     */
+    public function canBeUpdated($isAcademic = true): bool
+    {
+        return match ($this) {
+            CardStatusEnum::TEMPORARY_SAVED => $isAcademic,
+            CardStatusEnum::INCOMPLETE,
+            CardStatusEnum::SUBMITTED,
             CardStatusEnum::CHECKING,
             CardStatusEnum::ACCEPTED,
             CardStatusEnum::REJECTED,
