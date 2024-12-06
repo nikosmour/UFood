@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-fab
+            v-if = "isEditing"
             v-tooltip:top-end = "$t('file.add')"
             :aria-label = "$t('file.add')"
             absolute
@@ -20,8 +21,9 @@
                 v-for = "(file, index) in files"
                 :key = "'files-' + index"
                 :file = "file"
-                :is-academic = "true"
+                :is-academic = "isAcademic"
                 :is-previewing = "showFileIndex === index"
+                :is-temporary-saved-application = "isEditing"
                 @delete = "fileDelete(file, index)"
                 @edit = "fileEdit(file)"
                 @hide = "fileHide()"
@@ -63,6 +65,10 @@ export default {
 			type : Array as () => boolean[],
 			required : true,
 		},
+		isAcademic : {
+			type :    Boolean,
+			default : () => true,
+		},
 	},
 	data() {
 		return {
@@ -75,6 +81,14 @@ export default {
 			 */
 			showFileIndex : null as number | null,
 		};
+	},
+	computed : {
+		/**
+		 * Is The application currently Editting
+		 */
+		isEditing() {
+			return this.application.isEditing;
+		},
 	},
 	methods : {
 		/**
