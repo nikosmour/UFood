@@ -80,18 +80,22 @@ export class CardApplication extends CardApplicationBase {
 		
 	}
 	
+	/**
+	 *
+	 * @returns {Promise<import("axios").AxiosResponse<void>>}
+	 */
 	requestToEdit() {
 		if ( this.canBeEdited ) {
-			this.$axios.get( this.route( "cardApplication.edit", this.id ) )
+			return this.$axios.get( this.route( "cardApplication.edit", this.id ) )
 			    .then( ( response ) => {
-				    this.card_last_update = response.data;
-				    this.updated_at = response.data.updated_at;
+				    this.card_last_update = response.data.card_last_update;
+				    this.updated_at = response.data.card_last_update.updated_at;
 			    } )
 			    .catch( ( error ) => {
 				    const message = ( error.response?.status === 403 )
 				                    ? "canNotEdit"
 				                    : "somethingWentWrong";
-				    
+				    console.error( error );
 				    throw new InformTheUserError( {
 					                                  message : message,
 				                                  } );

@@ -132,7 +132,7 @@ class CardApplicationController extends Controller
             $lastUpdate->save();
 
             $cardApplication->touch();
-            return response()->json($cardApplication);
+            return response()->json(['card_last_update' => $lastUpdate]);
         });
 
     }
