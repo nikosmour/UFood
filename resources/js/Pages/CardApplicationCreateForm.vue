@@ -1,7 +1,7 @@
 <template>
     <loading v-if = "!user" />
     <div v-else>
-        <card-applicant-info :aria-label = "$t('user.information')" :caption = "$t('user.value')" :model = "user" />
+        <card-applicant-info :applicant = "user" :aria-label = "$t('user.information')" :caption = "$t('user.value')" />
         <form id = "accept-form" aria-label = "Accept Form" method = "POST" @submit.prevent = "createApplication">
             <button aria-label = "Accept" class = "btn btn-primary">{{ $t( "accept" ) }}</button>
         </form>

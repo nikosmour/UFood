@@ -20,7 +20,7 @@
                     <span class = "visually-hidden">{{ $t( "edit" ) }}</span>
                 </button>
             </header>
-            <card-applicant-info :model = "application" />
+            <card-applicant-info :applicant = "application" />
 
             <div class = "">
                 <h4>{{ $t( "applicationStatus" ) }}</h4>
