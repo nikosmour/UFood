@@ -15,7 +15,7 @@ class CardApplicationUpdate extends Pivot
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'card_application_update';
     protected $casts = [

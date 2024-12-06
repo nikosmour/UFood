@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedTinyInteger('card_application_staff_id');
             $table->foreignIdFor(CardApplication::class);
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
             $table->string('card_application_staff_comment')->nullable();
             $table->foreign('card_application_staff_id')->references('id')->on('card_application_staff')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('card_application_id')->references('id')->on('card_applications')->cascadeOnDelete()->cascadeOnUpdate();
