@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('model:prune')->daily();
         $schedule->command('telescope:prune  --hours=24')->daily();
+        $schedule->command('app:update-forgotten-application-status --hours=96')->daily();
     }
 
     /**
