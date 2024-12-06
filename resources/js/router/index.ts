@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import authGuard from "../guards/AuthGuard";
-import { Enums } from "../plugins/enums.js";
+import authGuard from "@/guards/AuthGuard";
+import { Enums } from "@/plugins/enums";
 
 const Unauthorized = () => import("@pages/Errors/403.vue");
 const NotFound = () => import("@pages/Errors/404.vue");
@@ -9,8 +9,7 @@ const EntryChecking = () => import("@pages/EntryChecking.vue");
 const Login = () => import("@pages/Auth/Login.vue");
 const UserProfile = () => import("../Pages/UserProfile.vue");
 const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.vue");
-const CardApplication = () => import("../Pages/CardApplicationEditForm.vue");
-const CardApplicationCreate = () => import("../Pages/CardApplicationCreateForm.vue");
+const CardApplication = () => import("@pages/Card/CardApplication.vue");
 const CardTransactions = () => import("@pages/Card/CardTransactions.vue");
 const TransferCoupons = () => import("@pages/Coupons/TransferCoupon.vue");
 const CouponOwner = () => import("@pages/Coupons.vue");
@@ -91,11 +90,6 @@ const routes = [
 				path :      "application",
 				name :      "card.application",
 				component : CardApplication,
-			},
-			{
-				path :      "application/create",
-				name :      "card.application.create",
-				component : CardApplicationCreate,
 			},
 		],
 		
