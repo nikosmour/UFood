@@ -3,10 +3,10 @@ export const en = {
 	"a_m" :         "Student ID Number",
 	"academic_id" : "Academic id",
 	// "accept": "Accept",
-	// "address": {
-	//     "permanent": "Permanent @:model_data.location",
-	//     "temporary": "Temporary @:model_data.location"
-	// },
+	"address" : {
+		"permanent" : "Permanent @:model_data.location",
+		"temporary" : "Temporary @:model_data.location",
+	},
 	// "and": "and",
 	"applicant" :             "Applicant",
 	"application" :           "Application | Applications",
@@ -32,11 +32,11 @@ export const en = {
 		"value" : "Card | Cards",
 	},
 	// "changeFromTo": "Changed from @:{from1} to @:{to1} ",
-	// "comment": {
+	"comment" : {
 	//     "enter": "Enter Comment:",
 	//     "latestFrom": "Last comment submitted by ",
-	//     "value": "No comment | Comment | Comments"
-	// },
+		"value" : "No comment | Comment | Comments",
+	},
 	"company" :      {
 		"department" : "Student Welfare Department",
 		"name" :       "University of Patras",
@@ -55,7 +55,7 @@ export const en = {
 	"developedBy" : "Developed by Nikolaos Mouratidis",
 	"document" : "Document|Documents",
 	"documents.upload" : "Upload Documents",
-	// "edit": "Edit",
+	"edit" :    "Edit",
 	"email" :       "Email",
 	"entry_check" : "Entry Check",
 	// "entry_check_form": "@:form : @:entry_check ",
