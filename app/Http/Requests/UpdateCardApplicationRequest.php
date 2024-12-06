@@ -26,6 +26,8 @@ class UpdateCardApplicationRequest extends FormRequest
      */
     public function rules()
     {
+        // #future (Issue #002) - Efficient validation for array of ids,
+        // see more on /docs/future-updates.md#002
         return [
             'comment' => 'string|max:255',
             'documents' => 'array:delete,update',
