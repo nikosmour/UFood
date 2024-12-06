@@ -42,7 +42,7 @@ export default {
 				    ( this.user as Academic ).card_applicant.current_card_application = responseJson.data;
 			    } )
 			    .catch( () => {
-				    throw new InformTheUserError();
+				    throw new InformTheUserError( {} );
 			    } );
 		},
 	},
