@@ -15,7 +15,7 @@ export class CardApplicant extends CardApplicantBase {
 	 */
 	constructor( data ) {
 		super( data );
-		this.valid_card_application ??= this.current_card_application;
+		this._valid_card_application ??= this.current_card_application;
 	}
 }
 
