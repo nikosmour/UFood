@@ -10,6 +10,7 @@ updates and their corresponding issue numbers for easy reference.
 
 1. [Issue #001: Load Documents from Previous Application](#001)
 2. [Issue #002: Efficient validation for array of ids](#002)
+3. [Issue #003: Manage ids of documents that failed or succeed validation](#003)
 
 ## Future Updates List
 
@@ -42,3 +43,17 @@ updates and their corresponding issue numbers for easy reference.
     - Reduces database queries, making the process more efficient.
 - **Files that will impact?**
     - [UpdateCardApplicationRequest](../app/Http/Requests/UpdateCardApplicationRequest.php)
+
+### `#003` - **Manage ids of documents that failed or succeed validation** <a id="003"></a>
+
+- **Description**:  
+  Manage the documents that failed validation in the request and the documents that no failed.
+- **Example**:
+  - If a file doesn't belong to the applicant
+  - If a file has status that prohibit of editing or deleting
+  - if successfully update same documents but some other not.
+- **Benefits**:
+  - Provides better control of the information available to the end user.
+  - Improves error handling and user feedback during operations.
+- **Files that will impact?**
+  - [DocumentEdit@saveApplication](../resources/js/pages/Card/DocumentEdit.vue)

@@ -102,11 +102,9 @@ export default {
 			};
 			if ( this.comment )
 				params[ "comment" ] = this.comment;
-			console.log( params, documents );
 			this.loadings.push( true );
 			try {
 				await this.$axios.post( url, params );
-// Update application status
 				this.application.card_last_update = {
 					status :  status,
 					comment : null,
@@ -129,6 +127,8 @@ export default {
 						);
 				}
 			} catch ( error ) {
+				//impact #future (Issue #003) - Manage ids of documents that failed or succeed validation
+				// see more on /docs/future.md#003
 				if ( error.response?.status === 422 )
 					throw new InformTheUserError( error.response.data );
 				throw error;
@@ -167,6 +167,12 @@ export default {
 		},
 
 
+	},
+	created() {
+		// if the last update is from the academic set the comment the previous value
+		if ( !this.application.card_last_update.card_application_staff_id ) {
+			this.comment = this.application.card_last_update.comment ?? null;
+		}
 	},
 
 };
