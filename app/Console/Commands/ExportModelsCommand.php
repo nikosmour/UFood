@@ -538,6 +538,9 @@ JS;
         foreach ($modelInstance->getDates() as $dateField) {
             $schemaAttributes[$dateField] = 'Date';
         }
+        foreach ($modelInstance->getAppends() as $attribute) {
+            $schemaAttributes[$attribute] = 'any';
+        }
 
         foreach ($modelInstance->getHidden() as $hiddenField) {
             unset($schemaAttributes[$hiddenField]);
@@ -597,6 +600,8 @@ JS;
     private function getModelRelationships(ReflectionClass $reflection): array
     {
         $relationships = [];
+        $modelInstance = $reflection->newInstanceWithoutConstructor();
+        $hidden = $reflection->newInstance()->getHidden();
         $methods = $reflection->getMethods();
         foreach ($methods as $key => $method) {
             // Skip methods that are not public or not defined in the model's class
@@ -612,9 +617,8 @@ JS;
 
             try {
                 // Call the method and check if it returns a Relation instance
-                $modelInstance = $reflection->newInstanceWithoutConstructor();
                 $result = $method->invoke($modelInstance);
-                if ($result instanceof Relation) {
+                if ($result instanceof Relation && !in_array($method->getName(), $hidden)) {
                     $relationType = (new ReflectionClass($result))->getShortName();
                     $relatedModel = basename(str_replace('\\', '/', get_class($result->getRelated())));
                     // Check if the related model exists in the Models directory
