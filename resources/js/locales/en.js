@@ -6,6 +6,10 @@ export const en = {
 	"address" : {
 		"permanent" : "Permanent @:model_data.location",
 		"temporary" : "Temporary @:model_data.location",
+		"phone" : {
+			"permanent" : "Permanent phone",
+			"temporary" : "Patra's phone / cellphone",
+		},
 	},
 	// "and": "and",
 	"applicant" :             "Applicant",
@@ -18,6 +22,7 @@ export const en = {
 	// "application_status_not_allow_submission": "@:{required_failed}: The status of the application does not allow submission",
 	// "applicationStatus": "Application Status",
 	"applied.not" : "You haven't applied for the current period.",
+	"approved.until" : "You have been approved until {date}",
 	// "back": "Back",
 	"balance" : "Balance",
 	// "cancel adding file": "Cancel adding file",
@@ -92,7 +97,6 @@ export const en = {
 		//     "some_files_not_updated": "@:some_files_not_updated"
 	},
 	// "expiration date": "Expiration @:date",
-	"expiration.date.is" : "You have free food until {date}",
 	"file" :             {
 		"add" :            "Add a new file",
 		"delete" :         "Delete the file",
@@ -202,6 +206,11 @@ export const en = {
 	// "preview": "Preview",
 	"period.time" : "Time Period",
 	"personalInfo" :     "Personal info",
+	"PersonalInfoFormMessage" :
+	                   "The fields that are disabled were automatically filled by the system " +
+	                   "and cannot be modified. If any of this information needs to be updated, " +
+	                   "please make the changes on progress.upatras.gr or contact your " +
+	                   "department's secretary for assistance",
 	"previous" :    "Previous",
 	// "provide_valid_card": "Provide a valid academic card",
 	"purchase" : {
