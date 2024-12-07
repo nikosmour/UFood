@@ -1,4 +1,4 @@
-<script>
+<script lang = "ts">
 import { mapGetters } from "vuex";
 
 export default {
@@ -12,9 +12,8 @@ export default {
 
 		/**
 		 * Constructs the card status text based on the current card status and expiration date.
-		 * @returns {string}
 		 */
-		card_info() {
+		card_info() : string {
 			let text = this.$t( "applied.not" );
 
 			if ( this.card_status ) {
@@ -33,7 +32,7 @@ export default {
 				today.setHours( 0, 0, 0, 0 );
 
 				if ( this.card_expiration_date >= today ) {
-					text += ` ${ this.$t( "expiration.date.is", {
+					text += ` ${ this.$t( "approved.until", {
 						date : expirationDate.toLocaleDateString(),
 					} ) }`;
 				}
@@ -44,9 +43,8 @@ export default {
 
 		/**
 		 * Returns the alert type based on the current card status.
-		 * @returns {string | undefined}
 		 */
-		alert_type() {
+		alert_type() : "error" | "success" | "warning" | "info" | undefined {
 			const CardStatusEnum = this.$enums.CardStatusEnum;
 			return {
 				[ CardStatusEnum.ACCEPTED ] :          "success",
@@ -75,7 +73,7 @@ export default {
         v-if = "isCardApplicationRoute"
         :text = "card_info"
         :type = "alert_type"
-        dismissible
+        closable
     />
     <v-container v-else>
         <v-card :aria-label = "$t('card.info')" :title = "$t('card.value')">

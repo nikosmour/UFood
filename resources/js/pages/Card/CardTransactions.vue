@@ -1,6 +1,7 @@
 <template>
     <v-container>
         <!-- Table for Transactions -->
+        <MyFreeFoodStatus />
         <v-data-table-virtual
             :aria-label = "$t('transactions')"
             :headers = "tableHeaders"
@@ -33,10 +34,12 @@
 <script>
 import MyInfiniteScroll from "@components/MyInfiniteScroll.vue";
 import UsageCard from "@models/UsageCard";
+import MyFreeFoodStatus from "@components/MyFreeFoodStatus.vue";
 
 export default {
 	name :       "CardTransactions",
 	components : {
+		MyFreeFoodStatus,
 		MyInfiniteScroll,
 	},
 	data() {

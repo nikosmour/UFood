@@ -1,5 +1,6 @@
 <template>
     <v-container max-width = "50rem">
+        <MyFreeFoodStatus />
         <v-row justify = "center">
             <v-col cols = "12">
                 <v-stepper
@@ -34,10 +35,12 @@ import type CardApplication from "@models/CardApplication";
 import ApplicationPreview from "@pages/Card/ApplicationPreview.vue";
 import DocumentEdit from "@pages/Card/DocumentEdit.vue";
 import CardApplicationCreateForm from "@pages/Card/CardApplicationCreateForm.vue";
+import MyFreeFoodStatus from "@components/MyFreeFoodStatus.vue";
 
 export default {
 	name :       "CardApplication",
 	components : {
+		MyFreeFoodStatus,
 		CardApplicationCreateForm,
 		DocumentEdit,
 		ApplicationPreview,
