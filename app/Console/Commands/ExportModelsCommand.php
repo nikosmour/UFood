@@ -108,7 +108,7 @@ class ExportModelsCommand extends Command
     private function generateInterface(string $modelName, array $properties, array $relationships)
     {
         return <<<TS
-export interface I{$modelName}BaseInterface {
+export interface I{$modelName}BaseInterface extends Record<string, any> {
 {$this->generateInterfaceProperties($properties)}
 {$this->generateInterfaceRelationships($relationships)}
 }

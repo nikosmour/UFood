@@ -2,17 +2,18 @@ import type { AxiosInstance } from "axios";
 import type { route } from "ziggy-js";
 import type { BaseEnum } from "@/utilities/enums/BaseEnum";
 import { InvalidModelDataError } from "@/errors/InvalidDataError";
+import ChangeTracker from "@utilities/ChangeTracker";
 
 /**
  * Base class for models in the application.
  * Provides utility methods and setup for Axios and Ziggy routes.
  */
-export default abstract class BaseModel<TData extends Pick<TInterface, keyof TInterface>, TInterface> {
+export default abstract class BaseModel<TData extends Pick<TInterface, keyof TInterface>, TInterface extends Record<string, any>> extends ChangeTracker {
 	static $axios : AxiosInstance | null = null;
 	static route : typeof route | null = null;
 	
 	/**
-	 * Seria= undefinedlize the model instance to JSON.
+	 * Serialize the model instance to JSON.
 	 * @returns {string} JSON string representation of the model.
 	 */
 	public toJSON() : string {
@@ -20,41 +21,41 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	}
 	
 	/**
-	 * Convert the model instance to a plain object.
-	 * @returns {Record<string, any>} Plain object representation of the model.
+	 * Converts the model to a plain object representation.
 	 */
-	public toObject() : Record<string, any> {
-		const d = this as unknown as TInterface;
-		const properties = this.properties() as Array<keyof TInterface>;
-		const temp = properties.reduce( ( acc, prop ) => {
-			acc[ prop ] = d[ prop ];
-			return acc;
-		}, {} as TInterface );
-		
-		const relationships = this.relationships() as Array<keyof TInterface>;
-		relationships.forEach( ( prop ) => {
-			const relatedValue = d[ prop ] as PropertyType<InstanceType<BaseModel<any, any>> | InstanceType<BaseModel<any, any>>[]>;
-			if ( relatedValue instanceof BaseModel ) {
-				temp[ prop ] = relatedValue.copy() as TInterface[keyof TInterface]; // Ensure it's a copy of the relationship
-			} else if ( Array.isArray( relatedValue ) ) {
-				temp[ prop ] = relatedValue.map( ( item ) => item instanceof BaseModel
-				                                             ? item.copy()
-				                                             : item ) as TInterface[keyof TInterface];
+	public toObject() : TInterface {
+		const obj : Partial<TInterface> = {};
+		this.properties()
+		    .forEach( ( prop ) => {
+			    obj[ prop ] = this[ prop ];
+		    } );
+		this.relationships()
+		    .forEach( ( prop ) => {
+			    const value = this[ prop ];
+			    if ( value instanceof BaseModel ) {
+				    obj[ prop ] = value.copy();
+			    } else if ( Array.isArray( value ) ) {
+				    obj[ prop ] = value.map( ( item ) =>
+					                             item instanceof BaseModel
+					                             ? item.copy()
+					                             : item,
+				    );
 			} else {
-				temp[ prop ] = relatedValue; // Fallback for other cases
+				    obj[ prop ] = value;
 			}
-		} );
-		
-		return temp as Record<string, any>;
+		    } );
+		return obj as TInterface;
 	}
 	
 	/**
-	 * Convert the model instance to a plain object.
-	 * @returns  A copy  of the model.
+	 * Creates a copy of the model.
 	 */
-	public copy<T extends this>() : T {
-		return new ( this.constructor as { new( ...args : any[] ) : T } )( this.toObject() );
+	public copy() : this {
+		return new ( this.constructor as { new( ...args : any[] ) : this } )(
+			this.toObject(),
+		);
 	}
+	
 	
 	/**
 	 * Get the Axios instance.
@@ -89,96 +90,124 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	}
 	
 	/**
-	 * Initializes an array of related objects if data exists.
+	 * Check if the model or its relationships have unsaved changes.
 	 *
-	 * @param data - The raw data to initialize objects with, or null if no data is available.
-	 * @returns  An array of instantiated objects of the specified class.
+	 * @param {number} level - The depth to search for changes in relationships.
+	 *                         Use 0 for infinite depth, or a positive number to limit the depth.
+	 * @returns {boolean|null} - Returns:
+	 *                           - `true` if the model or any of its relationships are dirty.
+	 *                           - `false` if neither the model nor its relationships are dirty.
+	 *                           - `null` if the depth is limited and the level is exhausted.
 	 */
-	
-	protected initiation( data : TData ) {
-		const properties = [
-			...this.properties(),
-			...this.relationships(),
-		];
-		const temp = Object.fromEntries( Object.entries( data as Object )
-		                                       .filter( ( [ key, value ] ) => value !== null && value !== undefined &&
-		                                                                      properties.includes(
-			                                                                      key as keyof TData ) ) ) as TData;
-		Object.assign( this, temp );
+	isDirtyDeep( level : number = 0 ) : boolean | null {
+		// Check if the current model has changes
+		if ( --level === 0 )
+			return null;
+		if ( this.isDirty() ) {
+			return true;
+		}
+		
+		// Check if any related models are dirty
+		for ( const relationship of this.relationships() ) {
+			const relatedValue = this[ relationship ] as unknown;
+			
+			if ( relatedValue instanceof BaseModel && relatedValue.isDirtyDeep( level ) ) {
+				return true;
+			} else if ( Array.isArray( relatedValue ) ) {
+				// Check each item in the array for dirty state
+				if ( relatedValue.some( item => item instanceof BaseModel && item.isDirtyDeep( level ) ) ) {
+					return true;
+				}
+			}
+		}
+		
+		// If neither the model nor its relationships are dirty, return false
+		return false;
 	}
 	
 	/**
-	 * Method for return the properties of the object that are fillable on init
-	 * @returns  An array with the keys of the properties.
+	 * Check if the model or its relationships are clean (no unsaved changes).
+	 *
+	 * @param {number} level - The depth to search for changes in relationships.
+	 *                         Use 0 for infinite depth, or a positive number to limit the depth.
+	 * @returns {boolean|null} - Returns:
+	 *                           - `true` if the model and all its relationships are clean (no changes).
+	 *                           - `false` if the model or any of its relationships are dirty.
+	 *                           - `null` if the depth is limited and the level is exhausted.
 	 */
-	protected abstract properties() : Array<keyof TData>;
+	isCleanDeep( level : number = 0 ) : boolean | null {
+		// Use isDirtyDeep to check if the model or its relationships are dirty.
+		const isDirtyDeep = this.isDirtyDeep( level );
+		
+		// If isDirtyDeep returns null, stop recursion and return null
+		if ( isDirtyDeep === null ) {
+			return null;
+		}
+		
+		// If isDirtyDeep is false, then the model and its relationships are clean
+		return !isDirtyDeep;
+	}
 	
 	/**
-	 * Method for return the relationships of the object that are fillable on init
-	 * @returns  An array with the keys of the relationships.
+	 * Returns an array of properties that define the model.
 	 */
-	protected abstract relationships() : Array<keyof TData>;
+	protected abstract properties() : Array<keyof TInterface>;
 	
-	/*initRelatedArray<T extends BaseModel<any, any>>( data: Array<any>  ,
-	                                       ClassRef : new (data) => T ) : PropertyType<Array<PropertyType<T>>> {
-		return Array.isArray( data )
-		       ? data.map( item => new ClassRef( item ) )
-		       : undefined;
-	}*/
-	protected initRelatedArray<T extends BaseModel>( data : null | Array<ConstructorParameters<new ( data : any ) => T>[0]>,
-	                                                 ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T ) : PropertyType<Array<PropertyType<T>>> {
-		return Array.isArray( data )
-		       ? data.map( ( item ) => new ClassRef( item ) ) as PropertyType<T>[]
+	/**
+	 * Returns an array of relationships associated with the model.
+	 */
+	protected abstract relationships() : Array<keyof TInterface>;
+	
+	/**
+	 * Initializes an array of related objects if data exists.
+	 */
+	protected initRelatedArray<T extends BaseModel<any, any>>(
+		data : ConstructorParameters<new ( data : any ) => T>[0][] | null,
+		ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T,
+	) : T[] | null {
+		return data
+		       ? data.map( ( item ) => new ClassRef( item ) )
 		       : null;
 	}
 	
 	/**
-	 * Initialize a related object if data exists.
-	 *
-	 * @param data - The data to initialize the object with.
-	 * @param ClassRef - The class to instantiate.A class extending BaseModel
-	 * @returns The initialized object or null.
+	 * Initializes a related object if data exists.
 	 */
-	protected initRelatedObject<T extends BaseModel<any, any>>( data : ConstructorParameters<new ( data : any ) => T>[0] | null,
-	                                                            ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T ) : PropertyType<T> {
+	protected initRelatedObject<T extends BaseModel<any, any>>(
+		data : ConstructorParameters<new ( data : any ) => T>[0] | null,
+		ClassRef : new ( data : ConstructorParameters<new ( data : any ) => T>[0] ) => T,
+	) : T | null {
 		return data
 		       ? new ClassRef( data )
 		       : null;
 	}
 	
 	/**
-	 * Safely convert a value to a Boolean.
-	 * @param  value - The value to convert.
-	 * @returns The converted Boolean or null if invalid.
+	 * Utility to initialize a boolean value.
 	 */
 	protected initToBoolean( value : any ) : boolean {
-		
-		if ( value !== null && value !== undefined ) return Boolean( value );
-		throw ( new InvalidModelDataError( { type : "boolean" } ) );
+		if ( value === null || value === undefined )
+			throw new InvalidModelDataError( { type : "boolean" } );
+		return Boolean( value );
 	}
 	
 	/**
-	 * Safely convert a value to a Date.
-	 * @param value - The value to convert.
-	 * @returns The converted Date or null if invalid.
+	 * Utility to initialize a date value.
 	 */
 	protected initToDate( value : any ) : Date {
 		const date = new Date( value );
-		console.log( date, value, date.toLocaleDateString(), date.getTime() );
-		if ( !isNaN( date.getTime() ) ) return date;
-		console.log( date, value, date.toLocaleDateString(), date.getTime() );
-		throw ( new InvalidModelDataError( { type : "date" } ) );
+		if ( isNaN( date.getTime() ) )
+			throw new InvalidModelDataError( { type : "date" } );
+		return date;
 	}
 	
 	/**
-	 * Safely convert a value to an instance of the given enum class.
-	 * The enum class must extend BaseEnum and have a static `findByValue` method.
-	 *
-	 * @param enumClass - The enum class extending BaseEnum.
-	 * @param value - The value to convert.
-	 * @returns An instance of the enum class or null if the value is invalid
+	 * Utility to initialize an enum value.
 	 */
-	protected initToEnum<E extends typeof BaseEnum>( enumClass : E, value : any ) : InstanceType<E> | null {
+	protected initToEnum<E extends typeof BaseEnum>(
+		enumClass : E,
+		value : any,
+	) : InstanceType<E> | null {
 		if ( value instanceof enumClass ) return value;
 		const enumI = enumClass.findByValue( value );
 		if ( enumI ) return enumI;
@@ -186,14 +215,55 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	}
 	
 	/**
-	 * Safely convert a value to a number.
-	 * @param {*} value - The value to convert.
-	 * @returns {number | null} The converted number or null if invalid.
+	 * Initializes an array of related objects if data exists.
+	 *
+	 * @param data - The raw data to initialize objects with, or null if no data is available.
+	 * @returns  An array of instantiated objects of the specified class.
 	 */
-	protected initToNumber( value : any ) : number | null {
-		if ( !isNaN( value ) ) return Number( value );
-		throw ( new InvalidModelDataError( { type : "number" } ) );
+	protected initiation( data : TData ) : void {
+		const fillableProperties = [
+			...this.properties(),
+			...this.relationships(),
+		];
+		Object.assign(
+			this,
+			Object.fromEntries(
+				Object.entries( data )
+				      .filter( ( [ key, value ] ) => value !== null && value !== undefined &&
+				                                     fillableProperties.includes( key as keyof TInterface ),
+				      ),
+			),
+		);
+		this.syncCurrent();
 	}
 	
+	/**
+	 * Utility to initialize a number value.
+	 */
+	protected initToNumber( value : any ) : number {
+		const num = Number( value );
+		if ( isNaN( num ) ) throw new InvalidModelDataError( { type : "number" } );
+		return num;
+	}
+	
+	
+	/**
+	 * Defines the initial values for the model.
+	 */
+	protected defineInitialValues() : TInterface {
+		return this.properties()
+		           .reduce( ( obj, property ) => {
+			           obj[ property ] = this[ property ];
+			           return obj;
+		           }, {} as TInterface );
+	}
+	
+	/**
+	 * Determines whether a property should be tracked for changes.
+	 */
+	protected shouldBeTracked<T extends this>( prop : keyof T ) : boolean {
+		return this.properties()
+		           .includes( prop );
+	}
 	
 }
