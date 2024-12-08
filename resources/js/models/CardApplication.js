@@ -1,6 +1,5 @@
 import CardApplicationBase from "./Base/CardApplicationBase";
 import CardApplicationDocument from "./CardApplicationDocument";
-import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
 import { CardStatusEnum } from "@enums/CardStatusEnum";
 import { InformTheUserError } from "@/errors/InformTheUserError";
 
@@ -23,29 +22,13 @@ export class CardApplication extends CardApplicationBase {
 	 * Sends the document data to the backend via a POST request.
 	 *
 	 * @param {CardApplicationDocument} document - The document to be added.
-	 * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves when the request is completed.
+	 * @returns {Promise<import("axios").AxiosResponse<any>>} A promise that resolves when the request is completed.
 	 */
 	addNewFile( document ) {
 		if ( this.card_application_document ) this.card_application_document.push(
 			document ); else this.card_application_document = [ document ];
 		// Prepare request data
-		const params = new FormData();
-		params.append( "file", document.file );
-		params.append( "description", document.description );
-		
-		// Define API endpoint
-		const url = this.route( "document.store", { cardApplication : this.id } );
-		
-		// Send POST request
-		return this.$axios.post( url, params, {
-			headers : { "Content-Type" : "multipart/form-data" },
-		} )
-		           .then( response => {
-			           // Update document status if successfully submitted
-			           document.id = response.data.id;
-			           document.status = CardDocumentStatusEnum.SUBMITTED;
-			           return response; // Return response if needed elsewhere
-		           } );
+		return document.create( this.id );
 	}
 	
 	/**

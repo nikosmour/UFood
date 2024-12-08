@@ -142,6 +142,32 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	}
 	
 	/**
+	 * Sends the document data to the backend via a POST request.
+	 *
+	 * @param {number} application_id - The  application_id that will be assosiate with the document
+	 * @returns {Promise<import("axios").AxiosResponse<any>>} A promise that resolves when the request is completed.
+	 */
+	create( application_id ) {
+		const params = new FormData();
+		params.append( "file", this.file );
+		params.append( "description", this.description );
+		
+		// Define API endpoint
+		const url = this.route( "document.store", { cardApplication : application_id } );
+		
+		// Send POST request
+		return this.$axios.post( url, params, {
+			headers : { "Content-Type" : "multipart/form-data" },
+		} )
+		           .then( response => {
+			           // Update document status if successfully submitted
+			           this.id = response.data.id;
+			           this.status = CardDocumentStatusEnum.SUBMITTED;
+			           return response; // Return response if needed elsewhere
+		           } );
+	}
+	
+	/**
 	 * Set the value of `status` to _delete.
 	 */
 	delete() {
