@@ -39,8 +39,8 @@ export class CardApplication extends CardApplicationBase {
 	 */
 	deleteFile( document ) {
 		document.delete();
-		// Skip removal if the document has unsaved changes on the server side
-		if ( document.change ) return;
+		// if the document is on the server don't remove it because need te update
+		if ( !document.isNew ) return;
 		
 		// Find the document in the array and remove it
 		const index = this.card_application_document.findIndex( file => file === document );

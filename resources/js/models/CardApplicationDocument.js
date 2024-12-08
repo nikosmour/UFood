@@ -7,31 +7,19 @@ import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
  * @extends CardApplicationDocumentBase
  */
 export class CardApplicationDocument extends CardApplicationDocumentBase {
-	/**
-	 * @static
-	 * @type {string}
-	 */
-	static _CREATE = "create";
+	_isDeleted = false;
+	
+	get isDeleted() {
+		return this._isDeleted;
+	}
 	
 	/**
-	 * @static
-	 * @type {string}
+	 if the  Model is new and it isn't save on the db yet.
+	 @returns boolean
 	 */
-	static _DELETE = "delete";
-	
-	/**
-	 * @static
-	 * @type {string}
-	 */
-	static _EDIT = "edit";
-	
-	/**
-	 * @static
-	 * @type {string}
-	 */
-	static _UPDATE_STATUS = "updateStatus";
-	
-	isDeleted = false;
+	get isNew() {
+		return this.id === undefined;
+	}
 	/**
 	 * Extend the `prepareProperties` method to include new properties.
 	 * @param {any} data - The data of the object.
@@ -145,10 +133,11 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	}
 	
 	/**
-	 * Set the value of `status` to _delete.
+	 * Set the _isDeleted true to define that is deleted
+	 * return boolean if the operation is successful
 	 */
 	delete() {
-		this.isDeleted = true;
+		return this._isDeleted = true;
 	}
 	
 	properties() {

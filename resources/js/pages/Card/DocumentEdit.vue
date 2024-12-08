@@ -41,7 +41,7 @@
 <script lang = "ts">
 import MyCardApplicationFiles from "@components/MyCardApplicationFiles.vue";
 import { CardStatusEnum } from "@enums/CardStatusEnum";
-import CardApplicationDocument from "@models/CardApplicationDocument";
+import type CardApplicationDocument from "@models/CardApplicationDocument";
 import { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
 import type CardApplication from "@models/CardApplication";
 import { InformTheUserError } from "@/errors/InformTheUserError";
@@ -82,7 +82,7 @@ export default {
 			     this.application.card_application_document.length === 0 )
 				throw new InformTheUserError( { message : "errors.files.absence" } );
 			if ( -1 !== ( this.application.card_application_document as CardApplicationDocument[] )
-				.findIndex( ( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE && obj.change === null, //to be incomplete and   not change
+				.findIndex( ( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE && obj.isClean(), //to be incomplete and   not change
 				) )
 				throw new InformTheUserError( { message : "errors.files.incomplete" } );
 			const documents = this.getDocumentsForUpdate(); // Renamed for clarity
@@ -141,7 +141,7 @@ export default {
 			console.log( "getDocumentsForUpdate" );
 			console.log( this.application.card_application_document );
 			const documentsToUpdate = ( this.application.card_application_document as CardApplicationDocument[] )
-				.filter( application => application.change !== null );
+				.filter( document => document.isDirty() || document.isDeleted );
 			const result = {
 				update : [] as Array<{ id : number, description : string }>,
 				delete : [] as Array<number>,
@@ -149,7 +149,7 @@ export default {
 			console.log( documentsToUpdate );
 			documentsToUpdate.forEach( ( document ) => {
 				console.log( document );
-				if ( document.change === CardApplicationDocument._DELETE ) {
+				if ( document.isDeleted ) {
 					result.delete.push( document.id );
 				} else {
 					result.update.push( {
