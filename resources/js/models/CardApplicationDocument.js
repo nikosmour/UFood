@@ -31,17 +31,15 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 */
 	static _UPDATE_STATUS = "updateStatus";
 	
+	isDeleted = false;
 	/**
 	 * Extend the `prepareProperties` method to include new properties.
 	 * @param {any} data - The data of the object.
 	 */
 	constructor( data ) {
 		super( data );
-		// to not initiate  setter of the status;
-		if ( data.status )
-			this._status = this.initToEnum( CardDocumentStatusEnum, data.status );
-		this._change = data.change ?? null;
 		this.file = data.file ?? null;
+		this.syncCurrent();
 	}
 	
 	/**
@@ -55,20 +53,20 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * @type {?string}
 	 */
 	get change() {
-		return this._change;
-	}
-	
-	get description() {
-		return super.description;
-	}
-	
-	/**
-	 * Set the value of `description` and mark the change as "edit".
-	 * @param {string} updateValue - The new description value.
-	 */
-	set description( updateValue ) {
-		super.description = updateValue;
-		this._setChange( CardApplicationDocument._EDIT );
+		const changes = this.dirty;
+		if ( !this.id )
+			return ( !this.isDeleted )
+			       ?
+			       CardApplicationDocument._CREATE
+			       :
+			       null;
+		else if ( this.isDeleted )
+			return CardApplicationDocument._DELETE;
+		else if ( changes[ "description" ] )
+			return CardApplicationDocument._EDIT;
+		else if ( changes[ "status" ] )
+			return CardApplicationDocument._UPDATE_STATUS;
+		return null; // has submitted
 	}
 	
 	/**
@@ -84,14 +82,10 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * @param {CardDocumentStatusEnum|string} status - The new status value or the key for it.
 	 */
 	set status( status ) {
-		const current = this.status;
 		console.log( "cardApplicationDocument set status", status, this.status );
 		super.status = status;
-		if ( current === this.status ) return;
-		const change = status !== CardDocumentStatusEnum.SUBMITTED
-		               ? CardApplicationDocument._UPDATE_STATUS
-		               : null;
-		this._setChange( change );
+		if ( super.status === CardDocumentStatusEnum.SUBMITTED )
+			this.syncCurrent();
 	}
 	
 	/**
@@ -125,23 +119,6 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	}
 	
 	/**
-	 * Set the value of `change` internally.
-	 * @private
-	 * @param {string|null} value - The new value of `change`.
-	 * @returns {void}
-	 */
-	_setChange( value ) {
-		const abort = value === this.change || ( this.change === CardApplicationDocument._CREATE && [
-			CardApplicationDocument._EDIT,
-			CardApplicationDocument._UPDATE_STATUS,
-		].includes( value ) );
-		if ( abort ) return;
-		this._change = this.change !== CardApplicationDocument._CREATE || value !== CardApplicationDocument._DELETE
-		               ? value
-		               : null;
-	}
-	
-	/**
 	 * Sends the document data to the backend via a POST request.
 	 *
 	 * @param {number} application_id - The  application_id that will be assosiate with the document
@@ -171,12 +148,11 @@ export class CardApplicationDocument extends CardApplicationDocumentBase {
 	 * Set the value of `status` to _delete.
 	 */
 	delete() {
-		this._setChange( CardApplicationDocument._DELETE );
+		this.isDeleted = true;
 	}
 	
 	properties() {
-		return super.properties()
-		            .filter( value => value !== "status" );
+		return super.properties();
 	}
 	
 }
