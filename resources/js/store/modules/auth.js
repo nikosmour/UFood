@@ -81,6 +81,7 @@ export const actions = {
 	/**
 	 * Fetches the currently logged-in user.
 	 * @param commit
+	 * @throws error
 	 * @returns {Promise<boolean>}
 	 */
 	async getUser( { commit } ) {
@@ -93,6 +94,7 @@ export const actions = {
 				return true;
 			}
 		} catch ( error ) {
+			throw error;
 		}
 		localStorage.removeItem( "user" ); // Store user data
 		commit( "setLogout" );
