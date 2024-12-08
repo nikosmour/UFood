@@ -40,10 +40,10 @@ export const mutations = {
 	 */
 	setLogin( state, payload ) {
 		const ModelClass = getModelClass( payload.model ); // Pass the model name from the backend
+		payload.user.abilities = UserAbilityEnum.findByValueMany( payload.user.abilities );
 		const user = ModelClass
 		             ? new ModelClass( payload.user )
 		             : payload.user;
-		user.abilities = UserAbilityEnum.findByValueMany( payload.user.abilities );
 		state.user = user;
 		
 	},
