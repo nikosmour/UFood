@@ -45,9 +45,10 @@ abstract class TransactionRequest extends FormRequest
 
     public function after(): array
     {
+        //the user has store only if he is academic;
         return $this->user ? [
             function (Validator $validator) {
-                if ($this->hasTheSameCategory($this->input('receiver_id'))) {
+                if ($validator->errors()->isEmpty() && $this->hasTheSameCategory($this->input('receiver_id'))) {
                     $validator->errors()->add(
                         'receiver_id',
                         __("validation.differentCategoryCoupons")
