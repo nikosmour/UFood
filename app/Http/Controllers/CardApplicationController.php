@@ -245,11 +245,10 @@ class CardApplicationController extends Controller
     {
         DB::transaction(function () use ($vData, $cardApplication) {
             $oldStatus = $cardApplication->cardLastUpdate->status ?? null;
-
             if (!in_array($oldStatus, [CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED])) {
                 $cardApplication->applicantComments()->create(['comment' => $vData['comment'] ?? null, 'status' => $vData['status'],]);
             } else {
-                $cardApplication->cardLastUpdate->comment = $vData['comment'] ?? $oldStatus;
+                $cardApplication->cardLastUpdate->comment = $vData['comment'] ?? $cardApplication->cardLastUpdate->comment;
                 $cardApplication->cardLastUpdate->status = $vData['status'];
             }
 
