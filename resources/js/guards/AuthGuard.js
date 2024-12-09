@@ -16,7 +16,8 @@ export default async ( to, from ) => {
 			return response;
 		} )
 		                      .catch( error => {
-			                      console.log( error );
+			                      if ( error.response?.status !== 401 )
+				                      console.log( error );
 			                      return false;
 		                      } );
 		
