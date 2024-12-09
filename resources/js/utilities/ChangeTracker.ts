@@ -171,22 +171,27 @@ export default abstract class ChangeTracker {
 		} );
 	}
 	
+	public trackableProps<T extends this>() : Array<keyof T> {
+		return Object.keys( this ) as ( keyof T )[];
+	}
+	
 	/**
 	 * Define the initial values for tracking.
 	 */
-	protected defineInitialValues<T extends this>() : Record<keyof T, any> {
-		const values : Partial<Record<keyof T, any>> = {};
-		for ( const key of Object.keys( this ) as ( keyof T )[] ) {
+	protected defineInitialValues<T extends this>() : Partial<T> {
+		const values : Partial<T> = {};
+		for ( const key of this.trackableProps() ) {
 			values[ key ] = this[ key ];
 		}
-		return values as Record<keyof T, any>;
+		return values;
 	}
 	
 	/**
 	 * Determine whether a property should be tracked for changes.
 	 */
 	protected shouldBeTracked<T extends this>( prop : keyof T ) : boolean {
-		return true; // Default implementation, can be overridden.
+		return this.trackableProps()
+		           .includes( prop as string );
 	}
 	
 	/**

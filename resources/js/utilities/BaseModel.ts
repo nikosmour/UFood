@@ -3,6 +3,7 @@ import type { route } from "ziggy-js";
 import type { BaseEnum } from "@/utilities/enums/BaseEnum";
 import { InvalidModelDataError } from "@/errors/InvalidDataError";
 import ChangeTracker from "@utilities/ChangeTracker";
+import { config } from "@/config";
 
 /**
  * Base class for models in the application.
@@ -247,23 +248,9 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	}
 	
 	
-	/**
-	 * Defines the initial values for the model.
-	 */
-	protected defineInitialValues() : TInterface {
-		return this.properties()
-		           .reduce( ( obj, property ) => {
-			           obj[ property ] = this[ property ];
-			           return obj;
-		           }, {} as TInterface );
-	}
-	
-	/**
-	 * Determines whether a property should be tracked for changes.
-	 */
-	protected shouldBeTracked<T extends this>( prop : keyof T ) : boolean {
-		return this.properties()
-		           .includes( prop );
+	public trackableProps<T extends this>() : Array<keyof T> {
+		return config.alterableProperties[ this.constructor.name ] as Array<keyof T> | null ?? [] as Array<keyof T>;
 	}
 	
 }
+
