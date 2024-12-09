@@ -44,6 +44,9 @@ export default {
 		CardApplicantInfo,
 		MyCardApplicationFiles,
 	},
+	emits :    [
+		"edit",
+	],
 	props :      {
 		application : {
 			type :     Object as () => CardApplication,
@@ -71,6 +74,7 @@ export default {
 		startEditingApplication() {
 			this.loadings.push( true );
 			this.application.requestToEdit()
+			    .then( () => this.$emit( "edit" ) )
 			    .finally(
 				    () => this.loadings.pop(),
 			    );

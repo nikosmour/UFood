@@ -9,17 +9,19 @@
                     hide-actions
                 >
                     <template v-slot:item.1>
-                        <CardApplicationCreateForm />
+                        <CardApplicationCreateForm @created = "step=2" />
                     </template>
 
                     <template v-slot:item.2>
                         <DocumentEdit
                             :application = "application"
+                            @submit = "step=3"
                         />
                     </template>
                     <template v-slot:item.3>
                         <ApplicationPreview
                             :application = "application"
+                            @edit = "step=2"
                         />
                     </template>
                 </v-stepper>
@@ -45,6 +47,12 @@ export default {
 		DocumentEdit,
 		ApplicationPreview,
 	},
+	data() {
+		return {
+			isEditing : true,
+			step :      0,
+		};
+	},
 	computed : {
 		...mapGetters( "auth", {
 			application1 : "cardApplication",
@@ -52,13 +60,15 @@ export default {
 		application() : CardApplication {
 			return this.application1;
 		},
-		step() : number {
-			if ( !this.application )
-				return 1;
-			return ( this.application.isEditing )
-			       ? 2
-			       : 3;
-		},
+	},
+	created() {
+		this.step = ( !this.application )
+		            ?
+		            1
+		            : ( this.application.isEditing )
+		              ?
+		              2
+		              : 3;
 	},
 
 };

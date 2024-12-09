@@ -49,6 +49,9 @@ import { InformTheUserError } from "@/errors/InformTheUserError";
 export default {
 	name :       "DocumentEdit",
 	components : { MyCardApplicationFiles },
+	emits :    [
+		"submit",
+	],
 	props :      {
 		application : {
 			type :     Object as () => CardApplication,
@@ -62,7 +65,7 @@ export default {
 			maxChars : maxCommentChar,
 			comment :  "",
 			rules :    [
-				v => v.length <= maxCommentChar || this.$t( "validation.lte.string", {
+				v => !v || v.length <= maxCommentChar || this.$t( "validation.lte.string", {
 					attribute : this.$t( "comment" ),
 					value :     maxCommentChar,
 				} ),
@@ -164,6 +167,7 @@ export default {
 
 		async submitDocuments() {
 			await this.saveApplication( null, CardStatusEnum.SUBMITTED );
+			this.$emit( "submit" );
 		},
 
 
