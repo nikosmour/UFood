@@ -37,7 +37,8 @@ Route::apiResource('cardApplication.document', CardApplicationDocumentController
 Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingController::class, ['as' => 'cardApplication'])
     ->whereIn('category', CardStatusEnum::values()->toArray())->only('store');
 Route::get('cardApplication/checking/search', [CardApplicationCheckingController::class, 'search'])->name('cardApplication.checking.search');
-Route::post('login', [LoginController::class, 'login']);//->name('login');
+Route::post('login', [LoginController::class, 'login'])->name('login');
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/transaction/confirm', [TransactionCouponConformationDetailsController::class, '__invoke'])->name('transaction.confirm');
 Route::post('card-applicant', [CardApplicantController::class, '__invoke']);
 Route::get('coupons/history', CouponTransactionController::class)->name('coupons.history');// invoke

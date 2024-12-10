@@ -107,7 +107,7 @@ export const actions = {
 	 * @returns {Promise<void>}
 	 */
 	async logout( { commit } ) {
-		await AxiosInstance.post( "/logout" );
+		await AxiosInstance.post( "api/logout" );
 		localStorage.removeItem( "user" );
 		commit( "setLogout" );
 	},

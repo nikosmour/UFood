@@ -10,7 +10,6 @@ use App\Http\Controllers\ExportStatisticsController;
 use App\Http\Controllers\PurchaseCouponController;
 use App\Http\Controllers\TransferCouponController;
 use App\Http\Controllers\UserInfoController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +27,7 @@ Route::get('/', function () {
     return view('router');
 });
 
-Auth::routes();
+//Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('card/history', CardHistoryController::class)->name('card.history');// invoke
