@@ -51,7 +51,7 @@ export default abstract class ChangeTracker {
 	 * instance.someProp = "newValue";
 	 * console.log(instance.getDirty()); // ["someProp"]
 	 */
-	get DirtyKeys() : Array<keyof this> {
+	get dirtyKeys() : Array<keyof this> {
 		return Object.keys( this.#changedProperties ) as Array<keyof this>;
 	}
 	
@@ -189,7 +189,7 @@ export default abstract class ChangeTracker {
 	/**
 	 * Determine whether a property should be tracked for changes.
 	 */
-	protected shouldBeTracked<T extends this>( prop : keyof T ) : boolean {
+	public shouldBeTracked<T extends this>( prop : keyof T ) : boolean {
 		return this.trackableProps()
 		           .includes( prop as string );
 	}
