@@ -12,6 +12,7 @@ import { config } from "@/config";
 export default abstract class BaseModel<TData extends Pick<TInterface, keyof TInterface>, TInterface extends Record<string, any>> extends ChangeTracker {
 	static $axios : AxiosInstance | null = null;
 	static route : typeof route | null = null;
+	static primaryKey : keyof BaseModel<any, any> = "id";
 	
 	/**
 	 * Serialize the model instance to JSON.
@@ -90,40 +91,8 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 		this.$axios = axios;
 	}
 	
-	/**
-	 * Check if the model or its relationships have unsaved changes.
-	 *
-	 * @param {number} level - The depth to search for changes in relationships.
-	 *                         Use 0 for infinite depth, or a positive number to limit the depth.
-	 * @returns {boolean|null} - Returns:
-	 *                           - `true` if the model or any of its relationships are dirty.
-	 *                           - `false` if neither the model nor its relationships are dirty.
-	 *                           - `null` if the depth is limited and the level is exhausted.
-	 */
-	isDirtyDeep( level : number = 0 ) : boolean | null {
-		// Check if the current model has changes
-		if ( --level === 0 )
-			return null;
-		if ( this.isDirty() ) {
-			return true;
-		}
-		
-		// Check if any related models are dirty
-		for ( const relationship of this.relationships() ) {
-			const relatedValue = this[ relationship ] as unknown;
-			
-			if ( relatedValue instanceof BaseModel && relatedValue.isDirtyDeep( level ) ) {
-				return true;
-			} else if ( Array.isArray( relatedValue ) ) {
-				// Check each item in the array for dirty state
-				if ( relatedValue.some( item => item instanceof BaseModel && item.isDirtyDeep( level ) ) ) {
-					return true;
-				}
-			}
-		}
-		
-		// If neither the model nor its relationships are dirty, return false
-		return false;
+	static findModelInArray<T extends BaseModel<any, any>>( searchData : any, array : T[] ) : T | null {
+		return array.find( item => item[ BaseModel.primaryKey ] === searchData[ BaseModel.primaryKey ] ) || null;
 	}
 	
 	/**
@@ -216,10 +185,54 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	}
 	
 	/**
-	 * Initializes an array of related objects if data exists.
+	 * Adjusts the input data for the object initialization process if necessary.
 	 *
-	 * @param data - The raw data to initialize objects with, or null if no data is available.
-	 * @returns  An array of instantiated objects of the specified class.
+	 * @param data - The raw input data to be potentially modified before initializing the object.
+	 * @returns The processed input data, potentially modified.
+	 */
+	protected adjustInitializationData( data : T ) : T {
+		return data;
+	}
+	
+	/**
+	 * Check if the model or its relationships have unsaved changes.
+	 *
+	 * @param {number} level - The depth to search for changes in relationships.
+	 *                         Use 0 for infinite depth, or a positive number to limit the depth.
+	 * @returns {boolean|null} - Returns:
+	 *                           - `true` if the model or any of its relationships are dirty.
+	 *                           - `false` if neither the model nor its relationships are dirty.
+	 *                           - `null` if the depth is limited and the level is exhausted.
+	 */
+	isDirtyDeep( level : number = 0 ) : boolean | null {
+		// Check if the current model has changes
+		if ( this.isDirty() ) {
+			return true;
+		}
+		if ( --level === 0 ) return null;
+		
+		// Check if any related models are dirty
+		for ( const relationship of this.relationships() ) {
+			const relatedValue = this[ relationship ] as unknown;
+			
+			if ( relatedValue instanceof BaseModel && relatedValue.isDirtyDeep( level ) ) {
+				return true;
+			} else if ( Array.isArray( relatedValue ) ) {
+				// Check each item in the array for dirty state
+				if ( relatedValue.some( item => item instanceof BaseModel && item.isDirtyDeep( level ) ) ) {
+					return true;
+				}
+			}
+		}
+		
+		// If neither the model nor its relationships are dirty, return false
+		return false;
+	}
+	
+	/**
+	 * Initializes the object with provided data, assigning properties and relationships.
+	 *
+	 * @param data - The raw data used to initialize the object. Must conform to the structure expected by the class.
 	 */
 	protected initiation( data : TData ) : void {
 		const fillableProperties = [
@@ -229,7 +242,7 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 		Object.assign(
 			this,
 			Object.fromEntries(
-				Object.entries( data )
+				Object.entries( this.adjustInitializationData( data ) )
 				      .filter( ( [ key, value ] ) => value !== null && value !== undefined &&
 				                                     fillableProperties.includes( key as keyof TInterface ),
 				      ),
@@ -251,6 +264,64 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	public trackableProps<T extends this>() : Array<keyof T> {
 		return config.alterableProperties[ this.constructor.name ] as Array<keyof T> | null ?? [] as Array<keyof T>;
 	}
+	
+	public updateSync<T extends BaseModel<any, any>>( data : ConstructorParameters<new ( data : any ) => T>[0] ) : void {
+		const properties = this.properties();
+		const relationships = this.relationships();
+		
+		for ( const key in this.adjustUpdatedData( data ) ) {
+			if ( relationships.includes( key as keyof TInterface ) ) {
+				console.info( key );
+				const relationship = this[ key ];
+				if ( !relationship ) {
+					this[ key ] = data[ key ];
+				} else if ( relationship instanceof BaseModel ) {
+					relationship.updateSync( data[ key ] );
+				} else if ( Array.isArray( relationship ) ) {
+					this.updateRelatedArray( relationship, data[ key ] );
+				} else {
+					throw new Error( `Unsupported relationship type for key: ${ key }` );
+				}
+			} else if ( properties.includes( key as keyof TInterface ) ) {
+				this[ key ] = data[ key ];
+				if ( this.shouldBeTracked( key ) ) {
+					this.syncCurrent( [ key ] );
+				}
+			}
+		}
+	}
+	
+	protected adjustUpdatedData( data : T ) : T {
+		return data;
+	}
+	
+	/**
+	 * Updates an array of related objects if data exists.
+	 */
+	protected updateRelatedArray<T extends BaseModel<any, any>, T2 extends BaseModel<any, any>>( oldValue : Array<T2>,
+	                                                                                             data : ConstructorParameters<new ( data : any ) => T2>[0][] | null ) : T2[] | null {
+		if ( !data ) return oldValue;
+		
+		if ( !oldValue || !Array.isArray( oldValue ) || oldValue.length === 0 ) {
+			throw new Error( "Cannot update a relationship array without at least one instance" );
+		}
+		
+		const ClassRef = oldValue[ 0 ].constructor as new ( data : any ) => T2;
+		
+		for ( const relatedData of data ) {
+			// Call a static method on T2's class to find objects in the array
+			const existingObject = ClassRef.findModelInArray( relatedData, oldValue );
+			
+			if ( existingObject ) {
+				existingObject.updateSync( relatedData );
+			} else {
+				oldValue.push( new ClassRef( relatedData ) );
+			}
+		}
+		
+		return oldValue;
+	}
+	
 	
 }
 
