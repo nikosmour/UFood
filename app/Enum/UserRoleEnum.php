@@ -28,8 +28,8 @@ enum UserRoleEnum: string implements Enum, HasAbilities
         return match ($this) {
             UserRoleEnum::STUDENT => [UserAbilityEnum::COUPON_OWNERSHIP, UserAbilityEnum::CARD_OWNERSHIP],
             UserRoleEnum::RESEARCHER => [UserAbilityEnum::COUPON_OWNERSHIP],
-            UserRoleEnum::STAFF_COUPON => [UserAbilityEnum::COUPON_SELL, UserAbilityEnum::DAILY_MEAL_PLAN_CREATE],
-            UserRoleEnum::STAFF_ENTRY => [UserAbilityEnum::ENTRY_CHECK, UserAbilityEnum::DAILY_MEAL_PLAN_CREATE],
+            UserRoleEnum::STAFF_COUPON => [UserAbilityEnum::COUPON_SELL],
+            UserRoleEnum::STAFF_ENTRY => [UserAbilityEnum::ENTRY_CHECK],
             UserRoleEnum::STAFF_CARD => [UserAbilityEnum::CARD_APPLICATION_CHECK]
         };
     }

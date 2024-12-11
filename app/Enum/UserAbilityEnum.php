@@ -14,6 +14,5 @@ enum UserAbilityEnum: string implements Enum, Ability
     case COUPON_SELL = 'coupon sell';
     case CARD_APPLICATION_CHECK = 'card application check';
     case CARD_OWNERSHIP = 'card ownership';
-    case DAILY_MEAL_PLAN_CREATE = 'daily meal plan create';
     case ENTRY_CHECK = 'entry check';
 }
