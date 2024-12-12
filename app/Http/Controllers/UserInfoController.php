@@ -34,7 +34,7 @@ class UserInfoController extends Controller
                 'cardApplicant',
                 'cardApplicant.currentCardApplication.cardLastUpdate' //:status
             ]);
-            if (!$user->cardApplicant->currentCardApplication) // we have define the new cardApplication to receive the expiration of the  valid application minimum
+            if ($user->cardApplicant && !$user->cardApplicant->currentCardApplication) // we have define the new cardApplication to receive the expiration of the  valid application minimum
                 $user->load(
                     'cardApplicant.validCardApplication',//:expiration_date
                 );
