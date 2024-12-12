@@ -39,7 +39,7 @@ class LoginController extends Controller
                 'message' => 'Invalid email or password.',
                 'errors' => ['email' => ['Invalid credentials.']]
             ], 422);
-
+        session(['department' => $authResult['department']]);
         // Fetch user by email and create session
         /** @var User $user */
         $user = Auth::guard($authResult['guard'])->getProvider()->retrieveByCredentials(['email' => $authResult['email']]) ?? $this->createUser($authResult);

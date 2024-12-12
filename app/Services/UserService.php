@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Academic;
+use App\Models\CardApplicant;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,5 +51,23 @@ class UserService
     public function logOut(Request $request)
     {
         return app(LoginController::class)->logout($request);
+    }
+
+    public function getApplicantInfo(Academic $user): ?CardApplicant
+    {
+
+        DB::setDefaultConnection('secondary_mysql');
+        /** @var CardApplicant|null $cardApplicant */
+        $cardApplicant = CardApplicant::whereAcademicId($user->academic_id)->withOnly(['addresses', 'departmentRelation:id,name'])->first();
+        // Fetch applicant info for a specific user
+        DB::setDefaultConnection(config('database.default'));
+
+        return $cardApplicant;
+    }
+
+    public function updateActiveStatusForUsers(): void
+    {
+        // Fetch active status for all users
+        return;
     }
 }

@@ -40,7 +40,7 @@ Route::get('cardApplication/checking/search', [CardApplicationCheckingController
 Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/transaction/confirm', [TransactionCouponConformationDetailsController::class, '__invoke'])->name('transaction.confirm');
-Route::post('card-applicant', [CardApplicantController::class, '__invoke']);
+Route::resource('cardApplicant', CardApplicantController::class)->only(["index", "store"]);
 Route::get('coupons/history', CouponTransactionController::class)->name('coupons.history');// invoke
 
 

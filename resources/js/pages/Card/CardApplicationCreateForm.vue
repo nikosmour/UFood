@@ -1,39 +1,115 @@
 <template>
-    <v-card :loading = "!user" class = "justify-content-center">
-        <card-applicant-info :applicant = "user" :aria-label = "$t('personalInfo')" :caption = "$t('personalInfo')" />
-        <v-form id = "accept-form" aria-label = "Accept Form" class = "mt-5" @submit.prevent = "createApplication">
+    <v-card :loading = "isLoading" class = "justify-content-center">
+        <v-alert
+            aria-live = "assertive"
+            closable
+            role = "alert"
+            style = "white-space: pre-wrap"
+            type = "info"
+        >
+            {{ alert_info }}
+        </v-alert>
+
+        <v-form
+            v-if = "!isFetching && user.card_applicant"
+            id = "accept-form" :aria-label = "$t('personalInfo')" class = "mt-5" @submit.prevent = "createApplication"
+        >
             <v-row>
-                <v-col v-for = "(input, index) in inputs" :key = "index" cols = "12" md = "6">
+                <v-col cols = "12" md = "6">
                     <v-text-field
-                        :label = "$t('model_data.'+input.label)"
-                        :value = "getNestedValue(user, input.path)"
+                        v-model = "user.name"
+                        :disabled = "!user.shouldBeTracked('name')"
+                        :error-messages = "errors.name"
+                        :label = "$t('name')"
                         required
                         type = "text"
-                        @input = "setNestedValue(user, input.path, $event)"
                     />
                 </v-col>
+                <v-col cols = "12" md = "6">
+                    <v-text-field
+                        v-model = "user.card_applicant.first_year"
+                        :disabled = "!user.card_applicant.shouldBeTracked('first_year')"
+                        :error-messages = "errors.first_year"
+                        :label = "$t('model_data.first_year')"
+                        required
+                        type = "number"
+                    />
+                </v-col>
+                <v-col cols = "12" md = "6">
+                    <v-text-field
+                        v-model = "user.status.value"
+                        :disabled = "!user.shouldBeTracked('status')"
+                        :error-messages = "errors.status"
+                        :label = "$t('model_data.status')"
+                        required
+                        type = "text"
+                    />
+                </v-col>
+                <v-col cols = "12" md = "6">
+                    <v-text-field
+                        v-model = "user.card_applicant.department"
+                        :disabled = "!user.card_applicant.shouldBeTracked('department')"
+                        :error-messages = "errors.department"
+                        :label = "$t('model_data.department')"
+                        required
+                        type = "text"
+                    />
+                </v-col>
+                <v-col cols = "12" md = "6">
+                    <v-text-field
+                        v-model = "user.a_m"
+                        :disabled = "!user.shouldBeTracked('a_m')"
+                        :error-messages = "errors.a_m"
+                        :label = "$t('model_data.a_m')"
+                        required
+                        type = "text"
+                    />
+                </v-col>
+                <v-col cols = "12" md = "6">
+                    <v-text-field
+                        v-model = "user.academic_id"
+                        :disabled = "!user.shouldBeTracked('academic_id')"
+                        :error-messages = "errors.academic_id"
+                        :label = "$t('model_data.academic_id')"
+                        required
+                        type = "text"
+                    />
+                </v-col>
+
             </v-row>
             <v-row v-for = "type in ['permanent','temporary']" :key = "type">
                 <v-col cols = "12" md = "6">
                     <v-text-field
                         v-model = "addresses[type].location"
+                        :disabled = "!addresses[type].shouldBeTracked('location')"
+                        :error-messages = "errors[`addresses.${type}.location`]"
+
                         :label = "$t('address.'+type)"
-                        required
+                        :required = "type==='temporary'"
                         type = "text"
                     />
                 </v-col>
                 <v-col cols = "12" md = "6">
                     <v-text-field
                         v-model = "addresses[type].phone"
+                        :disabled = "!addresses[type].shouldBeTracked('phone')"
+                        :error-messages = "errors[`addresses.${type}.phone`]"
                         :label = "$t('address.phone.'+type)"
-                        required
+                        :required = "type==='temporary'"
                         type = "text"
                     />
                 </v-col>
             </v-row>
-            <v-btn
-                :aria-label = " $t('accept')" :text = "$t( 'accept' )" color = "primary" @click = "createApplication"
-            />
+            <v-btn-group>
+                <v-btn
+                    v-tooltip.top = "$t('applicant-update-info')" :aria-label = " $t('applicant-update-info')"
+                    :text = "$t( 'update' )" color = "secondary" @click = "retrieveApplicant(true)"
+                />
+                <v-btn
+                    v-tooltip.bottom = "$t('applicant-accept-info')" :aria-label = " $t('applicant-accept-info')"
+                    :text = "$t( 'accept' )" color = "primary" @click = "createApplication"
+                />
+            </v-btn-group>
         </v-form>
     </v-card>
 </template>
@@ -43,14 +119,23 @@
 import { mapGetters } from "vuex";
 import CardApplicantInfo from "@/Components/cardApplicantInfo.vue";
 import { InformTheUserError } from "@/errors/InformTheUserError";
-import type Academic from "@models/Academic";
 import Address from "@models/Address";
+import CardApplicant from "@models/CardApplicant";
 
 export default {
 	components : { CardApplicantInfo },
+	emits : [
+		"created",
+	],
 	data : function () {
 		return {
-			url :    this.route( "cardApplication.store" ),
+			url :          this.route( "cardApplication.store" ),
+			errors :       {
+				"permanent" : {},
+				"temporary" : {},
+			},
+			isFetching :   true,
+			isSubmitting : false,
 		};
 	},
 
@@ -58,36 +143,19 @@ export default {
 		...mapGetters( "auth", {
 			user : "currentUser",
 		} ),
-		inputs() {
-			return [
-				{
-					label : "name",
-					path :  "name",
-				},
-				{
-					label : "first_year",
-					path :  "card_applicant.first_year",
-				},
-				{
-					label : "status",
-					path :  "status",
-				},
-				{
-					label : "department",
-					path :  "card_applicant.department",
-				},
-				{
-					label : "a_m",
-					path :  "a_m",
-				},
-				{
-					label : "academic_id",
-					path :  "academic_id",
-				},
-			];
+
+		isLoading() : boolean {
+			return this.isFetching || this.isSubmitting;
+		},
+
+		alert_info() : string {
+			if ( this.user.cardApplicant === null || this.user.cardApplicant?.academic_id === undefined )
+				return this.$t( "applicantInfoFormMessage.create" );
+			else
+				return this.$t( "applicantInfoFormMessage.update" );
 		},
 		addresses() : Record<string, Address> {
-			const addresses = ( this.user.card_applicant.addresses as Address[] ).reduce(
+			return ( this.user.card_applicant?.addresses as Address[] ).reduce(
 				( o, input ) => {
 					const type = input.is_permanent
 					             ? "permanent"
@@ -97,12 +165,6 @@ export default {
 				},
 				{} as Record<string, Address>,
 			);
-
-			// Ensure "permanent" and "temporary" addresses exist
-			addresses[ "permanent" ] ??= new Address( { is_permanent : true } );
-			addresses[ "temporary" ] ??= new Address( { is_permanent : false } );
-
-			return addresses;
 		},
 	},
 	methods :  {
@@ -112,39 +174,36 @@ export default {
 					                              message : "noAcademicIDApplication",
 				                              } );
 			try {
-				const responseJson = await this.$axios.post( this.url );
-				responseJson.data.card_application_document ??= [];
-				( this.user as Academic ).card_applicant.current_card_application = responseJson.data;
-			} catch ( error ) {
-				throw error;
+				this.isSubmitting = true;
+				await CardApplicant.create( this.user );
+				this.$emit( "created" );
+			} catch ( errors ) {
+				if ( errors.response?.status === 422 ) {
+					this.errors = errors.response.data.errors;
+				} else
+					throw errors;
+			} finally {
+				this.isSubmitting = false;
 			}
 		},
-		getNestedValue( obj : object, path : string ) {
-			return path.split( "." )
-			           .reduce( ( o, key ) => ( o && o[ key ] !== undefined
-			                                    ? o[ key ]
-			                                    : "" ), obj );
+		async retrieveApplicant( byTheSystem : boolean = false ) {
+			try {
+				this.isFetching = true;
+				await this.user.prepareForApplicationCreate( byTheSystem );
+			} catch ( error ) {
+				throw error;
+			} finally {
+				this.isFetching = false;
+
+			}
+
 		},
-		setNestedValue( obj : object, path : string, value : string | number ) {
-			const keys = path.split( "." );
-			const lastKey = keys.pop();
-			const target = keys.reduce( ( o, key ) => ( o && o[ key ] !== undefined
-			                                            ? o[ key ]
-			                                            : ( o[ key ] = {} ) ), obj );
-			if ( target && lastKey ) target[ lastKey ] = value;
-		},
+	},
+	created() {
+		this.retrieveApplicant();
 	},
 };
 </script>
 
-<style scoped>
-/* Ensure sufficient color contrast */
-button.btn-primary {
-    background-color: #0056b3; /* Darken the primary color */
-    color: #ffffff;
-}
-
-button.btn-primary:hover {
-    background-color: #004494; /* Darken the hover color */
-}
+<style>
 </style>

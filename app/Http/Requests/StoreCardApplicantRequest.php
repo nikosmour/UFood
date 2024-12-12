@@ -16,6 +16,15 @@ class StoreCardApplicantRequest extends FormRequest
         return true;
     }
 
+
+    public function prepareForValidation()
+    {
+        /** @var Academic $user */
+        $user = auth()->user();
+        $this->isCreate = $user->cardApplicant === null;
+
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,16 +32,22 @@ class StoreCardApplicantRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-//            'cellphone' => ['required', 'phone:INTERNATIONAL,GR,MOBILE'],
-            'first_year' => ['required', 'integer', 'between:2000,' . now()->format('Y')],
-            'department_id' => ['required', 'integer', 'exists:departments,id'],
-            'addresses' => ['required', 'array', 'min:1', 'max:2'],
-            'addresses.*.id' => ['integer', 'exists:addresses,id'],
-            'addresses.*.location' => ['required', 'string', 'max:99'],
-            'addresses.*.phone' => ['required', 'phone:INTERNATIONAL,GR'],
-            'addresses.*.is_permanent' => ['required', 'boolean'],
+        $rules = [
+//            'cellphone' => ['phone:INTERNATIONAL,GR,MOBILE'],
+            'first_year' => ['integer', 'between:2000,' . now()->format('Y')],
+            'department' => ['string', 'exists:departments,name'],
+            'addresses' => ['array:permanent,temporary', 'min:1', 'max:2'],
+            'addresses.*.location' => ['string', 'max:99'],
+            'addresses.*.phone' => ['phone:INTERNATIONAL,GR'],
+            'addresses.*.is_permanent' => ['boolean'],
 
         ];
+        if ($this->isCreate)
+            foreach ($rules as $key => $value) {
+                $rules[$key][] = 'required';
+            }
+        else
+            $rules["delPermanent"] = ['boolean'];
+        return $rules;
     }
 }

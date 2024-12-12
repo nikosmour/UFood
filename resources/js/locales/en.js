@@ -13,7 +13,18 @@ export const en = {
 	},
 	// "and": "and",
 	"applicant" :             "Applicant",
-	"application" :           "Application | Applications",
+	"applicant-update-info" :    "Update the information from the progress.upatras.gr",
+	"applicant-accept-info" :    "I confirm the above information are accurate and I want to proceed with the next step",
+	"applicantInfoFormMessage" : {
+		"create" : "Since this is your first time applying, we currently do not have your information.\n" +
+		           "@:applicantInfoFormMessage.common",
+		"update" : "The disable inputs has been field from a previous time. If are wrong:\n" +
+		           "@:applicantInfoFormMessage.common",
+		"common" : "1. If need it update them on progress.upatras.gr and hit update to retrieve them\n" +
+		           "2. Contact your department's secretary if you can't modify them.\n",
+		
+	},
+	"application" :              "Application | Applications",
 	"application-status-is" : {
 		"current" : "Your current application is {status}.",
 		"latest" :  "Your latest application is {status}.",
@@ -206,11 +217,6 @@ export const en = {
 	// "preview": "Preview",
 	"period.time" : "Time Period",
 	"personalInfo" :     "Personal info",
-	"PersonalInfoFormMessage" :
-	                   "The fields that are disabled were automatically filled by the system " +
-	                   "and cannot be modified. If any of this information needs to be updated, " +
-	                   "please make the changes on progress.upatras.gr or contact your " +
-	                   "department's secretary for assistance",
 	"previous" :    "Previous",
 	// "provide_valid_card": "Provide a valid academic card",
 	"purchase" : {
