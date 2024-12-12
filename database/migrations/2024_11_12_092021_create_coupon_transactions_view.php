@@ -6,6 +6,7 @@ use App\Models\TransferCoupon;
 use App\Models\UsageCoupon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
@@ -25,13 +26,12 @@ return new class extends Migration {
         DB::statement('DROP VIEW IF EXISTS coupon_transactions');
     }
 
-
     /**
      * Get the meal columns for "using" transactions.
      */
-    private function getMealColumnsUsing(Illuminate\Support\Collection $meals): string
+    private function getMealColumnsUsing(Collection $meals): string
     {
-        return collect($meals)->map(function ($meal) {
+        return $meals->map(function (string $meal): string {
             return "CASE WHEN period = '$meal' THEN -1 ELSE 0 END as $meal";
         })->join(', ');
     }
@@ -39,9 +39,9 @@ return new class extends Migration {
     /**
      * Get the meal columns for "sending" transactions.
      */
-    private function getMealColumnsSending(Illuminate\Support\Collection $meals): string
+    private function getMealColumnsSending(Collection $meals): string
     {
-        return collect($meals)->map(function ($meal) {
+        return $meals->map(function (string $meal): string {
             return "CAST($meal AS SIGNED) * -1 as $meal";
         })->join(', ');
     }
@@ -59,13 +59,13 @@ return new class extends Migration {
             DB::raw('receiver_id as other_person_id'),
             DB::raw('0 as money'),
             DB::raw($mealColumnsSending)
-        ]);
+        ])->toBase();
     }
 
     /**
      * Get the receiving transactions query.
      */
-    private function getReceivingTransactions(Illuminate\Support\Collection $meals): Builder
+    private function getReceivingTransactions(Collection $meals): Builder
     {
         return TransferCoupon::select([
             'id',
@@ -74,14 +74,14 @@ return new class extends Migration {
             DB::raw('"receiving" as transaction'),
             DB::raw('sender_id as other_person_id'),
             DB::raw('0 as money'),
-            ...$meals
-        ]);
+            ...$meals->toArray()
+        ])->toBase();
     }
 
     /**
      * Get the buying transactions query.
      */
-    private function getBuyingTransactions(Illuminate\Support\Collection $meals): Builder
+    private function getBuyingTransactions(Collection $meals): Builder
     {
         return PurchaseCoupon::select([
             'id',
@@ -89,9 +89,9 @@ return new class extends Migration {
             'academic_id',
             DB::raw('"buying" as transaction'),
             DB::raw('0 as other_person_id'),
-            DB::raw('money/100 as money'),
-            ...$meals
-        ]);
+            DB::raw('money / 100 as money'),
+            ...$meals->toArray()
+        ])->toBase();
     }
 
     /**
@@ -107,13 +107,18 @@ return new class extends Migration {
             DB::raw('0 as other_person_id'),
             DB::raw('0 as money'),
             DB::raw($mealColumnsUsing)
-        ]);
+        ])->toBase();
     }
 
     /**
      * Combine all the transactions.
      */
-    private function combineTransactions($sending, $receiving, $buying, $using)
+    private function combineTransactions(
+        Builder $sending,
+        Builder $receiving,
+        Builder $buying,
+        Builder $using
+    ): Builder
     {
         return $sending
             ->union($receiving)
