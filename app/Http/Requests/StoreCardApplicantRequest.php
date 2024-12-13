@@ -24,7 +24,7 @@ class StoreCardApplicantRequest extends FormRequest
     public function rules()
     {
         return [
-            'cellphone' => ['required', 'phone:INTERNATIONAL,GR,MOBILE'],
+//            'cellphone' => ['required', 'phone:INTERNATIONAL,GR,MOBILE'],
             'first_year' => ['required', 'integer', 'between:2000,' . now()->format('Y')],
             'department_id' => ['required', 'integer', 'exists:departments,id'],
             'addresses' => ['required', 'array', 'min:1', 'max:2'],
