@@ -11,7 +11,7 @@ import { ZiggyVue } from "ziggy-js";
 import { ErrorManager } from "./errorManager";
 import BaseModel from "@utilities/BaseModel";
 import type { AxiosRequestConfig } from "axios";
-
+import { useNotifyHandler } from "@components/NotifyUser/NotifyPlugin";
 
 AxiosInstance.interceptors.request.use(
 	( config : AxiosRequestConfig<any> ) => {
@@ -66,6 +66,8 @@ export const plugins : Plugin = {
 		app.use( Vuetify );
 		app.use( ErrorManager );
 		app.use( ZiggyVue, Ziggy );
+		app.config.globalProperties.$notify = useNotifyHandler.notify;
+		app.config.globalProperties.$displayError = useNotifyHandler.notifyError;
 		
 		// Set up BaseModel dependencies
 		BaseModel.setup( app.config.globalProperties.route, AxiosInstance );

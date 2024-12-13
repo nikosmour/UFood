@@ -9,11 +9,11 @@ export default {
 	errorCaptured( error, vm, info ) {
 		console.info( `Error Captured by App.vue Info ${ info } Error message: ${ error.message }` );
 		if ( error instanceof InformTheUserError )
-			this.$refs.globalErrorComponent.showError( this.$t( error.message ) );		// Use the global error handler
+			this.$displayError( { error : this.$t( error.message ) } );		// Use the global error handler
 		// this.globalErrorHandler(error.message);
 		
 		// Return false to prevent the error from propagating further
-		return true;
+		return false;
 	},
 	
 	
@@ -92,6 +92,7 @@ export default {
 		
 		// Set up Axios interceptors
 		setupAxiosInterceptor( this.$axios, this.$store, this.$router, this.route );
+
 	},
 	unmounted() {
 		//Leave all the echo channels if the user leave the site;
@@ -109,7 +110,7 @@ export default {
             <!-- Main content area with role for accessibility -->
             <v-container fluid role = "main">
                 <router-view />
-                <GlobalError ref = "globalErrorComponent" /> <!-- Add global error notification -->
+                <GlobalError /> <!-- Add global error notification -->
             </v-container>
         </v-main>
         
