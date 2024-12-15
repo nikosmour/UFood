@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\CardApplication;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,8 +12,8 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('card_application_checking', function (Blueprint $table) {
-            $table->renameColumn('card_application_staff_comment', 'comment');
+        Schema::table('has_card_applicant_comments', function (Blueprint $table) {
+            $table->renameColumn('card_applicant_comment', 'comment');
         });
     }
 
@@ -25,8 +24,8 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('card_application_checking', function (Blueprint $table) {
-            $table->renameColumn('comment', 'card_application_staff_comment');
+        Schema::table('has_card_applicant_comments', function (Blueprint $table) {
+            $table->renameColumn('comment', 'card_applicant_comment');
         });
     }
 };

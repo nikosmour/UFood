@@ -28,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::preventLazyLoading(!$this->app->isProduction());
+        $paths = glob(database_path('migrations/*'), GLOB_ONLYDIR);
+
+        $this->loadMigrationsFrom(array_merge([database_path('migrations')], $paths));
     }
 }
