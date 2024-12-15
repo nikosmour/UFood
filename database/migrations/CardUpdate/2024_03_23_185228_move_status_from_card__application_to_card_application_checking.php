@@ -15,7 +15,7 @@ return new class extends Migration {
         //todo it is not fully correct but  i have spent to much time for something needed only  one time
         Schema::table('card_application_checking', function (Blueprint $table) {
             $table->unsignedTinyInteger('card_application_staff_id')->comment('null if it is the student otherwise staff')->nullable()->change();
-            $table->enum('status', CardStatusEnum::values()->toArray())->default(CardStatusEnum::INCOMPLETE);
+            $table->enum('status', CardStatusEnum::values()->toArray())->default(CardStatusEnum::TEMPORARY_SAVED);
         });
         DB::table('card_application_checking')/*->whereNotNull('card_application_staff_id')*/ ->
         update(['status' => DB::table('card_applications')->select('status')

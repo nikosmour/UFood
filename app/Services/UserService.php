@@ -7,6 +7,7 @@ use App\Models\Academic;
 use App\Models\CardApplicant;
 use App\Models\Department;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -60,13 +61,56 @@ class UserService
     public function getApplicantInfo(Academic $user): ?CardApplicant
     {
 
-        DB::setDefaultConnection('secondary_mysql');
         /** @var CardApplicant|null $cardApplicant */
-        $cardApplicant = CardApplicant::whereAcademicId($user->academic_id)->withOnly(['addresses', 'departmentRelation:id,name'])->first();
-        // Fetch applicant info for a specific user
-        DB::setDefaultConnection(config('database.default'));
+        $cardApplicant = CardApplicant::on('secondary_mysql')->whereAcademicId($user->academic_id)
+            ->withOnly(['addresses', 'departmentRelation:id,name'])
+            ->first();
 
-        return $cardApplicant;
+        if (!$cardApplicant) {
+            throw new Exception('Card Applicant not found in secondary database.');
+        }
+
+// Convert the fetched CardApplicant to an array
+
+        $data = $cardApplicant->toArray();
+
+// Switch back to the default database
+
+// Handle the Department
+        $department = null;
+        if (isset($data['department'])) {
+            $department = Department::firstOrCreate(
+                ['name' => $data['department']]
+            );
+        }
+// Create or update the CardApplicant
+        $defaultCardApplicant = $user->cardApplicant()->updateOrCreate(
+            [], // Match criteria
+            [
+                'first_year' => $data['first_year'],
+                'department_id' => $department->id ?? null,
+            ]
+        );
+
+// Handle Addresses
+        if (isset($data['addresses']) && is_array($data['addresses'])) {
+            foreach ($data['addresses'] as $addressData) {
+                $defaultCardApplicant->addresses()->updateOrCreate(
+                    [
+                        'is_permanent' => $addressData['is_permanent'],
+                    ],
+                    [
+                        'is_permanent' => $addressData['is_permanent'],
+                        'location' => $addressData['location'],
+                        'phone' => $addressData['phone'],
+                    ]
+                );
+            }
+        }
+
+//        new CardApplicant($cardApplicant);
+//        $cardApplicant->departmenDepartment::Department::t
+        return $cardApplicant->load(['addresses', 'departmentRelation:id,name']);
     }
 
     public function updateActiveStatusForUsers(): void

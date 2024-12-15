@@ -42,7 +42,7 @@ class CardApplicant extends Model
     protected function department(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->departmentRelation->name,
+            get: fn() => $this->departmentRelation?->name,
         );
     }
 
