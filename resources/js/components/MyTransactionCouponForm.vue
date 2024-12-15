@@ -207,7 +207,7 @@ export default {
 			 */
 			rules : {
 				receiver : [
-					value => value || this.$t( "validation.required", { attribute : this.$t( "receiver.value" ) } ),
+					value => !!value || this.$t( "validation.required", { attribute : this.$t( "receiver.value" ) } ),
 					value => ( value > 0 ) || this.$t( "validation.exists",
 					                                   { attribute : this.$t( "validation.attributes.receiver_id" ) } ),
 					value => ( value !== this.couponOwner.academic_id ) || this.$t( "errors.transfer.myself" ),
@@ -281,6 +281,7 @@ export default {
 		 * @returns {Promise<Object>} Response data
 		 */
 		async submitData( url, data ) {
+			if ( this.isLoading ) return;
 			this.isLoading = true;
 			try {
 				const responseData = ( await this.$axios.post( url, data ) ).data;
