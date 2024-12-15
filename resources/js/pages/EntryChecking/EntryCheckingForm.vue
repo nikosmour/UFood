@@ -18,7 +18,7 @@
                         outlined
                         required
                         type = "number"
-                        @input = "resetAcademicIdInputState"
+                        @input = "handleBarcodeInput();resetAcademicIdInputState();"
                     />
                 </v-form>
                 <v-alert
@@ -67,6 +67,7 @@ export default {
 				success : true,
 			},
 			url :                      this.route( "entryChecking.store" ),
+			typingTimer : null,
 		};
 	},
 	computed : {
@@ -197,6 +198,21 @@ export default {
 
 			// Hide the alert message
 			this.hideAlert();
+		},
+		handleBarcodeInput() {
+
+			// Check if the scanner sends a complete barcode with an Enter key
+			// Clear the previous timer
+			if ( this.typingTimer )
+				clearTimeout( this.typingTimer );
+			/* if (this.academic_id.endsWith('\n') || this.academic_id.endsWith('\r')) {
+				this.check_id() // Remove newline/carriage return characters
+			} */
+
+			// Start a new timer to detect when input is complete
+			this.typingTimer = setTimeout( () => {
+				this.check_id(); // Submit the barcode after delay
+			}, 400 );
 		},
 
 		/**
