@@ -90,7 +90,7 @@ export default {
 		rules() {
 			return {
 				academic_id : [
-					v => v || this.$t( "validation.required", { "attribute" : this.$t( "id" ) } ),
+					v => !!v || this.$t( "validation.required", { "attribute" : this.$t( "id" ) } ),
 					v => v > 0 || this.$t( "validation.exists", { "attribute" : this.$t( "id" ) } ),
 					// Prevent resubmission of the same ID unless it's viewing the last transaction or has passed enough time after last transaction
 					v => v !== this.lastTransaction.id || this.isViewingLastTransaction || !this.show ||
@@ -118,19 +118,20 @@ export default {
 		 */
 		async check_id() {
 			// 1.Reset errors before validation
+			if ( !this.academic_id ) return;
 			this.resetAcademicIdInputState();
-
 			// 2.Validate form before proceeding
 			if ( !( await this.$refs.entryForm.validate() ).valid ) return;
-
+			if ( this.isLoading ) return;
+			this.isLoading = true;
+			if ( this.typingTimer )
+				clearTimeout( this.typingTimer );
 			// Set the last transaction details
 			this.lastTransaction = { id : this.academic_id };
 
 			// Prepare and send the request
 			const params = new FormData();
 			params.append( "academic_id", this.academic_id );
-
-			this.isLoading = true;
 
 			//3. Sends a POST request
 			try {
