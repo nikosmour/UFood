@@ -33,7 +33,12 @@ return [
     |
     */
 
-    'guard' => ['web'],
+    'guard' => [
+        'academics',
+        'entryStaffs',
+        'couponStaffs',
+        'cardApplicationStaffs'
+    ],
 
     /*
     |--------------------------------------------------------------------------
