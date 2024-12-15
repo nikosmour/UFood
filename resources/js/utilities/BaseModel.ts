@@ -23,9 +23,11 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	}
 	
 	/**
+	 * @param zeroArray if you want to keep the relationships that  don't have instances
+	 * but you know that  has been fetched.
 	 * Converts the model to a plain object representation.
 	 */
-	public toObject() : TInterface {
+	public toObject( zeroArray : boolean = true ) : TInterface {
 		const obj : Partial<TInterface> = {};
 		this.properties()
 		    .forEach( ( prop ) => {
@@ -34,17 +36,21 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 		this.relationships()
 		    .forEach( ( prop ) => {
 			    const value = this[ prop ];
+			    if ( !zeroArray && !value )
+				    return;
 			    if ( value instanceof BaseModel ) {
-				    obj[ prop ] = value.copy();
-			    } else if ( Array.isArray( value ) ) {
+				    obj[ prop ] = value.toObject( zeroArray );
+			    } else if ( !Array.isArray( value ) ) {
+				    obj[ prop ] = value;
+			    } else if ( zeroArray || value.length !== 0 ) {
 				    obj[ prop ] = value.map( ( item ) =>
 					                             item instanceof BaseModel
-					                             ? item.copy()
+					                             ? item.toObject( zeroArray )
 					                             : item,
 				    );
-			} else {
-				    obj[ prop ] = value;
-			}
+				    
+			    }
+				
 		    } );
 		return obj as TInterface;
 	}
