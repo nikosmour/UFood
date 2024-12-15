@@ -17,10 +17,10 @@ return new class extends Migration {
             $table->unsignedBigInteger('academic_id')->primary();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+//            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('status', UserStatusEnum::values()->toArray());
-            $table->rememberToken();
+//            $table->rememberToken();
             $table->unsignedMediumInteger('a_m')->unique();
             $table->boolean('is_active');
             $table->timestamps();
