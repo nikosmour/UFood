@@ -20,7 +20,7 @@
                         v-model = "user.name"
                         :disabled = "!user.shouldBeTracked('name')"
                         :error-messages = "errors.name"
-                        :label = "$t('name')"
+                        :label = "$t('model_data.name')"
                         required
                         type = "text"
                     />
@@ -100,16 +100,20 @@
                     />
                 </v-col>
             </v-row>
-            <v-btn-group>
+            <v-row class = "d-flex justify-space-between mr-2 ml-2 mt-2 mb-2">
                 <v-btn
                     v-tooltip.top = "$t('applicant-update-info')" :aria-label = " $t('applicant-update-info')"
                     :text = "$t( 'update' )" color = "secondary" @click = "retrieveApplicant(true)"
+                    :loading = "isLoading"
                 />
                 <v-btn
                     v-tooltip.bottom = "$t('applicant-accept-info')" :aria-label = " $t('applicant-accept-info')"
                     :text = "$t( 'accept' )" color = "primary" @click = "createApplication"
+                    :loading = "isLoading" type = "sumbit"
+                    variant = "elevated"
+
                 />
-            </v-btn-group>
+            </v-row>
         </v-form>
     </v-card>
 </template>
@@ -134,7 +138,7 @@ export default {
 				"permanent" : {},
 				"temporary" : {},
 			},
-			isFetching :   true,
+			isFetching : false,
 			isSubmitting : false,
 		};
 	},
@@ -169,6 +173,8 @@ export default {
 	},
 	methods :  {
 		async createApplication() {
+			if ( this.isLoading )
+				return;
 			if ( !this.user.academic_id )
 				throw new InformTheUserError( {
 					                              message : "noAcademicIDApplication",
@@ -187,6 +193,7 @@ export default {
 			}
 		},
 		async retrieveApplicant( byTheSystem : boolean = false ) {
+			if ( this.isFetching ) return;
 			try {
 				this.isFetching = true;
 				await this.user.prepareForApplicationCreate( byTheSystem );
