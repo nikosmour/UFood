@@ -357,7 +357,6 @@ export default {
 				receiver_id : this.receiver.id,
 				...this.mealQuantities,
 			};
-			this.isLoading = true;
 			this.submitData( this.route( "transaction.confirm" ), data )
 			    .then( json => {
 				    this.receiver.status = json.status;
