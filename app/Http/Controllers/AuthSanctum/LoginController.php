@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\AuthSanctum;
 
+use App\Enum\UserAbilityEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Academic;
 use App\Models\User;
 use App\Services\UserService;
 use Auth;
@@ -39,7 +41,7 @@ class LoginController extends Controller
                 'message' => 'Invalid email or password.',
                 'errors' => ['email' => ['Invalid credentials.']]
             ], 422);
-        session(['department' => $authResult['department']]);
+//        session(['department' => $authResult['department']]);
         // Fetch user by email and create session
         /** @var User $user */
         $user = Auth::guard($authResult['guard'])->getProvider()->retrieveByCredentials(['email' => $authResult['email']]) ?? $this->createUser($authResult);
@@ -63,18 +65,25 @@ class LoginController extends Controller
     private function createUser(array $authResult): mixed
     {
         $modelClass = Auth::guard($authResult['guard'])->getProvider()->getModel();
+        //$user->
+        /** @var User $user */
         $user = new $modelClass();
 
 // Assign attributes to the new user
         $user->name = $authResult['name'];
         if (array_key_exists('is_active', $authResult))
             $user->is_active = $authResult['is_active'];
-        $user->a_m = $authResult['a_m'];
+        if (array_key_exists('a_m', $authResult))
+            $user->a_m = $authResult['a_m'];
         if (array_key_exists('academic_id', $authResult))
             $user->academic_id = $authResult["academic_id"];
         $user->email = $authResult['email'];
+        $user->password = '';
         $user->status = $authResult['status'];
         $user->save();
+        if ($user->status->can(UserAbilityEnum::COUPON_OWNERSHIP))
+            /** @var Academic $user */
+            $user->couponOwner()->create();
         return $user;
     }
 }

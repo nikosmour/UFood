@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Controllers\Auth\LoginController;
 use App\Models\Academic;
 use App\Models\CardApplicant;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,16 +31,19 @@ class UserService
                 /** @var User $user */
                 $user = Auth::guard($guard)->user();
                 DB::setDefaultConnection($originalConnection);
-                return [
+                $array = [
                     'email' => $user->email,
                     'name' => $user->name,
                     'status' => $user->status,
-                    'a_m' => $user->a_m ?? null,
-                    "academic_id" => $user->academic_id ?? null,
-                    'is_active' => $user->is_active ?? true,
-                    'department' => $user->cardApplicant()->withOnly('departmentRelation')->first()?->department ?? null,
                     'guard' => $guard,
                 ];
+                if ($user instanceof Academic) {
+                    $array['a_m'] = $user->a_m;
+                    $array['academic_id'] = $user->academic_id;
+                    $array['is_active'] = $user->is_active;
+                    $array['department'] = $user->cardApplicant()->withOnly('departmentRelation')->first()?->department;
+                }
+                return $array;
             }
         }
         DB::setDefaultConnection($originalConnection);
