@@ -24,7 +24,7 @@ class CardApplicant extends Model
      * @var string[]
      */
     protected $casts = [
-        'year' => 'date:Y',
+        'first_year' => 'date:Y',
         'cellphone' => E164PhoneNumberCast::class . ':GR'
     ];
     public $fillable = ['department_id', 'first_year', 'cellphone'];
