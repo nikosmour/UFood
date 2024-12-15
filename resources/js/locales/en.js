@@ -266,6 +266,14 @@ export const en = {
 		"submitted" :         "@:submit",
 		"temporary_checked" : "Temporarily checked",
 		"temporary_saved" :   "Temporarily saved",
+		"UNDERGRADUATE" : "Undergraduate",
+		"POSTGRADUATE" :  "Postgraduate",
+		"PHD" :           "Phd",
+		"ERASMUS" :       "Erasmus",
+		"RESEARCHER" :    "Researcher",
+		"STAFF_COUPON" :  "Staff coupon",
+		"STAFF_CARD" :    "Staff card application",
+		"STAFF_ENTRY" :   "Staff entry",
 	},
 	"statistics" : {
 		"adapted" : "Adapted",
@@ -311,6 +319,7 @@ export const en = {
 		"profile" :     "User Profile",
 		//     "value": "User"
 	},
+	"update" :     "Update",
 	// "verification": "Verification",
 	"Welcome" : "Welcome",
 };
