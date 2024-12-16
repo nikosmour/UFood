@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\AuthSanctum;
 
-use App\Enum\UserAbilityEnum;
 use App\Http\Controllers\Controller;
-use App\Models\Academic;
+use App\Http\Controllers\UserInfoController;
 use App\Models\User;
 use App\Services\UserService;
 use Auth;
@@ -14,10 +13,12 @@ use Illuminate\Http\Request;
 class LoginController extends Controller
 {
     protected UserService $userService;
+    protected UserInfoController $userInfoController;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, UserInfoController $userInfoController)
     {
         $this->userService = $userService;
+        $this->userInfoController = $userInfoController;
     }
 
     /**
@@ -43,12 +44,16 @@ class LoginController extends Controller
             ], 422);
 //        session(['department' => $authResult['department']]);
         // Fetch user by email and create session
-        /** @var User $user */
-        $user = Auth::guard($authResult['guard'])->getProvider()->retrieveByCredentials(['email' => $authResult['email']]) ?? $this->createUser($authResult);
-        Auth::guard($authResult['guard'])->login($user);
-
-        // Regenerate session here
         $request->session()->regenerate();
+        // Fetch user by email or create a temporary user if not found in the database
+        /** @var User|null $user */
+        $user = Auth::guard($authResult['guard'])->getProvider()->retrieveByCredentials(['email' => $authResult['email']]);
+
+        if ($user) {
+            Auth::guard($authResult['guard'])->login($user);
+            // If the user exists, return their info
+            return $this->userInfoController->__invoke(); // Assuming userInfo() method returns user-related info
+        }
 
         return response()->json([], 204);
     }

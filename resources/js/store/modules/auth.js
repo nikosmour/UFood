@@ -72,7 +72,7 @@ export const actions = {
 			                  return ( response.status === 204 )
 			                         ? dispatch( "getUser" )
 			                         : ( response.status === 200 )
-			                           ? response.data
+			                           ? dispatch( "getUser", response )
 			                           : null;
 		                  } );
 		
@@ -81,12 +81,13 @@ export const actions = {
 	/**
 	 * Fetches the currently logged-in user.
 	 * @param commit
+	 * @param responseLogin if it call after user Login.
 	 * @throws error
 	 * @returns {Promise<boolean>}
 	 */
-	async getUser( { commit } ) {
+	async getUser( { commit }, responseLogin ) {
 		try {
-			const { data } = await AxiosInstance.get( "/api/user" );
+			const { data } = responseLogin || await AxiosInstance.get( "/api/user" );
 			
 			if ( data ) {
 				localStorage.setItem( "user", JSON.stringify( data.user ) ); // Store user data
