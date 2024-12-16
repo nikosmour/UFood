@@ -104,11 +104,11 @@ export default {
 <template>
     <v-app>
         <!-- Main navigation component -->
-        <nav-view role = "navigation" />
+        <nav-view />
         
-        <v-main>
+        <v-main role = "main">
             <!-- Main content area with role for accessibility -->
-            <v-container fluid role = "main">
+            <v-container fluid>
                 <router-view />
                 <GlobalError /> <!-- Add global error notification -->
             </v-container>

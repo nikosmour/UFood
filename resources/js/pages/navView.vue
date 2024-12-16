@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar app>
+    <v-app-bar app role = "navigation">
         <v-app-bar-title>{{ appName }}</v-app-bar-title>
 
         <v-spacer></v-spacer>
