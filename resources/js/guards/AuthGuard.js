@@ -31,9 +31,12 @@ export default async ( to, from ) => {
 	}
 	// Check for specific abilities
 	if ( to.meta.requiresAbility && !store.getters[ "auth/hasAbility" ]( to.meta.requiresAbility ) )
-		return {
-			name : "error.403",  // Redirect to an error page if unauthorized
-		};
+		return !( store.getters[ "auth/isNew" ] )
+		       ? { name : "error.403" } // Redirect to an error page if unauthorized
+		       : {
+				name :  "userProfile",
+				query : { redirect : to.fullPath },
+			};
 	
 	// If all checks pass, continue to the requested route
 };

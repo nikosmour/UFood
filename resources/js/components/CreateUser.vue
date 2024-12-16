@@ -24,6 +24,8 @@ export default defineComponent(
 					this.isLoading = true;
 					const response = await ( this.$axios as AxiosInstance ).post( this.url );
 					await this.getUser( response );
+					if ( this.$route.query.redirect )
+						this.$router.push( this.$route.query.redirect );
 				} catch ( errors ) {
 					throw errors;
 				} finally {
