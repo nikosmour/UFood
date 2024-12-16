@@ -26,26 +26,26 @@ class UserService
         $originalConnection = config('database.default');
         DB::setDefaultConnection('secondary_mysql');
         // Loop through all available guards and attempt login
-        foreach (config('auth.guards') as $guard => $temp) {
-            if ($guard !== 'sanctum' && Auth::guard($guard)->attempt($credentials)) {
-                // Optionally, return user data or a token if needed
+        foreach (config('auth.guards') as $guard => $temp)
+            if ($guard !== 'sanctum') {
                 /** @var User $user */
-                $user = Auth::guard($guard)->user();
-                DB::setDefaultConnection($originalConnection);
-                $array = [
-                    'email' => $user->email,
-                    'name' => $user->name,
-                    'status' => $user->status,
-                    'guard' => $guard,
-                ];
-                if ($user instanceof Academic) {
-                    $array['a_m'] = $user->a_m;
-                    $array['academic_id'] = $user->academic_id;
-                    $array['is_active'] = $user->is_active;
-                    $array['department'] = $user->cardApplicant()->withOnly('departmentRelation')->first()?->department;
+                $user = Auth::guard($guard)->getProvider()->retrieveByCredentials($credentials);
+                if ($user) {
+                    DB::setDefaultConnection($originalConnection);
+                    $array = [
+                        'email' => $user->email,
+                        'name' => $user->name,
+                        'status' => $user->status,
+                        'guard' => $guard,
+                    ];
+                    if ($user instanceof Academic) {
+                        $array['a_m'] = $user->a_m;
+                        $array['academic_id'] = $user->academic_id;
+                        $array['is_active'] = $user->is_active;
+                        $array['department'] = $user->cardApplicant()->withOnly('departmentRelation')->first()?->department;
+                    }
+                    return $array;
                 }
-                return $array;
-            }
         }
         DB::setDefaultConnection($originalConnection);
         return [
