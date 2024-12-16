@@ -1,25 +1,3 @@
-/**
- * @typedef {Object} UserData
- * @property {number} id - The unique identifier for the user.
- * @property {string} name - The user's full name.
- * @property {string} email - The user's email address.
- * @property {EnumUnit} status - The user's role (e.g., "phd", "staff entry", "staff coupon").
- * @property {Array<EnumUnit>} abilities - List of abilities assigned to the user.
- * @property {number|null} couponCategory
- * Only for Academic users; --
- * @property {boolean} [is_active] - indicates if the user is active.
- * @property {number} [a_m] - Unique student number
- * @property {number} [academic_id] - Unique academic ID
- * @property {CouponOwner}  [couponOwner]
- */
-/**
- * @typedef {Object} CouponOwner
- * @property {number} academic_id
- * @property {number} breakfast
- * @property {number} lunch
- * @property {number} dinner
- */
-
 import { getModelClass } from "@utilities/modelUserMapper";
 import { UserAbilityEnum } from "@enums/UserAbilityEnum";
 import AxiosInstance from "@/plugins/axios";
@@ -176,7 +154,9 @@ export const getters = {
 		);
 	},
 	cardApplication : ( state ) => {
-		return state.user?.card_applicant?.current_card_application; 
+		const user = state.user;
+		const card_applicant = user?.card_applicant;
+		return card_applicant?.current_card_application;
 	},
 };
 
