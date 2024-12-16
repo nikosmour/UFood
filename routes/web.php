@@ -4,12 +4,10 @@ use App\Enum\CardStatusEnum;
 use App\Http\Controllers\CardApplicationCheckingController;
 use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardHistoryController;
-use App\Http\Controllers\DailyMealPlanController;
 use App\Http\Controllers\EntryCheckingController;
 use App\Http\Controllers\ExportStatisticsController;
 use App\Http\Controllers\PurchaseCouponController;
 use App\Http\Controllers\TransferCouponController;
-use App\Http\Controllers\UserInfoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,8 +29,6 @@ Route::get('/', function () {
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('card/history', CardHistoryController::class)->name('card.history');// invoke
-Route::get('myInfo', UserInfoController::class)->name('myInfo');
-Route::resource('mealPlan', DailyMealPlanController::class)->parameter('mealPlan', 'dailyMealPlan');
 Route::redirect('coupons/purchase', '/coupons/purchase/create');
 Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('create');
 Route::redirect('entryChecking', '/entryChecking/create');
