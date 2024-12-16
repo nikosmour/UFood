@@ -77,7 +77,8 @@ export class CardApplicant extends CardApplicantBase {
 			                                       user.syncCurrent();
 			                                       const card_applicant = user.card_applicant as CardApplicant;
 			                                       card_applicant.syncCurrent();
-			                                       card_applicant.current_card_application = response.data;
+			                                       card_applicant.current_card_application =
+				                                       response.data.cardApplication;
 			                                       const addresses = card_applicant.addresses as Address[];
 			                                       if ( params[ "delPermanent" ] ) {
 				                                       const index = addresses.findIndex(
