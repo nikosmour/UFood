@@ -27,7 +27,9 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-Route::get('/user', [UserInfoController::class, '__invoke'])->name('user');
+Route::get('/user', [UserInfoController::class, 'index'])->name('user');
+Route::post('/user/create', [UserInfoController::class, 'store'])->name('user.store');
+
 Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
 Route::resource('entryChecking', EntryCheckingController::class)->only('store');
 Route::resource('cardApplication', CardApplicationController::class)->only('update');

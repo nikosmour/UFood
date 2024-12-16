@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Academic;
 use App\Models\CardApplicationStaff;
+use Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 
@@ -16,7 +17,7 @@ class UserInfoController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
+        $this->middleware('authWithTemporary:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
     }
 
     /**
@@ -25,9 +26,17 @@ class UserInfoController extends Controller
      * @param Authenticatable|null $user
      * @return JsonResponse
      */
-    public function __invoke(?Authenticatable $user): JsonResponse
+    public function index(): JsonResponse
     {
-        $user = ($user) ?: auth()->user();
+        if (session()->has('temporary_user')) {
+            $temp = session('temporary_user');
+            return response()->json([
+                'message' => 'Login with temporary User',
+                'user' => $temp['user'],
+                'model' => class_basename($temp['model']),
+            ]);
+        }
+        $user = auth()->user();
         if ($user instanceof Academic) {
             $user->load([
                 'couponOwner',
@@ -46,6 +55,39 @@ class UserInfoController extends Controller
             'user' => $user,
             'model' => class_basename($user),
         ]);
+
+    }
+
+    public function store(): JsonResponse
+    {
+        if (session()->has('temporary_user')) {
+            $temp = session('temporary_user');
+            $modelClass = $temp['model'];
+            $userTemp = $temp['user'];
+            unset($userTemp['abilities']);
+            $userTemp['password'] = '';
+            $user = new $modelClass();
+            foreach ($userTemp as $userTempKey => $userTempValue) {
+                $user[$userTempKey] = $userTempValue;
+            }
+            $user->save();
+            if ($user instanceof Academic) {
+                $user->couponOwner()->create([]);
+                $user->load('couponOwner');
+            }
+            session()->forget('temporary_user');
+            session()->invalidate();
+            Auth::guard($temp['guard'])->login($user);
+//            session()->forget('temporary_user');
+            session()->regenerate(true);
+            return response()->json([
+                'message' => 'User Created',
+                'user' => $user,
+                'model' => class_basename($temp['model']),
+
+            ]);
+        }
+        return response()->json([], 404);
 
     }
 }

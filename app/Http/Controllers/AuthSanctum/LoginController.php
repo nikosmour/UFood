@@ -44,18 +44,30 @@ class LoginController extends Controller
             ], 422);
 //        session(['department' => $authResult['department']]);
         // Fetch user by email and create session
-        $request->session()->regenerate();
         // Fetch user by email or create a temporary user if not found in the database
         /** @var User|null $user */
         $user = Auth::guard($authResult['guard'])->getProvider()->retrieveByCredentials(['email' => $authResult['email']]);
 
         if ($user) {
             Auth::guard($authResult['guard'])->login($user);
+            $request->session()->regenerate(true);
             // If the user exists, return their info
-            return $this->userInfoController->__invoke(); // Assuming userInfo() method returns user-related info
+            return response()->json([], 204); // Assuming userInfo() method returns user-related info
         }
 
-        return response()->json([], 204);
+        // If the user doesn't exist, create a new User instance without saving to DB
+        $user = $this->createUser($authResult);
+
+        // Optionally, store the user data in the session for the next request
+        $userArray = $user->toArray();
+        $userArray['abilities'] = [];
+        $request->session()->regenerate(true);
+        session(['temporary_user' => [
+            'user' => $userArray,
+            'model' => Auth::guard($authResult['guard'])->getProvider()->getModel(),
+            'guard' => $authResult['guard'],
+        ]]);
+        return $this->userInfoController->index();
     }
 
     public function logout(Request $request): JsonResponse
@@ -85,10 +97,6 @@ class LoginController extends Controller
         $user->email = $authResult['email'];
         $user->password = '';
         $user->status = $authResult['status'];
-        $user->save();
-        if ($user->status->can(UserAbilityEnum::COUPON_OWNERSHIP))
-            /** @var Academic $user */
-            $user->couponOwner()->create();
         return $user;
     }
 }
