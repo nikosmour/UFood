@@ -146,6 +146,14 @@ export const getters = {
 		};
 	},
 	/**
+	 * Checks if a user has a specific ability.
+	 * @param state
+	 * @returns boolean
+	 */
+	isNew( state ) {
+		return state.user !== null && state.user.abilities.length === 0;
+	},
+	/**
 	 * Get the card status of the user.
 	 * @param {Object} state
 	 * @returns {EnumUnit | null}

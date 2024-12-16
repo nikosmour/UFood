@@ -1,19 +1,25 @@
 <template>
-    <div>
-        <h1>{{ $t( "Welcome" ) }}, {{ currentUser?.name }}!</h1>
+    <v-container>
         <my-models-to-table :caption = "$t('user.information')" :models = "currentUser? [user]:[]" />
-    </div>
+        <create-user v-if = "isNew" />
+
+    </v-container>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import MyModelsToTable from "@components/MyModelsToTable.vue";
+import CreateUser from "@components/CreateUser.vue";
 
 export default {
-	components : { MyModelsToTable },
+	components : {
+		CreateUser,
+		MyModelsToTable,
+	},
 	computed :   {
 		...mapGetters( "auth", [
 			"currentUser",
+			"isNew",
 		] ),
 		user() {
 			const user = this.currentUser.toObject( false );

@@ -217,6 +217,7 @@ export const en = {
 	// "preview": "Preview",
 	"period.time" : "Time Period",
 	"personalInfo" :     "Personal info",
+	"personalPrivacy" : "Personal Privacy",
 	"previous" :    "Previous",
 	// "provide_valid_card": "Provide a valid academic card",
 	"purchase" : {
@@ -233,6 +234,12 @@ export const en = {
 		"status" :         "@:status",
 		"transaction_id" : "@:transaction.id",
 		
+	},
+	"reject" :          "Reject",
+	"personalData" :    {
+		"accept" :  "I accept that my personal data will be stored",
+		"explain" : " We will be storing the data for managing your enter in the restaurant",
+		"reject" :  "Press it if you do not want to use this platform.Nothing will be stored in our System",
 	},
 	// "request_failed": "Request failed",
 	// "request_failed_status_wont_change": "@:required_failed : @:request_failed_status_wont_change",
