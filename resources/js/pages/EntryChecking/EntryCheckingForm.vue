@@ -3,7 +3,7 @@
         <v-card :loading = "isLoading" class = "pa-5" @keydown.ctrl.alt.space = "showLastTransaction">
             <v-card-text>
                 <v-form
-                    ref = "entryForm" v-model = "isValid" aria-label = "$t('entry_check_form')"
+                    ref = "entryForm" v-model = "isValid" :aria-label = "$t('entry_check_form')"
                     validate-on = "input lazy"
                     @submit.prevent = "check_id"
                 >
