@@ -6,10 +6,13 @@ use App\Http\Controllers\CardApplicantController;
 use App\Http\Controllers\CardApplicationCheckingController;
 use App\Http\Controllers\CardApplicationController;
 use App\Http\Controllers\CardApplicationDocumentController;
+use App\Http\Controllers\CardHistoryController;
 use App\Http\Controllers\CouponTransactionController;
 use App\Http\Controllers\EntryCheckingController;
+use App\Http\Controllers\ExportStatisticsController;
 use App\Http\Controllers\PurchaseCouponController;
 use App\Http\Controllers\TransactionCouponConformationDetailsController;
+use App\Http\Controllers\TransferCouponController;
 use App\Http\Controllers\UserInfoController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,5 +47,22 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/transaction/confirm', [TransactionCouponConformationDetailsController::class, '__invoke'])->name('transaction.confirm');
 Route::resource('cardApplicant', CardApplicantController::class)->only(["index", "store"]);
 Route::get('coupons/history', CouponTransactionController::class)->name('coupons.history');// invoke
+Route::get('card/history', CardHistoryController::class)->name('card.history');// invoke
+Route::resource('entryChecking', EntryCheckingController::class)->only('create');
+Route::resource('coupons/transfer', TransferCouponController::class, ['as' => 'coupons'])->only('store');
+Route::resource('cardApplication', CardApplicationController::class)->except(['create', 'update', 'destroy']);
+Route::get('card/history', CardHistoryController::class)->name('card.history');// invoke
 
 
+//
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::redirect('coupons/purchase', '/coupons/purchase/create');
+//Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('create');
+//Route::redirect('entryChecking', '/entryChecking/create');
+//Route::redirect('coupons/transfer', '/coupons/transfer/create');
+
+
+Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingController::class, ['as' => 'cardApplication'])
+    ->whereIn('category', CardStatusEnum::values()->toArray())->only('index');
+
+Route::post('statistics', ExportStatisticsController::class)->name('statistics');// invoke

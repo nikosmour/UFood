@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
 import authGuard from "@/guards/AuthGuard";
 import { Enums } from "@/plugins/enums";
 
@@ -16,7 +16,7 @@ const CouponOwner = () => import("@pages/Coupons.vue");
 const CouponTransactions = () => import("@pages/Coupons/CouponsTransactions.vue");
 const CardApplicationCheckingSearch = () => import("../Components/CardApplicationCheckingSearch.vue");
 
-const routes = [
+const routes : ReadonlyArray<RouteRecordRaw> = [
 	{
 		path :      "/purchase",
 		name :      "purchase",
@@ -67,7 +67,7 @@ const routes = [
 						next();
 					
 				},
-			},
+			} as RouteRecordRaw,
 		],
 	},
 	{
@@ -116,8 +116,8 @@ const routes = [
 	},
 ];
 const router = createRouter( {
-	                             history : createWebHashHistory(),
-	                             routes,
+	                             history : createWebHistory(),
+	                             routes :  routes,
                              } );
 router.beforeEach( authGuard );
 

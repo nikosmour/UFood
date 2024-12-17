@@ -32,9 +32,9 @@ class RouteServiceProvider extends ServiceProvider
 
             $this->configureApiRouters();
 
-            $this->configureWebRouters();
 //           routers for testing
             $this->configureTestRouters();
+            $this->configureWebRouters();
 
         });
     }
