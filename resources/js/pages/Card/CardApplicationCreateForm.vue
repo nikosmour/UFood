@@ -140,6 +140,7 @@ export default {
 			},
 			isFetching : false,
 			isSubmitting : false,
+			isNewApplicant : true,
 		};
 	},
 
@@ -153,10 +154,12 @@ export default {
 		},
 
 		alert_info() : string {
-			if ( this.user.cardApplicant === null || this.user.cardApplicant?.academic_id === undefined )
+			if ( !this.isNewApplicant ) {
 				return this.$t( "applicantInfoFormMessage.create" );
-			else
-				return this.$t( "applicantInfoFormMessage.update" );
+			}
+
+			return this.$t( "applicantInfoFormMessage.update" );
+
 		},
 		addresses() : Record<string, Address> {
 			return ( this.user.card_applicant?.addresses as Address[] ).reduce(
@@ -200,6 +203,7 @@ export default {
 			} catch ( error ) {
 				throw error;
 			} finally {
+				this.isNewApplicant = this.user?.card_applicant?.academic_id;
 				this.isFetching = false;
 
 			}
