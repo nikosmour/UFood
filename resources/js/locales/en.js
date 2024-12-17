@@ -74,7 +74,7 @@ export const en = {
 	"edit" :    "Edit",
 	"email" :       "Email",
 	"entry_check" : "Entry Check",
-	// "entry_check_form": "@:form : @:entry_check ",
+	"entry_check_form" : "@:form : @:entry_check ",
 	// "entry_input": "@:card.value",
 	"errors" : {
 		//     "application_status_not_allow_submission": "@:application_status_not_allow_submission",
