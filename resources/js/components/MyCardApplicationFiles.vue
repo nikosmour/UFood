@@ -40,7 +40,7 @@ import MyNewOrEditFile from "./MyNewOrEditFile.vue";
 import type CardApplication from "@models/CardApplication";
 import type CardApplicationDocument from "@models/CardApplicationDocument";
 import type { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
-
+import { mapMutations } from "vuex";
 
 export default {
 	name :       "MyCardApplicationFiles",
@@ -103,6 +103,9 @@ export default {
 				this.loadings.pop();
 			}
 		},
+		...mapMutations( "files", [
+			"setPreviewUrl",
+		] ),
 
 		/**
 		 * Adds a new file to the application and updates the UI.
@@ -174,6 +177,8 @@ export default {
 		fileHide() {
 			this.$emit( "preview", null );
 			this.showFileIndex = null;
+			this.setPreviewUrl( null );
+
 		},
 
 		/**
@@ -188,6 +193,7 @@ export default {
 				reader.onload = ( e ) => {
 					const docLink = e.target?.result;
 					this.$emit( "preview", docLink );
+					this.setPreviewUrl( docLink );
 					this.showFileIndex = index;
 					console.log( index );
 				};
@@ -197,6 +203,7 @@ export default {
 			if ( file.id > 0 ) {
 				const docLink = this.route( "document.show", { document : file.id } );
 				this.$emit( "preview", docLink );
+				this.setPreviewUrl( docLink );
 				this.showFileIndex = index;
 			}
 		},
