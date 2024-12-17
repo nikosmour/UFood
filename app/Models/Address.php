@@ -18,7 +18,7 @@ class Address extends Model
         'is_permanent' => 'boolean',
     ];
     #public $timestamps = false;
-    public $fillable = ['academic_id', 'location', 'is_permanent'];
+    public $fillable = ['academic_id', 'location', 'is_permanent', 'phone'];
 
     protected $hidden = ['created_at', 'updated_at', 'id', 'academic_id'];
 
