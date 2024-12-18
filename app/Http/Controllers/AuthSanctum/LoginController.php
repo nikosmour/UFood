@@ -39,8 +39,8 @@ class LoginController extends Controller
         $authResult = $this->userService->logIn($credentials);
         if (array_key_exists('error', $authResult))
             return response()->json([
-                'message' => 'Invalid email or password.',
-                'errors' => ['email' => ['Invalid credentials.']]
+                'message' => 'auth.failed',
+                'errors' => ['email' => [__('auth.failed')]]
             ], 422);
 //        session(['department' => $authResult['department']]);
         // Fetch user by email and create session
