@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col :lg = "docUrl ? 6 : 12" md = "12">
+        <v-col :lg = "docUrl ? 6 : 12" cols = "12">
             <v-container max-width = "50rem">
         <MyFreeFoodStatus />
         <v-row justify = "center">
@@ -32,7 +32,7 @@
     </v-container>
         </v-col>
         <!--        <VuetifyPdf v-if="docUrl" :url="docUrl"/>-->
-        <v-col lg = "6">
+        <v-col v-if = "docUrl" lg = "6">
             <ShowPdf />
         </v-col>
     </v-row>
