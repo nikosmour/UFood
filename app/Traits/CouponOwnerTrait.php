@@ -15,9 +15,10 @@ trait CouponOwnerTrait
      */
     static public function addCoupons(int $couponOwner_id, array $coupons): void
     {
+        $couponOwner = CouponOwner::lockForUpdate()->find($couponOwner_id);
         foreach (MealPlanPeriodEnum::names() as $meal)
-            if ($coupons[$meal])
-                CouponOwner::where('academic_id', '=', $couponOwner_id)->increment($meal, $coupons[$meal]);
+            $couponOwner[$meal] += $coupons[$meal] ?? 0;
+        $couponOwner->save();
     }
 
     /**
@@ -27,8 +28,9 @@ trait CouponOwnerTrait
      */
     static public function removeCoupons(int $couponOwner_id, array $coupons): void
     {
+        $couponOwner = CouponOwner::lockForUpdate()->find($couponOwner_id);
         foreach (MealPlanPeriodEnum::names() as $meal)
-            if ($coupons[$meal])
-                CouponOwner::where('academic_id', '=', $couponOwner_id)->decrement($meal, $coupons[$meal]);
+            $couponOwner[$meal] -= $coupons[$meal] ?? 0;
+        $couponOwner->save();
     }
 }

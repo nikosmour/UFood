@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\CouponOwner;
+use App\Models\UsageCard;
+use App\Observers\CouponOwnerObserver;
+use App\Observers\UsageCardObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         $paths = glob(database_path('migrations/*'), GLOB_ONLYDIR);
 
         $this->loadMigrationsFrom(array_merge([database_path('migrations')], $paths));
+        CouponOwner::observe(CouponOwnerObserver::class);
+        UsageCard::observe(UsageCardObserver::class);
     }
 }
