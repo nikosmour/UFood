@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Enum\CardStatusEnum;
+use App\Observers\CardApplicationUpdateObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\Pivot;
-
 
 /**
  * @mixin IdeHelperCardApplicationUpdate
  */
-class CardApplicationUpdate extends Pivot
+#[ObservedBy([CardApplicationUpdateObserver::class])]
+class CardApplicationUpdate extends Model
 {
     use HasFactory;
 
@@ -47,5 +49,10 @@ class CardApplicationUpdate extends Pivot
     public function cardApplication(): BelongsTo
     {
         return $this->belongsTo(CardApplication::class);
+    }
+
+    public function Academic(): BelongsTo
+    {
+        return $this->cardApplication->academic();
     }
 }
