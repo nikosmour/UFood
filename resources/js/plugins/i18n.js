@@ -1,6 +1,6 @@
 import { createI18n } from "vue-i18n";
 import en from "@/locales/en.js"; // English translations
-import el from "@/locales/el.json"; // Greek translations
+import el from "@/locales/el.js"; // Greek translations
 import enValidation from "@/locales/en/validation.json";
 import elValidation from "@/locales/el/validation.json";
 
