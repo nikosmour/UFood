@@ -28,7 +28,7 @@ class TransferCoupon extends Model
          */
             function ($model) {
                 if ($model->isClean('sender_id'))
-                    $model->sender_id = auth()->user()->academic_id;
+                    $model->sender_id = auth()->id();
                 CouponOwner::addCoupons($model['receiver_id'], $model->attributes);
                 CouponOwner::removeCoupons($model['sender_id'], $model->attributes);
             });

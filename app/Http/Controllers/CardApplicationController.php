@@ -83,7 +83,7 @@ class CardApplicationController extends Controller
             $cardApplication = $cardApplicant->currentCardApplication()->create([
                 "expiration_date" => $last_expiration
             ]);
-            $cardApplication->applicantComments()->create(['comment' => '']);
+            $cardApplication->cardApplicantUpdates()->create(['comment' => '']);
             $cardApplication->load('cardLastUpdate');
             //possible impact #future (Issue #1) - Load Documents from Previous Application
             //see more on /docs/future-updates.md#001
@@ -125,12 +125,12 @@ class CardApplicationController extends Controller
                 if ($lastUpdate && in_array($lastUpdate->status, [CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED]))
                     $lastUpdate->status = CardStatusEnum::TEMPORARY_SAVED;
                 else
-                    $lastUpdate = $cardApplication->cardLastUpdate()->make(['status' => CardStatusEnum::TEMPORARY_SAVED]);
+                    $lastUpdate = $cardApplication->cardApplicantUpdates()->make(['status' => CardStatusEnum::TEMPORARY_SAVED]);
             elseif ($user instanceof CardApplicationStaff)
                 if ($lastUpdate->card_application_staff_id === $user->id)
                     $lastUpdate->status = CardStatusEnum::CHECKING;
                 else
-                    $lastUpdate = $cardApplication->cardLastUpdate()->make(['status' => CardStatusEnum::CHECKING]);
+                    $lastUpdate = $cardApplication->cardStaffsUpdates()->make(['status' => CardStatusEnum::CHECKING]);
             $lastUpdate->save();
 
             $cardApplication->touch();
@@ -246,7 +246,7 @@ class CardApplicationController extends Controller
         DB::transaction(function () use ($vData, $cardApplication) {
             $oldStatus = $cardApplication->cardLastUpdate->status ?? null;
             if (!in_array($oldStatus, [CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED])) {
-                $cardApplication->applicantComments()->create(['comment' => $vData['comment'] ?? null, 'status' => $vData['status'],]);
+                $cardApplication->cardApplicantUpdates()->create(['comment' => $vData['comment'] ?? null, 'status' => $vData['status'],]);
             } else {
                 $cardApplication->cardLastUpdate->comment = $vData['comment'] ?? $cardApplication->cardLastUpdate->comment;
                 $cardApplication->cardLastUpdate->status = $vData['status'];

@@ -45,14 +45,18 @@ class CardApplication extends Model
         return $this->belongsToMany(CardApplicationStaff::class, table: (new CardApplicationChecking)->getTable())->using(CardApplicationChecking::class);
     }
 
-    public function staffComments(): HasMany
+    public function cardStaffsUpdates(): HasMany
     {
-        return $this->hasMany(CardApplicationChecking::class)->whereNotNull('card_application_staff_id');
+        return $this->hasMany(CardApplicationChecking::class)
+            ->where('created_at', '>=', $this->created_at)
+            ->where('updated_at', '<=', $this->updated_at);
     }
 
-    public function applicantComments(): HasMany
+    public function cardApplicantUpdates(): HasMany
     {
-        return $this->hasMany(HasCardApplicantComment::class)->whereNull('card_application_staff_id');
+        return $this->hasMany(HasCardApplicantComment::class)
+            ->where('created_at', '>=', $this->created_at)
+            ->where('updated_at', '<=', $this->updated_at);
     }
 
     /**
@@ -60,7 +64,26 @@ class CardApplication extends Model
      */
     public function cardLastUpdate(): HasOne
     {
-        return $this->hasOne(CardApplicationUpdate::class)->latestOfMany();
+        return $this->hasOne(HasCardApplicantComment::class)
+            ->where('created_at', '>=', $this->created_at)
+            ->where('updated_at', '<=', $this->updated_at)
+            ->latestOfMany();
+    }
+
+    public function cardApplicantUpdateLatest(): HasOne
+    {
+        return $this->hasOne(CardApplicationUpdate::class)
+            ->where('created_at', '>=', $this->created_at)
+            ->where('updated_at', '<=', $this->updated_at)
+            ->latestOfMany();
+    }
+
+    public function cardStaffUpdateLatest(): HasOne
+    {
+        return $this->hasOne(CardApplicationUpdate::class)
+            ->where('created_at', '>=', $this->created_at)
+            ->where('updated_at', '<=', $this->updated_at)
+            ->latestOfMany();
     }
 
     /**
