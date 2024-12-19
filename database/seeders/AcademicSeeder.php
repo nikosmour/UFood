@@ -6,13 +6,14 @@ use App\Enum\UserAbilityEnum;
 use App\Enum\UserStatusEnum;
 use App\Models\Academic;
 use App\Models\CardApplicant;
+use App\Models\CouponOwner;
 use Carbon\Carbon;
 use Database\Seeders\Classes\UserSeederPreparation;
 
 class AcademicSeeder extends UserSeederPreparation
 {
 
-    public function __construct($count = 5)
+    public function __construct($count = 20)
     {
         parent::__construct($count);
     }
@@ -48,6 +49,7 @@ class AcademicSeeder extends UserSeederPreparation
 
             $academic = Academic::factory()->create(['status' => $user_status->value, 'email' => $email, 'a_m' => $this->emailCounters[$status], 'academic_id' => $this->emailCounters[$status] + 2 * 10 ** 15,]);
             if ($user_status->can(UserAbilityEnum::CARD_OWNERSHIP)) CardApplicant::factory()->for($academic)->create();
+            CouponOwner::factory()->for($academic)->create();
         }
     }
 
