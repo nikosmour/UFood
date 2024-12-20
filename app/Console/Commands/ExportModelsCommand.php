@@ -600,9 +600,11 @@ JS;
     private function getModelRelationships(ReflectionClass $reflection): array
     {
         $relationships = [];
-        $modelInstance = $reflection->newInstanceWithoutConstructor();
-        $hidden = $reflection->newInstance()->getHidden();
+        $modelInstance = $reflection->newInstance();
+        $hidden = $modelInstance->getHidden();
         $methods = $reflection->getMethods();
+        $modelInstance->created_at = now(); // Set a default value for testing
+        $modelInstance->updated_at = now(); // Set a default value for testing
         foreach ($methods as $key => $method) {
             // Skip methods that are not public or not defined in the model's class
             if (!$method->isPublic() || $method->class !== $reflection->getName()) {
