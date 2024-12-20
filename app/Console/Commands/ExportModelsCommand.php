@@ -20,7 +20,8 @@ class ExportModelsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:export-models // {typeOfClass=base : The category of commands to run (base, main, all)}';
+    protected $signature = 'app:export-models // {typeOfClass=base : The category of commands to run (base, main, all)}
+    {--silentLevel=false : Suppress some messages (false,line,info,warn,error|| true)}';
 
     /**
      * The console command description.
@@ -49,8 +50,22 @@ class ExportModelsCommand extends Command
      * @var string
      */
     protected string $baseModel = '@utilities/BaseModel';
+    protected int $silentLevel;
+
+    private function outputMessage(string $option, string $message): void
+    {
 
 
+        $optionLevel = match ($option) {
+            'line' => 1,
+            'info' => 2,
+            'warn' => 3,
+            'error' => 4,
+            default => 0
+        };
+        if ($optionLevel > $this->silentLevel)
+            $this->{$option}($message);
+    }
     /**
      * Execute the console command.
      */
@@ -60,9 +75,30 @@ class ExportModelsCommand extends Command
         $allowedTypes = ['base', 'main', 'all'];
 
         if (!in_array($typeOfClass, $allowedTypes)) {
-            $this->error("Invalid typeOfClass value. Allowed values are: " . implode(', ', $allowedTypes));
+            $this->outputMessage('error', "Invalid typeOfClass value. Allowed values are: " . implode(', ', $allowedTypes));
             return CommandAlias::FAILURE;
         }
+        $this->silentLevel = match ($this->option('silentLevel')) {
+            'false' => 0,
+            'line' => 1,
+            'info' => 2,
+            'warn' => 3,
+            'error', 'true' => 4,
+            default => 5
+        };
+        if ($this->silentLevel === 5) {
+            $this->outputMessage('error', "Invalid silentLevel value. Allowed values are: " . implode(', ', array_keys([
+                    'false' => 0,
+                    'line' => 1,
+                    'info' => 2,
+                    'warn' => 3,
+                    'error' => 4,
+                ])));
+            return CommandAlias::FAILURE;
+        }
+
+
+
         $this->modelsPath = app_path($this->modelsPath);
 
         $jsOutputPath = base_path($this->modelsOutputPath);
@@ -82,7 +118,7 @@ class ExportModelsCommand extends Command
             if (str_ends_with($file, '.php')) {
                 $className = "App\\Models\\" . pathinfo($file, PATHINFO_FILENAME);
                 if (class_exists($className)) {
-                    echo PHP_EOL . 'model ' . $className . PHP_EOL;
+                    $this->outputMessage('info', 'model ' . $className);
                     $reflection = new ReflectionClass($className);
 
                     // Generate JS class and interface
@@ -100,7 +136,7 @@ class ExportModelsCommand extends Command
         }
         $this->generateInterfaces($interfaces, $jsOutputPath . '/Interfaces');
 
-        $this->info('Models JavaScript classes and interfaces have been generated.');
+        $this->outputMessage('info', 'Models JavaScript classes and interfaces have been generated.');
         return CommandAlias::SUCCESS;
     }
 
@@ -132,8 +168,7 @@ import * as Enums from '@/plugins/enums';
 
 TS;
         File::put("{$outputPath}/index.d.ts", $InterfacesContent);
-        echo PHP_EOL . "{$outputPath}/index.d.ts" . PHP_EOL;
-
+        $this->outputMessage('info', "{$outputPath}/index.d.ts");
     }
 
     private function generateInterfaceProperties(array $properties): string
@@ -303,7 +338,7 @@ export default $modelName;
 TS;
 
         File::put("{$outputPath}/{$modelName}.ts", $classContent);
-        echo PHP_EOL . "{$outputPath}/{$modelName}.ts" . PHP_EOL;
+        $this->outputMessage('info', "{$outputPath}/{$modelName}.ts");
     }
 
     /**
@@ -327,7 +362,7 @@ export class $modelName extends {$parentClass} {
 export default $modelName;
 JS;
         File::put("{$outputPath}/{$modelName}.js", $classContent);
-        echo PHP_EOL . "{$outputPath}/{$modelName}.js" . PHP_EOL;
+        $this->outputMessage('info', "{$outputPath}/{$modelName}.js");
     }
 
     /**
@@ -602,21 +637,12 @@ JS;
         $relationships = [];
         $modelInstance = $reflection->newInstance();
         $hidden = $modelInstance->getHidden();
-        $methods = $reflection->getMethods();
+        $methods = collect($reflection->getMethods())->filter(
+            fn($method) => !(!$method->isPublic() || $method->class !== $reflection->getName() || $method->getNumberOfParameters() > 0)
+        );
         $modelInstance->created_at = now(); // Set a default value for testing
         $modelInstance->updated_at = now(); // Set a default value for testing
-        foreach ($methods as $key => $method) {
-            // Skip methods that are not public or not defined in the model's class
-            if (!$method->isPublic() || $method->class !== $reflection->getName()) {
-                continue;
-            }
-
-            // Ignore methods with parameters
-            if ($method->getNumberOfParameters() > 0) {
-                continue;
-            }
-
-
+        foreach ($methods as $method) {
             try {
                 // Call the method and check if it returns a Relation instance
                 $result = $method->invoke($modelInstance);
@@ -628,7 +654,7 @@ JS;
 
                     if (!file_exists($relatedModelPath)) {
                         // Related model doesn't exist in the Models path
-                        $this->error("Related model '{$relatedModel}' not found in Models directory.");
+                        $this->outputMessage('warn', "In the model {$reflection->getShortName()} the related model '{$relatedModel}' not found in Models directory");
                         continue;
                     }
 
@@ -646,11 +672,10 @@ JS;
                         'definition' => $definition,
                         'definitionModel' => $definitionModel,
                     ];
-                    echo " method: " . $relationship;
+                    $this->outputMessage('line', " method: " . $relationship);
                 }
             } catch (Throwable $e) {
                 // Skip methods that throw errors
-                continue;
             }
         }
         return $relationships;
