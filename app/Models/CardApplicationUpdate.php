@@ -23,6 +23,10 @@ class CardApplicationUpdate extends Model
     protected $casts = [
         'status' => CardStatusEnum::class,
     ];
+    protected $fillable = [
+        'comment',
+        'status',
+    ];
 
     protected static function boot(): void
     {
