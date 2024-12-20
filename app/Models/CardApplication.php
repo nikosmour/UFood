@@ -47,16 +47,12 @@ class CardApplication extends Model
 
     public function cardStaffsUpdates(): HasMany
     {
-        return $this->hasMany(CardApplicationChecking::class)
-            ->where('created_at', '>=', $this->created_at)
-            ->where('updated_at', '<=', $this->updated_at);
+        return $this->hasMany(CardApplicationChecking::class);
     }
 
     public function cardApplicantUpdates(): HasMany
     {
-        return $this->hasMany(HasCardApplicantComment::class)
-            ->where('created_at', '>=', $this->created_at)
-            ->where('updated_at', '<=', $this->updated_at);
+        return $this->hasMany(HasCardApplicantComment::class);
     }
 
     /**
@@ -64,26 +60,20 @@ class CardApplication extends Model
      */
     public function cardLastUpdate(): HasOne
     {
-        return $this->hasOne(HasCardApplicantComment::class)
-            ->where('created_at', '>=', $this->created_at)
-            ->where('updated_at', '<=', $this->updated_at)
-            ->latestOfMany();
+        return $this->hasOne(CardApplicationUpdate::class)
+            ->latest('id');
     }
 
     public function cardApplicantUpdateLatest(): HasOne
     {
         return $this->hasOne(CardApplicationUpdate::class)
-            ->where('created_at', '>=', $this->created_at)
-            ->where('updated_at', '<=', $this->updated_at)
-            ->latestOfMany();
+            ->latest('id');
     }
 
     public function cardStaffUpdateLatest(): HasOne
     {
         return $this->hasOne(CardApplicationUpdate::class)
-            ->where('created_at', '>=', $this->created_at)
-            ->where('updated_at', '<=', $this->updated_at)
-            ->latestOfMany();
+            ->latest('id');
     }
 
     /**
