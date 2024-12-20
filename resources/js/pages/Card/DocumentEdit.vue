@@ -73,7 +73,7 @@ export default {
 		};
 	},
 	computed : {
-		isLoading() : Boolean {
+		isLoading() : boolean {
 			return this.loadings.length !== 0;
 		},
 	},
@@ -108,10 +108,10 @@ export default {
 			this.loadings.push( true );
 			try {
 				await this.$axios.post( url, params );
-				this.application.card_last_update = {
-					status :  status,
-					comment : null,
-				};
+				this.application.card_last_update.status = status;
+				this.application.card_last_update.comment = this.comment;
+				this.application.card_last_update.updated_at = new Date();
+				this.application.card_last_update.syncCurrent();
 				// Handle document deletions
 				if ( documents.delete.length ) {
 					const idsToDeleteSet = new Set( documents.delete );
@@ -169,14 +169,10 @@ export default {
 			await this.saveApplication( null, CardStatusEnum.SUBMITTED );
 			this.$emit( "submit" );
 		},
-
-
 	},
 	created() {
 		// if the last update is from the academic set the comment the previous value
-		if ( !this.application.card_last_update.card_application_staff_id ) {
-			this.comment = this.application.card_last_update.comment ?? null;
-		}
+		this.comment = this.application.card_applicant_update_latest.comment ?? "";
 	},
 
 };

@@ -89,6 +89,27 @@ export class CardApplication extends CardApplicationBase {
 			                              } );
 		}
 	}
+	
+	constructor( data ) {
+		super( data );
+		this.#receivingNewCardUpdate();
+	}
+	
+	get card_last_update() {
+		return super.card_last_update;
+	}
+	
+	set card_last_update( value ) {
+		super.card_last_update = value;
+		this.#receivingNewCardUpdate();
+	}
+	
+	#receivingNewCardUpdate() {
+		if ( this.card_last_update.card_application_staff_id )
+			this._card_staff_update_latest = this.card_last_update;
+		else
+			this._card_applicant_update_latest = this.card_last_update;
+	}
 }
 
 export default CardApplication;

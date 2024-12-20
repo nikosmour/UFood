@@ -8,6 +8,7 @@ export default {
 		...mapGetters( "auth", {
 			card_status :          "cardStatus",
 			card_expiration_date : "cardExpirationDate",
+			application : "cardApplication",
 		} ),
 
 		/**
@@ -37,7 +38,7 @@ export default {
 					} ) }`;
 				}
 			}
-
+			text += "\n" + ( this.application.card_staff_update_latest?.comment ?? "" );
 			return text;
 		},
 
