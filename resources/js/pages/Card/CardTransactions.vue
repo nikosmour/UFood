@@ -7,6 +7,8 @@
             :headers = "tableHeaders"
             :item-key = "'id'"
             :items = "transactions"
+            :mobile = "null"
+            mobile-breakpoint = "sm"
             class = "elevation-1"
             hide-default-footer
         >

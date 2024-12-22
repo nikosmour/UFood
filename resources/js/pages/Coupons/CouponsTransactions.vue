@@ -140,6 +140,7 @@ export default {
             :item-key = "'id'"
             :items = "transactions"
             class = "elevation-1"
+            :mobile = "null"
             hide-default-footer
             show-expand
         >
@@ -177,7 +178,7 @@ export default {
 
             <template #item.quantities = "{ item }">
                 <div>
-                    <span v-if = "item.money !== 0">{{ item.money }}€</span>
+                    <span v-if = "item.money !== 0">{{ item.money }}€ </span>
                     <span v-for = "meal in mealQuantities(item)" :key = "meal.key">
                         {{ meal.quantity }}&nbsp;{{ meal.name }}&nbsp;
                     </span>
