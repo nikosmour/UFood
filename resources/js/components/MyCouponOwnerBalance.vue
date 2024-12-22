@@ -9,8 +9,6 @@
                         :title = "$t( 'meals.' + key.toLowerCase()) + ' '  +couponOwner[key]"
                     />
                 </v-list>
-                `
-
             </v-card-item>
             <v-card-actions class = "d-flex justify-space-around">
                 <v-btn
