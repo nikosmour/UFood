@@ -4,7 +4,7 @@
         "build": "vite build",
         "dev": "vite",
         "preview"   : "vite preview",
-        "type-check": "vue-tsc  -- noEmit",
+        "type-check": "vue-tsc  --noEmit",
         "watch"     : "concurrently \"npm run dev\" \"npm run  type-check\""
     },
     "type": "module",
@@ -13,7 +13,6 @@
         "@vitejs/plugin-vue": "^5.1.4",
         "autoprefixer": "^10.4.20",
         "axios": "1.7.7",
-        "bootstrap": "^5.1.3",
         "concurrently": "^9.0.1",
         "laravel-echo": "^1.16.0",
         "laravel-vite-plugin": "^1.0",
