@@ -27,19 +27,30 @@ export function setupSessionTimeout( timeoutMin, axios, vueInstance ) {
 /**
  * Sets up axios interceptors to handle various response statuses like 419 (CSRF expired) and 401 (Unauthorized).
  * @param {import("axios").AxiosInstance} axios - The axios instance.
- * @param {Object} store - The Vuex store instance.
+ * @param {import("vuex").ActionContext<any,any>} store - The Vuex store instance.
  * @param {Object} router - The Vue Router instance.
  * @param route
  */
 export function setupAxiosInterceptor( axios, store, router, route ) {
+	axios.interceptors.request.use( function ( config ) {
+		store.dispatch( "session/updateTimeLeft" );
+		return config;
+	}, function ( error ) {
+		// Do something with request error
+		return Promise.reject( error );
+	} );
 	axios.interceptors.response.use(
-		response => response,
+		response => {
+			return response;
+		},
 		error => {
 			if ( !error.response ) return Promise.reject( error );
-			
 			const status = error.response.status;
 			if ( status === 419 )
-				return axios.get( route( "sanctum.csrf-cookie" ) )
+				return store.dispatch( "session/updateCookies", {
+					route,
+					axiosInstance : axios,
+				} )
 				            .then( () => axios( error.config ) )
 				            .catch( refreshError => {
 					            console.error( "CSRF refresh error", refreshError );

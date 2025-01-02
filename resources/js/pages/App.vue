@@ -1,8 +1,8 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import GlobalError from "@components/GlobalError.vue";
 import NavView from "./navView.vue";
-import { setupAxiosInterceptor, setupSessionTimeout } from "@utilities/sessionManager";
+import { setupAxiosInterceptor } from "@utilities/sessionManager";
 import { InformTheUserError } from "@/errors/InformTheUserError";
 
 export default {
@@ -41,12 +41,6 @@ export default {
 	},
 	
 	methods : {
-		...mapActions( "auth", [
-			/**
-			 * Fetches the current authenticated user data.
-			 */
-			"getUser",
-		] ),
 		
 		/**
 		 * Redirects users based on authentication status and route requirements.
@@ -85,12 +79,12 @@ export default {
 		if ( this.isAuthenticated && this.$route.name === "login" ) {
 			this.$router.push( this.$route.query.redirect || { name : "userProfile" } );
 		}
-		
+
 		// Session timeout setup
-		const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
-		setupSessionTimeout( timeoutMin, this.$axios, this );
-		
-		// Set up Axios interceptors
+		// const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
+		// setupSessionTimeout( timeoutMin, this.$axios, this );
+		//
+		// // Set up Axios interceptors
 		setupAxiosInterceptor( this.$axios, this.$store, this.$router, this.route );
 
 	},

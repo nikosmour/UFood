@@ -57,7 +57,6 @@
                 </v-menu>
             </v-btn>
         </v-row>
-
         <v-row align = "center" class = "mr-4">
             <v-btn
                 :aria-label = "$t('settings')"
@@ -81,6 +80,7 @@
                     link
                     @click = "logout"
                 />
+                <CsrfCountdown />
             </template>
             <v-btn
                 v-else
@@ -99,10 +99,14 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import Settings from "./navView/settings.vue";
+import CsrfCountdown from "@components/CsrfCountdown.vue";
 
 export default {
 	name :       "NavView",
-	components : { Settings },
+	components : {
+		CsrfCountdown,
+		Settings,
+	},
 	data() {
 		return {
 			/**
