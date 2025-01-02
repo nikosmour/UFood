@@ -10,6 +10,7 @@
     "type": "module",
     "devDependencies": {
         "@popperjs/core": "^2.10.2",
+        "@types/node": "^22.10.3",
         "@vitejs/plugin-vue": "^5.1.4",
         "autoprefixer": "^10.4.20",
         "axios": "1.7.7",
