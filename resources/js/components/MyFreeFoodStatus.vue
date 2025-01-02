@@ -79,11 +79,7 @@ export default {
     <v-container v-else>
         <v-card :aria-label = "$t('card.info')" :title = "$t('card.value')">
             <v-card-item>
-                <v-list>
-                    <v-list-item
-                        :title = "card_info"
-                    />
-                </v-list>
+                {{ card_info }}
             </v-card-item>
             <v-card-actions class = "d-flex justify-space-around">
                 <v-btn
