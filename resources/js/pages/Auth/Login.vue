@@ -63,8 +63,10 @@
     </v-container>
 </template>
 
-<script>
-export default {
+<script lang = "ts">
+import { defineComponent } from "vue";
+
+export default defineComponent( {
 	data() {
 		return {
 			/**
@@ -110,5 +112,25 @@ export default {
 			}
 		},
 	},
-};
+//     mounted(){
+// 	    const query = { ...this.$route.query }; // Copy the current query object
+// 	    if (query.skipAuthCheck) {
+// 		    delete query.skipAuthCheck; // Remove the skipAuthCheck parameter
+// 		    this.$router.replace({ query }); // Replace the query with the modified one
+// 	    }
+//     }
+//    beforeRouteEnter(to, from, next) {
+//        const query = { ...to.query }; // Copy the current query object
+//
+//        if (query.skipAuthCheck) {
+//            delete query.skipAuthCheck; // Remove the skipAuthCheck parameter
+//            next(vm => {
+//                // Modify the route query before the component is created
+//                vm.$router.replace({ query });
+//            });
+//        } else {
+//            next(); // Continue to the route without modifications
+//        }
+//    }
+                                } );
 </script>

@@ -53,7 +53,11 @@ export default {
 				this.$echo.leaveAllChannels();
 				this.$router.push( {
 					                   name :  "login",
-					                   query : { redirect : this.$route.fullPath },
+					                   query : {
+						                   skipAuthCheck : true,
+						                   ...( this.$route.name && !this.$route.name.startsWith( "error" ) &&
+						                        { redirect : this.$route.fullPath } ),
+					                   },
 				                   } );
 			} else if ( isAuthenticated && this.$route.name === "login" ) {
 				this.$router.push( this.$route.query.redirect || { name : "userProfile" } );

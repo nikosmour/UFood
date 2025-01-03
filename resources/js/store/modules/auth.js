@@ -4,7 +4,7 @@ import AxiosInstance from "@/plugins/axios";
 
 /**
  * Vuex state for authentication.
- * @type {{ isLoggedIn: boolean, user: UserData | null }}
+ * @type {{ user: UserData | null }}
  */
 export const state = {
 	user : null,
@@ -19,10 +19,9 @@ export const mutations = {
 	setLogin( state, payload ) {
 		const ModelClass = getModelClass( payload.model ); // Pass the model name from the backend
 		payload.user.abilities = UserAbilityEnum.findByValueMany( payload.user.abilities );
-		const user = ModelClass
+		state.user = ModelClass
 		             ? new ModelClass( payload.user )
 		             : payload.user;
-		state.user = user;
 		
 	},
 	
@@ -68,14 +67,13 @@ export const actions = {
 			const { data } = responseLogin || await AxiosInstance.get( "/api/user" );
 			
 			if ( data ) {
-				localStorage.setItem( "user", JSON.stringify( data.user ) ); // Store user data
 				await commit( "setLogin", data );
 				return true;
 			}
 		} catch ( error ) {
-			throw error;
+			if ( error.response?.status !== 401 ) throw error;
 		}
-		localStorage.removeItem( "user" ); // Store user data
+		// Store user data
 		commit( "setLogout" );
 		return false;
 	},
@@ -87,7 +85,7 @@ export const actions = {
 	 */
 	async logout( { commit } ) {
 		await AxiosInstance.post( "api/logout" );
-		localStorage.removeItem( "user" );
+		sessionStorage.removeItem( "isLogin" ); // Store user data
 		commit( "setLogout" );
 	},
 };
