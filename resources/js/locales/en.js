@@ -293,6 +293,7 @@ export const en = {
 		"meals" :        "Meals Statistics",
 	},
 	"submit" :     "Submit",
+	"submit_application_until" : "You can submit your application until {date} | The period of submitting application was until {date} ",
 	// "submitted": "Submitted",
 	// "successful_sale": "Successful sale",
 	// "test": {
