@@ -1,9 +1,9 @@
 // modelUserMapper.js
 
 import Academic from "@models/Academic";
-import CouponStaff from "@models/CouponStaff.js";
-import EntryStaff from "@models/EntryStaff.js";
-import CardApplicationStaff from "@models/CardApplicationStaff.js";
+import CouponStaff from "@models/CouponStaff";
+import EntryStaff from "@models/EntryStaff";
+import CardApplicationStaff from "@models/CardApplicationStaff";
 
 // Map of model names to JavaScript classes
 const modelMapping = {
@@ -15,8 +15,8 @@ const modelMapping = {
 
 /**
  * Get the JavaScript model class based on the model name.
- * @param {string} modelClassName - The name of the model (e.g., "Academic").
- * @returns {typeof BaseModel |null} - The corresponding model class or null if not found.
+ * @param { keyof typeof modelMapping} modelClassName - The name of the model (e.g., "Academic").
+ * @returns {typeof import("./BaseModel") |null} - The corresponding model class or null if not found.
  */
 export function getModelClass( modelClassName ) {
 	return modelMapping[ modelClassName ] || null;
