@@ -142,6 +142,9 @@ export default {
             class = "elevation-1"
             :mobile = "null"
             hide-default-footer
+            expandOnClick
+            hideDefaultHeader
+            hover
             show-expand
         >
             <template #top>
@@ -195,7 +198,7 @@ export default {
             </template>
 
             <template #item.date = "{ item }">
-                <span>{{ item.created_at.toLocaleDateString() }}</span>
+                <span>{{ item.created_at.toLocaleDateString( $i18n.locale ) }}</span>
             </template>
 
             <!--            <template #item.totalMoney="{ item }">-->

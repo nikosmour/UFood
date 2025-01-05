@@ -5,6 +5,9 @@
         :items = "models"
         :show-expand = "relationships.length !== 0"
         hide-default-footer
+        expandOnClick
+        hideDefaultHeader
+        hover
         items-per-page = "-1"
     >
         <template v-slot:top>
@@ -30,10 +33,10 @@
             </tr>
         </template>
         <template v-slot:item.created_at = "{item}">
-            {{ ( new Date( item.created_at ) ).toLocaleDateString() }}
+            {{ ( new Date( item.created_at ) ).toLocaleDateString( $i18n.locale ) }}
         </template>
         <template v-slot:item.updated_at = "{item}">
-            {{ ( new Date( item.updated_at ) ).toLocaleDateString() }}
+            {{ ( new Date( item.updated_at ) ).toLocaleDateString( $i18n.locale ) }}
         </template>
 
     </v-data-table>

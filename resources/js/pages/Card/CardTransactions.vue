@@ -10,6 +10,8 @@
             :mobile = "null"
             mobile-breakpoint = "sm"
             class = "elevation-1"
+            hideDefaultHeader
+            hover
             hide-default-footer
         >
             <template #top>
@@ -21,7 +23,7 @@
             </template>
 
             <template #item.date = "{ item }">
-                {{ item.date.toLocaleDateString() }}
+                {{ item.date.toLocaleString( $i18n.locale ) }}
             </template>
         </v-data-table-virtual>
 
