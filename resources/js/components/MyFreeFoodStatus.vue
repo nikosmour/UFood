@@ -38,7 +38,7 @@ export default {
 					} ) }`;
 				}
 			}
-			text += "\n" + ( this.application.card_staff_update_latest?.comment ?? "" );
+			text += "\n" + ( this.application?.card_staff_update_latest?.comment ?? "" );
 			return text;
 		},
 
