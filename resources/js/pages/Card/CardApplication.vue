@@ -3,12 +3,18 @@
         <v-col :lg = "docUrl ? 6 : 12" cols = "12">
             <v-container max-width = "50rem">
         <MyFreeFoodStatus />
+                <v-alert
+                    v-if = "untilDate"
+                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString()},canSubmit ? 1: 0)"
+                    closable
+                />
         <v-row justify = "center">
             <v-col cols = "12">
                 <v-stepper
                     v-model = "step"
                     :items = "[$t('personalInfo'), $t('documents.upload'), $t('pendingReview')]"
                     hide-actions
+                    v-if = "canSubmit"
                 >
                     <template v-slot:item.1>
                         <CardApplicationCreateForm @created = "step=2" />
@@ -27,6 +33,11 @@
                         />
                     </template>
                 </v-stepper>
+                <ApplicationPreview
+                    v-else-if = "application "
+                    :application = "application"
+                    :isApplicationPeriodOpen = "false"
+                />
             </v-col>
         </v-row>
     </v-container>
@@ -62,11 +73,15 @@ export default {
 		return {
 			isEditing : true,
 			step :      0,
+			canSubmit : false,
+			untilDate : null as Date,
+
 		};
 	},
 	computed : {
 		...mapGetters( "auth", {
 			application1 : "cardApplication",
+			config : "config",
 		} ),
 		...mapGetters( "files", {
 			docUrl : "getPreviewUrl",
@@ -83,6 +98,28 @@ export default {
 		              ?
 		              2
 		              : 3;
+		// Step 1: Check if lastDate is defined and valid
+		const lastDate = this.config?.application?.lastDate;
+
+// If lastDate is undefined, null, or not a valid date, set canSubmit to false
+		if ( !lastDate || isNaN( ( new Date( lastDate ) ).getTime() ) ) {
+			this.canSubmit = false;
+			return;
+		}
+		// Step 2: Convert lastDate to a Date object
+		const untilDate = new Date( lastDate );
+
+		// Step 3: Get the current date and strip the time portion for comparison
+		const currentDate = new Date();
+		currentDate.setHours( 0, 0, 0, 0 ); // Set time to 00:00:00.000 to only compare the date part
+
+		// Strip the time portion of untilDate as well
+		untilDate.setHours( 0, 0, 0, 0 );
+
+		// Step 4: Perform the comparison
+		this.canSubmit = currentDate <= untilDate;
+		if ( !this.application || this.application.canBeEdited )
+			this.untilDate = untilDate;
 	},
 
 };

@@ -69,6 +69,10 @@ export default {
 			type :    Boolean,
 			default : () => true,
 		},
+		isApplicationPeriodOpen : {
+			type :    Boolean,
+			default : true,
+		},
 	},
 	data() {
 		return {
@@ -87,7 +91,7 @@ export default {
 		 * Is The application currently Editting
 		 */
 		isEditing() {
-			return this.application.isEditing;
+			return this.application.isEditing && this.isApplicationPeriodOpen;
 		},
 	},
 	methods : {

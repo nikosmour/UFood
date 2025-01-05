@@ -7,6 +7,7 @@
         <MyCardApplicationFiles
             :application = "application"
             :loadings = "loadings"
+            :isApplicationPeriodOpen = "isApplicationPeriodOpen"
         />
         
         <v-textarea
@@ -19,7 +20,7 @@
         />
         <v-card-actions class = "justify-space-between">
             <v-btn
-                v-if = "canBeEditing"
+                v-if = "canBeEditing && isApplicationPeriodOpen"
                 :loading = "isLoading"
                 :text = "$t('edit')"
                 color = "primary"
@@ -51,6 +52,10 @@ export default {
 		application : {
 			type :     Object as () => CardApplication,
 			required : true,
+		},
+		isApplicationPeriodOpen : {
+			type :    Boolean,
+			default : true,
 		},
 	},
 	data() {
