@@ -6,6 +6,8 @@
                     v-if = "couponOwner"
                     v-model = "step"
                     :items = "[$t('receiver.value'), $t('confirmation'), $t('transaction.summary')]"
+                    :mobile = "null"
+                    mobile-breakpoint = "sm"
                     hide-actions
                 >
                     <!-- Step 1: Receiver Form -->

@@ -14,6 +14,9 @@
                     v-model = "step"
                     :items = "[$t('personalInfo'), $t('documents.upload'), $t('pendingReview')]"
                     hide-actions
+                    :alt-labels = "alt_labels"
+                    :mobile = "null"
+                    mobile-breakpoint = "sm"
                     v-if = "canSubmit"
                 >
                     <template v-slot:item.1>
@@ -88,6 +91,9 @@ export default {
 		} ),
 		application() : CardApplication {
 			return this.application1;
+		},
+		alt_labels() : boolean {
+			return this.$vuetify.display.smAndDown;
 		},
 	},
 	created() {
