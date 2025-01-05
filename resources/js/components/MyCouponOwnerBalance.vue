@@ -2,14 +2,24 @@
     <v-container>
         <v-card :aria-label = "$t('coupon.owner-balance')" :title = "$t('coupon.value',2)">
             <v-card-subtitle class = "mt-2">{{ $t( "balance" ) }}</v-card-subtitle>
-            <v-card-item>
-                <v-list class = "d-flex justify-space-around">
-                    <v-list-item
-                        v-for = "key in Object.keys($enums.MealPlanPeriodEnum)" :key = "key"
-                        :title = "$t( 'meals.' + key.toLowerCase()) + ' '  +couponOwner[key]"
-                    />
-                </v-list>
-            </v-card-item>
+            <v-list>
+                <v-row
+                    align = "center"
+                    class = "d-flex"
+                    justify = "space-between"
+                    no-gutters
+                >
+                    <v-col
+                        v-for = "key in Object.keys($enums.MealPlanPeriodEnum)"
+                        :key = "key"
+                        class = " d-flex justify-center align-center"
+                        cols = "12"
+                        sm = "4"
+                    >
+                        <v-list-item :title = "$t('meals.' + key.toLowerCase()) + ' ' + couponOwner[key]" />
+                    </v-col>
+                </v-row>
+            </v-list>
             <v-card-actions class = "d-flex justify-space-around">
                 <v-btn
                     v-if = "$route.name !== 'coupons.History'"
