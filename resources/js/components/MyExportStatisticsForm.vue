@@ -12,11 +12,11 @@
                 </v-card> -->
 
         <!-- Export Statistics Form -->
-        <v-card id = "print_statistic_food" :loading = "isLoading" class = "align-center">
-            <v-card-title>
-                <h5>{{ $t( "statistics.export" ) }}</h5>
-            </v-card-title>
-            <v-card-text>
+        <v-card
+            id = "print_statistic_food" :loading = "isLoading" :title = "$t( 'statistics.export' )"
+            class = "align-center"
+        >
+            <v-card-text class = "ma-4">
                 <v-form
                     v-model = "isValid" :aria-label = "$t('statistics.export_form')"
                     @submit.prevent = "receive_statistics"
@@ -85,18 +85,17 @@
                         :aria-hidden = "!showDates" :class = "showDates ? 'opacity-100':'opacity-0'"
                         class = "justify-center"
                     >
-                        <v-col cols = "auto">
+                        <v-col cols = "12" lg = "6" md = "12" sm = "6">
                             <v-text-field
                                 v-model = "from_date"
                                 :error-messages = "errors.from_date"
                                 :label = "$t('from')"
                                 :max = "now_date"
                                 :rules = "rules.fromDateRules"
-                                type = "date"
                                 @input = "errors.from_date=null"
                             ></v-text-field>
                         </v-col>
-                        <v-col cols = "auto">
+                        <v-col cols = "12" lg = "6" md = "12" sm = "6">
                             <v-text-field
                                 v-model = "to_date"
                                 :error-messages = "errors.to_date"
@@ -104,7 +103,6 @@
                                 :max = "now_date"
                                 :min = "from_date"
                                 :rules = "rules.toDateRules"
-                                type = "date"
                                 @input = "errors.to_date=null"
                             ></v-text-field>
                         </v-col>
