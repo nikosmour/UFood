@@ -71,9 +71,11 @@ class UsageCoupon extends Model
 
     public function scopeTakeStatistics(Builder $query, $vData)
     {
+        $translate_staff = __('transactions.coupon_staff');
+        $translate_student = __('transactions.coupon_student');
         $selectColumns = [
             DB::raw('DATE(usage_coupons.created_at) as date'),
-            DB::raw("(CASE WHEN academics.status = 'researcher' THEN 'coupons staff' ELSE 'coupon students' END) as category"),
+            DB::raw("(CASE WHEN academics.status = 'researcher' THEN '{$translate_staff}' ELSE '{$translate_student}' END) as category"),
 //            'academics.status as category',
         ];
 
