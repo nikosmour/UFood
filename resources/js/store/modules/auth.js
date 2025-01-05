@@ -4,10 +4,14 @@ import AxiosInstance from "@/plugins/axios";
 
 /**
  * Vuex state for authentication.
- * @type {{ user: UserData | null }}
+ * @type {{
+ * user: import("@/utilities/BaseModel")<any,any> | null
+ * config : object;
+ * }}
  */
 export const state = {
 	user : null,
+	config : {},
 };
 
 export const mutations = {
@@ -19,6 +23,8 @@ export const mutations = {
 	setLogin( state, payload ) {
 		const ModelClass = getModelClass( payload.model ); // Pass the model name from the backend
 		payload.user.abilities = UserAbilityEnum.findByValueMany( payload.user.abilities );
+		Object.assign( state.config, payload.config || {} );
+		ModelClass.CONFIG = state.config.application;
 		state.user = ModelClass
 		             ? new ModelClass( payload.user )
 		             : payload.user;
@@ -30,7 +36,12 @@ export const mutations = {
 	 * @param state
 	 */
 	setLogout( state ) {
+		const config = state.config;
 		state.user = null;
+		Object.keys( config || {} )
+		      .forEach( key => {
+			      delete config[ key ];
+		      } );
 	},
 };
 
@@ -155,6 +166,9 @@ export const getters = {
 		const user = state.user;
 		const card_applicant = user?.card_applicant;
 		return card_applicant?.current_card_application;
+	},
+	config : ( state ) => {
+		return state.config;
 	},
 };
 

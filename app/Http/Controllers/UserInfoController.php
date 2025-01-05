@@ -54,6 +54,7 @@ class UserInfoController extends Controller
             'message' => 'Login Successful',
             'user' => $user,
             'model' => class_basename($user),
+            'config' => config('frontend')
         ]);
 
     }

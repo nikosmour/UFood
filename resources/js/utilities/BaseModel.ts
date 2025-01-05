@@ -3,7 +3,6 @@ import type { route } from "ziggy-js";
 import type { BaseEnum } from "@/utilities/enums/BaseEnum";
 import { InvalidModelDataError } from "@/errors/InvalidDataError";
 import ChangeTracker from "@utilities/ChangeTracker";
-import { config } from "@/config";
 
 /**
  * Base class for models in the application.
@@ -12,6 +11,7 @@ import { config } from "@/config";
 export default abstract class BaseModel<TData extends Pick<TInterface, keyof TInterface>, TInterface extends Record<string, any>> extends ChangeTracker {
 	static $axios : AxiosInstance | null = null;
 	static route : typeof route | null = null;
+	static CONFIG : Record<string, any> = {};
 	static primaryKey : keyof BaseModel<any, any> = "id";
 	
 	/**
@@ -268,7 +268,7 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	
 	
 	public trackableProps<T extends this>() : Array<keyof T> {
-		return config.alterableProperties[ this.constructor.name ] as Array<keyof T> | null ?? [] as Array<keyof T>;
+		return ( BaseModel.CONFIG?.alterableProperties?.[ this.constructor.name ] ?? [] ) as Array<keyof T>;
 	}
 	
 	public updateSync<T extends BaseModel<any, any>>( data : ConstructorParameters<new ( data : any ) => T>[0] ) : void {
