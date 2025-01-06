@@ -1,8 +1,9 @@
-import {defineConfig} from "vite";
+import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue"; // Import the Vue plugin
 import vuetify from "vite-plugin-vuetify";
 import path from "path";
+import compression from "vite-plugin-compression";
 
 const path2 = path.resolve( __dirname, "resources", "js" );
 export default defineConfig( ( { mode } ) => {
@@ -18,6 +19,16 @@ export default defineConfig( ( { mode } ) => {
 			vuetify( {
 				         autoImport : true,  // Enable auto-import for Vuetify components
 			         } ),
+			compression( {
+				             algorithm : "gzip", // Gzip compression
+				             threshold : 5012,   // Files larger than 10KB will be compressed
+				             ext :       ".gz",         // Gzipped files will have a `.gz` extension
+			             } ),
+			compression( {
+				             algorithm : "brotliCompress", // Brotli compression
+				             threshold : 5012,            // Files larger than 5KB will be compressed
+				             ext :       ".br",                  // Brotli compressed files will have a `.br` extension
+			             } ),
 		],
 		resolve : {
 			alias : {

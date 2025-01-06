@@ -19,3 +19,54 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+<IfModule mod_deflate.c>
+    # Gzip compression
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml
+    AddOutputFilterByType DEFLATE text/css text/javascript application/javascript application/json
+</IfModule>
+
+<IfModule mod_brotli.c>
+    # Brotli compression
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Add gzip encoding for compressed files
+#AddEncoding gzip \.jsgz
+AddType application/javascript .js.gz
+AddType application/javascript .js.br
+
+AddType text/css .css.gz
+AddType text/css .css.br
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{HTTP:Accept-Encoding} br
+    RewriteCond %{REQUEST_FILENAME}.br -f
+    RewriteRule ^(.*)$ $1.br [QSA,L]
+
+    RewriteCond %{HTTP:Accept-Encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}.gz -f
+    RewriteRule ^(.*)$ $1.gz [QSA,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Set correct encoding headers for compressed files
+    <FilesMatch "\.js\.gz$">
+        Header set Content-Encoding gzip
+        Header set Content-Type "application/javascript"
+    </FilesMatch>
+    <FilesMatch "\.css\.gz$">
+            Header set Content-Encoding gzip
+            Header set Content-Type "text/css"
+   </FilesMatch>
+
+    <FilesMatch "\.js\.br$">
+        Header set Content-Encoding br
+        Header set Content-Type "application/javascript"
+    </FilesMatch>
+    <FilesMatch "\.css\.br$">
+                Header set Content-Encoding br
+                Header set Content-Type "text/css"
+       </FilesMatch>
+</IfModule>
