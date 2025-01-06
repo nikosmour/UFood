@@ -231,7 +231,7 @@ export const en = {
 		"value" :          "Receiver",
 		"id" :             "Academic ID",
 		"name" :           "Name",
-		"status" :         "@:status",
+		"status" : "@:model_data.status",
 		"transaction_id" : "@:transaction.id",
 		
 	},
