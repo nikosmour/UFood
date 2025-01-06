@@ -63,7 +63,10 @@
 </template>
 
 <script>
+import ShowAData from "@components/needUpdate/showAData.vue";
+
 export default {
+	components : { ShowAData },
 	props : {
 		applicant : {
 			type :     Object,

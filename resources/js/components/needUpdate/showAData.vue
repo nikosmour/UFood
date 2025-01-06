@@ -1,6 +1,6 @@
 <script>
 export default {
-	name :  "showAData.vue",
+	name : "showAData",
 	props : {
 		name :  {
 			type :     String,

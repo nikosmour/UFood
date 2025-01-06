@@ -105,11 +105,15 @@
 </template>
 
 <script>
-import CardApplicantInfo from "./cardApplicantInfo.vue";
+import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
 import { mapGetters } from "vuex";
+import Message from "@pages/NeedUpdate/CardApplicationChecking/Message.vue";
 
 export default {
-	components : { CardApplicantInfo },
+	components : {
+		Message,
+		CardApplicantInfo,
+	},
 	props :      {
 		application : Object,
 	},

@@ -121,7 +121,7 @@
 
 <script lang = "ts">
 import { mapGetters } from "vuex";
-import CardApplicantInfo from "@/Components/cardApplicantInfo.vue";
+import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
 import { InformTheUserError } from "@/errors/InformTheUserError";
 import Address from "@models/Address";
 import CardApplicant from "@models/CardApplicant";

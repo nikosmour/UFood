@@ -18,10 +18,14 @@
 </template>
 
 <script>
-import CardApplicationShowData from "../Components/CardApplicationShowData.vue";
+import CardApplicationShowData from "@pages/NeedUpdate/CardApplicationChecking/CardApplicationShowData.vue";
+import Message from "@pages/NeedUpdate/CardApplicationChecking/Message.vue";
 
 export default {
-	components : { CardApplicationShowData },
+	components : {
+		Message,
+		CardApplicationShowData,
+	},
 	data() {
 		return {
 			cursor :       { data : [] },

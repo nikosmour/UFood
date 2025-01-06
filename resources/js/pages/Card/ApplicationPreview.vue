@@ -36,7 +36,7 @@ import MyCardApplicationFiles from "@components/MyCardApplicationFiles.vue";
 import type CardApplication from "@models/CardApplication";
 import type CardApplicationUpdate from "@models/CardApplicationUpdate";
 import type { PropertyType } from "@types/globals";
-import CardApplicantInfo from "@/Components/cardApplicantInfo.vue";
+import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
 import { mapGetters } from "vuex";
 
 export default {
