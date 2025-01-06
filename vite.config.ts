@@ -12,7 +12,6 @@ export default defineConfig( ( { mode } ) => {
 			laravel( {
 				         input : [
 					         "resources/js/main.js",
-					         "resources/sass/app.scss",
 				         ],
 			         } ),
 			vue(), // Use the Vue plugin
@@ -66,6 +65,35 @@ export default defineConfig( ( { mode } ) => {
 				format: {
 					// Remove all comments from the final output
 					comments : false,
+				},
+			},
+			rollupOptions : {
+				output : {
+					inlineDynamicImports : true,
+					// manualChunks( id ) {
+					// if ( id.includes( path.resolve( path2, "/pages/Coupons/" ) ) ||
+					//      id.includes( path.resolve( path2, "/pages/Coupons.vue" ) )
+					// ) {
+					// 	return "coupons"; // All coupon-related files go into "coupons.js"
+					// }
+					// if ( id.includes( path.resolve( path2, "/pages/Card/" ) ) ) {
+					// 	return "card"; // All card-related files go into "card.js"
+					// }
+					// // if ( id.includes( path.resolve( path2, "components/" ) ) ) {
+					// // 	return "components"; //All common components on "component"
+					// // }
+					// // if ( id.includes( path.resolve( path2, "/pages/Errors/" ) ) ||
+					// //      id.includes( path.resolve( path2, "/pages/Auth/Login.vue" ) ) ||
+					// //      id.includes( path.resolve( path2, "/pages/NeedUpdate/UserProfile.vue" ) )
+					// // ) {
+					// // 	return 'base'; // All the basic Page go into "base.js"
+					// // }
+					// if ( id.includes( path.resolve( path2, "/pages/NeedUpdate/CardApplicationChecking/" ) ) ||
+					//      id.includes( path.resolve( path2, "/pages/NeedUpdate/CardApplicationChecking.vue" ) )
+					// ) {
+					// 	return "application_check"; // All CardApplicationChecking-related files go into "application_check.js"
+					// }
+					// },
 				},
 			},
 		},
