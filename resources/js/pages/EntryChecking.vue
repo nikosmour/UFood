@@ -76,7 +76,7 @@ export default {
 		 * If statistics data is provided via props, it is used directly;
 		 * otherwise, data is fetched from the server.
 		 */
-		this.statistics = this.statisticsServer || await this.fetchStatisticsData();
+		// this.statistics = this.statisticsServer || await this.fetchStatisticsData();
 	},
 };
 </script>
