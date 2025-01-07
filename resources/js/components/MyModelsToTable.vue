@@ -1,14 +1,17 @@
 <template>
-    <v-data-table
+    <v-data-table-virtual
         v-model:expanded = "expanded"
         :headers = "tableHeaders"
         :items = "models"
         :show-expand = "relationships.length !== 0"
         hide-default-footer
-        expandOnClick
-        hideDefaultHeader
+        :disableSort = "true"
+        :expandOnClick = "relationships.length !== 0"
+        :hide-default-header = "$vuetify.display.smAndDown"
+        :mobile = "null"
+
+        mobile-breakpoint = "md"
         hover
-        items-per-page = "-1"
     >
         <template v-slot:top>
             <v-toolbar :title = "caption" flat />
@@ -38,8 +41,18 @@
         <template v-slot:item.updated_at = "{item}">
             {{ ( new Date( item.updated_at ) ).toLocaleDateString( $i18n.locale ) }}
         </template>
+        <template v-slot:item.is_permanent = "{item}">
+            {{ $t( item.is_permanent
+                   ? "address.permanent"
+                   : "address.temporary" ) }}
+        </template>
+        <template v-slot:item.is_active = "{item}">
+            {{ $t( "active", item.is_active
+                             ? 1
+                             : 0 ) }}
+        </template>
 
-    </v-data-table>
+    </v-data-table-virtual>
 </template>
 
 <script>
@@ -75,11 +88,13 @@ export default {
 			             .filter( key => typeof this.firstModel[ key ] === "object" );
 		},
 		tableHeaders() {
-			return this.attributes.map( key => ( {
+			return this.attributes.map( ( key ) => {
+				return {
 				title : this.$t( "model_data." + key.toLowerCase() ),
 				value : key,
 				key :   key,
-			} ) );
+				}
+			} );
 		},
 	},
 	methods :  {
@@ -88,6 +103,9 @@ export default {
 			       ? data
 			       : [ data ];
 		},
+	},
+	mounted() {
+		console.info( this.tableHeaders, this.attributes, this.$vuetify );
 	},
 };
 </script>

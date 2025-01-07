@@ -173,7 +173,7 @@ return [
 
     'attributes' => [
         'academic_id' => 'ακαδημαϊκή ταυτότητα',
-        'receiver_id' => 'αναγνωριστικό παραλήπτη',
+        'receiver_id' => 'παραλήπτη',
         'BREAKFAST' => 'πρωινό',
         'LUNCH' => 'μεσημεριανό',
         'DINNER' => 'βραδινό'
