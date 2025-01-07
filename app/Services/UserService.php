@@ -11,7 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -30,7 +30,7 @@ class UserService
             if ($guard !== 'sanctum') {
                 /** @var User $user */
                 $user = Auth::guard($guard)->getProvider()->retrieveByCredentials($credentials);
-                if ($user) {
+                if ($user && Hash::check($credentials['password'], $user->getAuthPassword())) {
                     DB::setDefaultConnection($originalConnection);
                     $array = [
                         'email' => $user->email,

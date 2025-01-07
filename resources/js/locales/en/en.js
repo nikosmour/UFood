@@ -327,6 +327,7 @@ export const en = {
 		"profile" :     "User Profile",
 		//     "value": "User"
 	},
+	"username" : "username",
 	"update" :     "Update",
 	// "verification": "Verification",
 	"Welcome" : "Welcome",
@@ -334,3 +335,4 @@ export const en = {
 
 
 export default en;
+277;

@@ -243,6 +243,7 @@ export const el = {
 		"meals" :        "Στατιστικά Γευμάτων",
 	},
 	"submit" :                "Υποβολή",
+	"submit_application_until" : "You can submit your application until {date} | The period of submitting application was until {date} ",
 	"theme" :                 { "select" : "Επιλογή θέματος" },
 	"to" :                    "Έως",
 	"transaction" :           {
@@ -264,6 +265,7 @@ export const el = {
 		"information" : "Πληροφορίες Χρήστη",
 		"profile" :     "Προφίλ Χρήστη",
 	},
+	"username" :                 "Όνομα χρήστη",
 	"update" :                "Ενημέρωση",
 	"Welcome" :               "Καλώς ήρθατε",
 };

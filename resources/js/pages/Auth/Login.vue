@@ -3,12 +3,15 @@
         <v-row justify = "center">
             <v-col cols = "12" md = "8">
                 <v-card :loading = "isLoading">
-                    <v-card-title>
-                        <h5>{{ $t( "login" ) }}</h5>
+                    <v-card-title id = "card_title">
+                        {{ $t( "login" ) }}
                     </v-card-title>
 
                     <v-card-text>
-                        <form @submit.prevent = "submitForm">
+                        <v-form
+                            v-model = "isValid" aria-label-by = "card_title" class = "mt-6" role = "form"
+                            @submit.prevent = "submitForm"
+                        >
                             <!-- Email Field -->
                             <v-row class = "mb-3">
                                 <v-col cols = "12" md = "6" offset-md = "3">
@@ -17,8 +20,8 @@
                                         v-model = "formData.email"
                                         :class = "{ 'is-invalid': errors.email || errors.credentials }"
                                         :error-messages = "errors.email"
-                                        :label = "$t('email')"
-                                        aria-label = "$t('email')"
+                                        :label = "$t('username')"
+                                        :rules = "rules['username']"
                                         autofocus
                                         outlined
                                         required
@@ -33,9 +36,9 @@
                                     <v-text-field
                                         id = "password"
                                         v-model = "formData.password"
-                                        :aria-label = "$t('password')"
                                         :class = "{ 'is-invalid': errors.password || errors.credentials }"
                                         :error-messages = "errors.password || errors.credentials"
+                                        :rules = "rules['password']"
                                         :label = "$t('password')"
                                         outlined
                                         required
@@ -49,13 +52,13 @@
                                 <v-col cols = "12" md = "8" offset-md = "5">
                                     <v-btn
                                         :aria-label = "$t('login')" :loading = "isLoading" color = "primary"
-                                        type = "submit"
+                                        :disabled = "!isValid" type = "submit"
                                     >
                                         {{ $t( "login" ) }}
                                     </v-btn>
                                 </v-col>
                             </v-row>
-                        </form>
+                        </v-form>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -87,6 +90,24 @@ export default defineComponent( {
 			 * @type {Boolean}
 			 */
 			isLoading : false,
+			/**
+			 * Boolean to check if the form is valid.
+			 * @type {Boolean}
+			 */
+			isValid : null,
+
+			rules : {
+				username : [
+					value => !!value || this.$t( "validation.required", {
+						attribute : this.$t( "username" ),
+					} ),
+				],
+				password : [
+					value => !!value || this.$t( "validation.required", {
+						attribute : this.$t( "password" ),
+					} ),
+				],
+			},
 		};
 	},
 	methods : {
