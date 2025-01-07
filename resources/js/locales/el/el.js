@@ -245,7 +245,12 @@ export const el = {
 	},
 	"submit" :                "Υποβολή",
 	"submit_application_until" : "Υποβολές αιτήσεων μέχρι{date} | Οι υποβολές αιτήσεων ήταν μέχρι {date} ",
-	"theme" :                 { "select" : "Επιλογή θέματος" },
+	"theme" : {
+		"select" : "Επιλογή θέματος",
+		"light" :  "Ανοικτό",
+		"dark" :   "Σκούρο",
+		"system" : "Συστήματος",
+	},
 	"to" :                    "Έως",
 	"transaction" :           {
 		"buying" :    "Αγορά",

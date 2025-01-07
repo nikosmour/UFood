@@ -4,7 +4,7 @@
         v-model = "themeCategory"
         :items = "themeOptions"
         :label = "$t('theme.select')"
-        aria-label = "$t('theme.select')"
+        :aria-label = "$t('theme.select')"
         variant = "outlined"
         @update:model-value = "updateTheme"
     ></v-select>
@@ -24,13 +24,18 @@ export default {
 
 			/**
 			 * List of theme options available for selection.
-			 * @type {Array<String>}
+			 * @type {Array<Object>}
 			 */
 			themeOptions : [
 				"light",
 				"dark",
 				"system",
-			],
+			               ].map( ( theme ) => {
+				return {
+					value : theme,
+					title : this.$t( "theme." + theme ),
+				};
+			} ),
 		};
 	},
 

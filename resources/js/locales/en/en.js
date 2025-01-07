@@ -301,7 +301,12 @@ export const en = {
 	//     "message": "test message"
 	// },
 	// "time period": "Time Period",
-	"theme" :        { "select" : "Select theme" },
+	"theme" : {
+		"select" : "Select theme",
+		"light" :  "Light",
+		"dark" :   "Dark",
+		"system" : "System",
+	},
 	"to" :           "To",
 	"transaction" :  {
 		"buying" :    "Buying",
