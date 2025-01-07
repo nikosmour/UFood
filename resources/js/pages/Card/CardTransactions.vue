@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container max-width = "50em">
         <!-- Table for Transactions -->
         <MyFreeFoodStatus />
         <v-data-table-virtual

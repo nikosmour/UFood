@@ -5,7 +5,7 @@
     >
         <v-card>
             <v-card-title class = "d-flex justify-end">
-                <v-btn icon size = "x-small" @click = "$emit('update:overlay')">
+                <v-btn :aria-label = "$t('$vuetify.close')" icon size = "x-small" @click = "$emit('update:overlay')">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-card-title>

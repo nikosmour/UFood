@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid max-width = "50em">
         <v-row justify = "center">
             <v-col cols = "12">
                 <v-stepper
@@ -361,7 +361,7 @@ export default {
 			};
 			this.submitData( this.route( "transaction.confirm" ), data )
 			    .then( json => {
-				    this.receiver.status = json.status;
+				    this.receiver.status = json?.status;
 			    } );
 		},
 

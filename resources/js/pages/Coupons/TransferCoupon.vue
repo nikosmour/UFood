@@ -10,6 +10,7 @@
 import MyTransactionCouponForm from "@components/MyTransactionCouponForm.vue";
 
 export default {
+	name : "TransferCoupon",
 	components : {
 		MyTransactionCouponForm,
 	},

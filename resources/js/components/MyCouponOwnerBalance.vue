@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container max-width = "50em">
         <v-card :aria-label = "$t('coupon.owner-balance')" :title = "$t('coupon.value',2)">
             <v-card-subtitle class = "mt-2">{{ $t( "balance" ) }}</v-card-subtitle>
             <v-list>
