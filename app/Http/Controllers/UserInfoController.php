@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Academic;
-use App\Models\CardApplicationStaff;
 use Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
@@ -48,8 +47,8 @@ class UserInfoController extends Controller
                     'cardApplicant.validCardApplication',//:expiration_date
                 );
         }
-        else if ($user instanceof CardApplicationStaff)
-            $user->statistics;
+//        else if ($user instanceof CardApplicationStaff)
+//            $user->statistics;
         return response()->json([
             'message' => 'Login Successful',
             'user' => $user,
