@@ -40,7 +40,11 @@ export default {
 			delete card_applicant?.current_card_application;
 			delete card_applicant?.valid_card_application;
 			delete user.card_applicant;
-			if ( card_applicant ) card_applicant.first_year = card_applicant.first_year.getFullYear();
+			if ( card_applicant ) {
+				card_applicant.first_year = card_applicant.first_year.getFullYear();
+				delete user.academic_id;
+			}
+			delete user.id;
 			user.status = this.$t( "status." + user.status.key );
 			return {
 				user,

@@ -59,7 +59,7 @@
         </v-row>
         <v-row align = "center" class = "mr-4">
             <v-btn
-                :aria-label = "$t('settings')"
+                :aria-label = "$t('settings.value')"
                 color = "primary"
                 icon = "mdi-cog"
                 @click.stop = "drawer = true"

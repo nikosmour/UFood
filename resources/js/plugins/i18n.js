@@ -16,7 +16,7 @@ const getPreferredLocale = () => {
 
 // Create the I18n instance
 export const I18n = createI18n( {
-	                                locale :         getPreferredLocale(), // set locale
+	                                locale : localStorage.getItem( "settings.lang" ) || getPreferredLocale(), // set locale
 	                                fallbackLocale : "en", // set fallback locale
 	                                messages,
                                 } );

@@ -3,15 +3,16 @@
     <v-select
         v-model = "themeCategory"
         :items = "themeOptions"
-        :label = "$t('theme.select')"
-        :aria-label = "$t('theme.select')"
+        :label = "$t('settings.theme.select')"
         variant = "outlined"
         @update:model-value = "updateTheme"
     ></v-select>
 </template>
 
-<script>
-export default {
+<script lang = "ts">
+import { defineComponent } from "vue";
+
+export default defineComponent( {
 	name : "SelectTheme",
 
 	data() {
@@ -21,30 +22,15 @@ export default {
 			 * @type {String}
 			 */
 			themeCategory : localStorage.getItem( "settings.theme" ) || "system",
-
-			/**
-			 * List of theme options available for selection.
-			 * @type {Array<Object>}
-			 */
-			themeOptions : [
-				"light",
-				"dark",
-				"system",
-			               ].map( ( theme ) => {
-				return {
-					value : theme,
-					title : this.$t( "theme." + theme ),
-				};
-			} ),
 		};
 	},
 
 	methods : {
 		/**
-		 * Determines the preferred theme based on the user's system settings.
-		 * @returns {String} - 'light' if the system preference is light mode, 'dark' otherwise.
+		 * Determines the preferred lang based on the user's system settings.
+		 * @returns `light` if the system preference is light mode, `dark` otherwise.
 		 */
-		getPreferredTheme() {
+		getPreferredTheme() : string {
 			return window.matchMedia( "(prefers-color-scheme: light)" ).matches
 			       ? "light"
 			       : "dark";
@@ -64,10 +50,22 @@ export default {
 			                                  : this.themeCategory;
 		},
 	},
-
-	created() {
-		// Apply the theme on component creation
-		this.updateTheme();
-	},
-};
+	                                computed : {
+		                                /**
+		                                 * List of theme options available for selection.
+		                                 */
+		                                themeOptions() : Array<{ value : string, title : string }> {
+			                                return [
+				                                "light",
+				                                "dark",
+				                                "system",
+			                                ].map( ( theme ) => {
+				                                return {
+					                                value : theme,
+					                                title : this.$t( "settings.theme." + theme ),
+				                                };
+			                                } );
+		                                },
+	                                },
+                                } );
 </script>

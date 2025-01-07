@@ -253,7 +253,20 @@ export const en = {
 	},
 	// "select_file": "Select file",
 	// "sender": "Sender",
-	"settings" : "Settings",
+	"settings" : {
+		"value" : "Settings",
+		"theme" : {
+			"select" : "Select theme",
+			"light" :  "Light",
+			"dark" :   "Dark",
+			"system" : "System",
+		},
+		"lang" :  {
+			"select" : "Select lang",
+			"en" :     "English",
+			"el" :     "Greek",
+		},
+	},
 	// "some_files_not_updated": "@:{required_failed}: Some files were not uploaded or deleted on the server. @:request_failed_status_wont_change",
 	// "staff": "Staff",
 	"status" :     {
@@ -301,12 +314,6 @@ export const en = {
 	//     "message": "test message"
 	// },
 	// "time period": "Time Period",
-	"theme" : {
-		"select" : "Select theme",
-		"light" :  "Light",
-		"dark" :   "Dark",
-		"system" : "System",
-	},
 	"to" :           "To",
 	"transaction" :  {
 		"buying" :    "Buying",

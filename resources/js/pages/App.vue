@@ -90,7 +90,6 @@ export default {
 		//
 		// // Set up Axios interceptors
 		setupAxiosInterceptor( this.$axios, this.$store, this.$router, this.route );
-		this.$vuetify.locale.current = this.$i18n.locale;
 
 	},
 	unmounted() {

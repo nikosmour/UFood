@@ -216,7 +216,20 @@ export const el = {
 	"select" :                {
 		"all" : "Επιλογή Όλων",
 	},
-	"settings" :              "Ρυθμίσεις",
+	"settings" : {
+		"value" : "Ρυθμίσεις",
+		"theme" : {
+			"select" : "Επιλογή θέματος",
+			"light" :  "Ανοικτό",
+			"dark" :   "Σκούρο",
+			"system" : "Συστήματος",
+		},
+		"lang" :  {
+			"select" : "Επιλογή γλώσσας",
+			"el" :     "Ελληνικά",
+			"en" :     "Αγγλικά",
+		},
+	},
 	"status" :                {
 		"accepted" :          "Εγκρίθηκε",
 		"checking" :          "Υπό εξέταση",
@@ -245,12 +258,6 @@ export const el = {
 	},
 	"submit" :                "Υποβολή",
 	"submit_application_until" : "Υποβολές αιτήσεων μέχρι{date} | Οι υποβολές αιτήσεων ήταν μέχρι {date} ",
-	"theme" : {
-		"select" : "Επιλογή θέματος",
-		"light" :  "Ανοικτό",
-		"dark" :   "Σκούρο",
-		"system" : "Συστήματος",
-	},
 	"to" :                    "Έως",
 	"transaction" :           {
 		"buying" :    "Αγορά",
