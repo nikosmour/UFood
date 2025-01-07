@@ -4,12 +4,11 @@
         :color = "options.color"
         :timeout = "options.timeout"
         class = "white--text"
+        close-on-content-click
+        role = "alert"
         top
     >
         {{ options.message }}
-        <template #actions>
-            <v-btn color = "white" variant = "text" @click = "options.showError = false">Close</v-btn>
-        </template>
     </v-snackbar>
 </template>
 

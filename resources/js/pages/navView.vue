@@ -93,7 +93,7 @@
         </v-row>
     </v-app-bar>
 
-    <settings v-if = "drawer" v-model = "drawer" right temporary />
+    <settings v-if = "drawer" v-model = "drawer" location = "right" temporary />
 </template>
 
 <script>

@@ -8,7 +8,7 @@ import { I18n } from "@/plugins/i18n";
 
 function getPreferredTheme() {
 	const prefersLight = window.matchMedia( "(prefers-color-scheme: light)" ).matches;
-	return prefersLight
+	return localStorage.getItem( "settings.theme" ) || prefersLight
 	       ? "light"
 	       : "dark";
 }
