@@ -31,24 +31,23 @@
                         hide-details
                     ></v-select>
                     <!-- Meal Category Selection (Checkboxes) -->
-                    <v-sheet
+                    <fieldset
                         :aria-hidden = "!showMeals" :aria-label = "$t('meals.category')"
                         :class = "showMeals ? 'opacity-100':'opacity-0'"
-                        border = "md"
-                        class = " mt-8 mb-2 "
-                        position = "relative"
+                        class = "border-md mb-5"
                     >
+                        <legend class = "pr-3 ml-3">
 
-                        <v-checkbox
-                            v-model = "selectAll"
-                            :indeterminate = "isIndeterminate"
-                            :label = "$t('select.all')"
-                            class = "custom-checkbox "
-                            hide-details = "true"
-                            @change = "toggleSelectAll"
-                            @input = "errors.meal_category=null"
-                        />
-                        <v-row class = "justify-space-between mt-1 mr-1">
+                            <v-checkbox
+                                v-model = "selectAll"
+                                :indeterminate = "isIndeterminate"
+                                :label = "$t('export_statistics.select.all')"
+                                hide-details = "auto"
+                                @change = "toggleSelectAll"
+                                @input = "errors.meal_category=null"
+                            />
+                        </legend>
+                        <v-row class = "justify-space-between mr-1 mb-1">
                             <!--                        <v-text-field variant="outlined">
                                                         <template v-slot:label>
                                                     <v-checkbox
@@ -61,31 +60,29 @@
                                                     ></v-checkbox>
                                                         </template>-->
 
-                            <v-col v-for = "meal in meal_categories" :key = "'checkbox.'+meal" cols = "auto">
+                            <v-col
+                                v-for = "meal in meal_categories" :key = "'checkbox.'+meal" class = "pt-0 pb-0"
+                                cols = "auto"
+                            >
 
                                 <v-checkbox
                                     v-model = "meal_category"
                                     :error-messages = "errors.meal_category"
                                     :label = "$t('meals.'+meal)"
                                     :value = "meal"
-                                    hide-details = "true"
+                                    hide-details = "auto"
                                     @input = "errors.meal_category=null"
                                 ></v-checkbox>
                             </v-col>
                             <!--                        </v-text-field>-->
                         </v-row>
-                        <v-messages
-                            :active = "errors.meal_category"
-                            :messages = "errors.meal_category"
-                            color = "error"
-                        />
-                    </v-sheet>
+                    </fieldset>
                     <!-- Date Range Selection for Adapted Period -->
                     <v-row
                         :aria-hidden = "!showDates" :class = "showDates ? 'opacity-100':'opacity-0'"
-                        class = "justify-center"
+                        :aria-description = "$t('export_statistics.select.dates')" class = "justify-center"
                     >
-                        <v-col cols = "12" lg = "6" md = "12" sm = "6">
+                        <v-col class = "pb-0" cols = "12" lg = "6" md = "12" sm = "6">
                             <v-text-field
                                 v-model = "from_date"
                                 :error-messages = "errors.from_date"
@@ -93,9 +90,10 @@
                                 :max = "now_date"
                                 :rules = "rules.fromDateRules"
                                 @input = "errors.from_date=null"
+                                type = "text"
                             ></v-text-field>
                         </v-col>
-                        <v-col cols = "12" lg = "6" md = "12" sm = "6">
+                        <v-col class = "pt-0" cols = "12" lg = "6" md = "12" sm = "6">
                             <v-text-field
                                 v-model = "to_date"
                                 :error-messages = "errors.to_date"
