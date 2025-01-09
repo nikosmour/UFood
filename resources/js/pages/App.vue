@@ -104,7 +104,7 @@ export default {
         <!-- Main navigation component -->
         <nav-view />
         
-        <v-main role = "main">
+        <v-main id = "main">
             <!-- Main content area with role for accessibility -->
             <v-container fluid>
                 <router-view />
