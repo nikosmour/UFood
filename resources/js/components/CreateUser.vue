@@ -43,7 +43,7 @@ export default defineComponent(
             <span class = "text-h6">{{ $t( "personalPrivacy" ) }}</span>
         </v-card-title>
         <v-card-text>
-            <div id = "inside3">
+            <div id = "personal_data_info">
                 {{ $t( "personalData.explain" ) }}
                 <!--
                  <p>
@@ -128,12 +128,14 @@ export default defineComponent(
             </div>
             <v-row class = "d-flex justify-space-between mr-2 ml-2 mt-2 mb-2">
                 <v-btn
-                    v-tooltip.top = "$t('personalData.reject')" :aria-label = " $t('personalData.reject')"
+                    :aria-description = " $t('personalData.reject')"
                     :loading = "isLoading" :text = "$t( 'reject' )" color = "secondary"
                     @click = "logout"
+                    aria-details = "personal_data_info"
                 />
                 <v-btn
-                    v-tooltip.bottom = "$t('personalData.accept')" :aria-label = " $t('personalData.accept')"
+                    :aria-description = " $t('personalData.accept')"
+                    aria-details = "personal_data_info"
                     :loading = "isLoading" :text = "$t( 'accept' )" color = "primary"
                     type = "sumbit" variant = "elevated"
                     @click = "createUser"
