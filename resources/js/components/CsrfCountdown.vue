@@ -1,8 +1,11 @@
 <template>
     <v-btn
+        :aria-label = "$t('csrf_countDown.toLogout')+': ' + formattedTime"
         :color = "color"
         class = "d-flex justify-center text-center"
         v-on:click = "updateCookie"
+        aria-live = "polite"
+        role = "timer"
     >
         {{ formattedTime }}
     </v-btn>
