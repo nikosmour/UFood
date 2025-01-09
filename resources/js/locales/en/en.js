@@ -108,6 +108,12 @@ export const en = {
 		},
 		//     "some_files_not_updated": "@:some_files_not_updated"
 	},
+	"export_statistics" : {
+		"select" : {
+			"all" :   "Select All",
+			"dates" : "Select from and to dates",
+		},
+	},
 	// "expiration date": "Expiration @:date",
 	"file" :             {
 		"add" :            "Add a new file",
@@ -248,9 +254,7 @@ export const en = {
 	// "retrieving_application_files_failed": "@:required_failed: Retrieving files of this  application has failed ",
 	// "sale_coupons": "Sale Coupons",
 	"save" : "Save",
-	"select" : {
-		"all" : "Select All",
-	},
+	"skipToMain" :        "Skip to main aria",
 	// "select_file": "Select file",
 	// "sender": "Sender",
 	"settings" : {

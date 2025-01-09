@@ -107,6 +107,12 @@ export const el = {
 		},
 		//     "some_files_not_updated": "@:some_files_not_updated"
 	},
+	"export_statistics" : {
+		"select" : {
+			"all" :   "Επιλογή Όλων",
+			"dates" : "Επιλογή χρονικής περιόδου",
+		},
+	},
 	// "expiration date": "Λήξη @:date",
 	"file" : {
 		"add" :            "Προσθήκη νέου αρχείου",
@@ -213,9 +219,7 @@ export const el = {
 		"reject" :  "Πατήστε αν δεν θέλετε να χρησιμοποιήσετε αυτήν την πλατφόρμα. Τίποτα δεν θα αποθηκευτεί στο σύστημά μας",
 	},
 	"save" :                  "Αποθήκευση",
-	"select" :                {
-		"all" : "Επιλογή Όλων",
-	},
+	"skipToMain" :        "Μετάβαση στο κύριο περιεχόμενο",
 	"settings" : {
 		"value" : "Ρυθμίσεις",
 		"theme" : {
