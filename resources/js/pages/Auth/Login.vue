@@ -1,7 +1,5 @@
 <template>
-    <v-container>
-        <v-row justify = "center">
-            <v-col cols = "12" md = "8">
+    <v-container max-width = "40em">
                 <v-card :loading = "isLoading">
                     <v-card-title id = "card_title">
                         {{ $t( "login" ) }}
@@ -9,12 +7,11 @@
 
                     <v-card-text>
                         <v-form
-                            v-model = "isValid" aria-label-by = "card_title" class = "mt-6" role = "form"
+                            v-model = "isValid" aria-labelledby = "card_title" class = "mt-6"
                             @submit.prevent = "submitForm"
                         >
                             <!-- Email Field -->
-                            <v-row class = "mb-3">
-                                <v-col cols = "12" md = "6" offset-md = "3">
+                            <v-row class = "mb-3 justify-space-around">
                                     <v-text-field
                                         id = "email"
                                         v-model = "formData.email"
@@ -26,13 +23,12 @@
                                         outlined
                                         required
                                         type = "email"
-                                    ></v-text-field>
-                                </v-col>
+                                        max-width = "25em"
+                                    />
                             </v-row>
 
                             <!-- Password Field -->
-                            <v-row class = "mb-3">
-                                <v-col cols = "12" md = "6" offset-md = "3">
+                            <v-row class = "mb-3 justify-space-around">
                                     <v-text-field
                                         id = "password"
                                         v-model = "formData.password"
@@ -43,8 +39,8 @@
                                         outlined
                                         required
                                         type = "password"
-                                    ></v-text-field>
-                                </v-col>
+                                        max-width = "25em"
+                                    />
                             </v-row>
 
                             <!-- Submit Button -->
@@ -61,8 +57,6 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-            </v-col>
-        </v-row>
     </v-container>
 </template>
 
