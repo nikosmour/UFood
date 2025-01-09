@@ -67,6 +67,9 @@ export const en = {
 		"owner-balance" : "Coupon Owner Balance",
 		"value" :         "Coupon | Coupons",
 	},
+	"csrf_countDown" : {
+		"toLogout" : "timer for logout",
+	},
 	"date" :   "Date",
 	"description" :      "Description",
 	"developedBy" : "Developed by Nikolaos Mouratidis",

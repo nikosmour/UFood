@@ -66,6 +66,9 @@ export const el = {
 		"owner-balance" : "Υπόλοιπο Κατόχου Κουπονιού",
 		"value" :         "Κουπόνι | Κουπόνια",
 	},
+	"csrf_countDown" : {
+		"toLogout" : "Ο χρόνος για αποσύνδεση",
+	},
 	"date" :             "Ημερομηνία",
 	"description" :      "Περιγραφή",
 	"developedBy" :      "Αναπτύχθηκε από τον Νικόλαο Μουρατίδη",
