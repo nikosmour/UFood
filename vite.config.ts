@@ -52,6 +52,9 @@ export default defineConfig( ( { mode } ) => {
 				},
 			}
 		          : undefined,
+		esbuild : {
+			target : "es6", // ECMAScript for build
+		},
 		build :   {
 			minify :        "terser",  // Use Terser for minification
 			terserOptions : {
