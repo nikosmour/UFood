@@ -118,7 +118,6 @@ export default {
 			}
 		},
 		async getFilesCanAdd() {
-			if ( !this.isEditing ) return [];
 			const locale = this.$i18n.locale;  // Get the current locale
 			const translations = this.$i18n.messages[ locale ][ "backend" ]?.[ "files" ]; // Access the 'files' group for the current locale
 			if ( translations )
