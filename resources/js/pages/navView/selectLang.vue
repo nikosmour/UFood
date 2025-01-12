@@ -24,7 +24,29 @@ export default defineComponent( {
 		                                updateLang( newValue ) {
 			                                this.$axios.defaults.headers[ "Accept-Language" ] = newValue;
 			                                localStorage.setItem( "settings.lang", newValue );
-
+			                                if ( !( this.$i18n.messages[ newValue ]?.[ "backend" ] ) )
+				                                this.getTranslation( newValue );
+		                                },
+		                                async getTranslation( lang = null ) {
+			                                lang ??= this.$i18n.locale;
+			                                try {
+				                                const { data } = await this.$axios.get(
+					                                this.route( "lang", { lang : lang } ) );
+				                                this.addTranslations( lang, { "backend" : data } );
+			                                } catch ( error ) {
+				                                throw error;
+			                                }
+		                                },
+		                                addTranslations( locale, translations ) {
+			                                const i18n = this.$i18n;
+			                                console.info( i18n );
+			                                if ( !i18n.messages[ locale ] ) {
+				                                i18n.messages[ locale ] = {};
+			                                }
+			                                i18n.setLocaleMessage( locale, {
+				                                ...i18n.messages[ locale ],
+				                                ...translations,
+			                                } );
 		                                },
 	                                },
 	                                computed : {
