@@ -23,7 +23,7 @@ abstract class UserSeederPreparation extends Seeder
             ->map(fn($status) => $status->name)
             ->sort()
             ->values()
-            ->mapWithKeys(fn($name, $index) => [$name => ($index + 1) * 1000000])
+            ->mapWithKeys(fn($name, $index) => [$name => ($index + 1) * 100000])
             ->toArray();
         foreach (UserStatusEnum::cases() as $status) {
             $key = $status->name;
