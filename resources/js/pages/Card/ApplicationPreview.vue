@@ -3,7 +3,7 @@
         v-if = "application" :loading = "isLoading" :title = " $t('pendingReview')"
         class = "justify-content-around"
     >
-        <CardApplicantInfo :applicant = "currentUser" />
+        <CardApplicantInfo :user = "currentUser" />
         <MyCardApplicationFiles
             :application = "application"
             :loadings = "loadings"
