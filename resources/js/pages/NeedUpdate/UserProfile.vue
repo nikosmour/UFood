@@ -2,12 +2,11 @@
     <v-container>
         <my-models-to-table :caption = "$t('user.information')" :models = "[user.user]" />
         <my-models-to-table
-            v-if = "user.card_applicant" :caption = "$t('model_data.card_applicant')" :models = "[user.card_applicant]"
+            v-if = "user.card_applicant" :models = "[user.card_applicant]" caption = ""
         />
         <my-models-to-table
             v-if = "user.addresses" :caption = "$t('model_data.addresses')" :models = "user.addresses"
         />
-
 
         <create-user v-if = "isNew" />
 

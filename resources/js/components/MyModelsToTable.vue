@@ -13,7 +13,7 @@
         mobile-breakpoint = "md"
         hover
     >
-        <template v-slot:top>
+        <template v-if = "caption" v-slot:top>
             <v-toolbar :title = "caption" flat />
         </template>
         <template v-slot:expanded-row = "{item }">
@@ -65,7 +65,7 @@ export default {
 		},
 		caption : {
 			type :    String,
-			default : "Table",
+			default : "",
 		},
 	},
 	data() {
