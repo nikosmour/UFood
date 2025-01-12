@@ -9,6 +9,9 @@ export const AxiosInstance = axios.create( {
 		                                           "Content-Type" :     "application/json",
 	                                           },
                                            } );
+const lang = localStorage.getItem( "settings.lang" ) || null;
+if ( lang )
+	AxiosInstance.defaults.headers[ "Accept-Language" ] = lang;
 
 // Interceptors for handling requests and responses
 /*axiosInstance.interceptors.request.use(

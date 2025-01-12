@@ -22,6 +22,7 @@ export default defineComponent( {
 		                                 * Saves the choice to local storage and sets Vuetify's global lang.
 		                                 */
 		                                updateLang( newValue ) {
+			                                this.$axios.defaults.headers[ "Accept-Language" ] = newValue;
 			                                localStorage.setItem( "settings.lang", newValue );
 
 		                                },
