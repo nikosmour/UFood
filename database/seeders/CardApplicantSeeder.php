@@ -5,9 +5,7 @@ namespace Database\Seeders;
 use App\Models\Address as Address;
 use App\Models\CardApplicant;
 use App\Models\CardApplication;
-use App\Models\CardApplicationDocument;
 use App\Models\Department;
-use App\Models\HasCardApplicantComment;
 use Database\Seeders\Classes\CreatedAtMoreThanSeeder;
 
 class CardApplicantSeeder extends CreatedAtMoreThanSeeder
@@ -26,8 +24,7 @@ class CardApplicantSeeder extends CreatedAtMoreThanSeeder
             Address::factory()->notPermanent()->for($cardApplicant)->create();
             $cardApplicant->department_id = $departments->random()->id;
             $cardApplicant->save();
-            CardApplication::factory()->for($cardApplicant)->has(CardApplicationDocument::factory()->count(3))->has(HasCardApplicantComment::factory()->randomStatus()->count(1), 'applicantComments')->create();
-
+            CardApplication::factory()->for($cardApplicant)->withComment()->withDocs()->create();
         }
     }
 }

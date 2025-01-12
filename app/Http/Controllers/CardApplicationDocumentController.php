@@ -67,15 +67,21 @@ class CardApplicationDocumentController extends Controller
     {
         $this->authorize('view', $document);
         $cardApplication = $document->cardApplication;
-        if (app()->environment('local') and '_Fake@doc_' == $document->description) {
-            $pdf = PDF::loadView('PDFS.fakePDF');
-
-            // Generate and output the PDF
-            return $pdf->stream('fakePDF');
-        }
         $fileStorageData = $this::storePositionData($cardApplication->academic_id, $document); // Adjust the file path according to your file storage location
         $filePath = $fileStorageData[0] . '/' . $fileStorageData[1];
         $disk = $fileStorageData[2];
+        if (!app()->environment('production') and str_starts_with($document->file_name, '_fake_')) {
+            $filePath = $document->file_name = str_replace('_fake_', '', $document->file_name);
+            if ($document->file_name === 'otherInformation') {
+                $pdf = PDF::loadView('PDFS.fakePDF');
+
+                // Generate and output the PDF
+                return $pdf->stream('_fake_otherInformation');
+            }
+            $disk = 'fake_doc';
+            $filePath = ($document->file_name === 'academic') ? $filePath . '_' . $document->cardApplication->Academic->status->name : $filePath;
+            $filePath = $filePath . '.pdf';
+        }
         // Check if the file exists
         if (Storage::disk($disk)->exists($filePath)) {
             // Retrieve the file's contents

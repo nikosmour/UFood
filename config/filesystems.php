@@ -83,6 +83,21 @@ return [
             'throw' => false,
         ],
 
+        /*
+       |--------------------------------------------------------------------------
+       | fake Files for Card Application t
+       |--------------------------------------------------------------------------
+       |
+       | Here  will save data like academic card, id
+       |
+       */
+        'fake_doc' => [
+            'driver' => 'local',
+            'root' => storage_path('fakeUpload'),
+            'throw' => false,
+        ],
+
+
     ],
 
     /*
