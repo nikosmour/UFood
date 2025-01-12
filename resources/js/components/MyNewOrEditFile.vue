@@ -3,6 +3,12 @@ import CardApplicationDocument from "@models/CardApplicationDocument.js";
 
 export default {
 	name : "MyNewOrEditFile",
+	props : {
+		fileOptions : {
+			type :     Object,
+			required : true,
+		},
+	},
 
 	/**
 	 * Emits:
@@ -82,6 +88,7 @@ export default {
 				],
 			};
 		},
+
 	},
 
 	methods : {
@@ -182,8 +189,9 @@ export default {
             <v-card-text>
                 <v-form ref = "fileForm" v-model = "isFormValid">
                     <!-- File Description -->
-                    <v-text-field
+                    <v-select
                         v-model = "fileInput.description"
+                        :items = "fileOptions"
                         :label = "$t('description')"
                         :rules = "rules.description"
                         outlined

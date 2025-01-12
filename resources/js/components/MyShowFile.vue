@@ -140,18 +140,16 @@ export default {
 	computed : {
 		/**
 		 * The description of the file.
-		 * @return {string|null}
 		 */
-		description() {
-			return this.file.description;
+		description() : string | null {
+			return this.$t( "backend.files." + this.file.description + ".short" );
 		},
 
 		/**
 		 * The name of the file.
-		 * @return {string|null}
 		 * @required
 		 */
-		name() {
+		name() : string | null {
 			return this.file.file_name;
 		},
 

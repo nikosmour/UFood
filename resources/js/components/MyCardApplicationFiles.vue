@@ -15,6 +15,7 @@
         <my-new-or-edit-file
             ref = "fileDialog"
             @add-file = "newFile"
+            :file-options = "fileOptions"
         />
         <v-container :aria-label = "$t('document', 2)" fluid max-width = "30rem">
             <my-show-file
@@ -84,6 +85,8 @@ export default {
 			 * Index of the file currently being previewed
 			 */
 			showFileIndex : null as number | null,
+
+			filesCanAdd : [],
 		};
 	},
 	computed : {
@@ -92,6 +95,13 @@ export default {
 		 */
 		isEditing() {
 			return this.application.isEditing && this.isApplicationPeriodOpen;
+		},
+
+		fileOptions() {
+			return this.filesCanAdd.map( key => ( {
+				value : key,
+				title : this.$t( "backend.files." + key + ".short" ),
+			} ) );
 		},
 	},
 	methods : {
@@ -107,9 +117,42 @@ export default {
 				this.loadings.pop();
 			}
 		},
+		async getFilesCanAdd() {
+			if ( !this.isEditing ) return [];
+			const locale = this.$i18n.locale;  // Get the current locale
+			const translations = this.$i18n.messages[ locale ][ "backend" ]?.[ "files" ]; // Access the 'files' group for the current locale
+			if ( translations )
+				return Object.keys( translations );
+			this.loadings.push( true );
+			await this.getTranslation()
+			          .finally(
+				          () => this.loadings.pop(),
+			          );
+			return this.getFilesCanAdd();
+		},
 		...mapMutations( "files", [
 			"setPreviewUrl",
 		] ),
+		async getTranslation( lang = null ) {
+			lang ??= this.$i18n.locale;
+			try {
+				const { data } = await this.$axios.get( this.route( "lang", { lang : lang } ) );
+				this.addTranslations( lang, { "backend" : data } );
+			} catch ( error ) {
+				throw error;
+			}
+		},
+		addTranslations( locale, translations ) {
+			const i18n = this.$i18n;
+			console.info( i18n );
+			if ( !i18n.messages[ locale ] ) {
+				i18n.messages[ locale ] = {};
+			}
+			i18n.setLocaleMessage( locale, {
+				...i18n.messages[ locale ],
+				...translations,
+			} );
+		},
 
 		/**
 		 * Adds a new file to the application and updates the UI.
@@ -214,8 +257,9 @@ export default {
 
 	},
 
-	created() {
+	async created() {
 		this.getDocuments();
+		this.filesCanAdd = await this.getFilesCanAdd();
 	},
 };
 </script>
