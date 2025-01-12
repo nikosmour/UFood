@@ -51,11 +51,18 @@ class UserInfoController extends Controller
 //            $user->statistics;
         return response()->json([
             'message' => 'Login Successful',
+            ...$this->responseData($user),
+        ]);
+
+    }
+
+    private function responseData($user): array
+    {
+        return [
             'user' => $user,
             'model' => class_basename($user),
             'config' => config('frontend')
-        ]);
-
+        ];
     }
 
     public function store(): JsonResponse
@@ -82,8 +89,7 @@ class UserInfoController extends Controller
             session()->regenerate(true);
             return response()->json([
                 'message' => 'User Created',
-                'user' => $user,
-                'model' => class_basename($temp['model']),
+                ...$this->responseData($user),
 
             ]);
         }
