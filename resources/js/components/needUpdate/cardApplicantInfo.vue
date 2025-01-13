@@ -2,56 +2,62 @@
     <div>
         <v-row>
             <!-- User Info Fields -->
-            <v-col cols = "12" md = "6">
+            <v-col cols = "12" md = "8">
                 <v-text-field
                     v-model = "user.name"
                     v-bind = "getFieldProps('name', user)"
                 />
             </v-col>
 
-            <v-col cols = "12" md = "6">
+            <v-col cols = "12" md = "4">
+                <v-text-field
+                    v-model = "user.father_name"
+                    v-bind = "getFieldProps('father_name', user)"
+                />
+            </v-col>
+
+            <v-col cols = "12" md = "8">
                 <v-text-field
                     v-model = "user.email"
                     v-bind = "getFieldProps('email', user, 'text')"
                 />
             </v-col>
 
-            <v-col cols = "12" md = "6">
+            <v-col cols = "12" md = "4">
                 <v-text-field
                     :model-value = "$t('status.'+user.status.key)"
                     v-bind = "getFieldProps('status', user)"
                 />
             </v-col>
 
-            <v-col v-if = "user.card_applicant" cols = "12" md = "6">
+            <v-col v-if = "user.card_applicant" cols = "12">
                 <v-text-field
                     v-model = "user.card_applicant.department"
                     v-bind = "getFieldProps('department', user.card_applicant)"
                 />
             </v-col>
             <template v-if = "isAcademic">
-            <v-col cols = "12" md = "6">
-                <v-text-field
-                    v-model = "user.a_m"
-                    v-bind = "getFieldProps('a_m', user)"
-                />
-            </v-col>
+                <v-col cols = "12" md = "8">
+                    <v-text-field
+                        v-model = "user.academic_id"
+                        v-bind = "getFieldProps('academic_id', user)"
+                    />
+                </v-col>
+                <v-col cols = "12" md = "4">
+                    <v-text-field
+                        v-model = "user.a_m"
+                        v-bind = "getFieldProps('a_m', user)"
+                    />
+                </v-col>
 
-            <v-col cols = "12" md = "6">
-                <v-text-field
-                    v-model = "user.academic_id"
-                    v-bind = "getFieldProps('academic_id', user)"
-                />
-            </v-col>
-
-                <v-col cols = "12" md = "6">
+                <v-col cols = "12" md = "8">
                     <v-text-field
                         :model-value = "$t( 'active', user.is_active ? 1: 0 ) "
                         v-bind = "getFieldProps('is_active', user, 'number')"
                     />
                 </v-col>
 
-                <v-col v-if = "user.card_applicant" cols = "12" md = "6">
+                <v-col v-if = "user.card_applicant" cols = "12" md = "4">
                     <v-text-field
                         v-model = "first_year"
                         v-bind = "getFieldProps('first_year', user.card_applicant, 'number')"
@@ -62,21 +68,21 @@
 
         <!-- Address Fields -->
         <v-row v-for = "type in ['permanent', 'temporary']" :key = "type">
-            <v-col cols = "12" lg = "6" md = "7">
+            <v-col cols = "12" lg = "6" md = "8">
                 <v-text-field
                     v-model = "addresses[type].location"
-                    :error-messages = "errors['addresses.'+type+'.location'] "
                     v-bind = "getFieldProps('location', addresses[type])"
+                    :error-messages = "errors['addresses.'+type+'.location'] "
                     :label = "$t('address.' + type)"
                     :required = "type === 'temporary'"
                 />
             </v-col>
 
-            <v-col cols = "12" lg = "6" md = "5">
+            <v-col cols = "12" lg = "6" md = "4">
                 <v-text-field
                     v-model = "addresses[type].phone"
-                    :error-messages = "errors['addresses.'+type+'.phone']"
                     v-bind = "getFieldProps('phone', addresses[type])"
+                    :error-messages = "errors['addresses.'+type+'.phone']"
                     :label = "$t('address.phone.' + type)"
                     :required = "type === 'temporary'"
                 />

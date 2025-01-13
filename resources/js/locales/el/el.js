@@ -179,6 +179,7 @@ export const el = {
 		"email" :           "@:email",
 		"expiration_date" : "Ημερομηνία λήξης",
 		"first_year" :      "Ακαδημαϊκό Έτος Εγγραφής",
+		"father_name" : "Πατρώνυμο",
 		"is_active" :       "Ενεργός",
 		"is_permanent" : "Τύπος Διεύθυνσης",
 		"location" :        "Διεύθυνση",

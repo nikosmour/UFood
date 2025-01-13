@@ -194,6 +194,7 @@ export const en = {
 		"dinner" :          "@:meals.dinner",
 		"email" :           "@:email",
 		"expiration_date" : "expiration_date",
+		"father_name" : "Father's name",
 		"first_year" :      "Academic Year of Enrollment",
 		"is_active" :       "Active",
 		"is_permanent" : "Type of Address",

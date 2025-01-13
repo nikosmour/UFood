@@ -19,6 +19,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'father_name' => $this->faker->firstName('male'),
             'email' => $this->faker->unique()->safeEmail(),
 //            'email_verified_at' => now(),
             'status' => UserStatusEnum::random(),
