@@ -59,8 +59,8 @@
 
                 <v-col v-if = "user.card_applicant" cols = "12" md = "4">
                     <v-text-field
-                        v-model = "first_year"
-                        v-bind = "getFieldProps('first_year', user.card_applicant, 'number')"
+                        :model-value = "user.card_applicant.first_year"
+                        v-bind = "getFieldProps('first_year', user.card_applicant, {type :'number'})"
                     />
                 </v-col>
             </template>
@@ -68,23 +68,25 @@
 
         <!-- Address Fields -->
         <v-row v-for = "type in ['permanent', 'temporary']" :key = "type">
-            <v-col cols = "12" lg = "6" md = "8">
+            <v-col cols = "12" md = "8">
                 <v-text-field
                     v-model = "addresses[type].location"
-                    v-bind = "getFieldProps('location', addresses[type])"
+                    v-bind = "getFieldProps('location', addresses[type],{
+						required: type === 'temporary',
+						label : $t('address.' + type)
+					})"
                     :error-messages = "errors['addresses.'+type+'.location'] "
-                    :label = "$t('address.' + type)"
-                    :required = "type === 'temporary'"
                 />
             </v-col>
 
-            <v-col cols = "12" lg = "6" md = "4">
+            <v-col cols = "12" md = "4">
                 <v-text-field
                     v-model = "addresses[type].phone"
-                    v-bind = "getFieldProps('phone', addresses[type])"
+                    v-bind = "getFieldProps('phone', addresses[type],{
+						required: type === 'temporary',
+						label : $t('address.phone.' + type)
+					})"
                     :error-messages = "errors['addresses.'+type+'.phone']"
-                    :label = "$t('address.phone.' + type)"
-                    :required = "type === 'temporary'"
                 />
             </v-col>
         </v-row>
@@ -119,6 +121,11 @@ export default defineComponent( {
 		                                return {
 			                                showApplicant : false,
 			                                isAcademic : this.user instanceof Academic,
+			                                rules : {
+				                                require : [
+					                                value => !!value || this.$t( "validation.required" ),
+				                                ],
+			                                },
 		                                };
 	                                },
 	                                computed : {
@@ -137,22 +144,36 @@ export default defineComponent( {
 				                                {} as Record<string, Address>,
 			                                );
 		                                },
-		                                first_year() {
-			                                return this.user.card_applicant?.first_year?.getFullYear() ?? "";
-		                                },
 
 	                                },
 	                                methods :  {
-		                                getFieldProps( fieldName : string, model : any, type : string = "text" ) {
+		                                getFieldProps( fieldName : string, model : any,
+		                                               {
+			                                               type = "text",
+			                                               required = true,
+			                                               label = null,
+		                                               } : {
+			                                               type? : string;
+			                                               required? : boolean;
+			                                               label? : string | null
+		                                               } = {}, // Default empty object
+		                                ) {
 			                                const shouldTrack = this.canUpdate && model.shouldBeTracked( fieldName );
+			                                label ??= this.$t( `model_data.${ fieldName }` );
+			                                label = this.canUpdate && required
+			                                        ? `${ label } *`
+			                                        : label;
 			                                return {
 				                                readonly :         !shouldTrack,
 				                                variant :          shouldTrack
 				                                                   ? "outlined"
 				                                                   : "plain",
 				                                "error-messages" : this.errors[ fieldName ],
-				                                label :            this.$t( `model_data.${ fieldName }` ),
-				                                required :         true,
+				                                label :    label,
+				                                rules :    ( required )
+				                                           ? this.rules[ "require" ]
+				                                           : [],
+				                                required : required,
 				                                type :             shouldTrack
 				                                                   ? type
 				                                                   : "text",
