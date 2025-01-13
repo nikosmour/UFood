@@ -19,6 +19,7 @@
                                         :error-messages = "errors.email"
                                         :label = "$t('username')"
                                         :rules = "rules['username']"
+                                        @input = "errors.email=null"
                                         autofocus
                                         outlined
                                         required
@@ -36,6 +37,7 @@
                                         :error-messages = "errors.password || errors.credentials"
                                         :rules = "rules['password']"
                                         :label = "$t('password')"
+                                        @input = "errors.password=errors.credentials=null"
                                         outlined
                                         required
                                         type = "password"
