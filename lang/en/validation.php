@@ -181,7 +181,10 @@ return [
         'BREAKFAST' => 'Breakfast',
         'LUNCH' => 'Lunch',
         'DINNER' => 'Dinner',
-        'meals' => 'meals'
+        'meals' => 'meals',
+        'addresses' => 'addresses',
+        'first_year' => 'first year',
+        'department' => 'department',
     ],
 
 ];

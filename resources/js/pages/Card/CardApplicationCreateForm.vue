@@ -20,8 +20,8 @@
             @submit.prevent = "createApplication"
         >
             <card-applicant-info
-                :user = "user"
                 :errors = "errors"
+                :user = "user"
             />
 
             <!-- Action Buttons -->
@@ -67,7 +67,7 @@ export default {
 			isFetching :   false,
 			isSubmitting : false,
 			isNewApplicant : true,
-			errors : {
+			errors :       {
 				permanent : {},
 				temporary : {},
 			},
@@ -101,9 +101,41 @@ export default {
 				this.isSubmitting = true;
 				await CardApplicant.create( this.user );
 				this.$emit( "created" );
-			} catch ( errors ) {
-				if ( errors.response?.status === 422 ) {
-					this.errors = errors.response.data.errors;
+			} catch ( errors1 ) {
+				if ( errors1.response?.status === 422 ) {
+					const errors = errors1.response.data.errors;
+					const array = [
+						"temporary",
+						"permanent",
+					];
+
+					for ( const type of array ) {
+						// Fixing space issue in key lookup
+						if ( errors[ "addresses." + type + ".phone" ] ) {
+							errors[ "addresses." + type + ".phone" ] =
+								errors[ "addresses." + type + ".phone" ].map( error => {
+									console.log( error );
+									return error.replace( "addresses." + type + ".phone πεδίο",
+									                      this.$t( "address.phone." + type ) );
+								} );
+						}
+
+						if ( errors[ "addresses." + type + ".location" ] ) {
+							errors[ "addresses." + type + ".location" ] =
+								errors[ "addresses." + type + ".location" ].map( error => {
+									                                                 console.log( error );
+									                                                 return error.replace( "Το addresses." + type + ".location",
+									                                                                       this.$t( "address." + type ) );
+								                                                 },
+								);
+						}
+					}
+
+					this.errors = errors;
+
+					// if ( Object.keys( errors ).length > 0 ) {
+					// 	throw new InformTheUserError( { message : "addressOrPhone" } );
+					// }
 				} else
 					throw errors;
 			} finally {
@@ -127,7 +159,7 @@ export default {
 	},
 
 	created() {
-		this.retrieveApplicant()
+		this.retrieveApplicant();
 	},
 };
 </script>

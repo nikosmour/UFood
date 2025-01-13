@@ -176,7 +176,10 @@ return [
         'receiver_id' => 'παραλήπτη',
         'BREAKFAST' => 'πρωινό',
         'LUNCH' => 'μεσημεριανό',
-        'DINNER' => 'βραδινό'
+        'DINNER' => 'βραδινό',
+        'addresses' => 'Διευθύνσεις',
+        'first_year' => 'Ακαδημαϊκό έτος εγράφης',
+        'department' => 'Τμήμα'
     ],
 
 ];

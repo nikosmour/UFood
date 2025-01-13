@@ -63,18 +63,22 @@
             <v-col cols = "12" md = "6">
                 <v-text-field
                     v-model = "addresses[type].location"
+                    :error-messages = "this.errors['addresses.'+type+'.location'] "
                     :label = "$t('address.' + type)"
                     :required = "type === 'temporary'"
                     v-bind = "getFieldProps('location', addresses[type])"
+
                 />
             </v-col>
 
             <v-col cols = "12" md = "6">
                 <v-text-field
                     v-model = "addresses[type].phone"
+                    :error-messages = "this.errors['addresses.'+type+'.phone']"
                     :label = "$t('address.phone.' + type)"
                     :required = "type === 'temporary'"
                     v-bind = "getFieldProps('phone', addresses[type])"
+
                 />
             </v-col>
         </v-row>
@@ -119,6 +123,8 @@ export default defineComponent( {
 		                                },
 		                                first_year() {
 			                                return this.user.card_applicant?.first_year?.getFullYear() ?? "";
+		                                },
+		                                errorA() {
 		                                },
 
 	                                },
