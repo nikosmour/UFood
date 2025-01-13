@@ -1,12 +1,6 @@
 <template>
     <v-container>
-        <my-models-to-table :caption = "$t('user.information')" :models = "[user.user]" />
-        <my-models-to-table
-            v-if = "user.card_applicant" :models = "[user.card_applicant]" caption = ""
-        />
-        <my-models-to-table
-            v-if = "user.addresses" :caption = "$t('model_data.addresses')" :models = "user.addresses"
-        />
+        <card-applicant-info :user = "currentUser" />
 
         <create-user v-if = "isNew" />
 
@@ -15,42 +9,19 @@
 
 <script>
 import { mapGetters } from "vuex";
-import MyModelsToTable from "@components/MyModelsToTable.vue";
 import CreateUser from "@components/CreateUser.vue";
+import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
 
 export default {
 	components : {
+		CardApplicantInfo,
 		CreateUser,
-		MyModelsToTable,
 	},
 	computed :   {
 		...mapGetters( "auth", [
 			"currentUser",
 			"isNew",
 		] ),
-		user() {
-
-			const user = this.currentUser.toObject( false );
-			delete user.abilities;
-			delete user.coupon_owner;
-			const addresses = user.card_applicant?.addresses;
-			delete user.card_applicant?.addresses;
-			const card_applicant = user.card_applicant;
-			delete card_applicant?.current_card_application;
-			delete card_applicant?.valid_card_application;
-			delete user.card_applicant;
-			if ( card_applicant ) {
-				card_applicant.first_year = card_applicant.first_year.getFullYear();
-				delete user.academic_id;
-			}
-			delete user.id;
-			user.status = this.$t( "status." + user.status.key );
-			return {
-				user,
-				card_applicant,
-				addresses,
-			};
-		},
 	},
 };
 </script>

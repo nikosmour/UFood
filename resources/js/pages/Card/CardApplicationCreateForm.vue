@@ -22,6 +22,7 @@
             <card-applicant-info
                 :errors = "errors"
                 :user = "user"
+                :can-update = "true"
             />
 
             <!-- Action Buttons -->
