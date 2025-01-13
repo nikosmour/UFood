@@ -21,6 +21,7 @@
         >
             <card-applicant-info
                 :user = "user"
+                :errors = "errors"
             />
 
             <!-- Action Buttons -->
@@ -66,6 +67,10 @@ export default {
 			isFetching :   false,
 			isSubmitting : false,
 			isNewApplicant : true,
+			errors : {
+				permanent : {},
+				temporary : {},
+			},
 
 		};
 	},

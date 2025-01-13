@@ -19,7 +19,7 @@
                 <v-text-field
                     :model-value = "$t( 'active', user.is_active ? 1: 0 ) "
                     v-bind = "getFieldProps('is_active', user, 'number')"
-            />
+                />
             </v-col>
 
             <v-col cols = "12" md = "6">
@@ -87,22 +87,23 @@ import Academic from "@models/Academic";
 import { defineComponent } from "vue";
 
 export default defineComponent( {
-	                                name : "cardApplicantInfo",
-	props : {
-		user : {
-			type : Object as Academic,
-			required : true,
-		},
-	},
-	data() {
-		return {
-			showApplicant : false,
-			errors : {
-				permanent : {},
-				temporary : {},
-			},
-		};
-	},
+	                                name :  "cardApplicantInfo",
+	                                props : {
+		                                user :   {
+			                                type :     Object as Academic,
+			                                required : true,
+		                                },
+		                                errors : {
+			                                type :     Object,
+			                                required : false,
+			                                default :  {},
+		                                },
+	                                },
+	                                data() {
+		                                return {
+			                                showApplicant : false,
+		                                };
+	                                },
 	                                computed : {
 		                                addresses() : Record<string, Address> {
 			                                return ( this.user.card_applicant?.addresses as Address[] ).reduce(
