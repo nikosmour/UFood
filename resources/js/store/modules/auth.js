@@ -1,6 +1,7 @@
 import { getModelClass } from "@utilities/modelUserMapper";
 import { UserAbilityEnum } from "@enums/UserAbilityEnum";
 import AxiosInstance from "@/plugins/axios";
+import BaseModel from "@utilities/BaseModel";
 
 /**
  * Vuex state for authentication.
@@ -24,7 +25,7 @@ export const mutations = {
 		const ModelClass = getModelClass( payload.model ); // Pass the model name from the backend
 		payload.user.abilities = UserAbilityEnum.findByValueMany( payload.user.abilities );
 		Object.assign( state.config, payload.config || {} );
-		ModelClass.CONFIG = state.config.application;
+		BaseModel.CONFIG = state.config.application;
 		state.user = ModelClass
 		             ? new ModelClass( payload.user )
 		             : payload.user;
