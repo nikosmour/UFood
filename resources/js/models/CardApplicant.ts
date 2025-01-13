@@ -27,17 +27,15 @@ export class CardApplicant extends CardApplicantBase {
 	 * @param user - The current Academic user that is logging in.
 	 * @returns {Promise<import("axios").AxiosResponse<any>>} A promise that resolves when the request is completed.
 	 */
-	static create( user : Academic ) : Promise<import("axios").AxiosResponse<any>> {
+	static async create( user : Academic ) : Promise<import("axios").AxiosResponse<any>> {
 		console.info( "User dirty properties:", user.dirty );
 		
 		const params = {
-			...user.dirty,
-			...( user.card_applicant as CardApplicant ).dirty,
+			...user.dirty, ...( user.card_applicant as CardApplicant ).dirty,
 		};
 		
-		const addresses : Partial<{
-			permanent : Partial<Address>;
-			temporary : Partial<Address>;
+		let addresses : Partial<{
+			permanent : Partial<Address>; temporary : Partial<Address>;
 		}> = {};
 		
 		for ( const address of user.card_applicant.addresses ) {
@@ -54,11 +52,8 @@ export class CardApplicant extends CardApplicantBase {
 		}
 		
 		// Handle deletion of the 'permanent' address if all its fields are empty
-		if (
-			addresses.hasOwnProperty( "permanent" ) &&
-			addresses[ "permanent" ]?.location === "" &&
-			addresses[ "permanent" ]?.phone === ""
-		) {
+		if ( addresses.hasOwnProperty( "permanent" ) && addresses[ "permanent" ]?.location === "" &&
+		     addresses[ "permanent" ]?.phone === "" ) {
 			delete addresses[ "permanent" ];
 			params[ "delPermanent" ] = true;
 		}
@@ -72,31 +67,28 @@ export class CardApplicant extends CardApplicantBase {
 		const url = this.route( "cardApplicant.store" );
 		
 		// Send POST request
-		return ( this.$axios as AxiosInstance ).post( url, params )
-		                                       .then( response => {
-			                                       user.syncCurrent();
-			                                       const card_applicant = user.card_applicant as CardApplicant;
-			                                       card_applicant.syncCurrent();
-			                                       card_applicant.current_card_application =
-				                                       response.data.cardApplication;
-			                                       const addresses = card_applicant.addresses as Address[];
-			                                       if ( params[ "delPermanent" ] ) {
-				                                       const index = addresses.findIndex(
-					                                       address => address.is_permanent === true );
-				                                       addresses.splice( index, 1 );
-			                                       }
-			                                       addresses.forEach( ( address ) => address.syncCurrent() );
-		                                       } );
+		const response = await ( this.$axios as AxiosInstance ).post( url, params );
+		
+		user.syncCurrent();
+		const card_applicant = user.card_applicant as CardApplicant;
+		card_applicant.syncCurrent();
+		card_applicant.current_card_application = response.data.cardApplication;
+		addresses = card_applicant.addresses as Address[];
+		if ( params[ "delPermanent" ] ) {
+			const index = addresses.findIndex( address => address.is_permanent === true );
+			addresses.splice( index, 1 );
+		}
+		addresses.forEach( ( address ) => address.syncCurrent() );
+		return;
+		
 	}
 	
 	protected adjustInitializationData( data : T ) : T {
-		if ( !data.hasOwnProperty( "addresses" ) || data[ "addresses" ] === undefined )
-			return data;
+		if ( !data.hasOwnProperty( "addresses" ) || data[ "addresses" ] === undefined ) return data;
 		let addresses = ( data[ "addresses" ] ?? [] ) as { is_permanent : boolean }[];
-		if ( addresses.filter( ( address ) => address[ "is_permanent" ] ).length === 0 )
-			addresses.push( { is_permanent : true } );
-		if ( addresses.length === 1 )
-			addresses.push( { is_permanent : false } );
+		if ( addresses.filter( ( address ) => address[ "is_permanent" ] ).length === 0 ) addresses.push(
+			{ is_permanent : true } );
+		if ( addresses.length === 1 ) addresses.push( { is_permanent : false } );
 		data[ "addresses" ] = addresses;
 		return data;
 	}

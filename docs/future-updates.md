@@ -57,3 +57,16 @@ updates and their corresponding issue numbers for easy reference.
   - Improves error handling and user feedback during operations.
 - **Files that will impact?**
   - [DocumentEdit@saveApplication](../resources/js/pages/Card/DocumentEdit.vue)
+
+### `#004` - **Not managing correct the data that receive the step 1 of cardApplication create Application
+** <a id="004"></a>
+
+- **Description**:  
+  Somehow is not updated the this.cardApplication on cardApplication.vue and need one more
+  fetch to the backend to renew the data.
+- **Files that will impact?**
+  - [CardApplication@moveStep2](../resources/js/pages/Card/CardApplication.vue)
+  - [CardApplicant@create](../resources/js/models/CardApplicant.ts)
+
+//impact #future (Issue #003) -
+//see more on /docs/future.md#003

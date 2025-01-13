@@ -20,7 +20,7 @@
                     v-if = "canSubmit"
                 >
                     <template v-slot:item.1>
-                        <CardApplicationCreateForm @created = "step=2" />
+                        <CardApplicationCreateForm @created = "moveStep2" />
                     </template>
 
                     <template v-slot:item.2>
@@ -54,7 +54,7 @@
 
 <script lang = "ts">
 
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import type CardApplication from "@models/CardApplication";
 import ApplicationPreview from "@pages/Card/ApplicationPreview.vue";
 import DocumentEdit from "@pages/Card/DocumentEdit.vue";
@@ -80,6 +80,13 @@ export default {
 			untilDate : null as Date,
 
 		};
+	},
+	methods : {
+		async moveStep2() {
+			await this.getUser();
+			this.step = 2;
+		},
+		...mapActions( "auth", [ "getUser" ] ),
 	},
 	computed : {
 		...mapGetters( "auth", {
