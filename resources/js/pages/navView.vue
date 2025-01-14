@@ -1,10 +1,22 @@
 <template>
     <v-app-bar app role = "navigation">
+        <!-- Skip to Main Content Link for Accessibility -->
+        <a :aria-label = "$t('skipToMain') " :title = "$t( 'skipToMain' ) " class = "skip-link" href = "#main"> {{
+                $t( "skipToMain" ) }}</a>
+
+        <!-- Navigation Drawer (Mobile Menu) -->
+        <v-app-bar-nav-icon
+            v-if = "isMobile"
+            aria-label = "Open Navigation"
+            @click.stop = "navigation_drawer = !navigation_drawer"
+        />
+        <!-- App Name -->
         <v-app-bar-title>{{ appName }}</v-app-bar-title>
 
         <v-spacer></v-spacer>
 
-        <v-row v-if = "isAuthenticated" align = "center" class = "mr-4">
+        <!-- Desktop Navigation (Only visible on large screens) -->
+        <v-row v-if = "isAuthenticated && !isMobile" align = "center" class = "mr-4">
             <template v-for = "(button, index) in navButtons" :key = "index">
                 <v-btn
                     v-if = "hasAbility(button.ability)"
@@ -15,48 +27,42 @@
                 />
             </template>
 
-            <v-btn
-                v-if = "hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)"
-                :aria-expanded = "isCardMenuOpen"
-                :aria-label = "$t('card.value')"
-                aria-haspopup = "true"
-                color = "primary"
-                @click = "isCardMenuOpen = !isCardMenuOpen"
-            >
-                {{ $t( "card.value" ) }}
-                <v-menu activator = "parent" offset-y>
-                    <v-list>
-                        <v-list-item :to = "{ name: 'card.History' }" link>
-                            <v-list-item-title>{{ $t( "history" ) }}</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :to = "{ name: 'card.application' }" link>
-                            <v-list-item-title>{{ $t( "application" ) }}</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </v-btn>
+            <!-- Card Menu -->
+            <v-menu v-if = "hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)" open-on-hover>
+                <template v-slot:activator = "{ props }">
+                    <v-btn color = "primary" v-bind = "props">
+                        {{ $t( "card.value" ) }}
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item :to = "{ name: 'card.History' }" link>
+                        <v-list-item-title>{{ $t( "history" ) }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item :to = "{ name: 'card.application' }" link>
+                        <v-list-item-title>{{ $t( "application" ) }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
 
-            <v-btn
-                v-if = "hasAbility($enums.UserAbilityEnum.COUPON_OWNERSHIP)"
-                :aria-expanded = "isCouponMenuOpen"
-                :aria-label = "$t('coupon.value', 2)"
-                aria-haspopup = "true"
-                color = "primary"
-                @click = "isCouponMenuOpen = !isCouponMenuOpen"
-            >
-                {{ $t( "coupon.value", 2 ) }}
-                <v-menu activator = "parent" offset-y>
-                    <v-list>
-                        <v-list-item :to = "{ name: 'coupons.History' }" link>
-                            <v-list-item-title>{{ $t( "history" ) }}</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :to = "{ name: 'coupons.transfer' }" link>
-                            <v-list-item-title>{{ $t( "transfer.value" ) }}</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </v-btn>
+            <!-- Coupon Menu -->
+            <v-menu v-if = "hasAbility($enums.UserAbilityEnum.COUPON_OWNERSHIP)" open-on-hover>
+                <template v-slot:activator = "{ props }">
+                    <v-btn color = "primary" v-bind = "props">
+                        {{ $t( "coupon.value", 2 ) }}
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item :to = "{ name: 'coupons.History' }" link>
+                        <v-list-item-title>{{ $t( "history" ) }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item :to = "{ name: 'coupons.transfer' }" link>
+                        <v-list-item-title>{{ $t( "transfer.value" ) }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </v-row>
+
+        <!-- Right Side Buttons (Always Visible) -->
         <v-row align = "center" class = "mr-4">
             <v-btn
                 :aria-label = "$t('settings.value')"
@@ -77,11 +83,12 @@
                     :aria-label = "$t('logout')"
                     color = "primary"
                     icon = "mdi-logout"
-                    link
                     @click = "logout"
+                    link
                 />
                 <CsrfCountdown />
             </template>
+
             <v-btn
                 v-else
                 :aria-label = "$t('login')"
@@ -93,8 +100,43 @@
         </v-row>
     </v-app-bar>
 
+    <!-- Mobile Drawer -->
+    <v-navigation-drawer v-if = "isMobile" v-model = "navigation_drawer " app temporary>
+        <v-list>
+            <template v-for = "(button, index) in navButtons" :key = "index">
+                <v-list-item v-if = "hasAbility(button.ability)" :to = "button.to" color = "primary">{{
+                        $t( button.label ) }}
+                </v-list-item>
+            </template>
+
+            <v-list-item v-if = "hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)">
+                <v-list-group value = "card">
+                    <template v-slot:activator = "{ props }">
+                        <v-list-item :title = "$t( 'card.value' )" v-bind = "props" />
+                    </template>
+                    <v-list-item :to = "{ name: 'card.History' }" color = "primary">{{ $t( "history" ) }}</v-list-item>
+                    <v-list-item :to = "{ name: 'card.application' }" color = "primary">{{ $t( "application" ) }}
+                    </v-list-item>
+                </v-list-group>
+            </v-list-item>
+            <v-list-item v-if = "hasAbility($enums.UserAbilityEnum.COUPON_OWNERSHIP)">
+                <v-list-group>
+                    <template v-slot:activator = "{ props }">
+                        <v-list-item :title = "$t( 'coupon.value', 2 ) " v-bind = "props" />
+                    </template>
+                    <v-list-item :to = "{ name: 'coupons.History' }" color = "primary">{{ $t( "history" ) }}
+                    </v-list-item>
+                    <v-list-item :to = "{ name: 'coupons.transfer' }" color = "primary">{{ $t( "transfer.value" ) }}
+                    </v-list-item>
+                </v-list-group>
+            </v-list-item>
+        </v-list>
+    </v-navigation-drawer>
+
+    <!-- Settings Drawer -->
     <settings v-if = "drawer" v-model = "drawer" location = "right" temporary />
 </template>
+
 
 <script>
 import { mapActions, mapGetters } from "vuex";
@@ -114,7 +156,11 @@ export default {
 			 * @type {Boolean}
 			 */
 			drawer : false,
-
+			/**
+			 * Controls the visibility of the navigation mobile drawer.
+			 * @type {Boolean}
+			 */
+			navigation_drawer : false,
 			/**
 			 * Tracks the open state of the Card menu for accessibility.
 			 * @type {Boolean}
@@ -134,7 +180,9 @@ export default {
 			"currentUser",
 			"hasAbility",
 		] ),
-
+		isMobile() {
+			return this.$vuetify.display.mdAndDown;
+		},
 		/**
 		 * Returns the application name from translations.
 		 * @returns {String} - The translated application name.
@@ -199,3 +247,21 @@ export default {
 	},
 };
 </script>
+<style>
+.skip-link {
+    white-space: nowrap;
+    margin: 1em auto;
+    top: 0;
+    position: fixed;
+    left: 50%;
+    margin-left: -72px;
+    opacity: 0;
+}
+
+.skip-link:focus {
+    opacity: 1;
+    background-color: white;
+    padding: 0.5em;
+    border: 1px solid black;
+}
+</style>
