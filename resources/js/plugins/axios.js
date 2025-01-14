@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance with default settings
 export const AxiosInstance = axios.create( {
-	                                           baseURL : import.meta.env.VITE_API_BASE_URL, // Use environment variable for API base URL
+	                                           baseURL : import.meta.env.VITE_API_BASE_URL ?? "\/", // Use environment variable for API base URL
 	                                           timeout : 10000, // Set request timeout limit
 	                                           headers : {
 		                                           "X-Requested-With" : "XMLHttpRequest", // Laravel uses this to identify Ajax requests
