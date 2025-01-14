@@ -19,7 +19,7 @@
                                         :error-messages = "errors.email"
                                         :label = "$t('username')"
                                         :rules = "rules['username']"
-                                        @input = "errors.email=null"
+                                        @input = "errors.email=errors.credentials=null"
                                         autofocus
                                         outlined
                                         required

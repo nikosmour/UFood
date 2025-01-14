@@ -40,7 +40,7 @@ class LoginController extends Controller
         if (array_key_exists('error', $authResult))
             return response()->json([
                 'message' => 'auth.failed',
-                'errors' => ['email' => [__('auth.failed')]]
+                'errors' => ['credentials' => [__('auth.failed')]]
             ], 422);
 //        session(['department' => $authResult['department']]);
         // Fetch user by email and create session
