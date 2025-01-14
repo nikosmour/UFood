@@ -78,6 +78,11 @@ export const el = {
 	"email" :                    "Ηλ. ταχυδρομείο",
 	"entry_check" :      "Έλεγχος Εισόδου",
 	"entry_check_form" : "@:form : @:entry_check ",
+	"entry" : {
+		"card" :      "Κάρτα",
+		"coupon" :    "Κουπόνι",
+		"notAccept" : "Δεν εγκρίνετε",
+	},
 	// "entry_input": "@:card.value",
 	"errors" : {
 		//     "application_status_not_allow_submission": "@:application_status_not_allow_submission",

@@ -77,6 +77,11 @@ export const en = {
 	"documents.upload" : "Upload Documents",
 	"edit" :    "Edit",
 	"email" :       "Email",
+	"entry" : {
+		"card" :      "Card",
+		"coupon" :    "Coupon",
+		"notAccept" : "Not Accepted",
+	},
 	"entry_check" : "Entry Check",
 	"entry_check_form" : "@:form : @:entry_check ",
 	// "entry_input": "@:card.value",

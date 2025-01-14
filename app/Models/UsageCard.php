@@ -90,7 +90,7 @@ class UsageCard extends Model
 
     public function scopeTakeStatistics(Builder $query, $vData)
     {
-        $translatedValue = __('transaction.card');
+        $translatedValue = __('transactions.card');
         $selectColumns = ['date', DB::raw("'$translatedValue' as category")];
         foreach ($vData['meal_category'] as $period) {
             $selectColumns[$period] = DB::raw("SUM(period = '{$period}') as {$period}");

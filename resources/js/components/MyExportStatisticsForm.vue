@@ -93,7 +93,7 @@
                                 type = "text"
                             ></v-text-field>
                         </v-col>
-                        <v-col class = "pt-0" cols = "12" lg = "6" md = "12" sm = "6">
+                        <v-col cols = "12" lg = "6" md = "12" sm = "6">
                             <v-text-field
                                 v-model = "to_date"
                                 :error-messages = "errors.to_date"

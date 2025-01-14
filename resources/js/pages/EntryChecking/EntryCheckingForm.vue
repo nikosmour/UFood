@@ -14,10 +14,11 @@
                         :label = "$t('id')"
                         :rules = "rules.academic_id"
                         autofocus
-                        max-width = "50em"
+                        max-width = "20em"
                         outlined
                         required
                         type = "number"
+
                         @input = "handleBarcodeInput();resetAcademicIdInputState();"
                     />
                 </v-form>
@@ -26,6 +27,7 @@
                     :class = "{'opacity-100': show, 'opacity-0': !show, 'mt-4': true}"
                     :title = "result.message"
                     :type = "result.success ? 'success' : 'error'"
+                    max-width = "20em"
                     dismissible
                     @input = "hideAlert"
                 />
@@ -139,15 +141,16 @@ export default {
 				const response = await this.$axios.post( this.url, params );
 				const passWith = response.data.passWith;
 				this.result.success = true;
-				this.result.message = this.$t( passWith );
+				this.result.message = this.$t( "entry." + passWith );
 				this.$emit( "newEntry", `${ passWith }s` ); // 6.Emitting event
 			} catch ( error ) {
 				this.result.success = false;
-				this.result.message = this.$t( "request_failed" );
 				//5. handles the error responses
 				if ( error.response?.status === 422 || error.response?.status === 409 ) {
+					this.result.message = this.$t( "entry.notAccept" );
 					this.errors = error.response.data.errors;
 				} else {
+					// this.result.message = this.$t( "entry.notAccept" );
 					throw error;
 				}
 			} finally {
