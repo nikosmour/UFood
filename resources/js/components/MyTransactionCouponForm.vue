@@ -361,7 +361,9 @@ export default {
 			};
 			this.submitData( this.route( "transaction.confirm" ), data )
 			    .then( json => {
-				    this.receiver.status = json?.status;
+				    const status = this.$enums.UserStatusEnum.findByValue( json?.status )?.key ?? "";
+				    if ( status )
+					    this.receiver.status = this.$t( "status." + status );
 			    } );
 		},
 
