@@ -221,6 +221,7 @@ export const el = {
 		"status" : "@:model_data.status",
 		"transaction_id" : "@:transaction.id",
 	},
+	"refresh" : "Ανανέωση",
 	"reject" :                "Απόρριψη",
 	"personalData" :          {
 		"accept" :  "Αποδέχομαι ότι τα προσωπικά μου δεδομένα θα αποθηκευτούν",
@@ -229,6 +230,12 @@ export const el = {
 	},
 	"save" :                  "Αποθήκευση",
 	"skipToMain" :        "Μετάβαση στο κύριο περιεχόμενο",
+	"session" : {
+		"expireSoon" : {
+			"details" : "Η σύνδεση σας θα λήξει σε {time}. Πατήστε ανανέωση για την διατηρήσετε",
+			"title" :   "Η σύνδεση σας θα λήξει",
+		},
+	},
 	"settings" : {
 		"value" : "Ρυθμίσεις",
 		"theme" : {

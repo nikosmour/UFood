@@ -66,3 +66,7 @@ Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingC
     ->whereIn('category', CardStatusEnum::values()->toArray())->only('index');
 
 Route::post('statistics', ExportStatisticsController::class)->name('statistics');// invoke
+
+Route::post('/isLogin', function () {
+    return response(status: 204);
+})->name('isLogin')->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');

@@ -251,6 +251,7 @@ export const en = {
 		"transaction_id" : "@:transaction.id",
 		
 	},
+	"refresh" : "Refresh",
 	"reject" :          "Reject",
 	"personalData" :    {
 		"accept" :  "I accept that my personal data will be stored",
@@ -266,6 +267,12 @@ export const en = {
 	"skipToMain" :        "Skip to main aria",
 	// "select_file": "Select file",
 	// "sender": "Sender",
+	"session" : {
+		"expireSoon" : {
+			"details" : "Your session will expire in {time}. Please press refresh to continue to stay login",
+			"title" :   "Connection will expire",
+		},
+	},
 	"settings" : {
 		"value" : "Settings",
 		"theme" : {

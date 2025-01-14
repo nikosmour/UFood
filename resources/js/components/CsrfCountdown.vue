@@ -9,6 +9,21 @@
     >
         {{ formattedTime }}
     </v-btn>
+    <v-dialog v-model = "isErrorTime" max-width = "30em">
+        <v-card :title = "$t('session.expireSoon.title')">
+            <v-card-text>
+                {{ $t( "session.expireSoon.details", { time : formattedTime } ) }}
+            </v-card-text>
+            <v-card-actions class = "justify-end">
+                <v-btn
+                    color = "primary"
+                    @click = "updateCookie"
+                >
+                    {{ $t( "refresh" ) }}
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script lang = "ts">
@@ -52,6 +67,9 @@ export default defineComponent( {
 			                                         ? "warning"
 			                                         : "error";
 		                                },
+		                                isErrorTime() {
+			                                return this.getTimeLeft < this.errorSecond;
+		                                },
 
 	                                }
 	                                ,
@@ -60,9 +78,10 @@ export default defineComponent( {
 		                                ...mapActions( "session", [ "updateCookies" ] ),
 		                                startCountdown() {
 			                                this.interval = window.setInterval( () => {
-				                                if ( this.getTimeLeft > 0 ) {
+				                                if ( this.getTimeLeft > 1 ) {
 					                                this.setTimeLeft( this.getTimeLeft - 1 );
 				                                } else {
+					                                this.setTimeLeft( 0 );
 					                                clearInterval( this.interval as number );
 					                                this.stopWatch = this.$watch( "getTimeLeft", () => {
 						                                this.startCountdown();

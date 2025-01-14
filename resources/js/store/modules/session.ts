@@ -30,7 +30,7 @@ export const actions : ActionTree<any, any> = {
 		route,
 		axiosInstance,
 	} ) : Promise<AxiosResponse<any, void>> {
-		return axiosInstance.get( route( "sanctum.csrf-cookie" ) );
+		return axiosInstance.get( route( "isLogin" ) );
 	},
 };
 
