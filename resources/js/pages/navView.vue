@@ -11,7 +11,9 @@
             @click.stop = "navigation_drawer = !navigation_drawer"
         />
         <!-- App Name -->
-        <v-app-bar-title>{{ appName }}</v-app-bar-title>
+        <v-app-bar-title>
+            <v-list-item :to = "{ name: 'startPage' }" link>{{ appName }}</v-list-item>
+        </v-app-bar-title>
 
         <v-spacer></v-spacer>
 

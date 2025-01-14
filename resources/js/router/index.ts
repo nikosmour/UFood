@@ -1,4 +1,6 @@
+import type { RouteLocationNormalized } from "vue-router";
 import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
+import store from "@/store"; // Assuming you're using Vuex for user state
 import authGuard from "@/guards/AuthGuard";
 import { Enums } from "@/plugins/enums";
 
@@ -112,6 +114,29 @@ const routes : ReadonlyArray<RouteRecordRaw> = [
 			},
 		],
 	},
+	{
+		path :        "/",
+		name :        "startPage",
+		beforeEnter : ( to : RouteLocationNormalized, from : RouteLocationNormalized ) => {
+			const hasAbility = store.getters[ "auth/hasAbility" ]; // Fetch user from Vuex store
+			if ( hasAbility( Enums.UserAbilityEnum.ENTRY_CHECK ) )
+				return {
+					name : "entryChecking",
+				};
+			if ( hasAbility( Enums.UserAbilityEnum.COUPON_SELL ) )
+				return {
+					name : "purchase",
+				};
+			if ( hasAbility( Enums.UserAbilityEnum.COUPON_OWNERSHIP ) )
+				return {
+					name : "coupons.History",
+				};
+			return {
+				name : "login",
+			};
+		},
+	},
+	
 	{
 		path :      "/:pathMatch(.*)*", // Catch-all for unmatched routes (optional, see note below)
 		component : NotFound,

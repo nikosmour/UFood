@@ -60,7 +60,7 @@ export default {
 					                   },
 				                   } );
 			} else if ( isAuthenticated && this.$route.name === "login" ) {
-				this.$router.push( this.$route.query.redirect || { name : "userProfile" } );
+				this.$router.push( this.$route.query.redirect || { name : "startPage" } );
 			}
 		},
 	},
