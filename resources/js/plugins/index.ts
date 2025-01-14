@@ -13,6 +13,7 @@ import BaseModel from "@utilities/BaseModel";
 import type { AxiosRequestConfig } from "axios";
 import { useNotifyHandler } from "@components/NotifyUser/NotifyPlugin";
 
+// Ziggy.url=import.meta.env.VITE_API_BASE_URL;
 AxiosInstance.interceptors.request.use(
 	( config : AxiosRequestConfig<any> ) => {
 		// Retrieve the socket ID from Laravel Echo

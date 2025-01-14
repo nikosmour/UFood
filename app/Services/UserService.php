@@ -36,6 +36,7 @@ class UserService
                         'email' => $user->email,
                         'name' => $user->name,
                         'status' => $user->status,
+                        'father_name' => $user->father_name,
                         'guard' => $guard,
                     ];
                     if ($user instanceof Academic) {

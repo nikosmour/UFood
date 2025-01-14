@@ -1,8 +1,10 @@
 <template>
-    <v-container>
-        <card-applicant-info :user = "currentUser" />
+    <v-container max-width = "50rem">
+        <v-card :title = "$t('personalInfo')" class = "pa-10">
+            <card-applicant-info :user = "currentUser" />
 
-        <create-user v-if = "isNew" />
+            <create-user v-if = "isNew" />
+        </v-card>
 
     </v-container>
 </template>

@@ -14,7 +14,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('card_application_staff', function (Blueprint $table) {
-            $table->string('father_name')->default('fathername');
+            $table->string('father_name')->default('George');
         });
     }
 

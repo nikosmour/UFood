@@ -14,7 +14,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('coupon_staff', function (Blueprint $table) {
-            $table->string('father_name')->default('fathername');
+            $table->string('father_name')->default('George');
         });
     }
 

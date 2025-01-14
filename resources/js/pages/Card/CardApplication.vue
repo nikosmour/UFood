@@ -5,7 +5,7 @@
         <MyFreeFoodStatus />
                 <v-alert
                     v-if = "untilDate"
-                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString()},canSubmit ? 1: 0)"
+                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString($i18n.locale)},canSubmit ? 1: 0)"
                     closable
                 />
         <v-row justify = "center">

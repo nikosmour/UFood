@@ -181,7 +181,7 @@ export default {
 
             <template #item.quantities = "{ item }">
                 <div>
-                    <span v-if = "item.money !== 0">{{ item.money }}€ </span>
+                    <!--                    <span v-if = "item.money !== 0">{{ item.money }}€ </span>-->
                     <span v-for = "meal in mealQuantities(item)" :key = "meal.key">
                         {{ meal.quantity }}&nbsp;{{ meal.name }}&nbsp;
                     </span>
@@ -190,7 +190,7 @@ export default {
 
             <template #item.balance = "{ item }">
                 <div>
-                    <span v-if = "item.totalMoney !== 0">{{ item.totalMoney }}€ </span>
+                    <!--                    <span v-if = "item.totalMoney !== 0">{{ item.totalMoney }}€ </span>-->
                     <span v-for = "meal in mealQuantities(item,'total.')" :key = "meal.key">
                         {{ meal.quantity }}&nbsp;{{ meal.name }}&nbsp;
                     </span>

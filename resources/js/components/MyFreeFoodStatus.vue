@@ -34,11 +34,12 @@ export default {
 
 				if ( this.card_expiration_date >= today ) {
 					text += ` ${ this.$t( "approved.until", {
-						date : expirationDate.toLocaleDateString(),
+						date : expirationDate.toLocaleDateString( this.$i18n.locale ),
 					} ) }`;
 				}
 			}
-			text += "\n" + ( this.application?.card_staff_update_latest?.comment ?? "" );
+			if ( this.isCardApplicationRoute )
+				text += "\n" + ( this.application?.card_staff_update_latest?.comment ?? "" );
 			return text;
 		},
 

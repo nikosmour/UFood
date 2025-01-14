@@ -94,6 +94,9 @@ class LoginController extends Controller
             $user->a_m = $authResult['a_m'];
         if (array_key_exists('academic_id', $authResult))
             $user->academic_id = $authResult["academic_id"];
+        if (array_key_exists('father_name', $authResult))
+            $user->father_name = $authResult["father_name"];
+
         $user->email = $authResult['email'];
         $user->password = '';
         $user->status = $authResult['status'];
