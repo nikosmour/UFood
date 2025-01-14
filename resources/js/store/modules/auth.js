@@ -130,7 +130,7 @@ export const getters = {
 	hasAbility( state ) {
 		return ( ability ) => {
 			console.log( "auth/hasAbility", ability );
-			return state.user !== null && state.user.abilities.includes( ability );
+			return !!state.user && state.user.abilities.includes( ability );
 		};
 	},
 	/**
