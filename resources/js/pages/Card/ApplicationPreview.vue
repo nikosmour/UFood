@@ -1,26 +1,39 @@
 <template>
     <v-card
-        v-if = "application" :loading = "isLoading" :title = " $t('pendingReview')"
+        v-if = "application" :loading = "isLoading"
         class = "justify-content-around"
     >
-        <CardApplicantInfo :user = "currentUser" />
+        <v-card-text>
+            <v-expansion-panels v-model = "panel" class = "mb-5" multiple>
+                <v-expansion-panel :title = "$t('personalInfo')">
+                    <v-expansion-panel-text>
+                        <CardApplicantInfo :user = "currentUser" />
+                    </v-expansion-panel-text>
+                </v-expansion-panel>
+
+                <v-expansion-panel :title = "$t('document',2)">
+                    <v-expansion-panel-text>
         <MyCardApplicationFiles
             :application = "application"
             :loadings = "loadings"
-            :isApplicationPeriodOpen = "isApplicationPeriodOpen"
+            :isApplicationPeriodOpen = "canBeEditing"
         />
+                    </v-expansion-panel-text>
+                </v-expansion-panel>
+            </v-expansion-panels>
         
         <v-textarea
             v-if = "comment"
             v-model = "comment"
             :label = "$t('comment.value')"
             auto-grow
-            disabled
-            variant = "outlined"
+            readonly
+            variant = "plain"
         />
+        </v-card-text>
         <v-card-actions class = "justify-center">
             <v-btn
-                v-if = "canBeEditing && isApplicationPeriodOpen"
+                v-if = "canBeEditing"
                 :loading = "isLoading"
                 :text = "$t('edit')"
                 color = "primary"
@@ -53,14 +66,15 @@ export default {
 			type :     Object as () => CardApplication,
 			required : true,
 		},
-		isApplicationPeriodOpen : {
+		canBeEditing : {
 			type :    Boolean,
 			default : true,
-		},
+		}
 	},
 	data() {
 		return {
 			loadings : [] as boolean[],
+			panel : [ 0 ],
 		};
 	},
 	computed : {
@@ -70,10 +84,10 @@ export default {
 		isLoading() : Boolean {
 			return this.loadings.length !== 0;
 		},
-		canBeEditing() : Boolean {
-			const t = this.application?.card_last_update;
-			return this.application?.canBeEdited ?? false;
-		},
+		// canBeEditing() : Boolean {
+		// 	const t = this.application?.card_last_update;
+		// 	return this.application?.canBeEdited ?? false;
+		// },
 		...mapGetters( "auth", [ "currentUser" ] ),
 	},
 	methods :  {

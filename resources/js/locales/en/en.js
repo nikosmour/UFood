@@ -223,6 +223,7 @@ export const en = {
 	"money" :      "Money",
 	// "my info": "My Information",
 	"next" : "Next",
+	"needUpdate" : "Need to be edited",
 	// "no file or description": "@:no_file or description",
 	// "no_file": "There isn't any file",
 	"page" :     "Page",

@@ -5,14 +5,14 @@
         <MyFreeFoodStatus />
                 <v-alert
                     v-if = "untilDate"
-                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString($i18n.locale)},canSubmit ? 1: 0)"
+                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString($i18n.locale)},submitPeriod ? 1: 0)"
                     closable
                 />
         <v-row justify = "center">
             <v-col cols = "12">
                 <v-stepper
                     v-model = "step"
-                    :items = "[$t('personalInfo'), $t('documents.upload'), $t('pendingReview')]"
+                    :items = "items"
                     hide-actions
                     :alt-labels = "alt_labels"
                     :mobile = "null"
@@ -32,13 +32,14 @@
                     <template v-slot:item.3>
                         <ApplicationPreview
                             :application = "application"
+                            :canBeEditing = "canSubmit"
                         />
                     </template>
                 </v-stepper>
                 <ApplicationPreview
                     v-else-if = "application "
                     :application = "application"
-                    :isApplicationPeriodOpen = "false"
+                    :canBeEditing = "canSubmit"
                 />
             </v-col>
         </v-row>
@@ -74,7 +75,7 @@ export default {
 	data() {
 		return {
 			isEditing : true,
-			canSubmit : false,
+			submitPeriod : true,
 			untilDate : null as Date,
 
 		};
@@ -100,13 +101,30 @@ export default {
 		alt_labels() : boolean {
 			return this.$vuetify.display.smAndDown;
 		},
+		status() {
+			return this.application?.card_last_update?.status;
+		},
 		step() : number {
-			const $t = this.application?.card_last_update?.status;
+			const t = this.status;
 			return ( !this.application )
 			       ? 1
 			       : ( this.application.isEditing )
 			         ? 2
 			         : 3;
+		},
+		items() {
+			const step3 = ( this.status === this.$enums.CardStatusEnum.INCOMPLETE )
+			              ? "needUpdate"
+			              : "pendingReview";
+			return [
+				this.$t( "personalInfo" ),
+				this.$t( "documents.upload" ),
+				this.$t( step3 ),
+			];
+		},
+		canSubmit() : boolean {
+			const t = this.application?.card_last_update?.status;
+			return this.submitPeriod && ( this.application?.canBeEdited ?? false );
 		},
 	},
 	created() {
@@ -116,7 +134,7 @@ export default {
 
 // If lastDate is undefined, null, or not a valid date, set canSubmit to false
 		if ( !lastDate || isNaN( ( new Date( lastDate ) ).getTime() ) ) {
-			this.canSubmit = false;
+			this.submitPeriod = false;
 			return;
 		}
 		// Step 2: Convert lastDate to a Date object

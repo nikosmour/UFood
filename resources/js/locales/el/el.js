@@ -203,6 +203,7 @@ export const el = {
 	},
 	"money" :                 "Χρήματα",
 	"next" :                  "Επόμενο",
+	"needUpdate" : "Χρειάζεστε επεξεργασία",
 	"page" :                  "Σελίδα",
 	"password" :              "Κωδικός",
 	"pendingReview" :         "Εκκρεμεί Έλεγχος",
