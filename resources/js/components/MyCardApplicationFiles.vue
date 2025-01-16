@@ -52,6 +52,10 @@ export default {
 		 * @type {?string} link - The preview link.
 		 */
 		"preview",
+		/**
+		 * update the file status
+		 */
+		"updateStatus",
 	],
 	components : {
 		MyNewOrEditFile,
@@ -192,6 +196,7 @@ export default {
 		 */
 		fileChangeStatus( file : CardApplicationDocument, status : CardDocumentStatusEnum ) {
 			file.status = status;
+			this.$emit( "updateStatus", file );
 			console.log( "changeStatus", status );
 		},
 

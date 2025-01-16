@@ -14,6 +14,13 @@ export class CardApplication extends CardApplicationBase {
 			.includes( this.card_last_update?.status );
 	}
 	
+	canBeCheckedByStaff( userId = 0 ) {
+		const status = this.card_last_update?.status;
+		if ( CardStatusEnum.TEMPORARY_SAVED === this.card_last_update?.status ) return false;
+		return !( status === CardStatusEnum.CHECKING && this.card_last_update.card_application_staff_id !== userId );
+		
+	}
+	
 	get isEditing() {
 		return CardStatusEnum.TEMPORARY_SAVED === this.card_last_update?.status;
 	}
@@ -68,8 +75,11 @@ export class CardApplication extends CardApplicationBase {
 	 *
 	 * @returns {Promise<import("axios").AxiosResponse<Object>>}
 	 */
-	requestToEdit() {
-		if ( this.canBeEdited ) {
+	requestToEdit( applicant = true ) {
+		const check = applicant
+		              ? this.canBeEdited
+		              : this.canBeCheckedByStaff;
+		if ( check ) {
 			return this.$axios.get( this.route( "cardApplication.edit", this.id ) )
 			    .then( ( response ) => {
 				    this.updated_at = response.data.card_last_update.updated_at;

@@ -144,10 +144,10 @@ export const en = {
 	//     "success": "File is uploaded successfully!",
 	//     "failed": "File is not valid please retry"
 	// },
-	// "file_updated": {
-	//     "success": "File has updated successfully!",
-	//     "failed": "File updated failed,please retry"
-	// },
+	"file_updated" : {
+		"success" : "File has updated successfully!",
+		"failed" :  "File updated failed,please retry",
+	},
 	// "file_destroyed": {
 	//     "success": "File has destroyed successfully!",
 	//     "failed": "File has not be destroyed successfully, please retry"
@@ -316,6 +316,7 @@ export const en = {
 		"STAFF_COUPON" :  "Staff coupon",
 		"STAFF_CARD" :    "Staff card application",
 		"STAFF_ENTRY" :   "Staff entry",
+		"update" : "Change from {oldStatus} to {newStatus}",
 	},
 	"statistics" : {
 		"adapted" : "Adapted",

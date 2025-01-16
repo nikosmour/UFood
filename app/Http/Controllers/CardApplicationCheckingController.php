@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
-use App\Events\CardApplicationUpdated;
 use App\Http\Requests\SearchApplicationRequest;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Models\CardApplication;
@@ -16,7 +15,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -52,17 +50,21 @@ class CardApplicationCheckingController extends Controller
     {
         $vData = $request->validated();
         $application = CardApplication::whereId($vData['card_application_id'])->with(['cardLastUpdate'])->first();
+        $this->authorize('update', $application);
         // make validation comparing data in database
-        $old_status = $application->cardLastUpdate['status']->value;
+//        $old_status = $application->cardLastUpdate['status'];
 //        dd($old_status === CardStatusEnum::CHECKING->value);
 //        dd($old_status,CardStatusEnum::CHECKING->value,$vData['status'], $vData['status'] === $old_status);
-
         $secondValidationRules = [
-            'status' => [($old_status === CardStatusEnum::CHECKING->value) ?
-                Rule::notIn([CardStatusEnum::CHECKING->value]) :
-                Rule::in([CardStatusEnum::CHECKING->value])
-
-            ],
+            'status' => Rule::in([
+                    CardStatusEnum::TEMPORARY_CHECKED->value,
+                    CardStatusEnum::ACCEPTED->value,
+                    CardStatusEnum::REJECTED->value,
+                    CardStatusEnum::INCOMPLETE->value,
+                ]
+            ),
+            //
+            //            ],
             'expiration_date' => ['date', 'after_or_equal:' . $application['expiration_date']],
 
         ];
@@ -70,21 +72,25 @@ class CardApplicationCheckingController extends Controller
         $vData['status'] = CardStatusEnum::from($vData['status']);
 //        dd('eutheuet');
         DB::transaction(function () use ($vData, $application) {
-            $data = isset($vData['card_application_staff_comment']) ? [
-                'comment' => $vData['card_application_staff_comment'],
-                'status' => $vData['status']
-            ] : ['status' => $vData['status']];
-
-            $old_status = $application->cardLastUpdate->status;
-            dd(Auth::user()->cardApplication()->attach($vData['card_application_id'], $data));
             if (isset($vData['expiration_date'])) {
                 $application->expiration_date = $vData['expiration_date'];
                 $application->save();
+                unset($vData['expiration_date']);
             }
             else
                 $application->touch();
-            broadcast(event: new CardApplicationUpdated(
-                cardApplicationUpdate: $application))->toOthers();
+            $cardUpdate = $application->cardLastUpdate;
+            $cardUpdate->update($vData);
+//            $data = isset($vData['card_application_staff_comment']) ? [
+//                'comment' => $vData['card_application_staff_comment'],
+//                'status' => $vData['status']
+//            ] : ['status' => $vData['status']];
+//
+//            $old_status = $application->cardLastUpdate->status;
+////            Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
+//            CardApplicationUpdate::whereCardApplicationId($application->id)->update(['status' => $vData['status']]);
+//            broadcast(event: new CardApplicationUpdated(
+//                cardApplicationUpdate: $update))->toOthers();
         });
         return true;
     }
@@ -109,8 +115,11 @@ class CardApplicationCheckingController extends Controller
         elseif (isset($request['email']))
             $query->whereRelation('academic', 'email', $request['email']);
         elseif (isset($request['status'])) {
-            $query->whereRelation('cardLastUpdate', 'status', $request['status']);
-            return $query->cursorPaginate(1);
+            $query1 = CardApplicationUpdate::groupBy('card_application_id')->selectRaw('max(id) as max_id ');
+            $query2 = CardApplicationUpdate::whereStatus($request['status']
+            )->joinSub($query1, 'mostResent', 'id', 'max_id')->select('card_application_id as id');
+            // Paginate the result
+            return $query->whereIn('id', $query2)->cursorPaginate(1);
         } else
             return [];
         return response()->json(['data' => $query->get()]);//->keyBy('id');

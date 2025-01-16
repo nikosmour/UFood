@@ -3,13 +3,26 @@
         <router-view :applications = "applications" class = "col" @getId = "getId($event)" />
 
         <v-container class = "col" max-width = "50em">
-            <div v-if = "cursor.data" class = "align-items-baseline">
-                <button v-if = "cursor.next_cursor" class = "btn btn-primary" @click = "nextPage">{{ $t( "next" ) }}
-                </button>
-                <button v-if = "cursor.prev_cursor" class = "btn btn-secondary" @click = "prevPage">{{ $t( "previous" )
-                                                                                                    }}
-                </button>
-            </div>
+            <v-btn-group v-if = "cursor.data">
+
+                <!-- Previous Page Button -->
+                <v-btn
+                    v-if = "cursor.prev_cursor"
+                    class = "mr-5"
+                    color = "secondary"
+                    @click = "prevPage"
+                >
+                    {{ $t( "previous" ) }}
+                </v-btn>
+                <!-- Next Page Button -->
+                <v-btn
+                    v-if = "cursor.next_cursor"
+                    color = "primary"
+                    @click = "nextPage"
+                >
+                    {{ $t( "next" ) }}
+                </v-btn>
+            </v-btn-group>
             <CardApplicationShowData :application = "selectedItem" />
         </v-container>
     </v-container>
@@ -159,13 +172,13 @@ export default {
 	mounted() {
 		console.info( "mounted " );
 		this.startingData();
-		this.broadcasting();
+		// this.broadcasting();
 	},
 	watch : {
 		category( newValue, oldValue ) {
 			this.applications = [];
 			this.startingData();
-			this.broadcasting();
+			// this.broadcasting();
 			if ( typeof this.$echo !== "undefined" && oldValue ) this.$echo.leave( `cardChecking.${ oldValue }` );
 		},
 		async applicationId( newValue ) {

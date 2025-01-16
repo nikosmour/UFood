@@ -104,7 +104,26 @@
     <!--    </div>-->
     <!--    <ApplicationPreview :application="newApplication" v-if="newApplication" :applicant="newApplication.academic"/>-->
 
-    <v-card v-if = "newApplication" :title = "$t('application')+': ' +newApplication.id">
+    <v-card v-if = "newApplication" :loading = "isLoading">
+        <v-card-title class = "d-flex justify-space-between align-center">
+            <span>{{ $t( "application" ) + ": " + newApplication.id }} {{
+                    $t( "status." + newApplication.card_last_update.status.key.toLowerCase() ) }}</span>
+            <v-btn-group>
+
+                <!-- Save Button (Icon) -->
+                <v-btn
+                    :aria-label = "$t('save')" icon
+                    @click = "changeStatus($enums.CardStatusEnum.TEMPORARY_CHECKED)"
+                >
+                    <v-icon>mdi-content-save-all</v-icon>
+                </v-btn>
+
+                <!-- Edit Button (Icon) -->
+                <v-btn :aria-label = "$t('edit')" icon @click = "requestEdit">
+                    <v-icon :icon = "'mdi-pencil'"></v-icon>
+                </v-btn>
+            </v-btn-group>
+        </v-card-title>
         <v-card-text>
             <v-expansion-panels v-if = "newApplication" v-model = "panel" class = "mb-5" multiple>
                 <v-expansion-panel :title = "$t('model_data.applicant_info')">
@@ -118,19 +137,21 @@
                         <MyCardApplicationFiles
                             :application = "newApplication"
                             :isAcademic = "false"
-                            :loadings = "[]"
+                            :is-application-period-open = "currentStatus===$enums.CardStatusEnum.CHECKING"
+                            :loadings = "loading"
+                            @updateStatus = "updateDocumentStatus"
                         />
                     </v-expansion-panel-text>
                 </v-expansion-panel>
-                <v-expansion-panel :title = "$t('card_info')">
-                    current status : {{ currentStatus.value }}
-                    <v-textarea :label = "$t('comment')" :model-value = "'jhkkt'" auto-grow rows = "2">
-                    </v-textarea>
-                </v-expansion-panel>
             </v-expansion-panels>
+            <v-textarea
+                :label = "$t('comment.value')" :model-value = "newApplication.card_applicant_update_latest?.comment"
+                auto-grow readonly rows = "2"
+            >
+            </v-textarea>
         </v-card-text>
         <v-card-actions
-            v-if = "true ||isCheckingByUser" aria-label = "Status buttons" class = "justify-space-between"
+            v-if = "isCheckingByUser" aria-label = "Status buttons" class = "justify-space-between"
             role = "group"
         >
             <v-btn
@@ -156,9 +177,13 @@
             </v-btn>
         </v-card-actions>
         <v-dialog v-model = "showDecisionDialog" max-width = "50em">
-            <v-card>
+            <v-card :loading = "isLoading">
                 <v-card-title>
-                    {{ $t( "updateStatus" ) + $t( "status." + "newApplication.card_last_update.status.value" ) }}
+                    {{ $t( "status.update", {
+                               newStatus : $t( "status." + newApplication.card_last_update.status.key.toLowerCase() ),
+                               oldStatus : $t( "status." + currentStatus.key.toLowerCase() ),
+                           },
+                ) }}
                 </v-card-title>
 
                 <v-card-text>
@@ -216,7 +241,8 @@ export default {
 		return {
 			panel :              [ 0 ],
 			showDecisionDialog : false,
-			newApplication :     null,
+			newApplication : null,
+			loading :        [],
 			resultFile :        {
 				message : "",
 				success : null,
@@ -248,19 +274,22 @@ export default {
 			let url = this.route( "document.update", { "document" : file.id } );
 			this.resultFile.message = "";
 			params.append( "_method", "PUT" );
-			params.append( "status", file.status );
+			params.append( "status", file.status.value );
+			this.loading.push( true );
 			try {
 				const response = await this.$axios.post( url, params );
 				let json = response.data;
-				this.resultFile.success = json.success;
-				this.resultFile.message = json.message;
-				this.resultFile.errors = [];
-				return json.success;
+				this.$notify( {
+					              error : json.message,
+					              color : "success",
+				              } );
 			} catch ( errors ) {
 				this.resultFile.success = false;
 				this.resultFile.errors = errors.response.data.errors;
 				this.resultFile.message = this.$t( "request_failed" );
 				return false;
+			} finally {
+				this.loading.pop();
 			}
 		},
 		changeStatus( status ) {
@@ -268,43 +297,62 @@ export default {
 			this.newApplication.card_last_update.status = status;
 			this.showDecisionDialog = true;
 		},
+		async requestEdit() {
+			try {
+				this.loading.push( true );
+				this.newApplication.card_last_update = await this.newApplication.requestToEdit( false );
+				console.info( "response", this.newApplication.card_last_update );
+				this.currentStatus = this.newApplication.card_last_update.status;
+			} catch ( error ) {
+				// application.card_last_update.status = this.currentStatus;
+				if ( error.response?.status === 422 )
+					this.$displayError( error.message );
+				else {
+					throw error;
+				}
+			} finally {
+				this.loading.pop();
+			}
+		},
 		restoreStatus() {
 			this.newApplication.card_last_update.status = this.currentStatus;
+			this.showDecisionDialog = false;
 		},
-		updateApplicationStatus() {
+		async updateApplicationStatus() {
 			const application = this.newApplication;
 			let params = new FormData();
-			params.append( "status", application.card_last_update.status );
+			params.append( "status", application.card_last_update.status.value );
 			params.append( "card_application_id", application.id );
 			if ( this.expirationDate && application.card_last_update.status === this.$enums.CardStatusEnum.ACCEPTED ) {
-				params.append( "expiration_date", this.expirationDate );
+				params.append( "expiration_date", this.expirationDate.toISOString() );
 			}
 			if ( this.commentChecking ) {
 				params.append( "card_application_staff_comment", this.commentChecking );
 			}
-			this.$axios.post(
-				this.route( "cardApplication.checking.store",
-				            { "category" : application.card_last_update.status.value } ),
-				params )
-			    .then( response => {
-				    this.showDecisionDialog = false;
-				    this.$notify( {
-					                  error : "success update",
-					                  color : "success",
-				                  } );
-			    } )
-			    .catch( errors => {
+			this.loading.push( true );
+			try {
+				await this.$axios.post(
+					this.route( "cardApplication.checking.store",
+					            { "category" : application.card_last_update.status.value } ),
+					params );
+				this.showDecisionDialog = false;
+				this.$notify( {
+					              error : "success update",
+					              color : "success",
+				              } );
+				this.currentStatus = this.newApplication.card_last_update.status;
+			} catch ( errors ) {
 				    console.info( "updateApplicationStatus catch", errors );
 				    this.$displayError( { error : errors } );
-				    this.result.message = this.$t( "request_failed" );
-				    this.result.errors = errors.response.data.errors;
-				    this.result.success = false;
-				    application.card_last_update.status = this.currentStatus;
-			    } );
+			} finally {
+				this.loading.pop();
+			}
 		},
 	},
 	computed : {
-
+		isLoading() {
+			return !!this.loading.length;
+		},
 
 		selectedFileUrl() {
 			return this.route( "document.show", { "document" : this.selectFile?.id } );
@@ -325,6 +373,7 @@ export default {
 			                      : null;
 			if ( newValue ) this.startingData();
 			this.selectFile = null;
+			this.panel = [ 0 ];
 		},
 		async selectFile( newValue, oldValue ) {
 			if ( oldValue && oldValue.status !== this.currentFileStatus ) {
