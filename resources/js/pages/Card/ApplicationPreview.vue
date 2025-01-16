@@ -71,7 +71,8 @@ export default {
 			return this.loadings.length !== 0;
 		},
 		canBeEditing() : Boolean {
-			return this.application.canBeEdited;
+			const t = this.application?.card_last_update;
+			return this.application?.canBeEdited ?? false;
 		},
 		...mapGetters( "auth", [ "currentUser" ] ),
 	},
@@ -79,7 +80,12 @@ export default {
 		startEditingApplication() {
 			this.loadings.push( true );
 			this.application.requestToEdit()
-			    .then( () => this.$emit( "edit" ) )
+			    .then( ( update ) => {
+				    console.debug( "startEditingApplication", this.application.card_last_update, update );
+				    this.application.card_last_update = update;
+				    this.$emit( "edit" );
+
+			    } )
 			    .finally(
 				    () => this.loadings.pop(),
 			    );

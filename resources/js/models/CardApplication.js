@@ -65,14 +65,14 @@ export class CardApplication extends CardApplicationBase {
 	
 	/**
 	 *
-	 * @returns {Promise<import("axios").AxiosResponse<void>>}
+	 * @returns {Promise<import("axios").AxiosResponse<Object>>}
 	 */
 	requestToEdit() {
 		if ( this.canBeEdited ) {
 			return this.$axios.get( this.route( "cardApplication.edit", this.id ) )
 			    .then( ( response ) => {
-				    this.card_last_update = response.data.card_last_update;
 				    this.updated_at = response.data.card_last_update.updated_at;
+				    return response.data.card_last_update;
 			    } )
 			    .catch( ( error ) => {
 				    const message = ( error.response?.status === 403 )
