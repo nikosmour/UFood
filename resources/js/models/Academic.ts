@@ -30,6 +30,18 @@ export class Academic extends AcademicBase {
 		}
 		
 	}
+	
+	public broadcast( options : Record<string, any> = {} ) {
+		super.broadcast( options );
+		const user = options.target;
+		user.card_applicant?.current_card_application?.broadcast(
+			{ target : user.card_applicant?.current_card_application } );
+	}
+	
+	public stopBroadcast() {
+		super.stopBroadcast();
+		this.card_applicant?.current_card_application?.stopBroadcast();
+	}
 }
 
 export default Academic;

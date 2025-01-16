@@ -2,11 +2,10 @@
 
 namespace App\Events;
 
-use App\Enum\CardStatusEnum;
 use App\Models\CardApplication;
+use App\Models\CardApplicationUpdate;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -16,19 +15,21 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public int $cardApplication_id;
+    private int $cardApplication_id;
     public string $expiration_date;
+    private CardApplication $cardApplication;
 
     /**
      * Create a new event instance.
      */
     public function __construct(
-        private CardApplication $cardApplication,
-        public CardStatusEnum $status,
-        private CardStatusEnum $old_status,
-        public string|null $comment,
+        public CardApplicationUpdate $cardApplicationUpdate,
+//        public CardStatusEnum $status,
+//        private CardStatusEnum $old_status,
+//        public string|null $comment,
     )
     {
+        $this->cardApplication = CardApplication::find($this->cardApplicationUpdate->card_application_id);
         $this->cardApplication_id = $this->cardApplication->id;
         $this->expiration_date = $this->cardApplication->expiration_date->toDateString();
     }
@@ -42,9 +43,9 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
     {
         return [
             new PrivateChannel('cardApplication.' . $this->cardApplication_id),
-            new PrivateChannel('academic.' . $this->cardApplication->academic_id),
-            new PresenceChannel('cardChecking.' . $this->old_status->valueWithUnderscores()),
-            new PresenceChannel('cardChecking.' . $this->status->valueWithUnderscores())
+            //            new PrivateChannel('academic.' . $this->cardApplication->academic_id),
+            //            new PresenceChannel('cardChecking.' . $this->old_status->valueWithUnderscores()),
+            //            new PresenceChannel('cardChecking.' . $this->status->valueWithUnderscores())
         ];
     }
 

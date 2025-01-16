@@ -2,6 +2,7 @@ import CardApplicationBase from "./Base/CardApplicationBase";
 import CardApplicationDocument from "./CardApplicationDocument";
 import { CardStatusEnum } from "@enums/CardStatusEnum";
 import { InformTheUserError } from "@/errors/InformTheUserError";
+import { EchoInstance } from "@/plugins/echo";
 
 export class CardApplication extends CardApplicationBase {
 	get canBeEdited() {
@@ -104,11 +105,43 @@ export class CardApplication extends CardApplicationBase {
 		this.#receivingNewCardUpdate();
 	}
 	
+	get notBroadcast() {
+		return [
+			CardStatusEnum.TEMPORARY_SAVED,
+			CardStatusEnum.ACCEPTED,
+			CardStatusEnum.INCOMPLETE,
+			CardStatusEnum.REJECTED,
+		]
+			.includes( this.card_last_update?.status );
+	}
+	
 	#receivingNewCardUpdate() {
 		if ( this.card_last_update.card_application_staff_id )
 			this._card_staff_update_latest = this.card_last_update;
 		else
 			this._card_applicant_update_latest = this.card_last_update;
+	}
+	
+	broadcast( options = {} ) {
+		super.broadcast( options );
+		const echo = EchoInstance;
+		const application = options.target;
+		const channelName = `cardApplication.${ this.id }`;
+		console.info( "cardApplicationBroadCasting" );
+		echo
+			.private( channelName )
+			.listen( "CardApplicationUpdated", ( e ) => {
+				console.info( "cardApplicationUpdate12", e, this );
+				application.expiration_date = new Date( e[ "expiration_date" ] );
+				application.card_last_update = e[ "cardApplicationUpdate" ];
+			} );
+	}
+	
+	stopBroadcast() {
+		super.stopBroadcast();
+		const channelName = `cardApplication.${ this.id }`;
+		EchoInstance.private( channelName )
+		            .stopListening( "CardApplicationUpdated" );
 	}
 }
 

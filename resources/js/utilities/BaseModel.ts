@@ -328,6 +328,24 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 		return oldValue;
 	}
 	
+	/**
+	 * It defines the broadcastLogic of the model
+	 * you need to specify the target (that will be used instead of  this)  if you want vue to be able to watch it.
+	 * @param options
+	 */
+	public broadcast( options : Record<string, any> = { target : null } ) : void {
+		options.target ??= this;
+		// close broadcast channels if are already open
+		this.stopBroadcast();
+		return;
+	}
+	
+	/**
+	 * It's stop the broadcast Logic in this of the model that has been defined on broadcast
+	 */
+	public stopBroadcast() : void {
+		return;
+	}
 	
 }
 

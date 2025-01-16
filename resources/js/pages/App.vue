@@ -29,6 +29,7 @@ export default {
 			 * @returns {Boolean} - True if authenticated, false otherwise.
 			 */
 			"isAuthenticated",
+			"currentUser",
 		] ),
 		
 		/**
@@ -62,6 +63,7 @@ export default {
 			} else if ( isAuthenticated && this.$route.name === "login" ) {
 				this.$router.push( this.$route.query.redirect || { name : "startPage" } );
 			}
+			this.currentUser?.broadcast( { target : this.currentUser } );
 		},
 	},
 	
@@ -83,7 +85,7 @@ export default {
 		if ( this.isAuthenticated && this.$route.name === "login" ) {
 			this.$router.push( this.$route.query.redirect || { name : "userProfile" } );
 		}
-
+		this.currentUser?.broadcast( { target : this.currentUser } );
 		// Session timeout setup
 		// const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
 		// setupSessionTimeout( timeoutMin, this.$axios, this );

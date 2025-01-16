@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CardApplicationUpdated;
 use App\Mail\CardApplicationUpdatedNotification;
 use App\Models\CardApplicationUpdate;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
@@ -14,7 +15,10 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
      */
     public function created(CardApplicationUpdate $cardApplicationUpdate): void
     {
-        //
+        if ($cardApplicationUpdate->card_application_staff_id)
+            broadcast(event: new CardApplicationUpdated(
+                cardApplicationUpdate: $cardApplicationUpdate
+            ))->toOthers();
     }
 
     /**
@@ -22,7 +26,11 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(CardApplicationUpdate $cardApplicationUpdate): void
     {
-        if ($cardApplicationUpdate->isDirty('status')) { 
+        if ($cardApplicationUpdate->isDirty('status')) {
+            if ($cardApplicationUpdate->card_application_staff_id)
+                broadcast(event: new CardApplicationUpdated(
+                    cardApplicationUpdate: $cardApplicationUpdate
+                ))->toOthers();
             Mail::to($cardApplicationUpdate->Academic()->value('email'))->send(new CardApplicationUpdatedNotification($cardApplicationUpdate));
         }
     }
