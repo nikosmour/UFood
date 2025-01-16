@@ -172,7 +172,7 @@ export default {
 	},
 	created() {
 		// if the last update is from the academic set the comment the previous value
-		this.comment = this.application.card_applicant_update_latest.comment ?? "";
+		this.comment = this.application.card_applicant_update_latest?.comment ?? "";
 	},
 
 };

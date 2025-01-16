@@ -18,7 +18,7 @@
             disabled
             variant = "outlined"
         />
-        <v-card-actions class = "justify-space-between">
+        <v-card-actions class = "justify-center">
             <v-btn
                 v-if = "canBeEditing && isApplicationPeriodOpen"
                 :loading = "isLoading"
@@ -65,7 +65,7 @@ export default {
 	},
 	computed : {
 		comment() : PropertyType<string> {
-			return ( this.application.card_last_update as CardApplicationUpdate )?.comment;
+			return ( this.application.card_applicant_update_latest as CardApplicationUpdate )?.comment;
 		},
 		isLoading() : Boolean {
 			return this.loadings.length !== 0;
