@@ -26,7 +26,7 @@ class CardApplicationPolicy
 
         }
         //if the user is not cardApplicant must be cardApplicationStaffs
-        return $user instanceof CardApplicationStaff && ($ability === 'view' || $ability === 'update');
+        return $user instanceof CardApplicationStaff && ($ability === 'view' || $ability === 'update' || $ability === 'edit') ? null : false;
     }
 
 
