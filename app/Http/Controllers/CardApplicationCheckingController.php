@@ -76,7 +76,7 @@ class CardApplicationCheckingController extends Controller
             ] : ['status' => $vData['status']];
 
             $old_status = $application->cardLastUpdate->status;
-            Auth::user()->cardApplication()->attach($vData['card_application_id'], $data);
+            dd(Auth::user()->cardApplication()->attach($vData['card_application_id'], $data));
             if (isset($vData['expiration_date'])) {
                 $application->expiration_date = $vData['expiration_date'];
                 $application->save();
@@ -84,10 +84,7 @@ class CardApplicationCheckingController extends Controller
             else
                 $application->touch();
             broadcast(event: new CardApplicationUpdated(
-                cardApplication: $application,
-                status: $vData['status'],
-                old_status: $old_status,
-                comment: $vData['card_application_staff_comment'] ?? null))->toOthers();
+                cardApplicationUpdate: $application))->toOthers();
         });
         return true;
     }
@@ -98,7 +95,11 @@ class CardApplicationCheckingController extends Controller
      */
     public function search(Request $request)
     {
-        $query = CardApplication::with(relations: ['cardLastUpdate', 'cardApplicationDocument', 'cardApplicant', 'academic', 'addresses']);
+        $query = CardApplication::with(relations: [
+            'cardLastUpdate',
+            'cardApplicationDocument',
+            'academic.cardApplicant.addresses',
+        ]);
         if (isset($request['application_id']))
             $query->where('id', $request['application_id']);
         elseif (isset($request['academic_id']))

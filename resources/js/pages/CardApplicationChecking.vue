@@ -1,8 +1,8 @@
 <template>
-    <v-container class = "text-center ">
+    <div class = "container-fluid row mx-auto text-center ">
         <router-view :applications = "applications" class = "col" @getId = "getId($event)" />
 
-        <v-container class = "col" max-width = "50em">
+        <div class = "col">
             <div v-if = "cursor.data" class = "align-items-baseline">
                 <button v-if = "cursor.next_cursor" class = "btn btn-primary" @click = "nextPage">{{ $t( "next" ) }}
                 </button>
@@ -11,8 +11,10 @@
                 </button>
             </div>
             <CardApplicationShowData :application = "selectedItem" />
-        </v-container>
-    </v-container>
+        </div>
+
+        <message v-bind = "result"></message>
+    </div>
 </template>
 
 <script>
@@ -39,8 +41,8 @@ export default {
 	computed : {
 		category() {
 			return this.$route.params.category
-			       ? this.$enums.CardStatusEnum[ this.$route.params.category.toUpperCase() ].value
-			       : this.$enums.CardStatusEnum.SUBMITTED.value;
+			       ? this.$enums.CardStatusEnum[ this.$route.params.category.toUpperCase() ]
+			       : null;
 		},
 		applicationId() {
 			return this.$route.params.application || this.$route.query.application;
@@ -76,7 +78,6 @@ export default {
 		},
 		async getApplications( name, value, url = this.route( "cardApplication.checking.search" ) ) {
 			try {
-				console.info( "test" );
 				const response = await this.$axios.get( url, { params : { [ name ] : value } } );
 				console.log( "get Applications", response.data );
 				const applications = response.data.data;
@@ -109,14 +110,14 @@ export default {
 			}
 		},
 		async startingData() {
-			console.info( "cardApplicationChecking.startingData", this.category );
+			console.log( "cardApplicationChecking.startingData" );
 			if ( this.category ) {
 				const applications = await this.getApplications( "status", this.category );
 				if ( !this.applicationId && applications.length > 0 && applications[ 0 ] ) {
 					this.$router.replace( {
 						                      name :   this.$route.name,
 						                      params : { category : this.category },
-						                      query : { "application" : applications[ 0 ].id },
+						                      query :  { "application" : applications[ 0 ].id },
 					                      } );
 				}
 			}
@@ -157,7 +158,6 @@ export default {
 		},
 	},
 	mounted() {
-		console.info( "mounted " );
 		this.startingData();
 		this.broadcasting();
 	},

@@ -13,7 +13,7 @@ export default {
 		// this.globalErrorHandler(error.message);
 		
 		// Return false to prevent the error from propagating further
-		return false;
+		return true;
 	},
 	
 	

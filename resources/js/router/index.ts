@@ -118,6 +118,7 @@ const routes : ReadonlyArray<RouteRecordRaw> = [
 	{
 		path :        "/",
 		name :        "startPage",
+		meta :        { requiresAuth : true },
 		component :   AcademicStartPage,
 		beforeEnter : ( to : RouteLocationNormalized, from : RouteLocationNormalized ) => {
 			const hasAbility = store.getters[ "auth/hasAbility" ]; // Fetch user from Vuex store
@@ -132,8 +133,8 @@ const routes : ReadonlyArray<RouteRecordRaw> = [
 			if ( hasAbility( Enums.UserAbilityEnum.COUPON_OWNERSHIP ) )
 				return;
 			return {
-				name : "login",
-			};
+				name : "userProfile",
+			}
 		},
 	},
 	

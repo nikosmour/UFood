@@ -198,7 +198,7 @@ export const el = {
 		"coupon_owner" :    "@:coupon.owner",
 		"card_applicant" : "Στοιχεία αιτούντα κάρτας",
 		"address" :         "@:model_data.location",
-		"applicant_info" :  "@:applicant info",
+		"applicant_info" : "Στοιχεία αιτούντα κάρτας",
 		"category" :        "Κατηγορία",
 	},
 	"money" :                 "Χρήματα",
