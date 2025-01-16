@@ -24,6 +24,7 @@
                     :to = "{ name: 'coupons.History' }"
                     color = "primary"
                     variant = "elevated"
+                    prepend-icon = "mdi-history"
                 />
                 <v-btn
                     v-if = "$route.name !== 'coupons.transfer'"
@@ -31,6 +32,7 @@
                     :to = "{ name: 'coupons.transfer' }"
                     color = "primary"
                     variant = "elevated"
+                    append-icon = "mdi-transfer"
                 />
             </v-card-actions>
         </v-card>

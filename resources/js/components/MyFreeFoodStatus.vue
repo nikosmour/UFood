@@ -127,6 +127,7 @@ export default {
                     :to = "{ name: 'card.History' }"
                     color = "primary"
                     variant = "elevated"
+                    prepend-icon = "mdi-history"
                 />
                 <v-btn
                     v-if = "showApplication && ($route.name !== 'card.application')"
@@ -134,6 +135,7 @@ export default {
                     :to = "{ name: 'card.application' }"
                     color = "primary"
                     variant = "elevated"
+                    append-icon = "mdi-application"
                 />
             </v-card-actions>
         </v-card>

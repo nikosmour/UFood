@@ -23,9 +23,10 @@
             <v-btn
                 :disabled = "isLoading"
                 :text = "$t('save')"
-                color = "primary"
+                color = "secondary"
                 variant = "elevated"
                 @click = "saveApplication"
+                prepend-icon = "mdi-content-save"
             />
             <v-btn
                 :disabled = "isLoading"
@@ -33,6 +34,7 @@
                 color = "primary"
                 variant = "elevated"
                 @click = "submitDocuments"
+                append-icon = "mdi-send-check"
             />
         </v-card-actions>
     

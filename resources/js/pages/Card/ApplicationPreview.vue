@@ -39,6 +39,7 @@
                 color = "primary"
                 variant = "elevated"
                 @click = "startEditingApplication"
+                prepend-icon = "mdi-pencil"
             />
         </v-card-actions>
     
