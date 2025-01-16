@@ -116,7 +116,7 @@ export const getters = {
 	/**
 	 * Returns the current user.
 	 * @param state
-	 * @returns {?UserData}
+	 * @returns {?BaseModel<any,any>}
 	 */
 	currentUser( state ) {
 		return state.user;

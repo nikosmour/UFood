@@ -198,7 +198,7 @@ export default {
 		 * Each configuration object includes properties that specify label text, navigation route,
 		 * and required user ability.
 		 *
-		 * @returns {Array<{ label: string, to: { name: string, params?: Object }, ability: string }>}
+		 * @returns {Array<{ label: string, to: { name: string, params?: Object }, ability: UserAbilityEnum }>}
 		 *    Array of navigation button objects, where:
 		 *    - `label`: Translation key for the button text.
 		 *    - `to`: Navigation route configuration.

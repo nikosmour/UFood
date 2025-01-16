@@ -46,10 +46,9 @@ export class MockEcho {
 	
 	/**
 	 * Mock method to simulate leaving a channel.
-	 * @param {string} channel - The name of the channel to leave
 	 * @returns {MockEcho} Returns the MockEcho instance itself.
 	 */
-	leaveAllChannels( channel ) {
+	leaveAllChannels() {
 		console.warn( `[MockEcho] Left channel: ${ channel }` );
 		return this;
 	}

@@ -63,7 +63,7 @@ export default {
 		 * Checks if the current route name matches "card.application".
 		 * @returns {boolean}
 		 */
-		isCardApplicationRoute() {
+		isCardApplicationRoute() : boolean {
 			return this.$route.name === "card.application";
 		},
 	},
