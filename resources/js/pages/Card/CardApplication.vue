@@ -32,7 +32,6 @@
                     <template v-slot:item.3>
                         <ApplicationPreview
                             :application = "application"
-                            @edit = "step=2"
                         />
                     </template>
                 </v-stepper>
@@ -75,7 +74,6 @@ export default {
 	data() {
 		return {
 			isEditing : true,
-			step :      0,
 			canSubmit : false,
 			untilDate : null as Date,
 
@@ -102,15 +100,17 @@ export default {
 		alt_labels() : boolean {
 			return this.$vuetify.display.smAndDown;
 		},
+		step() : number {
+			const $t = this.application?.card_last_update?.status;
+			return ( !this.application )
+			       ? 1
+			       : ( this.application.isEditing )
+			         ? 2
+			         : 3;
+		},
 	},
 	created() {
-		this.step = ( !this.application )
-		            ?
-		            1
-		            : ( this.application.isEditing )
-		              ?
-		              2
-		              : 3;
+
 		// Step 1: Check if lastDate is defined and valid
 		const lastDate = this.config?.application?.lastDate;
 

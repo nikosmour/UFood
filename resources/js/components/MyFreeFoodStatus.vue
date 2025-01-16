@@ -38,6 +38,7 @@ export default {
 					} ) }`;
 				}
 			}
+			console.info( this.application );
 			if ( this.isCardApplicationRoute )
 				text += "\n" + ( this.application?.card_staff_update_latest?.comment ?? "" );
 			return text;

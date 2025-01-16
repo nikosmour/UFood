@@ -109,7 +109,7 @@ export default {
 			try {
 				await this.$axios.post( url, params );
 				this.application.card_last_update.status = status;
-				this.application.card_last_update.comment = this.comment;
+				this.application.card_applicant_update_latest.comment = this.comment;
 				this.application.card_last_update.updated_at = new Date();
 				this.application.card_last_update.syncCurrent();
 				// Handle document deletions

@@ -93,7 +93,7 @@ export class CardApplication extends CardApplicationBase {
 	
 	constructor( data ) {
 		super( data );
-		this.#receivingNewCardUpdate();
+		this.receivingNewCardUpdate();
 	}
 	
 	get card_last_update() {
@@ -102,7 +102,7 @@ export class CardApplication extends CardApplicationBase {
 	
 	set card_last_update( value ) {
 		super.card_last_update = value;
-		this.#receivingNewCardUpdate();
+		this.receivingNewCardUpdate();
 	}
 	
 	get notBroadcast() {
@@ -113,13 +113,6 @@ export class CardApplication extends CardApplicationBase {
 			CardStatusEnum.REJECTED,
 		]
 			.includes( this.card_last_update?.status );
-	}
-	
-	#receivingNewCardUpdate() {
-		if ( this.card_last_update.card_application_staff_id )
-			this._card_staff_update_latest = this.card_last_update;
-		else
-			this._card_applicant_update_latest = this.card_last_update;
 	}
 	
 	broadcast( options = {} ) {
@@ -134,7 +127,15 @@ export class CardApplication extends CardApplicationBase {
 				console.info( "cardApplicationUpdate12", e, this );
 				application.expiration_date = new Date( e[ "expiration_date" ] );
 				application.card_last_update = e[ "cardApplicationUpdate" ];
+				this.receivingNewCardUpdate();
 			} );
+	}
+	
+	receivingNewCardUpdate() {
+		if ( this.card_last_update.card_application_staff_id )
+			this._card_staff_update_latest = this.card_last_update;
+		else
+			this._card_applicant_update_latest = this.card_last_update;
 	}
 	
 	stopBroadcast() {
