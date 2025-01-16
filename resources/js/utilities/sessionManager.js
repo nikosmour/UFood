@@ -26,20 +26,23 @@ export function setupSessionTimeout( timeoutMin, axios, vueInstance ) {
 
 /**
  * Sets up axios interceptors to handle various response statuses like 419 (CSRF expired) and 401 (Unauthorized).
- * @param {import("axios").AxiosInstance} axios - The axios instance.
- * @param {import("vuex").ActionContext<any,any>} store - The Vuex store instance.
- * @param {Object} router - The Vue Router instance.
- * @param route
+ * }
  */
-export function setupAxiosInterceptor( axios, store, router, route ) {
-	axios.interceptors.request.use( function ( config ) {
-		store.dispatch( "session/updateTimeLeft" );
+export function setupAxiosInterceptor( {
+	                                       $axios,
+	                                       $store,
+	                                       route,
+	                                       $t,
+	                                       $displayError,
+                                       } ) {
+	$axios.interceptors.request.use( function ( config ) {
+		$store.dispatch( "session/updateTimeLeft" );
 		return config;
 	}, function ( error ) {
 		// Do something with request error
 		return Promise.reject( error );
 	} );
-	axios.interceptors.response.use(
+	$axios.interceptors.response.use(
 		response => {
 			return response;
 		},
@@ -47,20 +50,20 @@ export function setupAxiosInterceptor( axios, store, router, route ) {
 			if ( !error.response ) return Promise.reject( error );
 			const status = error.response.status;
 			if ( status === 419 )
-				return store.dispatch( "session/updateCookies", {
+				return $store.dispatch( "session/updateCookies", {
 					route,
-					axiosInstance : axios,
+					axiosInstance : $axios,
 				} )
-				            .then( () => axios( error.config ) )
+				             .then( () => $axios( error.config ) )
 				            .catch( refreshError => {
 					            console.error( "CSRF refresh error", refreshError );
 					            return Promise.reject( error );
 				            } );
 			
 			if ( status === 401 )
-				store.commit( "auth/setLogout" );
+				$store.commit( "auth/setLogout" );
 			else if ( status === 403 )
-				router.push( { name : "error.403" } );
+				$displayError( $t( "forbiddenAccess.details" ) );
 			
 			return Promise.reject( error );
 		},
