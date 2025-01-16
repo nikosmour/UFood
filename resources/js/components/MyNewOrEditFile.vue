@@ -189,7 +189,7 @@ export default {
             <v-card-text>
                 <v-form ref = "fileForm" v-model = "isFormValid">
                     <!-- File Description -->
-                    <v-select
+                    <v-autocomplete
                         v-model = "fileInput.description"
                         :items = "fileOptions"
                         :label = "$t('description')"
