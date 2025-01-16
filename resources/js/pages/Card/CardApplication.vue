@@ -124,7 +124,7 @@ export default {
 		},
 		canSubmit() : boolean {
 			const t = this.application?.card_last_update?.status;
-			return this.submitPeriod && ( this.application?.canBeEdited ?? false );
+			return this.submitPeriod && ( this.application?.canBeEdited ?? true );
 		},
 	},
 	created() {

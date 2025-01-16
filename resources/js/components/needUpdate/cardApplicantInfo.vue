@@ -2,62 +2,62 @@
     <div>
         <v-row>
             <!-- User Info Fields -->
-            <v-col cols = "12" md = "8">
+            <v-col class = "pt-0 pb-0" cols = "12" md = "8">
                 <v-text-field
                     v-model = "user.name"
                     v-bind = "getFieldProps('name', user)"
                 />
             </v-col>
 
-            <v-col cols = "12" md = "4">
+            <v-col class = "pt-0 pb-0" cols = "12" md = "4">
                 <v-text-field
                     v-model = "user.father_name"
                     v-bind = "getFieldProps('father_name', user)"
                 />
             </v-col>
 
-            <v-col cols = "12" md = "8">
+            <v-col class = "pt-0 pb-0" cols = "12" md = "8">
                 <v-text-field
                     v-model = "user.email"
                     v-bind = "getFieldProps('email', user, 'text')"
                 />
             </v-col>
 
-            <v-col cols = "12" md = "4">
+            <v-col class = "pt-0 pb-0" cols = "12" md = "4">
                 <v-text-field
                     :model-value = "$t('status.'+user.status.key)"
                     v-bind = "getFieldProps('status', user)"
                 />
             </v-col>
 
-            <v-col v-if = "user.card_applicant" cols = "12">
+            <v-col v-if = "user.card_applicant" class = "pt-0 pb-0" cols = "12">
                 <v-text-field
                     v-model = "user.card_applicant.department"
                     v-bind = "getFieldProps('department', user.card_applicant)"
                 />
             </v-col>
             <template v-if = "isAcademic">
-                <v-col cols = "12" md = "8">
+                <v-col class = "pt-0 pb-0" cols = "12" md = "8">
                     <v-text-field
                         v-model = "user.academic_id"
                         v-bind = "getFieldProps('academic_id', user)"
                     />
                 </v-col>
-                <v-col cols = "12" md = "4">
+                <v-col class = "pt-0 pb-0" cols = "12" md = "4">
                     <v-text-field
                         v-model = "user.a_m"
                         v-bind = "getFieldProps('a_m', user)"
                     />
                 </v-col>
 
-                <v-col cols = "12" md = "8">
+                <v-col class = "pt-0 pb-0" cols = "12" md = "8">
                     <v-text-field
                         :model-value = "$t( 'active', user.is_active ? 1: 0 ) "
                         v-bind = "getFieldProps('is_active', user, 'number')"
                     />
                 </v-col>
 
-                <v-col v-if = "user.card_applicant" cols = "12" md = "4">
+                <v-col v-if = "user.card_applicant" class = "pt-0 pb-0" cols = "12" md = "4">
                     <v-text-field
                         :model-value = "user.card_applicant.first_year"
                         v-bind = "getFieldProps('first_year', user.card_applicant, {type :'number'})"
@@ -67,8 +67,9 @@
         </v-row>
 
         <!-- Address Fields -->
+        <template v-if = "user.card_applicant">
         <v-row v-for = "type in ['permanent', 'temporary']" :key = "type">
-            <v-col cols = "12" md = "8">
+            <v-col class = "pt-0 pb-0" cols = "12" md = "8">
                 <v-text-field
                     v-model = "addresses[type].location"
                     v-bind = "getFieldProps('location', addresses[type],{
@@ -79,7 +80,7 @@
                 />
             </v-col>
 
-            <v-col cols = "12" md = "4">
+            <v-col class = "pt-0 pb-0" cols = "12" md = "4">
                 <v-text-field
                     v-model = "addresses[type].phone"
                     v-bind = "getFieldProps('phone', addresses[type],{
@@ -90,6 +91,7 @@
                 />
             </v-col>
         </v-row>
+        </template>
     </div>
 </template>
 
@@ -133,7 +135,8 @@ export default defineComponent( {
 			                                return cardApplicant;
 		                                },
 		                                addresses() : Record<string, Address> {
-			                                return ( this.user.card_applicant?.addresses as Address[] ).reduce(
+			                                return ( ( this.user.card_applicant?.addresses ??
+			                                           [] ) as Address[] ).reduce(
 				                                ( acc, input ) => {
 					                                const type = input.is_permanent
 					                                             ? "permanent"
@@ -181,7 +184,7 @@ export default defineComponent( {
 		                                },
 	                                },
 	                                created() {
-		                                if ( this.user.card_applicant.shouldBeTracked( "first_year" ) ) {
+		                                if ( this.user.card_applicant?.shouldBeTracked( "first_year" ) ) {
 			                                this.$watch( "first_year", ( newValue ) => {
 				                                this.user.card_applicant.first_year = newValue;
 			                                } );
