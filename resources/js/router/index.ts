@@ -19,6 +19,7 @@ const TransferCoupons = () => import("@pages/Coupons/TransferCoupon.vue");
 const CouponOwner = () => import("@pages/Coupons.vue");
 const CouponTransactions = () => import("@pages/Coupons/CouponsTransactions.vue");
 const CardApplicationCheckingSearch = () => import("@pages/NeedUpdate/CardApplicationChecking/CardApplicationCheckingSearch.vue");
+const AcademicStartPage = () => import("@pages/AcademicStartPage.vue");
 
 const routes : ReadonlyArray<RouteRecordRaw> = [
 	{
@@ -117,6 +118,7 @@ const routes : ReadonlyArray<RouteRecordRaw> = [
 	{
 		path :        "/",
 		name :        "startPage",
+		component :   AcademicStartPage,
 		beforeEnter : ( to : RouteLocationNormalized, from : RouteLocationNormalized ) => {
 			const hasAbility = store.getters[ "auth/hasAbility" ]; // Fetch user from Vuex store
 			if ( hasAbility( Enums.UserAbilityEnum.ENTRY_CHECK ) )
@@ -128,9 +130,7 @@ const routes : ReadonlyArray<RouteRecordRaw> = [
 					name : "purchase",
 				};
 			if ( hasAbility( Enums.UserAbilityEnum.COUPON_OWNERSHIP ) )
-				return {
-					name : "coupons.History",
-				};
+				return;
 			return {
 				name : "login",
 			};

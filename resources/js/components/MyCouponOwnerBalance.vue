@@ -4,9 +4,6 @@
             <v-card-subtitle class = "mt-2">{{ $t( "balance" ) }}</v-card-subtitle>
             <v-list>
                 <v-row
-                    align = "center"
-                    class = "d-flex"
-                    justify = "space-between"
                     no-gutters
                 >
                     <v-col
