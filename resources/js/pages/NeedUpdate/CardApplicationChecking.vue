@@ -1,41 +1,45 @@
 <template>
-    <v-container class = "text-center ">
-        <router-view :applications = "applications" class = "col" @getId = "getId($event)" />
+    <card-application-abstract>
+        <v-container class = "text-center ">
+            <router-view :applications = "applications" class = "col" @getId = "getId($event)" />
 
-        <v-container class = "col" max-width = "50em">
-            <v-btn-group v-if = "cursor.data">
+            <v-container class = "col" max-width = "50em">
+                <v-btn-group v-if = "cursor.data">
 
-                <!-- Previous Page Button -->
-                <v-btn
-                    v-if = "cursor.prev_cursor"
-                    class = "mr-5"
-                    color = "secondary"
-                    @click = "prevPage"
-                >
-                    {{ $t( "previous" ) }}
-                </v-btn>
-                <!-- Next Page Button -->
-                <v-btn
-                    v-if = "cursor.next_cursor"
-                    color = "primary"
-                    @click = "nextPage"
-                >
-                    {{ $t( "next" ) }}
-                </v-btn>
-            </v-btn-group>
-            <CardApplicationShowData :application = "selectedItem" />
+                    <!-- Previous Page Button -->
+                    <v-btn
+                        v-if = "cursor.prev_cursor"
+                        class = "mr-5"
+                        color = "secondary"
+                        @click = "prevPage"
+                    >
+                        {{ $t( "previous" ) }}
+                    </v-btn>
+                    <!-- Next Page Button -->
+                    <v-btn
+                        v-if = "cursor.next_cursor"
+                        color = "primary"
+                        @click = "nextPage"
+                    >
+                        {{ $t( "next" ) }}
+                    </v-btn>
+                </v-btn-group>
+                <CardApplicationShowData :application = "selectedItem" />
+            </v-container>
         </v-container>
-    </v-container>
+    </card-application-abstract>
 </template>
 
 <script>
 import CardApplicationShowData from "@pages/NeedUpdate/CardApplicationChecking/CardApplicationShowData.vue";
 import Message from "@pages/NeedUpdate/CardApplicationChecking/Message.vue";
+import CardApplicationAbstract from "@components/CardApplicationAbstract.vue";
 
 export default {
 	components : {
 		Message,
 		CardApplicationShowData,
+		CardApplicationAbstract,
 	},
 	data() {
 		return {

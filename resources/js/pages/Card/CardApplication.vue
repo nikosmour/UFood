@@ -1,6 +1,5 @@
 <template>
-    <v-row>
-        <v-col :lg = "docUrl ? 6 : 12" cols = "12">
+    <card-application-abstract>
             <v-container max-width = "50rem">
         <MyFreeFoodStatus />
                 <v-alert
@@ -44,12 +43,7 @@
             </v-col>
         </v-row>
     </v-container>
-        </v-col>
-        <!--        <VuetifyPdf v-if="docUrl" :url="docUrl"/>-->
-        <v-col v-if = "docUrl" lg = "6">
-            <ShowPdf />
-        </v-col>
-    </v-row>
+    </card-application-abstract>
 </template>
 
 <script lang = "ts">
@@ -60,12 +54,12 @@ import ApplicationPreview from "@pages/Card/ApplicationPreview.vue";
 import DocumentEdit from "@pages/Card/DocumentEdit.vue";
 import CardApplicationCreateForm from "@pages/Card/CardApplicationCreateForm.vue";
 import MyFreeFoodStatus from "@components/MyFreeFoodStatus.vue";
-import ShowPdf from "@pages/Card/ShowPdf.vue";
+import CardApplicationAbstract from "@components/CardApplicationAbstract.vue";
 // import VuetifyPdf from "vuetify-pdf-viewer/src/App.vue"
 export default {
 	name :       "CardApplication",
 	components : {
-		ShowPdf,
+		CardApplicationAbstract,
 		MyFreeFoodStatus,
 		CardApplicationCreateForm,
 		DocumentEdit,
@@ -91,9 +85,6 @@ export default {
 		...mapGetters( "auth", {
 			application1 : "cardApplication",
 			config : "config",
-		} ),
-		...mapGetters( "files", {
-			docUrl : "getPreviewUrl",
 		} ),
 		application() : CardApplication {
 			return this.application1;
