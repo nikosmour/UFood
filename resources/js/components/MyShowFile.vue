@@ -224,7 +224,9 @@ export default {
 					icon :      !this.isPreviewing
 					            ? "mdi-eye"
 					            : "mdi-eye-off",
-					actionOrStatus : "preview",
+					actionOrStatus : !this.isPreviewing
+					                 ? "preview"
+					                 : "hide",
 					ariaLabel : !this.isPreviewing
 					            ? "file.preview"
 					            : "file.hide",

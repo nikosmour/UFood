@@ -4,17 +4,18 @@
  */
 export const state = {
 	url : null,
+	file : null,
 };
 
 export const mutations = {
 	/**
 	 * Sets the url that you need to show
 	 * @param state
-	 * @param {string} url - The url for the file to show.
+	 // * @param {string} url - The url for the file to show.
 	 */
-	setPreviewUrl( state, url ) {
-		
-		state.url = url;
+	setPreviewUrl( state, target ) {
+		state.url = target?.url || null;
+		state.file = target?.file;
 		
 	},
 	
@@ -29,8 +30,12 @@ export const getters = {
 	 * @returns {boolean}
 	 */
 	getPreviewUrl( state ) {
-		console.log( "files/getPreviewUrl", state );
+		console.info( "files/getPreviewUrl" );
 		return state.url;
+	},
+	getPreviewFile( state ) {
+		console.info( state.file );
+		return state.file;
 	},
 };
 

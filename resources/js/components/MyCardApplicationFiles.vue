@@ -23,13 +23,13 @@
                 :key = "'files-' + index"
                 :file = "file"
                 :is-academic = "isAcademic"
-                :is-previewing = "showFileIndex === index"
+                :is-previewing = "showFile === file"
                 :is-temporary-saved-application = "isEditing"
                 @delete = "fileDelete(file, index)"
                 @edit = "fileEdit(file)"
                 @hide = "fileHide()"
                 @newStatus = "fileChangeStatus(file, $event)"
-                @preview = "filePreview(file, index)"
+                @preview = "filePreview(file)"
             />
         </v-container>
     </div>
@@ -41,7 +41,7 @@ import MyNewOrEditFile from "./MyNewOrEditFile.vue";
 import type CardApplication from "@models/CardApplication";
 import type CardApplicationDocument from "@models/CardApplicationDocument";
 import type { CardDocumentStatusEnum } from "@enums/CardDocumentStatusEnum";
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
 	name :       "MyCardApplicationFiles",
@@ -88,7 +88,7 @@ export default {
 			/**
 			 * Index of the file currently being previewed
 			 */
-			showFileIndex : null as number | null,
+			// showFile : null as CardApplicationDocument | null,
 
 			filesCanAdd : [],
 		};
@@ -107,6 +107,9 @@ export default {
 				title : this.$t( "backend.files." + key + ".short" ),
 			} ) );
 		},
+		...mapGetters( "files", {
+			showFile : "getPreviewFile",
+		} ),
 	},
 	methods : {
 		/**
@@ -227,35 +230,39 @@ export default {
 		 */
 		fileHide() {
 			this.$emit( "preview", null );
-			this.showFileIndex = null;
-			this.setPreviewUrl( null );
+			this.setPreviewUrl( {
+				                    url :  null,
+				                    file : null,
+			                    } );
 
 		},
 
 		/**
 		 * Previews the selected file.
 		 * @param {CardApplicationDocument} file - The file to preview.
-		 * @param {number} index - The index of the file.
 		 */
-		filePreview( file : CardApplicationDocument, index : number ) {
+		filePreview( file : CardApplicationDocument ) {
 			console.log( "filePreview", file );
 			if ( file.file ) {
 				const reader = new FileReader();
 				reader.onload = ( e ) => {
-					const docLink = e.target?.result;
-					this.$emit( "preview", docLink );
-					this.setPreviewUrl( docLink );
-					this.showFileIndex = index;
-					console.log( index );
+					const url = e.target?.result;
+					this.$emit( "preview", url );
+					this.setPreviewUrl( {
+						                    file,
+						                    url,
+					                    } );
 				};
 				reader.readAsDataURL( file.file );
 				return;
 			}
 			if ( file.id > 0 ) {
-				const docLink = this.route( "document.show", { document : file.id } );
-				this.$emit( "preview", docLink );
-				this.setPreviewUrl( docLink );
-				this.showFileIndex = index;
+				const url = this.route( "document.show", { document : file.id } );
+				this.$emit( "preview", url );
+				this.setPreviewUrl( {
+					                    file,
+					                    url,
+				                    } );
 			}
 		},
 
