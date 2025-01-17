@@ -1,30 +1,27 @@
 <template>
-    <v-sheet
-        v-if = "docUrl"
-        class = "pa-4 fill-height" elevation = "1"
+    <v-card
+        v-if = "docUrl" :loading = "loading"
+        class = "pa-4 position-sticky h-screen" elevation = "1" style = "top:5em"
     >
-        <v-progress-circular
-            v-if = "loading"
-            color = "primary"
-            indeterminate
-            size = "50"
-            style = "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"
-        />
         <object
             :data = "docUrl"
-            class = "fill-height w-100"
-            style = "min-height: 500px"
+            class = "w-100 h-100"
             type = "application/pdf"
             @error = "onPdfError"
             @load = "onPdfLoad"
         />
-    </v-sheet>
+    </v-card>
 </template>
 <script lang = "ts">
 import { mapGetters } from "vuex";
+import { defineComponent } from "vue";
+// import VuetifyPdf from "vuetify-pdfjs/src/App.vue"
 
-export default {
+export default defineComponent( {
 	name : "ShowPdf",
+	                                components : [
+		                                // VuetifyPdf
+	                                ],
 	data() {
 		return {
 			loading : false, // Initial loading state
@@ -53,5 +50,5 @@ export default {
 			console.error( "Failed to load PDF" );
 		},
 	},
-};
+                                } );
 </script>
