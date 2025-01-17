@@ -79,7 +79,7 @@ class CardApplicationDocumentController extends Controller
                 return $pdf->stream('_fake_otherInformation');
             }
             $disk = 'fake_doc';
-            $filePath = ($document->file_name === 'academic') ? $filePath . '_' . $document->cardApplication->Academic->status->name : $filePath;
+            $filePath = ($document->file_name === 'AcademicId') ? $filePath . '_' . $document->cardApplication->Academic->status->name : $filePath;
             $filePath = $filePath . '.pdf';
         }
         // Check if the file exists
