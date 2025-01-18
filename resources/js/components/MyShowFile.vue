@@ -1,11 +1,14 @@
 <template>
     <v-list-item
+        :aria-description = "$t('status.'+file.status.key.toLowerCase(),2)+' '+ $t('document')"
         :border = "'b-xl s-xl '+ styleColor"
         :subtitle = "name"
         :title = "description"
         class = "mt-2"
-        prepend-icon = "mdi-paperclip"
     >
+        <template #prepend>
+            <v-icon icon = "mdi-paperclip" :color = "styleColor" />
+        </template>
         <template #append>
             <v-btn-group>
                 <template v-for = "(icon, index) in icons" :key = "'icons-'+index">
