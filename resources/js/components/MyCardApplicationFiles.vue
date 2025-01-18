@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-fab
-            v-if = "isEditing"
+            v-if = "isEditing && isAcademic"
             v-tooltip:top-end = "$t('file.add')"
             :aria-label = "$t('file.add')"
             absolute
@@ -24,7 +24,7 @@
                 :file = "file"
                 :is-academic = "isAcademic"
                 :is-previewing = "showFile === file"
-                :is-temporary-saved-application = "isEditing"
+                :is-editing = "isEditing"
                 @delete = "fileDelete(file, index)"
                 @edit = "fileEdit(file)"
                 @hide = "fileHide()"
@@ -74,9 +74,12 @@ export default {
 			type :    Boolean,
 			default : () => true,
 		},
-		isApplicationPeriodOpen : {
+		/**
+		 * Is The application currently Editting
+		 */
+		isEditing : {
 			type :    Boolean,
-			default : true,
+			required : true,
 		},
 	},
 	data() {
@@ -94,12 +97,6 @@ export default {
 		};
 	},
 	computed : {
-		/**
-		 * Is The application currently Editting
-		 */
-		isEditing() {
-			return this.application.isEditing && this.isApplicationPeriodOpen;
-		},
 
 		fileOptions() {
 			return this.filesCanAdd.map( key => ( {

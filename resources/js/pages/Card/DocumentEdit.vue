@@ -6,6 +6,7 @@
         <MyCardApplicationFiles
             :application = "application"
             :loadings = "loadings"
+            :isEditing = "true"
         />
         
         <v-textarea

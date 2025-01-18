@@ -112,14 +112,14 @@
 
                 <!-- Save Button (Icon) -->
                 <v-btn
-                    :aria-label = "$t('save')" icon
+                    :aria-label = "$t('save')" icon v-if = "isCheckingByUser"
                     @click = "changeStatus($enums.CardStatusEnum.TEMPORARY_CHECKED)"
                 >
                     <v-icon>mdi-content-save-all</v-icon>
                 </v-btn>
 
                 <!-- Edit Button (Icon) -->
-                <v-btn :aria-label = "$t('edit')" icon @click = "requestEdit">
+                <v-btn :aria-label = "$t('edit')" icon @click = "requestEdit" v-if = "!cantCheckingByUser ">
                     <v-icon :icon = "'mdi-pencil'"></v-icon>
                 </v-btn>
             </v-btn-group>
@@ -137,7 +137,7 @@
                         <MyCardApplicationFiles
                             :application = "newApplication"
                             :isAcademic = "false"
-                            :is-application-period-open = "currentStatus===$enums.CardStatusEnum.CHECKING"
+                            :is-editing = "isCheckingByUser"
                             :loadings = "loading"
                             @updateStatus = "updateDocumentStatus"
                         />
@@ -364,6 +364,12 @@ export default {
 			return this.newApplication?.card_last_update.status === this.$enums.CardStatusEnum.CHECKING
 			       && this.newApplication?.card_last_update.card_application_staff_id === this.currentUser.id;
 		},
+		cantCheckingByUser() {
+			return [
+				this.$enums.CardStatusEnum.CHECKING,
+				this.$enums.CardStatusEnum.TEMPORARY_SAVED,
+			].includes( this.newApplication?.card_last_update.status );
+		},
 	},
 	watch :    {
 		application( newValue ) {
@@ -400,11 +406,3 @@ export default {
 	},
 };
 </script>
-
-<style scoped>
-.pdf-object {
-    height: 500px;
-    width: 100%;
-    border: 1px solid #ccc;
-}
-</style>

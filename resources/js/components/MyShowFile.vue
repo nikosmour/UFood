@@ -105,10 +105,11 @@ export default {
 		 * Indicates if the application is temporarily saved and not yet submitted.
 		 * When true, academic users must press "edit" before accessing file editing options,
 		 * and the application status will transition to "TemporarySave."
+		 * similar the  staff  need to have the application to checking by them.
 		 * @type {boolean}
 		 * @default true
 		 */
-		isTemporarySavedApplication : {
+		isEditing : {
 			type :    Boolean,
 			default : () => true,
 		},
@@ -176,6 +177,7 @@ export default {
 		 * @returns {Array<iconType>} An array of icon configurations relevant to the user type and status.
 		 */
 		icons() {
+			const isNotEditing = !this.isEditing;
 			const status = this.status;
 			const statusEnum = this.$enums.CardDocumentStatusEnum;
 			const academicIcons = [
@@ -193,7 +195,7 @@ export default {
 					                 : "file.hide", // Accessibility label
 				},
 				{
-					isHidden :       !this.isTemporarySavedApplication ||
+					isHidden : isNotEditing ||
 					                 ![
 						                 statusEnum.SUBMITTED,
 						                 statusEnum.INCOMPLETE,
@@ -205,7 +207,7 @@ export default {
 					ariaLabel : "file.edit",
 				},
 				{
-					isHidden :       !this.isTemporarySavedApplication ||
+					isHidden : isNotEditing ||
 					                 ![
 						                 statusEnum.SUBMITTED,
 						                 statusEnum.INCOMPLETE,
@@ -232,24 +234,24 @@ export default {
 					            : "file.hide",
 				},
 				{
-					isHidden :       status === statusEnum.ACCEPTED,
+					isHidden : status === statusEnum.ACCEPTED || isNotEditing,
 					color :          "success",
 					icon :           "mdi-check",
 					actionOrStatus : statusEnum.ACCEPTED,
 					ariaLabel :      "file.markAccepted",
 				},
 				{
-					isHidden :       status === statusEnum.INCOMPLETE,
+					isHidden : status === statusEnum.INCOMPLETE || isNotEditing,
 					color :          "warning",
 					icon :           "mdi-alert-octagon-outline",
 					actionOrStatus : statusEnum.INCOMPLETE,
 					ariaLabel :      "file.markIncomplete",
 				},
 				{
-					isHidden :       status === statusEnum.REJECTED,
+					isHidden :       status === statusEnum.REJECTED || isNotEditing,
 					color :          "error",
 					icon :           "mdi-close-circle",
-					actionOrStatus : statusEnum.REJECTED,
+					actionOrStatus : statusEnum.REJECTED || isNotEditing,
 					ariaLabel :      "file.markRejected",
 				},
 			];

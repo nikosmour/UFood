@@ -16,7 +16,7 @@
         <MyCardApplicationFiles
             :application = "application"
             :loadings = "loadings"
-            :isApplicationPeriodOpen = "canBeEditing"
+            :isEditing = "false"
         />
                     </v-expansion-panel-text>
                 </v-expansion-panel>
@@ -85,10 +85,6 @@ export default {
 		isLoading() : Boolean {
 			return this.loadings.length !== 0;
 		},
-		// canBeEditing() : Boolean {
-		// 	const t = this.application?.card_last_update;
-		// 	return this.application?.canBeEdited ?? false;
-		// },
 		...mapGetters( "auth", [ "currentUser" ] ),
 	},
 	methods :  {
