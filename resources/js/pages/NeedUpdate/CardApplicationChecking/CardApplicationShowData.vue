@@ -221,7 +221,7 @@
 
 <script>
 import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import Message from "@pages/NeedUpdate/CardApplicationChecking/Message.vue";
 import ApplicationPreview from "@pages/Card/ApplicationPreview.vue";
 import CardApplication from "@models/CardApplication.js";
@@ -348,6 +348,7 @@ export default {
 				this.loading.pop();
 			}
 		},
+		...mapMutations( "files", [ "setPreviewUrl" ] ),
 	},
 	computed : {
 		isLoading() {
@@ -373,6 +374,7 @@ export default {
 			                      : null;
 			if ( newValue ) this.startingData();
 			this.selectFile = null;
+			this.setPreviewUrl( null );
 			this.panel = [ 0 ];
 		},
 		async selectFile( newValue, oldValue ) {
@@ -393,6 +395,9 @@ export default {
 		                      : null;
 
 		if ( this.application ) this.startingData();
+	},
+	unmounted() {
+		this.setPreviewUrl( null );
 	},
 };
 </script>

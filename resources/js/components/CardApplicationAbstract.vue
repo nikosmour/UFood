@@ -5,9 +5,12 @@
         </v-col>
         <!--        <VuetifyPdf v-if="docUrl" :url="docUrl"/>-->
         <v-col v-if = "docUrl" lg = "6">
-            <ShowPdf />
+            <ShowPdf ref = "ethue" v-model:overlay = "overlay" v-show = "!overlay" />
         </v-col>
     </v-row>
+    <v-dialog v-if = "docUrl" v-model = "overlay">
+        <ShowPdf ref = "ethue" v-model:overlay = "overlay" />
+    </v-dialog>
 </template>
 
 <script lang = "ts">
@@ -21,7 +24,9 @@ export default {
 		ShowPdf,
 	},
 	data() {
-		return {};
+		return {
+			overlay : false,
+		};
 	},
 	methods :  {},
 	computed : {
@@ -30,7 +35,14 @@ export default {
 		} ),
 	},
 	created() {
+		this.overlay = this.$vuetify.display.mdAndDown;
 	},
+	watch : {
+		"$vuetify.display.mdAndDown"( newValue ) {
+			this.overlay = newValue;
+		},
+	},
+
 
 };
 </script>

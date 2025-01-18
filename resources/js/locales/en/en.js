@@ -74,7 +74,11 @@ export const en = {
 	"description" :      "Description",
 	"developedBy" : "Developed by Nikolaos Mouratidis",
 	"document" : "Document|Documents",
-	"documents.upload" : "Upload Documents",
+	"documents" : {
+		"upload" :  "Upload documents",
+		"close" :   "Close document",
+		"magnify" : "Magnify document",
+	},
 	"edit" :    "Edit",
 	"email" :       "Email",
 	"entry" : {
