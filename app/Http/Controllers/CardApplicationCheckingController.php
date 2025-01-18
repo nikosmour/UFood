@@ -80,6 +80,7 @@ class CardApplicationCheckingController extends Controller
             else
                 $application->touch();
             $cardUpdate = $application->cardLastUpdate;
+            $cardUpdate->comment = $vData['card_application_staff_comment'];
             $cardUpdate->update($vData);
 //            $data = isset($vData['card_application_staff_comment']) ? [
 //                'comment' => $vData['card_application_staff_comment'],
