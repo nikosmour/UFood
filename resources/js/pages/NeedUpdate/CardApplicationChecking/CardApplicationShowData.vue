@@ -221,7 +221,6 @@
 <script>
 import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
 import { mapGetters, mapMutations } from "vuex";
-import Message from "@pages/NeedUpdate/CardApplicationChecking/Message.vue";
 import ApplicationPreview from "@pages/Card/ApplicationPreview.vue";
 import CardApplication from "@models/CardApplication.js";
 import MyCardApplicationFiles from "@components/MyCardApplicationFiles.vue";
@@ -230,7 +229,6 @@ export default {
 	components : {
 		MyCardApplicationFiles,
 		ApplicationPreview,
-		Message,
 		CardApplicantInfo,
 	},
 	props :      {
@@ -242,24 +240,24 @@ export default {
 			showDecisionDialog : false,
 			newApplication : null,
 			loading :        [],
-			resultFile :        {
-				message : "",
-				success : null,
-				hide :    true,
-				errors :  [],
-			},
+			// resultFile :        {
+			// 	message : "",
+			// 	success : null,
+			// 	hide :    true,
+			// 	errors :  [],
+			// },
 			currentStatus :     null,
 			currentFileStatus : null,
 			selectFile :        null,
 			files :             [],
 			commentChecking :   null,
 			expirationDate :    null,
-			result :            {
-				message : "",
-				success : true,
-				hide :    false,
-				errors :  [],
-			},
+			// result :            {
+			// 	message : "",
+			// 	success : true,
+			// 	hide :    false,
+			// 	errors :  [],
+			// },
 		};
 	},
 	methods :  {
@@ -271,7 +269,7 @@ export default {
 		async updateDocumentStatus( file ) {
 			let params = new FormData();
 			let url = this.route( "document.update", { "document" : file.id } );
-			this.resultFile.message = "";
+			// this.resultFile.message = "";
 			params.append( "_method", "PUT" );
 			params.append( "status", file.status.value );
 			this.loading.push( true );
@@ -283,9 +281,9 @@ export default {
 					              color : "success",
 				              } );
 			} catch ( errors ) {
-				this.resultFile.success = false;
-				this.resultFile.errors = errors.response.data.errors;
-				this.resultFile.message = this.$t( "request_failed" );
+				// this.resultFile.success = false;
+				// this.resultFile.errors = errors.response.data.errors;
+				// this.resultFile.message = this.$t( "request_failed" );
 				return false;
 			} finally {
 				this.loading.pop();

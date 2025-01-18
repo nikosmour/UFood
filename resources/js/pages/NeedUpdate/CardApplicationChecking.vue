@@ -32,12 +32,10 @@
 
 <script>
 import CardApplicationShowData from "@pages/NeedUpdate/CardApplicationChecking/CardApplicationShowData.vue";
-import Message from "@pages/NeedUpdate/CardApplicationChecking/Message.vue";
 import CardApplicationAbstract from "@components/CardApplicationAbstract.vue";
 
 export default {
 	components : {
-		Message,
 		CardApplicationShowData,
 		CardApplicationAbstract,
 	},
@@ -45,12 +43,6 @@ export default {
 		return {
 			cursor :       { data : [] },
 			selectedItem : null,
-			result :       {
-				message : "",
-				success : true,
-				hide :    false,
-				errors :  [],
-			},
 		};
 	},
 	computed : {
@@ -97,31 +89,19 @@ export default {
 				const response = await this.$axios.get( url, { params : { [ name ] : value } } );
 				console.log( "get Applications", response.data );
 				const applications = response.data.data;
-				const success = this.result.success = applications.length > 0;
+				// const success = applications.length > 0;
 				if ( name !== "application_id" ) {
 					let cursor = this.cursor = response.data;
-					let applicationsLength = ( cursor.next_page_url || cursor.prev_page_url )
-					                         ? 2
-					                         : applications.length;
-					this.result.message = ( success
-					                        ? ""
-					                        : this.$t( "request_failed" ) + ": " ) +
-					                      this.$t( "application", applicationsLength ) + " " +
-					                      this.$t( "found", applicationsLength )
-					                          .toLowerCase();
+					// let applicationsLength = ( cursor.next_page_url || cursor.prev_page_url )
+					//                          ? 2
+					//                          : applications.length;
 				}
-				this.result.errors = [];
 
 				return applications.length > 0
 				       ? applications
 				       : [ null ];
 			} catch ( errors ) {
 				console.log( errors );
-				this.result.message = this.$t( "request_failed" ) + ": " + this.$t( "application", 0 ) + " " +
-				                      this.$t( "found", 0 )
-				                          .toLowerCase();
-
-				this.result.success = false;
 				return [ null ];
 			}
 		},
@@ -187,7 +167,7 @@ export default {
 		},
 		async applicationId( newValue ) {
 			if ( newValue ) {
-				const position = this.applications.findIndex( obj => obj.id == newValue );
+				const position = this.applications.findIndex( obj => obj.id === newValue );
 				this.selectedItem = position === -1
 				                    ? ( await this.getApplications( "application_id", newValue ) )[ 0 ]
 				                    : this.applications[ position ];
