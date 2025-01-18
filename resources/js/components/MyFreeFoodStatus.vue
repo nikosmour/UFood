@@ -110,7 +110,9 @@ export default {
     >
         <span v-if = "card_info_current">{{ card_info_current }}<br /></span>
         <span v-if = "card_info_expiration">{{ card_info_expiration }}<br /></span>
-        <span v-if = "application?.card_staff_update_latest?.comment">
+        <span
+            v-if = "application?.card_staff_update_latest?.comment && application?.card_staff_update_latest?.status!==$enums.CardStatusEnum.ACCEPTED"
+        >
     {{ application?.card_staff_update_latest?.comment }}
   </span>
     </v-alert>
