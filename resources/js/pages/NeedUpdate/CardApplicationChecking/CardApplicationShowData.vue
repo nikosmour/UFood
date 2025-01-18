@@ -193,13 +193,12 @@
                         </v-textarea>
                         <v-text-field v-model = "expirationDate" type = "date" />
 
-                        <!-- File Upload (only for new files) -->
-                        <v-date-input
-                            v-model = "expirationDate"
-                            :label = "$t('expire_date')"
-                            outlined
-                            required
-                        />
+                        <!--                        <v-date-input-->
+                        <!--                            v-model = "expirationDate"-->
+                        <!--                            :label = "$t('expire_date')"-->
+                        <!--                            outlined-->
+                        <!--                            required-->
+                        <!--                        />-->
                     </v-form>
                 </v-card-text>
 
