@@ -197,6 +197,7 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	 * @returns The processed input data, potentially modified.
 	 */
 	protected adjustInitializationData( data : T ) : T {
+		if ( data instanceof BaseModel ) return data.toObject();
 		return data;
 	}
 	

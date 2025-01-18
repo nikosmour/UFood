@@ -84,6 +84,7 @@ export class CardApplicant extends CardApplicantBase {
 	}
 	
 	protected adjustInitializationData( data : T ) : T {
+		data = super.adjustInitializationData( data );
 		if ( !data.hasOwnProperty( "addresses" ) || data[ "addresses" ] === undefined ) return data;
 		let addresses = ( data[ "addresses" ] ?? [] ) as { is_permanent : boolean }[];
 		if ( addresses.filter( ( address ) => address[ "is_permanent" ] ).length === 0 ) addresses.push(
