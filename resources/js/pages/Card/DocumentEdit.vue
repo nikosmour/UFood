@@ -88,7 +88,8 @@ export default {
 			     this.application.card_application_document.length === 0 )
 				throw new InformTheUserError( { message : "errors.files.absence" } );
 			if ( -1 !== ( this.application.card_application_document as CardApplicationDocument[] )
-				.findIndex( ( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE && obj.isClean(), //to be incomplete and   not change
+				.findIndex(
+					( obj ) => obj.status === CardDocumentStatusEnum.INCOMPLETE && obj.isClean() && !obj.isDeleted, //to be incomplete and   not change
 				) )
 				throw new InformTheUserError( { message : "errors.files.incomplete" } );
 			const documents = this.getDocumentsForUpdate(); // Renamed for clarity
