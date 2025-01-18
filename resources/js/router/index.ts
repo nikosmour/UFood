@@ -18,7 +18,7 @@ const CardTransactions = () => import("@pages/Card/CardTransactions.vue");
 const TransferCoupons = () => import("@pages/Coupons/TransferCoupon.vue");
 const CouponOwner = () => import("@pages/Coupons.vue");
 const CouponTransactions = () => import("@pages/Coupons/CouponsTransactions.vue");
-const CardApplicationCheckingSearch = () => import("@pages/NeedUpdate/CardApplicationChecking/CardApplicationCheckingSearch.vue");
+// const CardApplicationCheckingSearch = () => import("@pages/NeedUpdate/CardApplicationChecking/CardApplicationCheckingSearch.vue");
 const AcademicStartPage = () => import("@pages/AcademicStartPage.vue");
 
 const routes : ReadonlyArray<RouteRecordRaw> = [
@@ -58,7 +58,7 @@ const routes : ReadonlyArray<RouteRecordRaw> = [
 			{
 				path :      "search",
 				name :      "cardApplication.checking.search",
-				component : CardApplicationCheckingSearch,
+				// component : CardApplicationCheckingSearch,
 			},
 			{
 				path :        ":category([A-z]+)",

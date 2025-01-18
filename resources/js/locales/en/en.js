@@ -41,6 +41,9 @@ export const en = {
 	"cancel" :           "Cancel",
 	"card" : {
 		"application" : {
+			"found" :        "Application not found |Application Found | Applications Found ",
+			"search" :       "Search",
+			"selectSearch" : "You need to define something to Search",
 			"submitted" : " Submitted Applications",
 		},
 		//     "edit": "Edit Card",

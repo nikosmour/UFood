@@ -226,6 +226,14 @@ export default {
 					},
 					ability : this.$enums.UserAbilityEnum.CARD_APPLICATION_CHECK,
 				},
+				{
+					label :   "card.application.search",
+					to :      {
+						name : "cardApplication.checking.search",
+						// params : { category : "submitted" },
+					},
+					ability : this.$enums.UserAbilityEnum.CARD_APPLICATION_CHECK,
+				},
 			];
 		},
 	},

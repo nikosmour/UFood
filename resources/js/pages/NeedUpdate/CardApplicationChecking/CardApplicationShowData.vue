@@ -102,12 +102,12 @@
     <!--            ></object>-->
     <!--        </div>-->
     <!--    </div>-->
-    <!--    <ApplicationPreview :application="newApplication" v-if="newApplication" :applicant="newApplication.academic"/>-->
+    <!--    <ApplicationPreview :application="application" v-if="application" :applicant="application.academic"/>-->
 
-    <v-card v-if = "newApplication" :loading = "isLoading">
+    <v-card v-if = "application" :loading = "isLoading">
         <v-card-title class = "d-flex justify-space-between align-center">
-            <span>{{ $t( "application" ) + ": " + newApplication.id }} {{
-                    $t( "status." + newApplication.card_last_update.status.key.toLowerCase() ) }}</span>
+            <span>{{ $t( "application" ) + ": " + application.id }} {{
+                    $t( "status." + application.card_last_update.status.key.toLowerCase() ) }}</span>
             <v-btn-group>
 
                 <!-- Save Button (Icon) -->
@@ -125,17 +125,17 @@
             </v-btn-group>
         </v-card-title>
         <v-card-text>
-            <v-expansion-panels v-if = "newApplication" v-model = "panel" class = "mb-5" multiple>
+            <v-expansion-panels v-if = "application" v-model = "panel" class = "mb-5" multiple>
                 <v-expansion-panel :title = "$t('model_data.applicant_info')">
                     <v-expansion-panel-text>
-                        <CardApplicantInfo :user = "newApplication.academic" />
+                        <CardApplicantInfo :user = "application.academic" />
                     </v-expansion-panel-text>
                 </v-expansion-panel>
 
                 <v-expansion-panel :title = "$t('document',2)">
                     <v-expansion-panel-text>
                         <MyCardApplicationFiles
-                            :application = "newApplication"
+                            :application = "application"
                             :isAcademic = "false"
                             :is-editing = "isCheckingByUser"
                             :loadings = "loading"
@@ -145,7 +145,7 @@
                 </v-expansion-panel>
             </v-expansion-panels>
             <v-textarea
-                :label = "$t('comment.value')" :model-value = "newApplication.card_applicant_update_latest?.comment"
+                :label = "$t('comment.value')" :model-value = "application.card_applicant_update_latest?.comment"
                 auto-grow readonly rows = "2"
             >
             </v-textarea>
@@ -180,7 +180,7 @@
             <v-card :loading = "isLoading">
                 <v-card-title>
                     {{ $t( "status.update", {
-                               newStatus : $t( "status." + newApplication.card_last_update.status.key.toLowerCase() ),
+                    newStatus : $t( "status." + application.card_last_update.status.key.toLowerCase() ),
                                oldStatus : $t( "status." + currentStatus.key.toLowerCase() ),
                            },
                 ) }}
@@ -222,7 +222,6 @@
 import CardApplicantInfo from "@components/needUpdate/cardApplicantInfo.vue";
 import { mapGetters, mapMutations } from "vuex";
 import ApplicationPreview from "@pages/Card/ApplicationPreview.vue";
-import CardApplication from "@models/CardApplication.js";
 import MyCardApplicationFiles from "@components/MyCardApplicationFiles.vue";
 
 export default {
@@ -238,7 +237,6 @@ export default {
 		return {
 			panel :              [ 0 ],
 			showDecisionDialog : false,
-			newApplication : null,
 			loading :        [],
 			// resultFile :        {
 			// 	message : "",
@@ -262,9 +260,9 @@ export default {
 	},
 	methods :  {
 		startingData() {
-			this.currentStatus = this.newApplication.card_last_update.status;
-			this.files = this.newApplication.card_application_document;
-			this.expirationDate = this.newApplication.expiration_date;
+			this.currentStatus = this.application.card_last_update.status;
+			this.files = this.application.card_application_document;
+			this.expirationDate = this.application.expiration_date;
 		},
 		async updateDocumentStatus( file ) {
 			let params = new FormData();
@@ -290,16 +288,16 @@ export default {
 			}
 		},
 		changeStatus( status ) {
-			console.info( "changeStatus", this.newApplication );
-			this.newApplication.card_last_update.status = status;
+			console.info( "changeStatus", this.application );
+			this.application.card_last_update.status = status;
 			this.showDecisionDialog = true;
 		},
 		async requestEdit() {
 			try {
 				this.loading.push( true );
-				this.newApplication.card_last_update = await this.newApplication.requestToEdit( false );
-				console.info( "response", this.newApplication.card_last_update );
-				this.currentStatus = this.newApplication.card_last_update.status;
+				this.application.card_last_update = await this.application.requestToEdit( false );
+				console.info( "response", this.application.card_last_update );
+				this.currentStatus = this.application.card_last_update.status;
 			} catch ( error ) {
 				// application.card_last_update.status = this.currentStatus;
 				if ( error.response?.status === 422 )
@@ -312,11 +310,11 @@ export default {
 			}
 		},
 		restoreStatus() {
-			this.newApplication.card_last_update.status = this.currentStatus;
+			this.application.card_last_update.status = this.currentStatus;
 			this.showDecisionDialog = false;
 		},
 		async updateApplicationStatus() {
-			const application = this.newApplication;
+			const application = this.application;
 			let params = new FormData();
 			params.append( "status", application.card_last_update.status.value );
 			params.append( "card_application_id", application.id );
@@ -337,7 +335,7 @@ export default {
 					              error : "success update",
 					              color : "success",
 				              } );
-				this.currentStatus = this.newApplication.card_last_update.status;
+				this.currentStatus = application.card_last_update.status;
 			} catch ( errors ) {
 				    console.info( "updateApplicationStatus catch", errors );
 				    this.$displayError( { error : errors } );
@@ -351,30 +349,22 @@ export default {
 		isLoading() {
 			return !!this.loading.length;
 		},
-
-		selectedFileUrl() {
-			return this.route( "document.show", { "document" : this.selectFile?.id } );
-		},
 		...mapGetters( "auth", [
 			"currentUser",
 		] ),
 		isCheckingByUser() {
-			return this.newApplication?.card_last_update.status === this.$enums.CardStatusEnum.CHECKING
-			       && this.newApplication?.card_last_update.card_application_staff_id === this.currentUser.id;
+			return this.application?.card_last_update.status === this.$enums.CardStatusEnum.CHECKING
+			       && this.application?.card_last_update.card_application_staff_id === this.currentUser.id;
 		},
 		cantCheckingByUser() {
 			return [
 				this.$enums.CardStatusEnum.CHECKING,
 				this.$enums.CardStatusEnum.TEMPORARY_SAVED,
-			].includes( this.newApplication?.card_last_update.status );
+			].includes( this.application?.card_last_update.status );
 		},
 	},
 	watch :    {
 		application( newValue ) {
-			console.info( "application", newValue );
-			this.newApplication = ( newValue )
-			                      ? new CardApplication( newValue )
-			                      : null;
 			if ( newValue ) this.startingData();
 			this.selectFile = null;
 			this.setPreviewUrl( null );
@@ -392,11 +382,6 @@ export default {
 		},
 	},
 	created() {
-		console.info( "created", this.application );
-		this.newApplication = ( this.application )
-		                      ? new CardApplication( this.application )
-		                      : null;
-
 		if ( this.application ) this.startingData();
 	},
 	unmounted() {

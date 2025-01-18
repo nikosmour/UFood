@@ -1,51 +1,63 @@
 <template>
-    <div class = "container">
-        <form aria-label = "Search Form" class = "row g-3" @submit.prevent = "getId">
-            <div class = "col-md-6">
-                <label class = "form-label" for = "applicationId">{{ $t( "application_id" ) }}</label>
-                <input
-                    id = "applicationId" v-model = "search.application_id" class = "form-control" min = "1"
+    <v-navigation-drawer :model-value = "true" absolute permanent>
+        <v-container max-width = "15rem">
+            <v-card-title>{{ $t( "card.application.search" ) }}</v-card-title>
+            <v-form @submit.prevent = "getId">
+                <v-text-field
+                    v-model = "search.application_id"
+                    :label = "$t('id')"
+                    clearable
+                    min = "1"
+                    outlined
                     type = "number"
                 />
-            </div>
-            <div class = "col-md-6">
-                <label class = "form-label" for = "academicId">{{ $t( "academic_id" ) }}</label>
-                <input
-                    id = "academicId" v-model = "search.academic_id" class = "form-control" min = "1" type = "number"
+                <v-text-field
+                    v-model = "search.academic_id"
+                    :label = "$t('academic_id')"
+                    clearable
+                    min = "1"
+                    outlined
+                    type = "number"
                 />
-            </div>
-            <div class = "col-md-6">
-                <label class = "form-label" for = "aM">{{ $t( "a_m" ) }}</label>
-                <input id = "aM" v-model = "search.a_m" class = "form-control" min = "1" type = "number" />
-            </div>
-            <div class = "col-md-6">
-                <label class = "form-label" for = "email">{{ $t( "email" ) }}</label>
-                <input id = "email" v-model = "search.email" class = "form-control" type = "email" />
-            </div>
-            <div class = "col-12">
-                <button aria-label = "Submit" class = "btn btn-primary" type = "submit">{{ $t( "submit" ) }}</button>
-            </div>
-        </form>
-        <div v-if = "applications.length" class = "mt-4 table-responsive">
-            <table class = "table table-striped table-bordered caption-top">
-                <caption>{{ $t( "application", 2 ) }}</caption>
-                <thead class = "table-dark">
-                <tr>
-                    <th>{{ $t( "id" ) }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for = "item in applications" :key = "item.id">
-                    <td>
-                        <router-link :to = "{ name: $route.name, query: { application: item.id } }" class = "nav-link">
-                            {{ item.id }}
-                        </router-link>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                <v-text-field
+                    v-model = "search.a_m"
+                    :label = "$t('a_m')"
+                    clearable
+                    min = "1"
+                    outlined
+                    type = "number"
+                />
+                <v-text-field
+                    v-model = "search.email"
+                    :label = "$t('email')"
+                    clearable
+                    outlined
+                    type = "email"
+                />
+                <v-card-actions class = "justify-center">
+                    <v-btn color = "primary" type = "submit" variant = "elevated">{{ $t( "submit" ) }}</v-btn>
+                </v-card-actions>
+            </v-form>
+
+            <v-data-table
+                v-if = "applications.length"
+                :headers = "[{ title: $t('id'), align: 'center', key: 'id' }]"
+                :hide-default-footer = "applications.length > 0"
+                :items = "applications"
+                class = "mt-4"
+                item-key = "id"
+            >
+                <template v-slot:item.id = "{ item }">
+                    <v-btn
+                        :to = "{ name: $route.name, query: { application: item.id } }"
+                        class = "nav-link"
+                    >
+                        {{ item.id }}
+                    </v-btn>
+                </template>
+            </v-data-table>
+        </v-container>
+    </v-navigation-drawer>
 </template>
 
 <script>
@@ -94,53 +106,10 @@ export default {
 					"email",
 					this.search.email,
 				] );
+			} else {
+				this.$displayError( { error : "card.Application.selectSearch" } );
 			}
 		},
 	},
 };
 </script>
-
-<style scoped>
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.form-label {
-    font-weight: bold;
-}
-
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-}
-
-.caption-top {
-    caption-side: top;
-    font-weight: bold;
-    text-align: left;
-}
-
-.table-dark th {
-    background-color: #343a40;
-    color: white;
-}
-
-.table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.075);
-}
-
-/* Ensure responsive design */
-@media (min-width: 768px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-    }
-}
-</style>
