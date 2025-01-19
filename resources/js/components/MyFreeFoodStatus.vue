@@ -124,7 +124,7 @@ export default {
             </v-card-item>
             <v-card-actions class = "d-flex justify-space-around">
                 <v-btn
-                    v-if = "$route.name !== 'card.History' && user.card_applicant"
+                    v-if = "$route.name !== 'card.History' && !!user.card_applicant"
                     :text = "$t('history')"
                     :to = "{ name: 'card.History' }"
                     color = "primary"

@@ -37,7 +37,7 @@
                     </v-btn>
                 </template>
                 <v-list>
-                    <v-list-item :to = "{ name: 'card.History' }" link>
+                    <v-list-item :to = "{ name: 'card.History' }" link v-if = "showCardHistory">
                         <v-list-item-title>{{ $t( "history" ) }}</v-list-item-title>
                     </v-list-item>
                     <v-list-item :to = "{ name: 'card.application' }" link>
@@ -116,7 +116,9 @@
                     <template v-slot:activator = "{ props }">
                         <v-list-item :title = "$t( 'card.value' )" v-bind = "props" />
                     </template>
-                    <v-list-item :to = "{ name: 'card.History' }" color = "primary">{{ $t( "history" ) }}</v-list-item>
+                    <v-list-item :to = "{ name: 'card.History' }" color = "primary" v-if = "showCardHistory">{{
+                            $t( "history" ) }}
+                    </v-list-item>
                     <v-list-item :to = "{ name: 'card.application' }" color = "primary">{{ $t( "application" ) }}
                     </v-list-item>
                 </v-list-group>
@@ -182,6 +184,9 @@ export default {
 			"currentUser",
 			"hasAbility",
 		] ),
+		showCardHistory() {
+			return !!this.currentUser.card_applicant;
+		},
 		isMobile() {
 			return this.$vuetify.display.mdAndDown;
 		},
