@@ -98,10 +98,11 @@
             <a href = "{{ url('/coupon/history') }}" class = "cta">Δείτε τις κινήσεις σας</a>
         </div>
     </div>
+</div>
     <div class = "container" lang = 'en'>
         <!-- English Content -->
         <div class = "header">
-            <h1>Usage Card</h1>
+            <h1>Balance Updated</h1>
         </div>
         <div class = "content">
             <p>Dear User,</p>
