@@ -127,8 +127,18 @@ export default {
 		this.transactions = this.couponOwner.coupon_transactions;
 		this.transactionService =
 			new CouponTransactionService( this.$axios, this.route( "coupons.history" ), this.$enums, this.couponOwner );
-		this.fetchData();
-	},
+		if ( this.transactions.length === 0 ) {
+			this.transactionService =
+				new CouponTransactionService( this.$axios, this.route( "coupons.history" ), this.$enums,
+				                              this.couponOwner );
+			this.fetchData();
+		} else {
+			this.transactionService =
+				new CouponTransactionService( this.$axios, this.route( "coupons.history" ), this.$enums,
+				                              this.couponOwner, this.transactions[ -1 ] );
+		}
+
+	}
 };
 </script>
 

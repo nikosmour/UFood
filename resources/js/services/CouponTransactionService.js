@@ -7,6 +7,12 @@ export default class CouponTransactionService {
 	
 	_tempBalances;
 	_url;
+	/**
+	 *
+	 * @type {string}
+	 * @private
+	 */
+	static _URL = "";
 	
 	/**
 	 * Initialize the service with necessary data.
@@ -14,16 +20,25 @@ export default class CouponTransactionService {
 	 * @param {string} url - The initial URL to fetch transactions.
 	 * @param {Object} enums - Enum containing meal plan periods.
 	 * @param {import("@types/models/CouponOwner.d.ts").CouponOwner} tempBalances - Enum containing meal plan periods.
+	 * @param {import("@models/CouponTransaction.js").CouponTransaction | null} transaction - Enum containing meal plan periods.
 	 * @param tempBalances
 	 */
-	constructor( axios, url, enums, tempBalances ) {
+	constructor( axios, url, enums, tempBalances, transaction = null ) {
 		this.axios = axios;
 		this._url = url;
 		this.enums = enums;
 		this._tempBalances = tempBalances.copy();
+		if ( transaction ) {
+			this._url = CouponTransactionService._URL;
+			for ( const meal in this.enums.MealPlanPeriodEnum ) {
+				this._tempBalances[ meal ] = transaction[ `total.${ meal }` ];
+				this._tempBalances[ meal ] += transaction[ meal ];
+			}
+		} else {
+			CouponTransactionService._URL = this._url;
+		}
 		console.log( this._tempBalances, tempBalances );
 	}
-	
 
 	/**
 	 * Calculates and updates the meal balance for a specific transaction and meal type.
@@ -75,7 +90,7 @@ export default class CouponTransactionService {
 		
 		const response = await this.axios.get( this._url );
 		const transactions = response.data.transactions.data;
-		this._url = response.data.transactions.next_page_url;
+		CouponTransactionService._URL = this._url = response.data.transactions.next_page_url;
 		return {
 			transactions : this.reformatTransactions( transactions ),
 			stopFetch :    !this._url,
