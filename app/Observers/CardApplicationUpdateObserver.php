@@ -32,7 +32,9 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
                 broadcast(event: new CardApplicationUpdated(
                     cardApplicationUpdate: $cardApplicationUpdate
                 ))->toOthers();
+        dispatch(function () use ($cardApplicationUpdate) {
             Mail::to($cardApplicationUpdate->Academic()->value('email'))->send(new CardApplicationUpdatedNotification($cardApplicationUpdate));
+        })->afterResponse();
 
     }
 
