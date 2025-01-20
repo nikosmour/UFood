@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CouponOwnerUpdated;
 use App\Mail\CouponOwnerUpdatedNotification;
 use App\Models\CouponOwner;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
@@ -22,7 +23,11 @@ class CouponOwnerObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(CouponOwner $couponOwner): void
     {
-        Mail::to($couponOwner->academic()->value('email'))->send(new CouponOwnerUpdatedNotification($couponOwner, $couponOwner->couponTransactionLatest));
+        $transaction = $couponOwner->couponTransactionLatest;
+        Mail::to($couponOwner->academic()->value('email'))->send(new CouponOwnerUpdatedNotification($couponOwner, $transaction));
+        broadcast(event: new CouponOwnerUpdated(
+            couponTransaction: $transaction
+        ))->toOthers();
     }
 
     /**

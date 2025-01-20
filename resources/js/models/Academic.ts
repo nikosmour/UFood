@@ -36,6 +36,8 @@ export class Academic extends AcademicBase {
 		const user = options.target;
 		options[ "target" ] = user.card_applicant?.current_card_application;
 		user.card_applicant?.current_card_application?.broadcast( options );
+		options[ "target" ] = user.coupon_owner;
+		user.coupon_owner?.broadcast( options );
 	}
 	
 	public stopBroadcast() {

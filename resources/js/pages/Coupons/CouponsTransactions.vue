@@ -123,6 +123,8 @@ export default {
 		},
 	},
 	mounted() {
+		this.couponOwner.coupon_transactions ??= [];
+		this.transactions = this.couponOwner.coupon_transactions;
 		this.transactionService =
 			new CouponTransactionService( this.$axios, this.route( "coupons.history" ), this.$enums, this.couponOwner );
 		this.fetchData();
