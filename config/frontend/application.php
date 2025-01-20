@@ -14,4 +14,5 @@ return [
         ],
     ],
     'lastDate' => now()->addDays(30),
+    'echoEnabled' => env('ENABLE_ECHO', 'false'),
 ];

@@ -15,6 +15,15 @@ class CouponOwnerUpdated implements ShouldBroadcast//,ShouldDispatchAfterCommit
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
+     * if must BroadCast
+     * @return bool
+     */
+    public function broadcastWhen(): bool
+    {
+        return config('frontend.application.echoEnabled', false) === true;
+    }
+
+    /**
      * Create a new event instance.
      */
     public function __construct(

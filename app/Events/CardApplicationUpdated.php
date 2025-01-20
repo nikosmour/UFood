@@ -20,6 +20,14 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
     private CardApplication $cardApplication;
 
     /**
+     * if must BroadCast
+     * @return bool
+     */
+    public function broadcastWhen(): bool
+    {
+        return config('frontend.application.echoEnabled', false) === true;
+    }
+    /**
      * Create a new event instance.
      */
     public function __construct(
