@@ -26,7 +26,12 @@ class StoreEntryCheckingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_id' => ["required", "integer", new IsUserActive]
+            'academic_id' => [
+                "required",
+                "integer",
+                new IsUserActive
+            ],
+            'only_active' => ['boolean'],
         ];
     }
 

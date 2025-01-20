@@ -1,15 +1,11 @@
 <template>
     <v-navigation-drawer>
-        <v-list>
+        <v-list id = "moreSettings">
             <v-list-item>
-                <v-list-item-action>
-                    <select-theme class = "mt-4" />
-                </v-list-item-action>
+                <select-theme class = "mt-4" />
             </v-list-item>
             <v-list-item>
-                <v-list-item-action>
-                    <update-lang class = "mt-4" />
-                </v-list-item-action>
+                <update-lang class = "mt-4" />
             </v-list-item>
         </v-list>
     </v-navigation-drawer>

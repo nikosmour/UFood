@@ -42,10 +42,18 @@
                 />
             </v-card-actions>
         </v-card>
+        <teleport to = "#moreSettings">
+            <v-list-item>
+                <v-switch v-model = "onlyActive" :label = "$t('entry.only_active')" color = "primary" />
+            </v-list-item>
+        </teleport>
     </v-container>
 </template>
 <script>
+import UpdateLang from "@pages/navView/selectLang.vue";
+
 export default {
+	components : { UpdateLang },
 	emits : [
 		"newEntry",
 	],
@@ -56,6 +64,7 @@ export default {
 			isLoading :                false,
 			isValid :                  false,
 			isViewingLastTransaction : false,
+			onlyActive : false,
 			lastTransaction :          {
 				errors :  { academic_id : null },
 				id :      null,
@@ -133,8 +142,10 @@ export default {
 			this.lastTransaction = { id : this.academic_id };
 
 			// Prepare and send the request
-			const params = new FormData();
-			params.append( "academic_id", this.academic_id );
+			const params = {};
+			params[ "academic_id" ] = this.academic_id;
+			if ( this.onlyActive )
+				params[ "only_active" ] = this.onlyActive;
 
 			//3. Sends a POST request
 			try {

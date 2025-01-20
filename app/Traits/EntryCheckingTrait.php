@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Enum\MealPlanPeriodEnum;
 use App\Models\CardApplication;
 use App\Models\CouponOwner;
+use App\Models\PurchaseCoupon;
 use App\Models\UsageCard;
 use App\Models\UsageCoupon;
 use Illuminate\Database\Eloquent\Model;
@@ -37,7 +38,10 @@ trait EntryCheckingTrait
             $cardErrorMessage = __('validation.card_had_used');
             $status = 409;
         }
-
+        if (($data['only_active'] ?? false)) {
+            unset($data['only_active']);
+            $this->canPassAsCouponOwnerFree($data);
+        }
         try {
             $this->canPassAsCouponOwner($data);
             return response()->json(['passWith' => 'coupon'], 200);
@@ -89,6 +93,24 @@ trait EntryCheckingTrait
         CouponOwner::findOrFail($data['academic_id']);
         UsageCoupon::create($data);
         return true;
+    }
+
+    /**
+     * Check prepare for the user to pass  for free;
+     * @param array $data
+     * @return bool
+     * @throws ModelNotFoundException<Model>
+     * <p>
+     * A string that define how the user pass the entry point or if didn't poss
+     * </p>
+     */
+    private function canPassAsCouponOwnerFree(array $data): bool
+    {
+        $purchase = PurchaseCoupon::make($data);
+        $purchase->academic_id = $data['academic_id'];
+        $purchase[MealPlanPeriodEnum::getCurrentMealPeriod()->name] = 1;
+        $purchase->coupon_staff_id = 2;
+        return $purchase->save();
     }
 
     /**

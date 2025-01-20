@@ -138,7 +138,7 @@
     </v-navigation-drawer>
 
     <!-- Settings Drawer -->
-    <settings v-if = "drawer" v-model = "drawer" location = "right" temporary />
+    <settings v-model = "drawer" location = "right" temporary />
 </template>
 
 
