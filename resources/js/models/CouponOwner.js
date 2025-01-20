@@ -16,6 +16,7 @@ export class CouponOwner extends CouponOwnerBase {
 		const $notify = options.vue.$notify;
 		console.info( options );
 		const meals = options.vue.$enums.MealPlanPeriodEnum;
+		const $t = options.vue.$t;
 		const channelName = `academic.${ this.academic_id }`;
 		console.info( "CouponOwnerBroadCasting" );
 		echo
@@ -30,7 +31,12 @@ export class CouponOwner extends CouponOwnerBase {
 				if ( couponOwner.coupon_transactions )
 					couponOwner.coupon_transactions.unshift( transaction );
 				console.info( "CouponOwnerUpdated", e, this, transaction );
-				$notify( { error : "new Coupon Transaction" } );
+				$notify( {
+					         error : $t( "transaction.newNotify", {
+						         transaction : $t( "transaction." + transaction.transaction ),
+					                     },
+					         ),
+				         } );
 			} );
 	}
 	

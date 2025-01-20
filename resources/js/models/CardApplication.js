@@ -130,6 +130,7 @@ export class CardApplication extends CardApplicationBase {
 		const echo = connectEcho( this.$axios );
 		const application = options.target;
 		const $notify = options.vue.$notify;
+		const $t = options.vue.$t;
 		const channelName = `academic.${ this.academic_id }`;
 		console.info( "cardApplicationBroadCasting" );
 		echo
@@ -139,7 +140,11 @@ export class CardApplication extends CardApplicationBase {
 				application.expiration_date = new Date( e[ "expiration_date" ] );
 				application.card_last_update = e[ "cardApplicationUpdate" ];
 				this.receivingNewCardUpdate();
-				$notify( { error : " new status of your application " + application.card_last_update.status.key } );
+				$notify( {
+					         error : $t( "card.application.newStatus", {
+						         status : $t( "status." + application.card_last_update.status.key.toLowerCase() ),
+					         } ),
+				         } );
 			} );
 	}
 	
