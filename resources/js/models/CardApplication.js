@@ -152,7 +152,7 @@ export class CardApplication extends CardApplicationBase {
 	
 	stopBroadcast() {
 		super.stopBroadcast();
-		const channelName = `cardApplication.${ this.id }`;
+		const channelName = `academic.${ this.academic_id }`;
 		EchoInstance.private( channelName )
 		            .stopListening( "CardApplicationUpdated" );
 	}
