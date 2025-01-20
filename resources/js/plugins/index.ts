@@ -1,7 +1,7 @@
 import type { App, Plugin } from "vue"; // Import Vue's types
 import { Enums } from "./enums";
 import AxiosInstance from "./axios"; // Ensure AxiosInstance is correctly imported and typed
-import { EchoInstance } from "./echo"; // Ensure EchoInstance is correctly typed
+import { getEcho } from "./echo"; // Ensure EchoInstance is correctly typed
 import { capitalize, formatDate, formatNumber, truncate } from "./filters";
 import { I18n } from "./i18n";
 import { Vuetify } from "./vuetify";
@@ -10,29 +10,9 @@ import type { route } from "ziggy-js";
 import { ZiggyVue } from "ziggy-js";
 import { ErrorManager } from "./errorManager";
 import BaseModel from "@utilities/BaseModel";
-import type { AxiosRequestConfig } from "axios";
 import { useNotifyHandler } from "@components/NotifyUser/NotifyPlugin";
 
 Ziggy.url = import.meta.env.VITE_ZIGGY_BASE_URL ?? "";// to be valid in any url
-AxiosInstance.interceptors.request.use(
-	( config : AxiosRequestConfig<any> ) => {
-		// Retrieve the socket ID from Laravel Echo
-		const socketId = EchoInstance.socketId();
-		
-		// Attach the X-Socket-ID header to the request
-		if ( socketId ) {
-			config.headers = {
-				...config.headers,
-				"X-Socket-ID" : socketId,
-			};
-		}
-		
-		return config;
-	},
-	( error ) => {
-		return Promise.reject( error );
-	},
-);
 
 // Define global property types
 declare module "@vue/runtime-core" {
@@ -54,7 +34,7 @@ declare module "@vue/runtime-core" {
 export const plugins : Plugin = {
 	install( app : App ) {
 		app.config.globalProperties.$axios = AxiosInstance;
-		app.config.globalProperties.$echo = EchoInstance;
+		app.config.globalProperties.$echo = getEcho( AxiosInstance );//EchoInstance;
 		app.config.globalProperties.$enums = Enums;
 		app.config.globalProperties.$filters = {
 			capitalize,

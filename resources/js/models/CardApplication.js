@@ -2,7 +2,7 @@ import CardApplicationBase from "./Base/CardApplicationBase";
 import CardApplicationDocument from "./CardApplicationDocument";
 import { CardStatusEnum } from "@enums/CardStatusEnum";
 import { InformTheUserError } from "@/errors/InformTheUserError";
-import { EchoInstance } from "@/plugins/echo";
+import { connectEcho } from "@/plugins/echo.js";
 
 export class CardApplication extends CardApplicationBase {
 	get canBeEdited() {
@@ -127,7 +127,7 @@ export class CardApplication extends CardApplicationBase {
 	
 	broadcast( options = {} ) {
 		super.broadcast( options );
-		const echo = options.vue.$echo;
+		const echo = connectEcho( this.$axios );
 		const application = options.target;
 		const $notify = options.vue.$notify;
 		const channelName = `academic.${ this.academic_id }`;
@@ -153,7 +153,8 @@ export class CardApplication extends CardApplicationBase {
 	stopBroadcast() {
 		super.stopBroadcast();
 		const channelName = `academic.${ this.academic_id }`;
-		EchoInstance.private( channelName )
+		connectEcho( this.$axios )
+			.private( channelName )
 		            .stopListening( "CardApplicationUpdated" );
 	}
 }

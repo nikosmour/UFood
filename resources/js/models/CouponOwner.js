@@ -1,6 +1,6 @@
 import CouponOwnerBase from "./Base/CouponOwnerBase";
-import { EchoInstance } from "@/plugins/echo.js";
 import CouponTransaction from "./CouponTransaction";
+import { connectEcho } from "@/plugins/echo.js";
 
 /**
  * Class representing a CouponOwner model.
@@ -10,7 +10,7 @@ import CouponTransaction from "./CouponTransaction";
 export class CouponOwner extends CouponOwnerBase {
 	broadcast( options = {} ) {
 		super.broadcast( options );
-		const echo = options.vue.$echo;
+		const echo = connectEcho();
 		
 		const couponOwner = options.target;
 		const $notify = options.vue.$notify;
@@ -37,6 +37,7 @@ export class CouponOwner extends CouponOwnerBase {
 	stopBroadcast() {
 		super.stopBroadcast();
 		const channelName = `cardApplication.${ this.id }`;
+		const EchoInstance = connectEcho();
 		EchoInstance.private( channelName )
 		            .stopListening( "CouponOwnerUpdated" );
 	}

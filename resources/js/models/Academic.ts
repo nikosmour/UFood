@@ -33,7 +33,6 @@ export class Academic extends AcademicBase {
 	
 	public broadcast( options : Record<string, any> = {} ) {
 		if ( !Academic.CONFIG.echoEnabled ) return;
-		options.vue.$echo.instance = connectEcho();
 		super.broadcast( options );
 		const user = options.target;
 		options[ "target" ] = user.card_applicant?.current_card_application;
@@ -47,6 +46,7 @@ export class Academic extends AcademicBase {
 		super.stopBroadcast();
 		this.card_applicant?.current_card_application?.stopBroadcast();
 		this.coupon_owner?.stopBroadcast();
+		// disconnectEcho();
 	}
 }
 
