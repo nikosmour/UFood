@@ -36,10 +36,10 @@
             </tr>
         </template>
         <template v-slot:item.created_at = "{item}">
-            {{ ( new Date( item.created_at ) ).toLocaleDateString( $i18n.locale ) }}
+            {{ ( new Date( item.created_at ) ).toLocaleDateString( "en-ca" ) }}
         </template>
         <template v-slot:item.updated_at = "{item}">
-            {{ ( new Date( item.updated_at ) ).toLocaleDateString( $i18n.locale ) }}
+            {{ ( new Date( item.updated_at ) ).toLocaleDateString( "en-ca" ) }}
         </template>
         <template v-slot:item.is_permanent = "{item}">
             {{ $t( item.is_permanent

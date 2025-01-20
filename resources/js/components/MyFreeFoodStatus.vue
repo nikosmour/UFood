@@ -41,7 +41,7 @@ export default {
 
 				if ( this.card_expiration_date >= today ) {
 					return ` ${ this.$t( "approved.until", {
-						date : expirationDate.toLocaleDateString( this.$i18n.locale ),
+						date : expirationDate.toLocaleDateString( "en-ca" ),
 					} ) }`;
 				}
 			}

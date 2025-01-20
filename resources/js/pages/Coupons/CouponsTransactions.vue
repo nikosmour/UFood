@@ -198,7 +198,7 @@ export default {
             </template>
 
             <template #item.date = "{ item }">
-                <span>{{ item.created_at.toLocaleDateString( $i18n.locale ) }}</span>
+                <span>{{ item.created_at.toLocaleDateString( "en-ca" ) }}</span>
             </template>
 
             <!--            <template #item.totalMoney="{ item }">-->

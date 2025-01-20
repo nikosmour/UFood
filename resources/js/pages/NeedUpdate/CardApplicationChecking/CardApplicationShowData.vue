@@ -263,8 +263,7 @@ export default {
 		startingData() {
 			this.currentStatus = this.application.card_last_update.status;
 			this.files = this.application.card_application_document;
-			this.expirationDate = this.application.expiration_date.toISOString()
-			                          .split( "T" )[ 0 ];
+			this.expirationDate = this.application.expiration_date.toLocaleDateString( "en-ca" );//toISOString().split( "T" )[ 0 ];
 
 		},
 		async updateDocumentStatus( file ) {
