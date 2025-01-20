@@ -15,6 +15,7 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
      */
     public function created(CardApplicationUpdate $cardApplicationUpdate): void
     {
+        $cardApplicationUpdate->load('cardApplication');
         if ($cardApplicationUpdate->card_application_staff_id)
             broadcast(event: new CardApplicationUpdated(
                 cardApplicationUpdate: $cardApplicationUpdate
@@ -26,13 +27,13 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(CardApplicationUpdate $cardApplicationUpdate): void
     {
-        if ($cardApplicationUpdate->isDirty('status')) {
-            if ($cardApplicationUpdate->card_application_staff_id)
+
+        if ($cardApplicationUpdate->card_application_staff_id)
                 broadcast(event: new CardApplicationUpdated(
                     cardApplicationUpdate: $cardApplicationUpdate
                 ))->toOthers();
             Mail::to($cardApplicationUpdate->Academic()->value('email'))->send(new CardApplicationUpdatedNotification($cardApplicationUpdate));
-        }
+
     }
 
     /**

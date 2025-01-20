@@ -23,14 +23,15 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
      * Create a new event instance.
      */
     public function __construct(
-        public CardApplicationUpdate $cardApplicationUpdate,
+        private readonly CardApplicationUpdate $cardApplicationUpdate,
 //        public CardStatusEnum $status,
 //        private CardStatusEnum $old_status,
 //        public string|null $comment,
     )
     {
-        $this->cardApplication = CardApplication::find($this->cardApplicationUpdate->card_application_id);
-        $this->cardApplication_id = $this->cardApplication->id;
+        $this->cardApplication = $this->cardApplicationUpdate->cardApplication;
+        $this->cardApplicationUpdate->makeHidden(['cardApplication']);
+//        $this->cardApplication_id = $this->cardApplication->id;
         $this->expiration_date = $this->cardApplication->expiration_date->toDateString();
     }
 
@@ -42,10 +43,18 @@ class CardApplicationUpdated implements ShouldBroadcast//,ShouldDispatchAfterCom
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('cardApplication.' . $this->cardApplication_id),
-            //            new PrivateChannel('academic.' . $this->cardApplication->academic_id),
+//            new PrivateChannel('cardApplication.' . $this->cardApplication_id),
+new PrivateChannel('academic.' . $this->cardApplication->academic_id),
             //            new PresenceChannel('cardChecking.' . $this->old_status->valueWithUnderscores()),
             //            new PresenceChannel('cardChecking.' . $this->status->valueWithUnderscores())
+        ];
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'cardApplicationUpdate' => $this->cardApplicationUpdate->makeHidden(['cardApplication'])->toArray(),
+            'expiration_date' => $this->expiration_date
         ];
     }
 

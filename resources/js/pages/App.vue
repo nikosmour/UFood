@@ -63,7 +63,10 @@ export default {
 			} else if ( isAuthenticated && this.$route.name === "login" ) {
 				this.$router.push( this.$route.query.redirect || { name : "startPage" } );
 			}
-			this.currentUser?.broadcast( { target : this.currentUser } );
+			this.currentUser?.broadcast( {
+				                             target : this.currentUser,
+				                             vue :    this,
+			                             } );
 		},
 	},
 	
@@ -85,7 +88,10 @@ export default {
 		if ( this.isAuthenticated && this.$route.name === "login" ) {
 			this.$router.push( this.$route.query.redirect || { name : "userProfile" } );
 		}
-		this.currentUser?.broadcast( { target : this.currentUser } );
+		this.currentUser?.broadcast( {
+			                             target : this.currentUser,
+			                             vue :    this,
+		                             } );
 		// Session timeout setup
 		// const timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
 		// setupSessionTimeout( timeoutMin, this.$axios, this );

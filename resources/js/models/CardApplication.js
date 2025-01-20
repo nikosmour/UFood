@@ -127,9 +127,10 @@ export class CardApplication extends CardApplicationBase {
 	
 	broadcast( options = {} ) {
 		super.broadcast( options );
-		const echo = EchoInstance;
+		const echo = options.vue.$echo;
 		const application = options.target;
-		const channelName = `cardApplication.${ this.id }`;
+		const $notify = options.vue.$notify;
+		const channelName = `academic.${ this.academic_id }`;
 		console.info( "cardApplicationBroadCasting" );
 		echo
 			.private( channelName )
@@ -138,6 +139,7 @@ export class CardApplication extends CardApplicationBase {
 				application.expiration_date = new Date( e[ "expiration_date" ] );
 				application.card_last_update = e[ "cardApplicationUpdate" ];
 				this.receivingNewCardUpdate();
+				$notify( { error : " new status of your application " + application.card_last_update.status.key } );
 			} );
 	}
 	

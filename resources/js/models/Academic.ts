@@ -34,13 +34,14 @@ export class Academic extends AcademicBase {
 	public broadcast( options : Record<string, any> = {} ) {
 		super.broadcast( options );
 		const user = options.target;
-		user.card_applicant?.current_card_application?.broadcast(
-			{ target : user.card_applicant?.current_card_application } );
+		options[ "target" ] = user.card_applicant?.current_card_application;
+		user.card_applicant?.current_card_application?.broadcast( options );
 	}
 	
 	public stopBroadcast() {
 		super.stopBroadcast();
 		this.card_applicant?.current_card_application?.stopBroadcast();
+		this.coupon_owner?.stopBroadcast();
 	}
 }
 
