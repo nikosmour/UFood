@@ -92,6 +92,7 @@ export const el = {
 		"notAccept" : "Δεν εγκρίνετε",
 		"active" :      "Ενεργός",
 		"only_active" : "Mόνο ενεργή κατάσταση",
+		"autoSubmitOnPause" : "Αυτόματη υποβολή",
 	},
 	// "entry_input": "@:card.value",
 	"errors" : {

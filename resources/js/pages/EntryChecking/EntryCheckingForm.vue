@@ -46,6 +46,12 @@
             <v-list-item>
                 <v-switch v-model = "onlyActive" :label = "$t('entry.only_active')" color = "primary" />
             </v-list-item>
+            <v-list-item>
+                <v-switch
+                    v-model = "autoSubmitOnPause" :label = "$t('entry.autoSubmitOnPause')" color = "primary"
+                    @change = "barcodeChange"
+                />
+            </v-list-item>
         </teleport>
     </v-container>
 </template>
@@ -65,20 +71,21 @@ export default {
 			isValid :                  false,
 			isViewingLastTransaction : false,
 			onlyActive : false,
-			lastTransaction :          {
+			lastTransaction :   {
 				errors :  { academic_id : null },
 				id :      null,
 				message : null,
 				success : null,
 			},
-			show :                     false,
-			time :                     2500,
-			result :                   {
+			show :              false,
+			time :              2500,
+			result :            {
 				message : "",
 				success : true,
 			},
-			url :                      this.route( "entryChecking.store" ),
-			typingTimer : null,
+			url :               this.route( "entryChecking.store" ),
+			autoSubmitOnPause : ( sessionStorage.getItem( "autoSubmitOnPause" ) ?? "true" ) === "true",
+			typingTimer :       null,
 		};
 	},
 	computed : {
@@ -112,6 +119,12 @@ export default {
 		},
 	},
 	methods :  {
+
+		barcodeChange( newValue ) {
+			sessionStorage.setItem( "autoSubmitOnPause", newValue
+			                                              ? "true"
+			                                              : "false" );
+		},
 		/**
 		 * Handles the process of checking the academic ID. This includes validating the form, sending a request
 		 * to check the academic ID, and processing the response.
@@ -214,6 +227,7 @@ export default {
 			this.hideAlert();
 		},
 		handleBarcodeInput() {
+			if ( !this.autoSubmitOnPause ) return;
 
 			// Check if the scanner sends a complete barcode with an Enter key
 			// Clear the previous timer

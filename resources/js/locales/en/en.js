@@ -91,6 +91,7 @@ export const en = {
 		"notAccept" : "Not Accepted",
 		"active" :      "Active",
 		"only_active" : "Only Active State",
+		"autoSubmitOnPause" : "Automatic submission",
 	},
 	"entry_check" : "Entry Check",
 	"entry_check_form" : "@:form : @:entry_check ",
