@@ -15,7 +15,7 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
      */
     public function created(CardApplicationUpdate $cardApplicationUpdate): void
     {
-        $cardApplicationUpdate->load('cardApplication');
+        $cardApplicationUpdate->load('cardApplication:id,expiration_date');
         if ($cardApplicationUpdate->card_application_staff_id)
             broadcast(event: new CardApplicationUpdated(
                 cardApplicationUpdate: $cardApplicationUpdate
@@ -27,7 +27,7 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(CardApplicationUpdate $cardApplicationUpdate): void
     {
-
+        $cardApplicationUpdate->load('cardApplication:id,expiration_date');
         if ($cardApplicationUpdate->card_application_staff_id)
                 broadcast(event: new CardApplicationUpdated(
                     cardApplicationUpdate: $cardApplicationUpdate
