@@ -22,22 +22,27 @@ export class CouponOwner extends CouponOwnerBase {
 		echo
 			.private( channelName )
 			.listen( "CouponOwnerUpdated", ( e ) => {
-				const transaction = new CouponTransaction( e[ "couponTransaction" ] );
-				for ( const meal in meals ) {
-					couponOwner[ meal ] += transaction[ meal ];
-					transaction[ `total.${ meal }` ] = couponOwner[ meal ];
-				}
-				couponOwner.updated_at = transaction[ "created_at" ];
-				if ( couponOwner.coupon_transactions )
-					couponOwner.coupon_transactions.unshift( transaction );
+				const transaction = couponOwner.manageNewTransaction( e[ "couponTransaction" ], meals, couponOwner );
 				console.info( "CouponOwnerUpdated", e, this, transaction );
 				$notify( {
 					         error : $t( "transaction.newNotify", {
-						         transaction : $t( "transaction." + transaction.transaction ),
+						                     transaction : $t( "transaction." + transaction.transaction ),
 					                     },
 					         ),
 				         } );
 			} );
+	}
+	
+	manageNewTransaction( newTransaction, meals, couponOwner ) {
+		const transaction = new CouponTransaction( newTransaction );
+		for ( const meal in meals ) {
+			couponOwner[ meal ] += transaction[ meal ];
+			transaction[ `total.${ meal }` ] = couponOwner[ meal ];
+		}
+		couponOwner.updated_at = transaction[ "created_at" ];
+		if ( couponOwner.coupon_transactions )
+			couponOwner.coupon_transactions.unshift( transaction );
+		return transaction;
 	}
 	
 	stopBroadcast() {

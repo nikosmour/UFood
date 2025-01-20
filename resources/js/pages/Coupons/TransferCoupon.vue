@@ -31,14 +31,11 @@ export default {
 		 * @param {Object} transactionData - Object containing changes in balance per meal period.
 		 */
 		handleNewTransfer( transactionData ) {
-			Object.keys( this.$enums.MealPlanPeriodEnum )
-			      .forEach( mealPeriod => {
-				      if ( this.couponOwner.hasOwnProperty( mealPeriod ) ) {
-					      this.couponOwner[ mealPeriod ] -= transactionData[ mealPeriod ] || 0;
-				      } else {
-					      console.warn( `Meal period '${ mealPeriod }' not found in couponOwner.` );
-				      }
-			      } );
+			const meals = this.$enums.MealPlanPeriodEnum;
+			for ( const meal in meals )
+				transactionData[ meal ] = -( transactionData[ meal ] || 0 );
+			transactionData[ "transaction" ] = "sending";
+			this.couponOwner.manageNewTransaction( transactionData, meals, this.couponOwner );
 		},
 	},
 };
