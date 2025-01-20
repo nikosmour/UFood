@@ -149,6 +149,7 @@
                 auto-grow readonly rows = "2"
             >
             </v-textarea>
+            current expiration date : {{ expirationDate }}
         </v-card-text>
         <v-card-actions
             v-if = "isCheckingByUser" aria-label = "Status buttons" class = "justify-space-between"
@@ -262,7 +263,9 @@ export default {
 		startingData() {
 			this.currentStatus = this.application.card_last_update.status;
 			this.files = this.application.card_application_document;
-			this.expirationDate = this.application.expiration_date;
+			this.expirationDate = this.application.expiration_date.toISOString()
+			                          .split( "T" )[ 0 ];
+
 		},
 		async updateDocumentStatus( file ) {
 			let params = new FormData();
@@ -319,7 +322,7 @@ export default {
 			params.append( "status", application.card_last_update.status.value );
 			params.append( "card_application_id", application.id );
 			if ( this.expirationDate && application.card_last_update.status === this.$enums.CardStatusEnum.ACCEPTED ) {
-				params.append( "expiration_date", this.expirationDate.toISOString() );
+				params.append( "expiration_date", this.expirationDate );
 			}
 			if ( this.commentChecking ) {
 				params.append( "card_application_staff_comment", this.commentChecking );
