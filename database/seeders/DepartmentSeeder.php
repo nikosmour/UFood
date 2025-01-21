@@ -7,7 +7,8 @@ use Illuminate\Database\Seeder;
 
 class DepartmentSeeder extends Seeder
 {
-    public function __construct(protected int $count = 10)
+
+    public function __construct()
     {
     }
 
@@ -16,6 +17,7 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        Department::factory($this->count)->create();
+        foreach (__('departments', locale: 'el') as $department)
+            Department::factory()->make(['name' => $department])->save();
     }
 }
