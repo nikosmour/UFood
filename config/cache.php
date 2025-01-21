@@ -45,8 +45,8 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'cache',
-            'connection' => null,
-            'lock_connection' => null,
+            'connection' => env('CACHE_CONNECTION'),
+            'lock_connection' => env('CACHE_CONNECTION'),
         ],
 
         'file' => [
