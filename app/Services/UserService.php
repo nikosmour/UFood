@@ -27,7 +27,10 @@ class UserService
         DB::setDefaultConnection('secondary_mysql');
         // Loop through all available guards and attempt login
         foreach (config('auth.guards') as $guard => $temp)
-            if ($guard !== 'sanctum') {
+            if (!in_array($guard, [
+                'sanctum',
+                'web'
+            ])) {
                 /** @var User $user */
                 $user = Auth::guard($guard)->getProvider()->retrieveByCredentials($credentials);
                 if ($user && Hash::check($credentials['password'], $user->getAuthPassword())) {
