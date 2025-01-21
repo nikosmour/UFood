@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('academic_id');
             $table->boolean('is_permanent')->default(true);
             $table->char('location', 99);
-            $table->char('phone', 15)->nullable();
+            $table->char('phone', 16)->nullable();
             $table->foreign('academic_id')->references('academic_id')->on('card_applicants')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

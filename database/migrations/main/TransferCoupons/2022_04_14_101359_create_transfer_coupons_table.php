@@ -23,7 +23,7 @@ return new class extends Migration {
 //            $table->timestamps();
             $table->foreign('sender_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('receiver_id')->references('academic_id')->on('coupon_owners')->onDelete('cascade')->onUpdate('cascade');
-            $table->unique(['created_at', 'sender_id', 'receiver_id']);
+//            $table->unique(['created_at', 'sender_id', 'receiver_id']);
         });
     }
 
