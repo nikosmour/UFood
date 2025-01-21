@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\UserStatusEnum;
 use App\Http\Controllers\Auth\LoginController;
 use App\Models\Academic;
 use App\Models\CardApplicant;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use UpatrasUserData\Services\GetUserDataService;
+use function PHPUnit\Framework\stringContains;
 
 class UserService
 {
@@ -23,6 +26,8 @@ class UserService
      */
     public function logIn(array $credentials): array
     {
+        if (!stringContains('@'))
+            return $this->fromMussa($credentials);
         $originalConnection = config('database.default');
         DB::setDefaultConnection('secondary_mysql');
         // Loop through all available guards and attempt login
@@ -121,5 +126,20 @@ class UserService
     {
         // Fetch active status for all users
         return;
+    }
+
+    private function fromMussa(array $credentials)
+    {
+        $response = (new GetUserDataService())($credentials)->toArray();
+        if (!$response['success'])
+            return [
+                'error' => 'invalid_credentials',
+            ];
+        $output = $response['output'];
+        match ($output['status']) {
+            'Προπτυχιακός Φοιτητής' => UserStatusEnum::UNDERGRADUATE . value,
+            default
+        }
+
     }
 }
