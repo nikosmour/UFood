@@ -10,11 +10,17 @@ use Database\Seeders\Classes\CreatedAtMoreThanSeeder;
 
 class CardApplicantSeeder extends CreatedAtMoreThanSeeder
 {
+    private bool $extra;
     /**
      * Run the database seeds.
      *
      * @return void
      */
+    public function __construct($createdAtMoreThan = '1900-01-01 12:00:00', $extra = false)
+    {
+        parent::__construct($createdAtMoreThan);
+        $this->extra = $extra;
+    }
     public function run()
     {
         $cardApplicants = CardApplicant::whereDoesntHave('addresses')->where('created_at', '>', $this->createdAtMoreThan)->cursor();
@@ -24,7 +30,7 @@ class CardApplicantSeeder extends CreatedAtMoreThanSeeder
             Address::factory()->notPermanent()->for($cardApplicant)->create();
             $cardApplicant->department_id = $departments->random()->id;
             $cardApplicant->save();
-            CardApplication::factory()->for($cardApplicant)->withComment()->withDocs()->create();
+            if ($this->extra) CardApplication::factory()->for($cardApplicant)->withComment()->withDocs()->create();
         }
     }
 }

@@ -12,10 +12,12 @@ use Database\Seeders\Classes\UserSeederPreparation;
 
 class AcademicSeeder extends UserSeederPreparation
 {
+    private bool $extra;
 
-    public function __construct($count = 20)
+    public function __construct($count = 20, $extra = false)
     {
         parent::__construct($count);
+        $this->extra = $extra;
     }
 
     /**
@@ -25,15 +27,41 @@ class AcademicSeeder extends UserSeederPreparation
      */
     public function run(): void
     {
+        $moreSeeders = [
+            [
+                "class" => CardApplicantSeeder::class,
+                "parameters" => []
+            ]
+        ];
         $now = Carbon::now();
-        $this->commonRun([
-            ["class" => CardApplicantSeeder::class, "parameters" => []],
-            ["class" => TransferCouponSeeder::class, "parameters" => [$now]],
-            ["class" => PurchaseCouponSeeder::class, "parameters" => [$now]],
-            ["class" => UsageCardSeeder::class, "parameters" => [$now]],
-            ["class" => UsageCouponSeeder::class, "parameters" => [$now]],
-            ["class" => CardApplicationCheckingSeeder::class, "parameters" => [$now]],
-        ]);
+        if ($this->extra) {
+            $moreSeeders = [
+                ...$moreSeeders,
+                [
+                    "class" => TransferCouponSeeder::class,
+                    "parameters" => [$now]
+                ],
+                [
+                    "class" => PurchaseCouponSeeder::class,
+                    "parameters" => [$now]
+                ],
+                [
+                    "class" => UsageCardSeeder::class,
+                    "parameters" => [$now]
+                ],
+                [
+                    "class" => UsageCouponSeeder::class,
+                    "parameters" => [$now]
+                ],
+                [
+                    "class" => CardApplicationCheckingSeeder::class,
+                    "parameters" => [$now]
+                ],
+            ];
+        }
+        $this->commonRun(
+            $moreSeeders
+        );
     }
 
 
@@ -49,7 +77,7 @@ class AcademicSeeder extends UserSeederPreparation
 
             $academic = Academic::factory()->create(['status' => $user_status->value, 'email' => $email, 'a_m' => $this->emailCounters[$status], 'academic_id' => $this->emailCounters[$status] + 2 * 10 ** 15,]);
             if ($user_status->can(UserAbilityEnum::CARD_OWNERSHIP)) CardApplicant::factory()->for($academic)->create();
-            CouponOwner::factory()->for($academic)->create();
+            if ($this->extra) CouponOwner::factory()->for($academic)->create();
         }
     }
 

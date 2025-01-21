@@ -15,9 +15,12 @@ class UserSeeder extends UserSeederPreparation
 {
     use WithoutModelEvents;
 
-    public function __construct($count = 1000)
+    private bool $extra;
+
+    public function __construct($count = 1000, $extra = false)
     {
         parent::__construct($count);
+        $this->extra = $extra;
     }
 
     /**
@@ -32,10 +35,10 @@ class UserSeeder extends UserSeederPreparation
         $optionsTotal = count(CardStatusEnum::enumByName());
         $staffCount = count(EntryStaff::all());
         $countPerStaff = intdiv($this->count, $optionsTotal);
-        if ($staffCount > 9)
+        if ($staffCount > 19)
             $countPerStaff = 0;
         else
-            $countPerStaff = ($staffCount + $countPerStaff > 10) ? 10 : $countPerStaff;
+            $countPerStaff = ($staffCount + $countPerStaff > 20) ? 20 : $countPerStaff;
         $this->count = $countPerStaff * $options;
         $AcademicCount = $totalCount - $this->count;
         echo $totalCount;
@@ -44,7 +47,10 @@ class UserSeeder extends UserSeederPreparation
         $this->commonRun([
             [
                 "class" => AcademicSeeder::class,
-                "parameters" => [$AcademicCount],
+                "parameters" => [
+                    $AcademicCount,
+                    $this->extra
+                ],
             ],
         ]);
 
