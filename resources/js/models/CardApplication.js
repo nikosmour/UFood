@@ -138,10 +138,8 @@ export class CardApplication extends CardApplicationBase {
 			.listen( "CardApplicationUpdated", ( e ) => {
 				const cardApplicationUpdate = e[ "cardApplicationUpdate" ];
 				console.info( "cardApplicationUpdate12", e, this );
-				if ( application.card_application_document !== undefined && ![
-					options.vue.$enums.CardStatusEnum.CHECKING.value,
-					options.vue.$enums.CardStatusEnum.ACCEPTED.value,
-				].includes( cardApplicationUpdate.status ) ) {
+				if ( application.card_application_document !== undefined &&
+				     options.vue.$enums.CardStatusEnum.CHECKING.value !== cardApplicationUpdate.status ) {
 					application.card_application_document = undefined;
 					console.info( "inside if", application.card_application_document );
 				}
