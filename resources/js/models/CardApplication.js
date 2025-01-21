@@ -136,9 +136,17 @@ export class CardApplication extends CardApplicationBase {
 		echo
 			.private( channelName )
 			.listen( "CardApplicationUpdated", ( e ) => {
+				const cardApplicationUpdate = e[ "cardApplicationUpdate" ];
 				console.info( "cardApplicationUpdate12", e, this );
+				if ( application.card_application_document !== undefined && ![
+					options.vue.$enums.CardStatusEnum.CHECKING.value,
+					options.vue.$enums.CardStatusEnum.ACCEPTED.value,
+				].includes( cardApplicationUpdate.status ) ) {
+					application.card_application_document = undefined;
+					console.info( "inside if", application.card_application_document );
+				}
 				application.expiration_date = new Date( e[ "expiration_date" ] );
-				application.card_last_update = e[ "cardApplicationUpdate" ];
+				application.card_last_update = cardApplicationUpdate;
 				this.receivingNewCardUpdate();
 				$notify( {
 					         error : $t( "card.application.newStatus", {

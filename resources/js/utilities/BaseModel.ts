@@ -143,7 +143,7 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	) : T[] | null {
 		return data
 		       ? data.map( ( item ) => new ClassRef( item ) )
-		       : null;
+		       : data;
 	}
 	
 	/**
@@ -155,7 +155,7 @@ export default abstract class BaseModel<TData extends Pick<TInterface, keyof TIn
 	) : T | null {
 		return data
 		       ? new ClassRef( data )
-		       : null;
+		       : data;
 	}
 	
 	/**

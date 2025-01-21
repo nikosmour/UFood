@@ -28,7 +28,7 @@ trait EntryCheckingTrait
     {
         $status = 422;
         try {
-            $this->canPassAsCardApplicant($data);
+            $this->canPassAsCardApplicant(['academic_id' => '']);
             return response()->json(['passWith' => 'card'], 200);
         } catch (ModelNotFoundException) {
             $cardErrorMessage = __('validation.card_expired_or_not_exist');

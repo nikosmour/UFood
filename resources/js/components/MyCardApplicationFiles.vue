@@ -269,5 +269,11 @@ export default {
 		this.getDocuments();
 		this.filesCanAdd = await this.getFilesCanAdd();
 	},
+	watch : {
+		"application.card_application_document"( newValue ) {
+			if ( newValue === undefined )
+				this.getDocuments();
+		},
+	},
 };
 </script>
