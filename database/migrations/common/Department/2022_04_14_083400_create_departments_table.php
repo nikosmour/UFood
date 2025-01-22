@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->tinyIncrements('id');
-            $table->char('name', 60);
+            $table->char('name', 100);
 //            $table->timestamps();
         });
 
