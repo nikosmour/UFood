@@ -8,7 +8,7 @@ export interface State {
 
 // Vuex state
 export const state : State = {
-	timeLeft : Number( import.meta.env.VITE_SESSION_TIME_OUT ) * 60 - 5,
+	timeLeft : Number( import.meta.env.VITE_SESSION_TIME_OUT ) * 60 - 3,
 };
 
 // Vuex mutations
@@ -24,13 +24,13 @@ export const mutations : MutationTree<State> = {
 // Vuex actions
 export const actions : ActionTree<any, any> = {
 	updateTimeLeft( { commit }, timeLeft ) {
-		commit( "setTimeLeft", timeLeft ?? Number( import.meta.env.VITE_SESSION_TIME_OUT ) * 60 );
+		commit( "setTimeLeft", timeLeft ?? Number( import.meta.env.VITE_SESSION_TIME_OUT ) * 60 - 3 );
 	},
 	updateCookies( _, {
 		route,
 		axiosInstance,
 	} ) : Promise<AxiosResponse<any, void>> {
-		return axiosInstance.get( route( "isLogin" ) );
+		return axiosInstance.post( route( "isLogin" ) );
 	},
 };
 

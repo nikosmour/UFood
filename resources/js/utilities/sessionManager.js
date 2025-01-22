@@ -35,20 +35,17 @@ export function setupAxiosInterceptor( {
 	                                       $t,
 	                                       $displayError,
                                        } ) {
-	$axios.interceptors.request.use( function ( config ) {
-		$store.dispatch( "session/updateTimeLeft" );
-		return config;
-	}, function ( error ) {
-		// Do something with request error
-		return Promise.reject( error );
-	} );
 	$axios.interceptors.response.use(
 		response => {
+			$store.dispatch( "session/updateTimeLeft" );
 			return response;
 		},
 		error => {
 			if ( !error.response ) return Promise.reject( error );
+			
 			const status = error.response.status;
+			if ( status )
+				$store.dispatch( "session/updateTimeLeft" );
 			if ( status === 419 )
 				return $store.dispatch( "session/updateCookies", {
 					route,
@@ -64,7 +61,6 @@ export function setupAxiosInterceptor( {
 				$store.commit( "auth/setLogout" );
 			else if ( status === 403 )
 				$displayError( $t( "forbiddenAccess.details" ) );
-			
 			return Promise.reject( error );
 		},
 	);

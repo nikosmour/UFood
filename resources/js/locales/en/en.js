@@ -58,6 +58,9 @@ export const en = {
 	//     "latestFrom": "Last comment submitted by ",
 		"value" : "No comment | Comment | Comments",
 	},
+	"communication" : {
+		"issue" : "There is a connection issue.Try again",
+	},
 	"company" :      {
 		"department" : "Student Welfare Department",
 		"name" :       "University of Patras",

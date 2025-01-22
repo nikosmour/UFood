@@ -76,7 +76,9 @@ export default defineComponent( {
 	                                methods : {
 		                                ...mapMutations( "session", [ "setTimeLeft" ] ),
 		                                ...mapActions( "session", [ "updateCookies" ] ),
+		                                ...mapMutations( "auth", [ "setLogout" ] ),
 		                                startCountdown() {
+			                                clearInterval( this.interval as number );
 			                                this.interval = window.setInterval( () => {
 				                                if ( this.getTimeLeft > 1 ) {
 					                                this.setTimeLeft( this.getTimeLeft - 1 );
@@ -87,6 +89,12 @@ export default defineComponent( {
 						                                this.startCountdown();
 						                                ( this.stopWatch as ( () => void ) )();
 					                                } );
+					                                this.interval = window.setInterval(
+						                                () => {
+							                                clearInterval( this.interval as number );
+							                                this.setLogout();
+						                                }, 3000 );
+
 				                                }
 			                                }, 1000 );
 		                                },
