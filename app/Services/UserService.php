@@ -10,9 +10,9 @@ use App\Models\CardApplicant;
 use App\Models\Department;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use UpatrasUserData\Services\GetUserDataService;
@@ -106,10 +106,13 @@ class UserService
     {
         $credentials['username'] = $credentials['email'];
         unset($credentials['email']);
-        $response = Cache::remember('mussa_' . $credentials['username'], 60000,
-            function () use ($credentials) {
-                return (new GetUserDataService())($credentials)->toArray();
-            });
+        try {
+            $response = (new GetUserDataService())($credentials)->toArray();
+        } catch (ConnectionException $error) {
+            return [
+                'error' => 'connection error',
+            ];
+        }
         if (!$response['success'])
             return $this->errorResponse();
         $output = $response['output'];
