@@ -60,10 +60,13 @@ class PurchaseCoupon extends Model
         $translate_staff = __('transactions.coupon_staff');
         $translate_student = __('transactions.coupon_student');
 
+        $table_Prefix = DB::getTablePrefix();
+        $purchaseTable = (new PurchaseCoupon())->getTable();
+        $academicTable = (new Academic())->getTable();
         $selectColumns = [
-            DB::raw('DATE(purchase_coupons.created_at) as date'),
-            DB::raw("(CASE WHEN academics.status = 'researcher' THEN '$translate_staff' ELSE '$translate_student' END) as category"),
-            DB::raw('sum(money) as money')
+            DB::raw('DATE(' . $table_Prefix . $purchaseTable . '.created_at) as date'),
+            DB::raw("(CASE WHEN " . $table_Prefix . $academicTable . ".status = 'researcher' THEN '$translate_staff' ELSE '$translate_student' END) as category"),
+            //            DB::raw('sum(money) as money')
         ];
 
         foreach ($vData['meal_category'] as $period) {
@@ -71,8 +74,11 @@ class PurchaseCoupon extends Model
         }
 
         return $query->select($selectColumns)
-            ->join('academics', 'purchase_coupons.academic_id', '=', 'academics.academic_id')
-            ->whereBetween(DB::raw('DATE(purchase_coupons.created_at)'), [$vData['from_date'], $vData['to_date']])
+            ->join($academicTable, $purchaseTable . '.academic_id', '=', $academicTable . '.academic_id')
+            ->whereBetween(DB::raw('DATE(' . $table_Prefix . $purchaseTable . '.created_at)'), [
+                $vData['from_date'],
+                $vData['to_date']
+            ])
             ->groupBy('date', 'category');
     }
 

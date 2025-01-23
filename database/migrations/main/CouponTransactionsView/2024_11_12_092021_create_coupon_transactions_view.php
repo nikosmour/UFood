@@ -23,7 +23,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS coupon_transactions');
+        $prefix = DB::getTablePrefix();
+        DB::statement('DROP VIEW IF EXISTS ' . $prefix . 'coupon_transactions');
     }
 
     /**
@@ -143,8 +144,8 @@ return new class extends Migration {
         $using = $this->getUsingTransactions($mealColumnsUsing);
 
         $transactions = $this->combineTransactions($sending, $receiving, $buying, $using);
-
+        $prefix = DB::getTablePrefix();
         DB::statement("
-            CREATE VIEW coupon_transactions AS " . $transactions->toSql());
+            CREATE VIEW {$prefix}coupon_transactions AS " . $transactions->toSql());
     }
 };
