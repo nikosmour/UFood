@@ -56,8 +56,8 @@ export default {
 					                   name :  "login",
 					                   query : {
 						                   skipAuthCheck : true,
-						                   ...( this.$route.name && !this.$route.name.startsWith( "error" ) &&
-						                        { redirect : this.$route.fullPath } ),
+						                   /* ...( this.$route.name && !this.$route.name.startsWith( "error" ) &&
+						                        { redirect : this.$route.fullPath } ), */
 					                   },
 				                   } );
 			} else if ( isAuthenticated && this.$route.name === "login" ) {
