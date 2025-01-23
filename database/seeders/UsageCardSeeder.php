@@ -25,11 +25,11 @@ class UsageCardSeeder extends Seeder
     public function run()
     {
         /** @var CardApplicant[] $cardApplicants */
-        $cardApplicants = CardApplicant::withOnly([])->where('created_at', '>', $this->createdAtMoreThan)->cursor();
+        $cardApplicants = CardApplicant::withOnly([])->whereDoesntHave('usageCard')->cursor();
         foreach ($cardApplicants as $applicant) {
             try {
                 $staff = EntryStaff::inRandomOrder()->first();
-                UsageCard::factory()->for($staff)->for($applicant)->create();
+                UsageCard::factory()->createdAt(max($staff->created_at, $applicant->created_at))->for($staff)->for($applicant)->create();
             } catch (QueryException  $e) {
                 if ($e->getCode() != 23000)
                     throw $e;

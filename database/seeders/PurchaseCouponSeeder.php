@@ -2,11 +2,18 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Classes\CreatedAtMoreThanSeeder;
+use App\Enum\MealPlanPeriodEnum;
+use App\Models\CouponOwner;
+use App\Models\CouponStaff;
+use App\Models\PurchaseCoupon;
 use Database\Seeders\Classes\ManyToManySeeder;
+use Database\Seeders\Traits\ReorderRowsTrait;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PurchaseCouponSeeder extends ManyToManySeeder
 {
+    use ReorderRowsTrait;
+    use WithoutModelEvents;
     /**
      * Run the database seeds.
      *
@@ -15,8 +22,14 @@ class PurchaseCouponSeeder extends ManyToManySeeder
     public function run()
     {
         $this->make_connection(
-            \App\Models\CouponOwner::where('created_at', '>', $this->createdAtMoreThan)->cursor(),
-            \App\Models\CouponStaff::all(),
-            \App\Models\PurchaseCoupon::class, $this->count);
+            CouponOwner::whereDoesntHave('purchaseCoupon')->cursor(),
+            CouponStaff::all(),
+            PurchaseCoupon::class, $this->count, true);
+//        $this->reorderRows(PurchaseCoupon::class,'created_at');
+        $array = [];
+        foreach (MealPlanPeriodEnum::names() as $period) {
+            $array[$period] = 10;
+        }
+        PurchaseCoupon::where('id', '>', 0)->update($array);
     }
 }

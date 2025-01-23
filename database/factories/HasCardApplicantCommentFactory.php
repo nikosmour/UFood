@@ -20,7 +20,7 @@ class HasCardApplicantCommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'comment' => 'card_applicants_comment',
+            'comment' => 'Σχόλιο φοιτητή',
             'status' => CardStatusEnum::SUBMITTED
         ];
     }

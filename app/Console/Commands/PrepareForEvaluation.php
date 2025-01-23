@@ -29,9 +29,10 @@ class PrepareForEvaluation extends Command
 //        $category = $this->argument('option');
         $commands = [
             'php artisan migrate --database=third_mysql --path=database/migrations/extra',
-            'php artisan migrate --database=secondary_mysql --path=database/migrations/common/*  --seed',
             'php artisan migrate --database=mysql --path=database/migrations/common/*',
             'php artisan migrate --database=mysql --path=database/migrations/main/*',
+            'php artisan migrate --database=secondary_mysql --path=database/migrations/common/*  --seed',
+            'php artisan db:seed PrepareEvaluationMainSeeder  --database=mysql ',
             // Add more commands here as needed
         ];
         // Run each command

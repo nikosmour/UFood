@@ -2,10 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\CouponOwner;
+use App\Models\EntryStaff;
+use App\Models\UsageCoupon;
 use Database\Seeders\Classes\ManyToManySeeder;
+use Database\Seeders\Traits\ReorderRowsTrait;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UsageCouponSeeder extends ManyToManySeeder
 {
+    use ReorderRowsTrait;
+    use WithoutModelEvents;
     /**
      * Run the database seeds.
      *
@@ -14,8 +21,10 @@ class UsageCouponSeeder extends ManyToManySeeder
     public function run()
     {
         $this->make_connection(
-            \App\Models\CouponOwner::where('created_at', '>', $this->createdAtMoreThan)->cursor(),
-            \App\Models\EntryStaff::all(),
-            \App\Models\UsageCoupon::class, $this->count);
+            CouponOwner::whereDoesntHave('usageCoupon')->cursor(),
+            EntryStaff::all(),
+            UsageCoupon::class, $this->count, true);
+        $this->reorderRows(UsageCoupon::class, 'created_at');
+
     }
 }

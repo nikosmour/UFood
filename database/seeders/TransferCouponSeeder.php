@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\CouponOwner;
 use App\Models\TransferCoupon;
 use Database\Seeders\Classes\ManyToManySeeder;
+use Database\Seeders\Traits\ReorderRowsTrait;
 use Exception;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransferCouponSeeder extends ManyToManySeeder
 {
     use WithoutModelEvents;
+    use ReorderRowsTrait;
     /**
      * Run the database seeds.
      *
@@ -19,16 +21,17 @@ class TransferCouponSeeder extends ManyToManySeeder
      */
     public function run()
     {
-        $couponOwners = CouponOwner::where('created_at', '>', $this->createdAtMoreThan)->get();
-        $this->make_connection($couponOwners, $couponOwners, TransferCoupon::class, $this->count);
-
+        $couponOwners = CouponOwner::whereDoesntHave('sendingCoupon')->get();
+        $this->make_connection($couponOwners, $couponOwners, TransferCoupon::class, $this->count, true);
+        $this->reorderRows(TransferCoupon::class, 'created_at');
     }
 
-    protected function define_connection(Model $item1, Model $item2, string $connection): void
+    protected function define_connection(Model $item1, Model $item2, string $connection, bool $withCreatedAt): void
     {
         try {
             $connection::firstOrCreate(
                 $connection::factory()->
+                createdAt(max($item1->created_at, $item2->created_at))->
                 for($item1, 'Sender')->
                 for($item2, 'Receiver')->
                 make()->

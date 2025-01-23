@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\CardApplicant;
+use Database\Factories\traits\CreatedAtTrait;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -11,6 +12,7 @@ use JetBrains\PhpStorm\ArrayShape;
  */
 class CardApplicantFactory extends Factory
 {
+    use CreatedAtTrait;
     /**
      * Define the model's default state.
      *

@@ -23,14 +23,17 @@ class CardApplicantSeeder extends CreatedAtMoreThanSeeder
     }
     public function run()
     {
-        $cardApplicants = CardApplicant::whereDoesntHave('addresses')->where('created_at', '>', $this->createdAtMoreThan)->cursor();
+        $cardApplicants = CardApplicant::whereDoesntHave('addresses')->cursor();
         $departments = Department::all();
         foreach ($cardApplicants as $cardApplicant) {
             Address::factory()->permanent()->for($cardApplicant)->create();
             Address::factory()->notPermanent()->for($cardApplicant)->create();
             $cardApplicant->department_id = $departments->random()->id;
             $cardApplicant->save();
-            if ($this->extra) CardApplication::factory()->for($cardApplicant)->withComment()->withDocs()->create();
+            if ($this->extra) CardApplication::factory()->for($cardApplicant)->withComment(!in_array($cardApplicant->academic_id % 8, [
+                5,
+                6
+            ]))->withDocs($cardApplicant->academic_id % 2 === 1)->create();
         }
     }
 }

@@ -17,6 +17,7 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $created_at = $this->faker->dateTimeBetween('-7 years', 'now');
         return [
             'name' => $this->faker->name(),
             'father_name' => $this->faker->firstName('male'),
@@ -25,6 +26,8 @@ class UserFactory extends Factory
             'status' => UserStatusEnum::random(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
 //            'remember_token' => Str::random(10),
+            'created_at' => $created_at,
+            'updated_at' => $created_at,
         ];
     }
 

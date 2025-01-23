@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enum\MealPlanPeriodEnum;
+use Database\Factories\traits\CreatedAtTrait;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TransferCouponFactory extends Factory
 {
+    use CreatedAtTrait;
+
     /**
      * Define the model's default state.
      *

@@ -19,7 +19,7 @@ class CardApplicationCheckingFactory extends Factory
     public function definition(): array
     {
         return [
-            'comment' => 'card_application_staff_comment',
+            'comment' => 'Σχόλιο  ελεγκτή',
         ];
     }
 }

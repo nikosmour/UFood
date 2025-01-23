@@ -26,18 +26,18 @@ class CardApplicationDocumentFactory extends Factory
         return $this->getValues($doc);
     }
 
-    private function getValues(string $doc): array
+    private function getValues(string $doc, bool $wrong = false): array
     {
         $name = in_array($doc, $this->docs) ? $doc : 'otherInformation';
         return [
-            'file_name' => '_fake_' . $name,
+            'file_name' => '_fake_' . $name . ($wrong ? '_wrong' : ''),
             'description' => $doc
         ];
     }
 
-    public function withCustomValues($type): Factory
+    public function withCustomValues($type, $wrong = false): Factory
     {
-        return $this->state($this->getValues($type));
+        return $this->state($this->getValues($type, $wrong));
     }
 
 }

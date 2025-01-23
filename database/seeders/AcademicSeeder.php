@@ -13,11 +13,13 @@ use Database\Seeders\Classes\UserSeederPreparation;
 class AcademicSeeder extends UserSeederPreparation
 {
     private bool $extra;
+    private Carbon|null $from;
 
-    public function __construct($count = 20, $extra = false)
+    public function __construct($count = 20, $extra = false, $from = null)
     {
         parent::__construct($count);
         $this->extra = $extra;
+        $this->from = $from ? new Carbon($from) : Carbon::now()->startOfMonth();
     }
 
     /**
@@ -33,7 +35,7 @@ class AcademicSeeder extends UserSeederPreparation
                 "parameters" => []
             ]
         ];
-        $now = Carbon::now();
+        $now = $this->from;
         if ($this->extra) {
             $moreSeeders = [
                 ...$moreSeeders,
@@ -75,8 +77,14 @@ class AcademicSeeder extends UserSeederPreparation
             $this->emailCounters[$status]++;
             $email = $this->generateEmail($status);
 
-            $academic = Academic::factory()->create(['status' => $user_status->value, 'email' => $email, 'a_m' => $this->emailCounters[$status], 'academic_id' => $this->emailCounters[$status] + 2 * 10 ** 15,]);
-            if ($user_status->can(UserAbilityEnum::CARD_OWNERSHIP)) CardApplicant::factory()->for($academic)->create();
+            $academic = Academic::factory()->create([
+                'status' => $user_status->value,
+                'email' => $email,
+                'a_m' => $this->emailCounters[$status],
+                'academic_id' => $this->emailCounters[$status] + 2 * 10 ** 15,
+                'is_active' => ($this->emailCounters[$status] % 10) !== 0
+            ]);
+            if ($user_status->can(UserAbilityEnum::CARD_OWNERSHIP)) CardApplicant::factory()->for($academic)->createdAt($academic->created_at)->create();
             if ($this->extra) CouponOwner::factory()->for($academic)->create();
         }
     }
