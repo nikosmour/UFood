@@ -32,9 +32,9 @@ class TransactionCouponConformationDetailsController extends Controller
         if (!$string) {
             return NULL;
         }
-        $length = strlen($string);
+        $length = mb_strlen($string, 'UTF-8');
         $visibleCount = (int)round($length / 4);
         $hiddenCount = $length - ($visibleCount * 2);
-        return substr($string, 0, $visibleCount) . str_repeat('*', $hiddenCount) . substr($string, ($visibleCount * -1), $visibleCount);
+        return mb_substr($string, 0, $visibleCount, 'UTF-8') . str_repeat('*', $hiddenCount) . mb_substr($string, ($visibleCount * -1), $visibleCount, 'UTF-8');
     }
 }
