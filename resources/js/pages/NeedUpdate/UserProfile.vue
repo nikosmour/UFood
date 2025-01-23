@@ -1,7 +1,7 @@
 <template>
     <v-container max-width = "50rem">
         <v-card :title = "$t('personalInfo')" class = "pa-10">
-            <card-applicant-info :user = "currentUser" />
+            <card-applicant-info :user = "currentUser" class = "mt-5" />
 
             <create-user v-if = "isNew" />
         </v-card>

@@ -270,7 +270,7 @@ export const en = {
 	"reject" :          "Reject",
 	"personalData" :    {
 		"accept" :  "I accept that my personal data will be stored",
-		"explain" : " We will be storing the data for managing your enter in the restaurant",
+		"explain" : "I accept that the above data and any other data i will provide, wil be stored  for the duration of  the demonstration of the thesis",
 		"reject" :  "Press it if you do not want to use this platform.Nothing will be stored in our System",
 	},
 	// "request_failed": "Request failed",
