@@ -54,7 +54,7 @@ export function setupAxiosInterceptor( {
 				             .then( () => $axios( error.config ) )
 				            .catch( refreshError => {
 					            console.error( "CSRF refresh error", refreshError );
-					            return Promise.reject( error );
+					            
 				            } );
 			
 			if ( status === 401 )
