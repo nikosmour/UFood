@@ -309,7 +309,11 @@ export default {
 			this.submitData( this.url, data )
 			    .then( json => {
 				    this.receiver.transaction_id = json.transaction;
-				    this.$emit( "new_transaction_coupon", this.mealQuantities );
+				    this.$emit( "new_transaction_coupon", {
+					    ...this.mealQuantities,
+					    id :         Number( json.transaction.slice( 1 ) ),
+					    created_at : ( new Date() ).toLocaleDateString( "en-ca" ),
+				    } );
 			    } );
 		},
 
