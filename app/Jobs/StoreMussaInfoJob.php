@@ -32,10 +32,7 @@ class StoreMussaInfoJob implements ShouldQueue
     private function storeMussaInfo(array $data, array $moreData)
     {
         // Create a new Academic model instance
-        $academic = new Academic();
-
-        // Set connection to 'secondary_mysql'
-        $academic->setConnection('secondary_mysql');
+        $academic = Academic::on('secondary_mysql')->where('email', $data['email'])->firstOrNew();
         unset($data['department']);
         unset($data['guard']);
         // Populate the model with data
