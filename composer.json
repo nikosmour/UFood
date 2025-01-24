@@ -1,10 +1,10 @@
 {
-    "name": "laravel/laravel",
+    "name"        : "nikosmour/u_food",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description" : "System to manage entry on uni",
     "keywords": [
-        "framework",
-        "laravel"
+        "entry-checking",
+        "application-free-food"
     ],
     "license": "MIT",
     "require": {
