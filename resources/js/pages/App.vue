@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from "vuex";
-import GlobalError from "@components/GlobalError.vue";
+import NotifyMessage from "@components/NotifyMessage.vue";
 import NavView from "./navView.vue";
 import { setupAxiosInterceptor } from "@utilities/sessionManager";
 import { InformTheUserError } from "@/errors/InformTheUserError";
@@ -18,7 +18,7 @@ export default {
 	
 	
 	components : {
-		GlobalError,
+		NotifyMessage,
 		NavView,
 	},
 	
@@ -116,7 +116,7 @@ export default {
             <!-- Main content area with role for accessibility -->
             <v-container fluid>
                 <router-view />
-                <GlobalError /> <!-- Add global error notification -->
+                <NotifyMessage /> <!-- Add global error notification -->
             </v-container>
         </v-main>
         

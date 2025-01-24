@@ -6,7 +6,7 @@
         class = "white--text"
         close-on-content-click
         role = "alert"
-        top
+        location = "top right"
     >
         {{ options.message }}
     </v-snackbar>
