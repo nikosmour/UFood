@@ -58,7 +58,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureApiRouters(): void
     {
-        Route::middleware('api')
+        Route::middleware('web')
             ->prefix('api')
             ->group(base_path('routes/api.php'));
     }

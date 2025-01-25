@@ -15,6 +15,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        $this->down();
         $this->createCouponTransactionsView();
     }
 
