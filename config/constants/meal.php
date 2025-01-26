@@ -14,6 +14,6 @@ return [
    |
    */
     'plan' => [
-        'period' => MealPlanPeriodEnum::values(),
+        'period' => MealPlanPeriodEnum::values()->toArray(),
     ]
 ];

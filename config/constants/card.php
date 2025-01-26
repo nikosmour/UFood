@@ -1,4 +1,8 @@
 <?php
+
+use App\Enum\CardDocumentStatusEnum;
+use App\Enum\CardStatusEnum;
+
 return [
     'application' => [
 
@@ -13,7 +17,7 @@ return [
        |
        */
 
-        'status' => \App\Enum\CardStatusEnum::values(),
+        'status' => CardStatusEnum::values()->toArray(),
 
         /*
        |--------------------------------------------------------------------------
@@ -28,7 +32,7 @@ return [
        */
 
         'document' => [
-            'status' => \App\Enum\CardDocumentStatusEnum::values(),
+            'status' => CardDocumentStatusEnum::values()->toArray(),
         ]
     ]
 ];

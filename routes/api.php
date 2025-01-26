@@ -36,7 +36,7 @@ Route::post('/user/create', [UserInfoController::class, 'store'])->name('user.st
 Route::resource('coupons/purchase', PurchaseCouponController::class, ['as' => 'coupons'])->only('store');
 Route::resource('entryChecking', EntryCheckingController::class)->only('store');
 Route::resource('cardApplication', CardApplicationController::class)->only('update');
-Route::apiResource('cardApplication.document', CardApplicationDocumentController::class)->shallow()
+Route::apiResource('cardApplication.document', CardApplicationDocumentController::class)->shallow()->except(['show'])
     ->names(['index' => 'document.index', 'store' => 'document.store',]);
 
 Route::resource('/cardApplication/{category}/checking', CardApplicationCheckingController::class, ['as' => 'cardApplication'])

@@ -1,4 +1,7 @@
 <?php
+
+use App\Enum\UserStatusEnum;
+
 return [
     /*
    |--------------------------------------------------------------------------
@@ -10,5 +13,5 @@ return [
    | it is important to change also the values in the database.
    |
    */
-    'status' => \App\Enum\UserStatusEnum::values()
+    'status' => UserStatusEnum::values()->toArray()
 ];
