@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-	"content-hash": "3afd145f97af200a191b1cd5edc949f7",
+    "content-hash": "204cea5c3536ba4aaac9b92d9c25d9ee",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1278,16 +1278,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.39.1",
+            "version": "v11.40.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "3d693dd36e78121bcd51fc02eda4bc137d2a17f2"
+                "reference": "599a28196d284fee158cc10086fd56ac625ad7a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/3d693dd36e78121bcd51fc02eda4bc137d2a17f2",
-                "reference": "3d693dd36e78121bcd51fc02eda4bc137d2a17f2",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/599a28196d284fee158cc10086fd56ac625ad7a3",
+                "reference": "599a28196d284fee158cc10086fd56ac625ad7a3",
                 "shasum": ""
             },
             "require": {
@@ -1313,7 +1313,7 @@
                 "league/flysystem-local": "^3.25.1",
                 "league/uri": "^7.5.1",
                 "monolog/monolog": "^3.0",
-                "nesbot/carbon": "^2.72.2|^3.4",
+                "nesbot/carbon": "^2.72.6|^3.8.4",
                 "nunomaduro/termwind": "^2.0",
                 "php": "^8.2",
                 "psr/container": "^1.1.1|^2.0.1",
@@ -1388,6 +1388,7 @@
                 "fakerphp/faker": "^1.24",
                 "guzzlehttp/promises": "^2.0.3",
                 "guzzlehttp/psr7": "^2.4",
+                "laravel/pint": "^1.18",
                 "league/flysystem-aws-s3-v3": "^3.25.1",
                 "league/flysystem-ftp": "^3.25.1",
                 "league/flysystem-path-prefixing": "^3.25.1",
@@ -1488,7 +1489,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-01-22T17:01:46+00:00"
+            "time": "2025-01-24T16:17:42+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -2839,16 +2840,16 @@
         {
             "name": "nikosmour/upatras_user_data",
             "version": "v1.0.0",
-	        "source" : {
-		        "type"     : "git",
-		        "url"      : "https://github.com/nikosmour/upatras_user_data.git",
-		        "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194"
-	        },
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikosmour/upatras_user_data.git",
+                "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194"
+            },
             "dist": {
-	            "type"     : "zip",
-	            "url"      : "https://api.github.com/repos/nikosmour/upatras_user_data/zipball/31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
-	            "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
-	            "shasum"   : ""
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikosmour/upatras_user_data/zipball/31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
+                "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
+                "shasum": ""
             },
             "require": {
                 "laravel/framework": "9.*|10.*|11.*",
@@ -2870,11 +2871,11 @@
                 }
             ],
             "description": "Get the User Data from mussa.upnet.gr ",
-	        "support": {
-		        "source": "https://github.com/nikosmour/upatras_user_data/tree/v1.0.0",
-		        "issues": "https://github.com/nikosmour/upatras_user_data/issues"
-	        },
-	        "time"   : "2025-01-05T10:27:25+00:00"
+            "support": {
+                "source": "https://github.com/nikosmour/upatras_user_data/tree/v1.0.0",
+                "issues": "https://github.com/nikosmour/upatras_user_data/issues"
+            },
+            "time": "2025-01-05T10:27:25+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -6362,16 +6363,16 @@
         },
         {
             "name": "tightenco/ziggy",
-            "version": "v2.4.2",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tighten/ziggy.git",
-                "reference": "6612c8c9b2d5b3e74fd67c58c11465df1273f384"
+                "reference": "2b574ba281546884b7bdde6eefa451ba7e0b52f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tighten/ziggy/zipball/6612c8c9b2d5b3e74fd67c58c11465df1273f384",
-                "reference": "6612c8c9b2d5b3e74fd67c58c11465df1273f384",
+                "url": "https://api.github.com/repos/tighten/ziggy/zipball/2b574ba281546884b7bdde6eefa451ba7e0b52f7",
+                "reference": "2b574ba281546884b7bdde6eefa451ba7e0b52f7",
                 "shasum": ""
             },
             "require": {
@@ -6426,9 +6427,9 @@
             ],
             "support": {
                 "issues": "https://github.com/tighten/ziggy/issues",
-                "source": "https://github.com/tighten/ziggy/tree/v2.4.2"
+                "source": "https://github.com/tighten/ziggy/tree/v2.5.0"
             },
-            "time": "2025-01-02T20:06:52+00:00"
+            "time": "2025-01-23T00:32:18+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -7066,16 +7067,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.16.0",
+            "version": "2.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "befcdc0e5dce67252aa6322d82424be928214fa2"
+                "reference": "075bc0c26631110584175de6523ab3f1652eb28e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/befcdc0e5dce67252aa6322d82424be928214fa2",
-                "reference": "befcdc0e5dce67252aa6322d82424be928214fa2",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/075bc0c26631110584175de6523ab3f1652eb28e",
+                "reference": "075bc0c26631110584175de6523ab3f1652eb28e",
                 "shasum": ""
             },
             "require": {
@@ -7125,7 +7126,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.16.0"
+                "source": "https://github.com/filp/whoops/tree/2.17.0"
             },
             "funding": [
                 {
@@ -7133,7 +7134,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-25T12:00:00+00:00"
+            "time": "2025-01-25T12:00:00+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -9523,7 +9524,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0.2"
+        "php": "^8.3.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"

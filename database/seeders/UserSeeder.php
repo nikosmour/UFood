@@ -17,7 +17,7 @@ class UserSeeder extends UserSeederPreparation
 
     private bool $extra;
 
-    public function __construct($count = 1000, $extra = false)
+    public function __construct($count = 200, $extra = false)
     {
         parent::__construct($count);
         $this->extra = $extra;

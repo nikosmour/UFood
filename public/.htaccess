@@ -34,8 +34,11 @@
 #AddEncoding gzip \.jsgz
 AddType application/javascript .js.gz
 AddType application/javascript .js.br
+AddType application/javascript .js
 
 AddType text/css .css.gz
+AddType text/css .css.br
+
 AddType text/css .css.br
 
 <IfModule mod_rewrite.c>
