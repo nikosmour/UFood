@@ -1,5 +1,5 @@
 services:
-    ufoodapp:
+    app:
         build:
             context: ./
         image:  ufoodapp:latest
@@ -10,7 +10,9 @@ services:
         networks:
             - ufood
         depends_on:
-            - mysql
+           mysql:
+                condition: service_started
+        restart: always
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -34,6 +36,21 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+        restart: always
+#    supervisor:
+#        build:
+#            context: .
+#            dockerfile: Dockerfile_supervisor
+#        depends_on:
+#            app:
+#                condition: service_started
+#            mysql:
+#                condition: service_started
+#        volumes:
+#            - ./app:/var/www/html
+#        # Other supervisor configurations...
+#        networks:
+#            - ufood
 networks:
     ufood:
         driver: bridge
