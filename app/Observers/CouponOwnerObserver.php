@@ -27,9 +27,10 @@ class CouponOwnerObserver implements ShouldHandleEventsAfterCommit
         dispatch(function () use ($transaction, $couponOwner) {
             Mail::to($couponOwner->academic()->value('email'))->send(new CouponOwnerUpdatedNotification($couponOwner, $transaction));
         })->afterResponse();
-        broadcast(event: new CouponOwnerUpdated(
-            couponTransaction: $transaction
-        ))->toOthers();
+        if ($transaction->transaction !== 'sending')
+            broadcast(event: new CouponOwnerUpdated(
+                couponTransaction: $transaction
+            ))->toOthers();
     }
 
     /**

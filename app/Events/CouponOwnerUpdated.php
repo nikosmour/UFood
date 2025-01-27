@@ -14,6 +14,7 @@ class CouponOwnerUpdated implements ShouldBroadcast//,ShouldDispatchAfterCommit
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public array $couponTransaction;
     /**
      * if must BroadCast
      * @return bool
@@ -26,10 +27,11 @@ class CouponOwnerUpdated implements ShouldBroadcast//,ShouldDispatchAfterCommit
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public CouponTransaction $couponTransaction
+    public function __construct(CouponTransaction $couponTransaction
     )
     {
+        $this->couponTransaction = $couponTransaction->toArray();
+
     }
 
     /**
@@ -39,10 +41,9 @@ class CouponOwnerUpdated implements ShouldBroadcast//,ShouldDispatchAfterCommit
      */
     public function broadcastOn(): array
     {
-
-        $id = match ($this->couponTransaction->transaction) {
-            'sending' => $this->couponTransaction->other_person_id,
-            default => $this->couponTransaction->academic_id,
+        $id = match ($this->couponTransaction['transaction']) {
+            'sending' => $this->couponTransaction['other_person_id'],
+            default => $this->couponTransaction['academic_id'],
         };
 
         return [
