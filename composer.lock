@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-	"content-hash": "3afd145f97af200a191b1cd5edc949f7",
+    "content-hash": "a0a8143937adb16f9ba2114399b7ac91",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2839,16 +2839,16 @@
         {
             "name": "nikosmour/upatras_user_data",
             "version": "v1.0.0",
-	        "source" : {
-		        "type"     : "git",
-		        "url"      : "https://github.com/nikosmour/upatras_user_data.git",
-		        "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194"
-	        },
+            "source" : {
+                "type"     : "git",
+                "url"      : "https://github.com/nikosmour/upatras_user_data.git",
+                "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194"
+            },
             "dist": {
-	            "type"     : "zip",
-	            "url"      : "https://api.github.com/repos/nikosmour/upatras_user_data/zipball/31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
-	            "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
-	            "shasum"   : ""
+                "type"     : "zip",
+                "url"      : "https://api.github.com/repos/nikosmour/upatras_user_data/zipball/31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
+                "reference": "31d1d19a211f6ba12d38b1e1fc24b47f26a8a194",
+                "shasum"   : ""
             },
             "require": {
                 "laravel/framework": "9.*|10.*|11.*",
@@ -2870,11 +2870,11 @@
                 }
             ],
             "description": "Get the User Data from mussa.upnet.gr ",
-	        "support": {
-		        "source": "https://github.com/nikosmour/upatras_user_data/tree/v1.0.0",
-		        "issues": "https://github.com/nikosmour/upatras_user_data/issues"
-	        },
-	        "time"   : "2025-01-05T10:27:25+00:00"
+            "support": {
+                "source": "https://github.com/nikosmour/upatras_user_data/tree/v1.0.0",
+                "issues": "https://github.com/nikosmour/upatras_user_data/issues"
+            },
+            "time"   : "2025-01-05T10:27:25+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -3218,6 +3218,67 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name"            : "predis/predis",
+            "version"         : "v2.3.0",
+            "source"          : {
+                "type"     : "git",
+                "url"      : "https://github.com/predis/predis.git",
+                "reference": "bac46bfdb78cd6e9c7926c697012aae740cb9ec9"
+            },
+            "dist"            : {
+                "type"     : "zip",
+                "url"      : "https://api.github.com/repos/predis/predis/zipball/bac46bfdb78cd6e9c7926c697012aae740cb9ec9",
+                "reference": "bac46bfdb78cd6e9c7926c697012aae740cb9ec9",
+                "shasum"   : ""
+            },
+            "require"         : {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev"     : {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan"          : "^1.9",
+                "phpunit/phpunit"          : "^8.0 || ^9.4"
+            },
+            "suggest"         : {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type"            : "library",
+            "autoload"        : {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license"         : [
+                "MIT"
+            ],
+            "authors"         : [
+                {
+                    "name"    : "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role"    : "Maintainer"
+                }
+            ],
+            "description"     : "A flexible and feature-complete Redis client for PHP.",
+            "homepage"        : "http://github.com/predis/predis",
+            "keywords"        : [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support"         : {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.3.0"
+            },
+            "funding"         : [
+                {
+                    "url" : "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time"            : "2024-11-21T20:00:02+00:00"
         },
         {
             "name": "propaganistas/laravel-phone",
