@@ -33,14 +33,16 @@
                                     <v-text-field
                                         id = "password"
                                         v-model = "formData.password"
+                                        :append-inner-icon = "showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                                         :class = "{ 'is-invalid': errors.password || errors.credentials }"
                                         :error-messages = "errors.password || errors.credentials"
                                         :rules = "rules['password']"
                                         :label = "$t('password')"
+                                        :type = "showPassword ? 'text' : 'password'"
+                                        @click:append-inner = "showPassword = !showPassword"
                                         @input = "errors.password=errors.credentials=null"
                                         outlined
                                         required
-                                        type = "password"
                                         max-width = "25em"
                                     />
                             </v-row>
@@ -104,6 +106,7 @@ export default defineComponent( {
 					} ),
 				],
 			},
+			showPassword : false,
 		};
 	},
 	methods : {

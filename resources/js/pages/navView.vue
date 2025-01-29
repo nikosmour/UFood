@@ -6,7 +6,7 @@
 
         <!-- Navigation Drawer (Mobile Menu) -->
         <v-app-bar-nav-icon
-            v-if = "isMobile"
+            v-if = "isAuthenticated && isMobile"
             aria-label = "Open Navigation"
             @click.stop = "navigation_drawer = !navigation_drawer"
         />
