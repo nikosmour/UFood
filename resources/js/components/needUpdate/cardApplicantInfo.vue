@@ -60,6 +60,7 @@
                 <v-col v-if = "user.card_applicant" class = "pt-0 pb-0" cols = "12" md = "4">
                     <v-text-field
                         :model-value = "user.card_applicant.first_year"
+                        @update:model-value = "(val)=> user.card_applicant.first_year= val "
                         v-bind = "getFieldProps('first_year', user.card_applicant, {type :'number'})"
                     />
                 </v-col>
