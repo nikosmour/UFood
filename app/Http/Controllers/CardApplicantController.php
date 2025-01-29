@@ -10,6 +10,7 @@ use App\Services\UserService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,6 +61,13 @@ class CardApplicantController extends Controller
 
                 /** @var Academic $academic */
                 $academic = auth()->user();
+                if (isset($vData['academic_id'])) {
+                    $prev = $academic->academic_id;
+                    $academic->academic_id = $vData['academic_id'];
+                    $academic->save();
+                    Auth::guard('academics')->login($academic);
+                    Academic::on('secondary_mysql')->where('academic_id', $prev)->update(['academic_id' => $vData['academic_id']]);
+                }
 
                 // Update or create the card applicant without eager loads
                 /** @var CardApplicant|null $cardApplicant */

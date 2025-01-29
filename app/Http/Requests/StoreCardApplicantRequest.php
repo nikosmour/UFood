@@ -34,6 +34,10 @@ class StoreCardApplicantRequest extends FormRequest
     {
         $rules = [
 //            'cellphone' => ['phone:INTERNATIONAL,GR,MOBILE'],
+'academic_id' => [
+    'integer',
+    'min:' . 10 ** 11
+],
             'first_year' => ['integer', 'between:2000,' . now()->format('Y')],
             'department' => ['string', 'exists:departments,name'],
             'addresses' => ['array:permanent,temporary', 'min:1', 'max:2'],
