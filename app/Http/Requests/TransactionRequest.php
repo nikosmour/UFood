@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enum\MealPlanPeriodEnum;
+use App\Http\Requests\Traits\AMToAcademicTrait;
 use App\Models\Academic;
 use App\Rules\AtLeastOneNoZero;
 use App\Rules\IsUserActive;
@@ -12,6 +13,7 @@ use Illuminate\Validation\Validator;
 
 abstract class TransactionRequest extends FormRequest
 {
+    use AMToAcademicTrait;
     /**
      * is storing the auth()->user() if it is academic for additional checks
      * @var Academic|null
