@@ -82,7 +82,13 @@ export default defineConfig( ( { mode } ) => {
 			},
 			rollupOptions : {
 				output : {
-					inlineDynamicImports : true,
+					// inlineDynamicImports : true,
+					manualChunks( id ) {
+						if ( id.includes( "node_modules/@chenfengyuan" ) || id.includes( "jsbarcode" ) ) {
+							return "barcode";
+						}
+						return "vendor"; // Other vendor files go into vendor.[hash].js
+					},
 					// manualChunks( id ) {
 					// if ( id.includes( path.resolve( path2, "/pages/Coupons/" ) ) ||
 					//      id.includes( path.resolve( path2, "/pages/Coupons.vue" ) )

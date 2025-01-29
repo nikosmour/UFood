@@ -37,10 +37,18 @@
                 />
             </v-col>
             <template v-if = "isAcademic">
+                <barcode
+                    :value = "user.academic_id"
+                    format = "CODE39"
+                    line-color = "#2c3e50"
+                    background = "#f8f9fa" v-if = "showBarcode"
+                />
                 <v-col class = "pt-0 pb-0" cols = "12" md = "8">
                     <v-text-field
                         v-model = "user.academic_id"
                         v-bind = "getFieldProps('academic_id', user)"
+                        :prepend-inner-icon = "showBarcode? 'mdi-barcode-off' : 'mdi-barcode'"
+                        v-on:click:prepend-inner = "showBarcode=!showBarcode"
                     />
                 </v-col>
                 <v-col class = "pt-0 pb-0" cols = "12" md = "4">
@@ -102,9 +110,11 @@ import Academic from "@models/Academic";
 import BaseModel from "@utilities/BaseModel";
 import { defineComponent } from "vue";
 import cardApplicant from "@models/CardApplicant";
+import Barcode from "@components/barcode.vue";
 
 export default defineComponent( {
 	                                name :  "cardApplicantInfo",
+	                                components : { Barcode },
 	                                props : {
 		                                user :   {
 			                                type : BaseModel<any, any>,
@@ -129,6 +139,7 @@ export default defineComponent( {
 					                                value => !!value || this.$t( "validation.required" ),
 				                                ],
 			                                },
+			                                showBarcode : false,
 		                                };
 	                                },
 	                                computed : {
