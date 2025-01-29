@@ -11,9 +11,9 @@
                     :aria-label = "$t('documents.magnify',overlay?1:0)" icon
                     @click = "updateoverlay"
                 >
-                    <v-icon>mdi-magnify-{{ overlay
-                                           ? "close"
-                                           : "plus" }}
+                    <v-icon>mdi-arrow-{{ overlay
+                                         ? "collapse"
+                                         : "expand" }}
                     </v-icon>
                 </v-btn>
 
