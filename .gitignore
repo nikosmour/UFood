@@ -1,7 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
-/public/img
+#/public/img
 /public/js
 /public/css
 /resources/js/plugins/enums.js
