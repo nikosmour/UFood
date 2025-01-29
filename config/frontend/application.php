@@ -1,6 +1,9 @@
 <?php
 return [
     'alterableProperties' => [
+        "Academic" => [
+            'academic_id'
+        ],
         "CardApplicant" => [
             "first_year",
         ],

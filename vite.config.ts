@@ -60,6 +60,14 @@ export default defineConfig( ( { mode } ) => {
 		build :   {
 			minify :        "terser",  // Use Terser for minification
 			terserOptions : {
+				mangle : {
+					reserved : [
+						"Academic",
+						"CardApplicant",
+						"Address",
+						"CardApplicationDocument",
+					],
+				},
 				compress : {
 					// Remove all console statements (console.log, console.info, etc.)
 					drop_console : true,
