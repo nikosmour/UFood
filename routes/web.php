@@ -2,6 +2,9 @@
 
 //use App\Http\Controllers\AdminToolsController;
 use App\Http\Controllers\CardApplicationDocumentController;
+use App\Models\Academic;
+use App\Models\CouponStaff;
+use App\Models\EntryStaff;
 use Illuminate\Support\Facades\Route;
 
 //use App\Http\Middleware\AdminEmailMiddleware;
@@ -20,6 +23,14 @@ Route::get('lang/{lang}.json', function ($lang) {
     return response()->json(['files' => __('files', locale: $lang)]);
 })->name('lang');
 Route::resource('api/cardApplication/document', CardApplicationDocumentController::class)->only('show');
+Route::get('/form', function () {
+    $user = auth()->user();
+    if ($user instanceof Academic)
+        return response()->redirectTo('https://docs.google.com/forms/d/e/1FAIpQLSeGzYTSgqI0iI71gitd-61XCa2RAEG8H5fMcKaSB8ExnPWs-Q/viewform?usp=header');
+    if ($user instanceof EntryStaff or $user instanceof CouponStaff)
+        return response()->redirectTo('https://docs.google.com/forms/d/e/1FAIpQLSeALKrKIJb8woQgvn5AxrZmuNA-4ROO4eYshb5hXvUPcouBzg/viewform?usp=header');
+    return response()->redirectTo('https://docs.google.com/forms/d/e/1FAIpQLSfdjHO6uBFq8UemBqU9P6z08poX5_SQVmkQUN-SiOhAVNjN5A/viewform?usp=header');
+})->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
 //Route::get('statistics', ExportStatisticsController::class)->name('statistics2');// invoke
 
 // Import the middleware
