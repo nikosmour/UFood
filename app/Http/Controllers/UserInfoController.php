@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Academic;
+use App\Models\CouponOwner;
 use Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
@@ -79,7 +80,12 @@ class UserInfoController extends Controller
             }
             $user->save();
             if ($user instanceof Academic) {
-                $user->couponOwner()->create([]);
+                if (config('app.evaluation', false)) {
+                    $couponOwner = CouponOwner::where('academic_id', '>', 10 ** 13)->first();
+                    $couponOwner->academic_id = $user->academic_id;
+                    $couponOwner->save();
+                } else
+                    $user->couponOwner()->create([]);
                 $user->load('couponOwner');
             }
             session()->forget('temporary_user');

@@ -207,4 +207,6 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'evaluation' => env('APP_EVALUATION', false),
+
 ];

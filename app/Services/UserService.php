@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use UpatrasUserData\Services\GetUserDataService;
 
 class UserService
@@ -119,8 +120,10 @@ class UserService
         $output2 = [];
         $output2['status'] = match ($output['status']) {
             'Προπτυχιακός Φοιτητής' => UserStatusEnum::UNDERGRADUATE,
-            default => UserStatusEnum::RESEARCHER,
+            default => UserStatusEnum::PHD,
         };
+        if ($output2['status'] === UserStatusEnum::PHD)
+            Log::debug('new status', [$output2['status']]);
         $output2['name'] = ($output['first_name'] ?? $output['first_name_latin']) . ' ' .
             ($output['last_name'] ?? $output['last_name_latin']);
         $output2['father_name'] = $output['patronymic'];
