@@ -30,7 +30,7 @@ class UsageCard extends Model
      * The attributes that are the primary key
      * @var array<int, string>
      */
-    protected $primaryKey = ['date', 'academic_id', 'type'];
+    protected $primaryKey = null;//['date', 'academic_id', 'type'];
 
     /**
      * The attributes that should be cast.
