@@ -145,11 +145,11 @@
                 </v-expansion-panel>
             </v-expansion-panels>
             <v-textarea
-                :label = "$t('comment.value')" :model-value = "application.card_applicant_update_latest?.comment"
+                :label = "$t('comment.student')" :model-value = "application.card_applicant_update_latest?.comment"
                 auto-grow readonly rows = "2"
             >
             </v-textarea>
-            current expiration date : {{ expirationDate }}
+            {{ $t( "model_data.expiration_date" ) }} : {{ expirationDate }}
         </v-card-text>
         <v-card-actions
             v-if = "isCheckingByUser" aria-label = "Status buttons" class = "justify-space-between"
@@ -190,9 +190,20 @@
                 <v-card-text>
                     <v-form ref = "fileForm">
                         <!-- File Description -->
-                        <v-textarea v-model = "commentChecking" :label = "$t('comment.enter')" auto-grow rows = "2">
-                        </v-textarea>
-                        <v-text-field v-model = "expirationDate" type = "date" />
+                        <v-textarea
+                            v-model = "commentChecking"
+                            :label = "$t('comment.enter')"
+                            :error-messages = "errors['card_application_staff_comment']"
+                            v-on:change = "errors['card_application_staff_comment']=[]"
+                            auto-grow
+                            rows = "2"
+                        />
+                        <v-text-field
+                            v-model = "expirationDate"
+                            :error-messages = "errors['expiration_date']"
+                            v-on:change = "errors['expiration_date']=[]"
+                            type = "date"
+                        />
 
                         <!--                        <v-date-input-->
                         <!--                            v-model = "expirationDate"-->
@@ -255,7 +266,10 @@ export default {
 			// 	message : "",
 			// 	success : true,
 			// 	hide :    false,
-			// 	errors :  [],
+			errors : {
+				"expiration_date" :                [],
+				"card_application_staff_comment" : [],
+			},
 			// },
 		};
 	},
@@ -277,7 +291,7 @@ export default {
 				const response = await this.$axios.post( url, params );
 				let json = response.data;
 				this.$notify( {
-					              error : json.message,
+					              error : $t( json.message ),
 					              color : "success",
 				              } );
 			} catch ( errors ) {
@@ -302,9 +316,10 @@ export default {
 				this.currentStatus = this.application.card_last_update.status;
 			} catch ( error ) {
 				// application.card_last_update.status = this.currentStatus;
-				if ( error.response?.status === 422 )
+				if ( error.response?.status === 422 ) {
+					this.errors = error.response.errors;
 					this.$displayError( error.message );
-				else {
+				} else {
 					throw error;
 				}
 			} finally {
@@ -334,13 +349,13 @@ export default {
 					params );
 				this.showDecisionDialog = false;
 				this.$notify( {
-					              error : "success update",
+					              error : this.$t( "application-updated" ),
 					              color : "success",
 				              } );
 				this.currentStatus = application.card_last_update.status;
 			} catch ( errors ) {
-				    console.info( "updateApplicationStatus catch", errors );
-				    this.$displayError( { error : errors } );
+				if ( errors.response?.status === 422 )
+					this.errors = errors.response.data.errors;
 			} finally {
 				this.loading.pop();
 			}

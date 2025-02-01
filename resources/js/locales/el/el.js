@@ -25,6 +25,7 @@ export const el = {
 		           "2. Επικοινωνήστε με τη γραμματεία του τμήματός σας αν δεν μπορείτε να τις αλλάξετε.\n",
 	},
 	"application" :              "Αίτηση | Αιτήσεις",
+	"application-updated" : "Η αίτηση ενημερώθηκε με επιτυχία",
 	"application-status-is" :    {
 		"current" : "Η τρέχουσα αίτηση σας είναι {status}.",
 		"latest" :  "Η πιο πρόσφατη αίτηση σας είναι {status}.",
@@ -53,9 +54,10 @@ export const el = {
 	},
 	// "changeFromTo": "Αλλαγή από @:{from1} σε @:{to1} ",
 	"comment" :      {
-		//     "enter": "Εισάγετε Σχόλιο:",
+		"enter" :   "Εισάγετε Σχόλιο:",
 		//     "latestFrom": "Τελευταίο σχόλιο από ",
 		"value" : "Χωρίς σχόλιο | Σχόλιο | Σχόλια",
+		"student" : "Σχόλιο Φοιτητή",
 	},
 	"communication" : {
 		"issue" : "Υπάρχει πρόβλημα σύνδεσης.Ξαναπροσπαθήστε",
@@ -92,9 +94,9 @@ export const el = {
 	"entry" : {
 		"card" :      "Κάρτα",
 		"coupon" :    "Κουπόνι",
-		"notAccept" : "Δεν εγκρίνετε",
+		"notAccept" :   "Δεν εγκρίνεται",
 		"active" :      "Ενεργός",
-		"only_active" : "Mόνο ενεργή κατάσταση",
+		"only_active" : "Έλεγχος μόνο ενεργής κατάσταση",
 		"autoSubmitOnPause" : "Αυτόματη υποβολή",
 	},
 	// "entry_input": "@:card.value",
