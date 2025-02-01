@@ -70,7 +70,7 @@ class CardApplicationDocumentController extends Controller
         $fileStorageData = $this::storePositionData($cardApplication->academic_id, $document); // Adjust the file path according to your file storage location
         $filePath = $fileStorageData[0] . '/' . $fileStorageData[1];
         $disk = $fileStorageData[2];
-        if (!app()->environment('production') and str_starts_with($document->file_name, '_fake_')) {
+        if ((config('app.evaluation') || !app()->environment('production')) and str_starts_with($document->file_name, '_fake_')) {
             $filePath = $document->file_name = str_replace('_fake_', '', $document->file_name);
             if ($document->file_name === 'otherInformation') {
                 $pdf = PDF::loadView('PDFS.fakePDF');
