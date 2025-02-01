@@ -191,16 +191,19 @@
                     <v-form ref = "fileForm">
                         <!-- File Description -->
                         <v-textarea
+                            v-if = "application.card_last_update.status!==$enums.CardStatusEnum.ACCEPTED "
                             v-model = "commentChecking"
-                            :label = "$t('comment.enter')"
+                            :label = "$t('comment.enter')+'*'"
                             :error-messages = "errors['card_application_staff_comment']"
                             v-on:change = "errors['card_application_staff_comment']=[]"
                             auto-grow
                             rows = "2"
                         />
                         <v-text-field
+                            v-else
                             v-model = "expirationDate"
                             :error-messages = "errors['expiration_date']"
+                            :label = "$t('model_data.expiration_date')"
                             v-on:change = "errors['expiration_date']=[]"
                             type = "date"
                         />
@@ -335,10 +338,9 @@ export default {
 			let params = new FormData();
 			params.append( "status", application.card_last_update.status.value );
 			params.append( "card_application_id", application.id );
-			if ( this.expirationDate && application.card_last_update.status === this.$enums.CardStatusEnum.ACCEPTED ) {
+			if ( application.card_last_update.status === this.$enums.CardStatusEnum.ACCEPTED ) {
 				params.append( "expiration_date", this.expirationDate );
-			}
-			if ( this.commentChecking ) {
+			} else {
 				params.append( "card_application_staff_comment", this.commentChecking );
 			}
 			this.loading.push( true );
