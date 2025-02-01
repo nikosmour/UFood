@@ -34,6 +34,9 @@ export default {
 		};
 	},
 	computed : {
+		lang() {
+			return navigator.language;
+		},
 		/**
 		 * Table headers for the transactions data table.
 		 * @returns List of headers for v-data-table
@@ -210,7 +213,7 @@ export default {
             </template>
 
             <template #item.date = "{ item }">
-                <span>{{ item.created_at.toLocaleDateString( "en-ca" ) }}</span>
+                <span>{{ item.created_at.toLocaleString( lang ) }}</span>
             </template>
 
             <!--            <template #item.totalMoney="{ item }">-->

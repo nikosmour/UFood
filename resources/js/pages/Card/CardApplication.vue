@@ -4,7 +4,7 @@
         <MyFreeFoodStatus />
                 <v-alert
                     v-if = "untilDate"
-                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString('en-ca')},submitPeriod ? 1: 0)"
+                    :text = "$t('submit_application_until',{ 'date':untilDate.toLocaleDateString(lang)},submitPeriod ? 1: 0)"
                     closable
                 />
         <v-row justify = "center">
@@ -91,6 +91,9 @@ export default {
 		},
 		alt_labels() : boolean {
 			return this.$vuetify.display.smAndDown;
+		},
+		lang() {
+			return navigator.language;
 		},
 		status() {
 			return this.application?.card_last_update?.status;

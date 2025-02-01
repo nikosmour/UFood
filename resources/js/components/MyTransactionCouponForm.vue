@@ -253,6 +253,9 @@ export default {
 		mealsDisable() {
 			return !this.receiver.id;
 		},
+		lang() {
+			return navigator.language;
+		},
 	},
 
 	/**
@@ -312,7 +315,7 @@ export default {
 				    this.$emit( "new_transaction_coupon", {
 					    ...this.mealQuantities,
 					    id :         Number( json.transaction.slice( 1 ) ),
-					    created_at : ( new Date() ).toLocaleDateString( "en-ca" ),
+					    created_at : ( new Date() ).toLocaleDateString( lang ),
 				    } );
 			    } );
 		},

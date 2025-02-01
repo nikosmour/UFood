@@ -36,10 +36,10 @@
             </tr>
         </template>
         <template v-slot:item.created_at = "{item}">
-            {{ ( new Date( item.created_at ) ).toLocaleDateString( "en-ca" ) }}
+            {{ ( new Date( item.created_at ) ).toLocaleDateString( lang ) }}
         </template>
         <template v-slot:item.updated_at = "{item}">
-            {{ ( new Date( item.updated_at ) ).toLocaleDateString( "en-ca" ) }}
+            {{ ( new Date( item.updated_at ) ).toLocaleDateString( lang ) }}
         </template>
         <template v-slot:item.is_permanent = "{item}">
             {{ $t( item.is_permanent
@@ -82,6 +82,9 @@ export default {
 		attributes() {
 			return Object.keys( this.firstModel )
 			             .filter( key => typeof this.firstModel[ key ] !== "object" );
+		},
+		lang() {
+			return navigator.language;
 		},
 		relationships() {
 			return Object.keys( this.firstModel )

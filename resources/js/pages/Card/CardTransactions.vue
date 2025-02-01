@@ -23,7 +23,7 @@
             </template>
 
             <template #item.date = "{ item }">
-                {{ item.date.toLocaleString( $i18n.locale ) }}
+                {{ item.date.toLocaleString( lang ) }}
             </template>
         </v-data-table-virtual>
 
@@ -74,6 +74,9 @@ export default {
 		stopFetch() {
 			return !this.url;
 		},
+		lang() {
+			return navigator.language;
+		},
 	},
 	methods :  {
 		/**
@@ -121,6 +124,7 @@ export default {
 	},
 	mounted() {
 		this.fetchData(); // Initial fetch on component mount
+		console.debug( navigator.language );
 	},
 };
 </script>

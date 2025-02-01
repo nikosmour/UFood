@@ -280,7 +280,7 @@ export default {
 		startingData() {
 			this.currentStatus = this.application.card_last_update.status;
 			this.files = this.application.card_application_document;
-			this.expirationDate = this.application.expiration_date.toLocaleDateString( "en-ca" );//toISOString().split( "T" )[ 0 ];
+			this.expirationDate = this.application.expiration_date.toLocaleDateString( lang );//toISOString().split( "T" )[ 0 ];
 
 		},
 		async updateDocumentStatus( file ) {
@@ -374,6 +374,9 @@ export default {
 		isCheckingByUser() {
 			return this.application?.card_last_update.status === this.$enums.CardStatusEnum.CHECKING
 			       && this.application?.card_last_update.card_application_staff_id === this.currentUser.id;
+		},
+		lang() {
+			return navigator.language;
 		},
 		cantCheckingByUser() {
 			return [
