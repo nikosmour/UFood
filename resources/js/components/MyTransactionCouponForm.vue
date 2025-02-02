@@ -5,7 +5,7 @@
                 <v-stepper
                     v-if = "couponOwner"
                     v-model = "step"
-                    :items = "[$t('receiver.value'), $t('confirmation'), $t('transaction.summary')]"
+                    :items = "[$t(step1), $t('confirmation'), $t('transaction.summary')]"
                     :mobile = "null"
                     mobile-breakpoint = "sm"
                     hide-actions
@@ -23,9 +23,9 @@
                                         <v-text-field
                                             ref = "receiverId"
                                             v-model.number = "receiver.id"
-                                            :aria-label = "$t('receiver.value')"
+                                            :aria-label = "$t(receiverLabel)"
                                             :error-messages = "errors.receiver_id"
-                                            :label = "$t('receiver.value')"
+                                            :label = "$t(receiverLabel)"
                                             :rules = "rules.receiver"
                                             autofocus
                                             density = "compact"
@@ -86,7 +86,7 @@
                                     @click = "step--"
                                 />
                                 <v-btn
-                                    :text = "$t('confirm')"
+                                    :text = "$t('transaction.confirmation')"
                                     color = "primary"
                                     type = "submit"
                                     variant = "elevated"
@@ -146,6 +146,14 @@ export default {
 		transaction : {
 			type :     String,
 			required : true,
+		},
+		receiverLabel : {
+			type :    String,
+			default : "receiver.value",
+		},
+		step1 :         {
+			type :    String,
+			default : "receiver.value",
 		},
 	},
 
@@ -209,9 +217,9 @@ export default {
 			 */
 			rules : {
 				receiver : [
-					value => !!value || this.$t( "validation.required", { attribute : this.$t( "receiver.value" ) } ),
+					value => !!value || this.$t( "validation.required", { attribute : this.$t( this.receiverLabel ) } ),
 					value => ( value > 0 ) || this.$t( "validation.exists",
-					                                   { attribute : this.$t( "validation.attributes.receiver_id" ) } ),
+					                                   { attribute : this.$t( this.receiverLabel ) } ),
 					value => ( value !== this.couponOwner.academic_id ) || this.$t( "errors.transfer.myself" ),
 				],
 				meals :    {},
@@ -315,7 +323,7 @@ export default {
 				    this.$emit( "new_transaction_coupon", {
 					    ...this.mealQuantities,
 					    id :         Number( json.transaction.slice( 1 ) ),
-					    created_at : ( new Date() ).toLocaleDateString( lang ),
+					    created_at : ( new Date() ).toLocaleString( this.lang ),
 				    } );
 			    } );
 		},

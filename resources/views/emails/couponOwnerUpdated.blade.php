@@ -78,7 +78,7 @@
             <thead>
             <tr>
                 <th>Γεύματα</th>
-                <th>Παλιό Υπόλοιπο</th>
+                <th>Προηγούμενο Υπόλοιπο</th>
                 <th>Τιμή Συναλλαγής</th>
                 <th>Νέο Υπόλοιπο</th>
             </tr>
@@ -115,7 +115,7 @@
                 <thead>
                 <tr>
                     <th>Meals</th>
-                    <th>Old Balance</th>
+                    <th>Previous Balance</th>
                     <th>Transaction Value</th>
                     <th>New Balance</th>
                 </tr>

@@ -3,6 +3,7 @@
         :couponOwner = "couponOwner"
         transaction = "transfer"
         @new_transaction_coupon = "handleNewTransfer"
+        step1 = "transaction.transfer"
     />
 </template>
 

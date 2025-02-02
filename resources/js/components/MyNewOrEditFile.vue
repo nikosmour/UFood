@@ -220,7 +220,7 @@ export default {
                     color = "primary"
                     @click = "handleFileSubmit"
                 >
-                    {{ $t( "confirm" ) }}
+                    {{ $t( "confirmation" ) }}
                 </v-btn>
             </v-card-actions>
         </v-card>

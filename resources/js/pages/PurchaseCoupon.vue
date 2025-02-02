@@ -4,6 +4,8 @@
             <my-transaction-coupon-form
                 transaction = "purchase"
                 @new_transaction_coupon = "handleNewPurchase"
+                receiver-label = "transaction.buyer"
+                step1 = "transaction.purchase"
             />
         </v-col>
         <v-col class = "d-flex align-center" cols = "12" md = "4">

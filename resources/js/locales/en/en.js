@@ -365,6 +365,10 @@ export const en = {
 		"summary" :   "Transaction Summary",
 		//     "successful": "Successful transaction",
 		"using" : "Using",
+		"confirmation" : "@:confirmation",
+		"purchase" :     "@:purchase.value",
+		"buyer" :        "Buyer",
+		"transfer" :     "Transfer",
 	},
 	"transactions" : "Transactions",
 	"transfer" :     {
