@@ -36,6 +36,7 @@ export default {
 			for ( const meal in meals )
 				transactionData[ meal ] = -( transactionData[ meal ] || 0 );
 			transactionData[ "transaction" ] = "sending";
+			transactionData[ "created_at" ] = new Date();
 			this.couponOwner.manageNewTransaction( transactionData, meals, this.couponOwner );
 		},
 	},
