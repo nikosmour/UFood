@@ -299,7 +299,7 @@ export const en = {
 			"system" : "System",
 		},
 		"lang" :  {
-			"select" : "Select lang",
+			"select" : "Select language",
 			"en" :     "English",
 			"el" :     "Greek",
 		},
@@ -391,4 +391,3 @@ export const en = {
 
 
 export default en;
-277;

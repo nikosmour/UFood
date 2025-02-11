@@ -225,7 +225,7 @@
                         color = "primary"
                         @click = "updateApplicationStatus"
                     >
-                        {{ $t( "confirm" ) }}
+                        {{ $t( "confirmation" ) }}
                     </v-btn>
                 </v-card-actions>
             </v-card>
