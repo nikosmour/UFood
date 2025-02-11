@@ -2,14 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Academic;
+use App\Enum\UserAbilityEnum;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
-use App\Models\CardApplicationStaff;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Log;
 
 class CardApplicationDocumentPolicy
 {
@@ -28,7 +26,7 @@ class CardApplicationDocumentPolicy
             'view' => 'view',
             'create', 'update', 'delete' => 'update',
         };
-        $ifUser = $user instanceof CardApplicationStaff ? true : null;
+        $ifUser = $user->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK) ? true : null;
         return ($user->can($applicationAbility, $cardApplication)) ? $ifUser : false;
     }
     /**
@@ -45,8 +43,8 @@ class CardApplicationDocumentPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function view(User $user)
     {

@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enum\UserAbilityEnum;
 use App\Models\Academic;
 use App\Models\CardApplication;
-use App\Models\CardApplicationStaff;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -26,7 +26,7 @@ class CardApplicationPolicy
 
         }
         //if the user is not cardApplicant must be cardApplicationStaffs
-        return $user instanceof CardApplicationStaff && ($ability === 'view' || $ability === 'update' || $ability === 'edit') ? null : false;
+        return $user->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK) && ($ability === 'view' || $ability === 'update' || $ability === 'edit') ? null : false;
     }
 
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserAbilityEnum;
 use App\Models\Academic;
 use App\Models\CouponOwner;
+use App\Models\User;
 use Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
@@ -36,8 +38,13 @@ class UserInfoController extends Controller
                 'model' => class_basename($temp['model']),
             ]);
         }
+        /** @var User $user */
         $user = auth()->user();
-        if ($user instanceof Academic) {
+        if ($user->hasAnyAbility([
+            UserAbilityEnum::COUPON_OWNERSHIP,
+            UserAbilityEnum::CARD_OWNERSHIP
+        ])) {
+            /** @var Academic $user */
             $user->load([
                 'couponOwner',
                 'cardApplicant',
@@ -79,7 +86,7 @@ class UserInfoController extends Controller
                 $user[$userTempKey] = $userTempValue;
             }
             $user->save();
-            if ($user instanceof Academic) {
+            if ($user->hasAbility(UserAbilityEnum::COUPON_OWNERSHIP)) {
                 if (config('app.evaluation', false)) {
                     $couponOwner = CouponOwner::where('academic_id', '>', 10 ** 13)->first();
                     $couponOwner->academic_id = $user->academic_id;

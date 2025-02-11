@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Enum\CardDocumentStatusEnum;
 use App\Enum\CardStatusEnum;
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\Academic;
 use App\Models\CardApplicant;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
-use App\Models\CardApplicationStaff;
 use App\Traits\DocumentTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -121,12 +121,12 @@ class CardApplicationController extends Controller
             $this->authorize('edit', $cardApplication);
             $lastUpdate = $cardApplication->cardLastUpdate;
 
-            if ($user instanceof Academic)
+            if ($user->hasAbility(UserAbilityEnum::CARD_OWNERSHIP))
                 if ($lastUpdate && in_array($lastUpdate->status, [CardStatusEnum::SUBMITTED, CardStatusEnum::TEMPORARY_SAVED]))
                     $lastUpdate->status = CardStatusEnum::TEMPORARY_SAVED;
                 else
                     $lastUpdate = $cardApplication->cardApplicantUpdates()->make(['status' => CardStatusEnum::TEMPORARY_SAVED]);
-            elseif ($user instanceof CardApplicationStaff)
+            elseif ($user->hasAbility(UserAbilityEnum::CARD_APPLICATION_CHECK))
                 if ($lastUpdate->card_application_staff_id === $user->id)
                     $lastUpdate->status = CardStatusEnum::CHECKING;
                 else
