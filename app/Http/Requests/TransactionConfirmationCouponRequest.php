@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\UserAbilityEnum;
 use App\Models\Academic;
-use App\Models\CouponStaff;
+use App\Models\User;
 
 class TransactionConfirmationCouponRequest extends TransactionRequest
 {
@@ -21,8 +22,12 @@ class TransactionConfirmationCouponRequest extends TransactionRequest
      */
     public function authorize(): bool
     {
+        /** @var User $user */
         $user = auth()->user();
-        return ($user instanceof Academic) || ($user instanceof CouponStaff);
+        return $user->hasAnyAbility([
+            UserAbilityEnum::COUPON_SELL,
+            UserAbilityEnum::COUPON_OWNERSHIP
+        ]);
     }
 
 }

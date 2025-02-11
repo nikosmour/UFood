@@ -20,6 +20,7 @@ enum UserStatusEnum: string implements Enum, HasAbilities
     case STAFF_COUPON = 'staff coupon';
     case STAFF_CARD = 'staff card application';
     case STAFF_ENTRY = 'staff entry';
+    case STAFF = 'staff';
 
     /**
      * determine if the user has the specific $role
@@ -42,9 +43,9 @@ enum UserStatusEnum: string implements Enum, HasAbilities
     }
 
     /**
-     * @return UserRoleEnum
+     * @return ?UserRoleEnum
      */
-    private function role(): UserRoleEnum
+    private function role(): ?UserRoleEnum
     {
         return match ($this) {
             UserStatusEnum::STAFF_CARD => UserRoleEnum::STAFF_CARD,
@@ -55,12 +56,15 @@ enum UserStatusEnum: string implements Enum, HasAbilities
             UserStatusEnum::PHD,
             UserStatusEnum::ERASMUS => UserRoleEnum::STUDENT,
             UserStatusEnum::RESEARCHER => UserRoleEnum::RESEARCHER,
+            default => null,
         };
     }
 
     public function can(Ability $ability): bool
     {
-        return $this->role()->can($ability);
+        if ($this != UserStatusEnum::STAFF)
+            return $this->role()->can($ability);
+
     }
 
 
