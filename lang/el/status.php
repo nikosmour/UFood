@@ -1,11 +1,11 @@
 <?php
 return [
-    'TEMPORARY_SAVED' => 'προσωρινά αποθηκευμένο',
-    'SUBMITTED' => 'υποβλήθηκε',
+    'TEMPORARY_SAVED' => 'προσωρινά αποθηκευμένη',
+    'SUBMITTED' => 'υποβεβλημένη',
     'CHECKING' => 'ελεγχόμενο',
-    'TEMPORARY_CHECKED' => 'προσωρινά ελεγμένο',
-    'ACCEPTED' => 'εγκρίθηκε',
-    'REJECTED' => 'απορρίφθηκε',
+    'TEMPORARY_CHECKED' => 'προσωρινά ελεγμένη',
+    'ACCEPTED' => 'εγκεκριμένη',
+    'REJECTED' => 'απορριφθείσα',
     'INCOMPLETE' => 'ατελής',
 
 ];

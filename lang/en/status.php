@@ -2,8 +2,8 @@
 return [
     'TEMPORARY_SAVED' => 'temporary saved',
     'SUBMITTED' => 'submitted',
-    'CHECKING' => 'checking',
-    'TEMPORARY_CHECKED' => 'temporary checked',
+    'CHECKING' => 'under review',
+    'TEMPORARY_CHECKED' => 'temporary reviewed',
     'ACCEPTED' => 'accepted',
     'REJECTED' => 'rejected',
     'INCOMPLETE' => 'incomplete',
