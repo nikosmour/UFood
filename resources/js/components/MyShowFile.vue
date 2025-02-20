@@ -4,7 +4,8 @@
         :border = "'b-xl s-xl '+ styleColor"
         :subtitle = "name"
         :title = "description"
-        class = "mt-2"
+        class = "mt-2 "
+        :class = "{'d-flex flex-column': isMobile}"
     >
         <template #prepend>
             <v-icon icon = "mdi-paperclip" :color = "styleColor" />
@@ -162,6 +163,9 @@ export default {
 		 */
 		status() : PropertyType<CardDocumentStatusEnum> {
 			return this.file.status;
+		},
+		isMobile() {
+			return this.$vuetify.display.xs;
 		},
 
 
