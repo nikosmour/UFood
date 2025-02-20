@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use InvalidArgumentException;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -91,6 +92,23 @@ class User extends Authenticatable
         return new Attribute(
             get: fn() => $this->getAbilities(),
         );
+    }
+
+    public function getUserClassFromAbility(string $subclass)
+    {
+        if (!is_subclass_of($subclass, self::class)) {
+            throw new InvalidArgumentException("$subclass must be a subclass of " . self::class);
+        }
+
+        // Create a new instance of the subclass
+        $newInstance = new $subclass();
+
+        // Copy all attributes and relations
+        $newInstance->attributes = $this->attributes;
+        $newInstance->relations = $this->relations;
+        $newInstance->exists = $this->exists;
+
+        return $newInstance;
     }
 
 }

@@ -14,7 +14,7 @@ class CardHistoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
+        $this->middleware('auth:academics,staffs');
         $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
     }
 

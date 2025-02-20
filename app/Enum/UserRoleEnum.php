@@ -29,7 +29,10 @@ enum UserRoleEnum: string implements Enum, HasAbilities
             UserRoleEnum::STUDENT => [UserAbilityEnum::COUPON_OWNERSHIP, UserAbilityEnum::CARD_OWNERSHIP],
             UserRoleEnum::RESEARCHER => [UserAbilityEnum::COUPON_OWNERSHIP],
             UserRoleEnum::STAFF_COUPON => [UserAbilityEnum::COUPON_SELL],
-            UserRoleEnum::STAFF_ENTRY => [UserAbilityEnum::ENTRY_CHECK],
+            UserRoleEnum::STAFF_ENTRY => [
+                UserAbilityEnum::ENTRY_CHECK,
+                UserAbilityEnum::COUPON_SELL
+            ],
             UserRoleEnum::STAFF_CARD => [UserAbilityEnum::CARD_APPLICATION_CHECK]
         };
     }

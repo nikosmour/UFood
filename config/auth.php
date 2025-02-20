@@ -44,18 +44,22 @@ return [
             'driver' => 'session',
             'provider' => 'academics',
         ],
-        'entryStaffs' => [
-            'driver' => 'session',
-            'provider' => 'entryStaffs',
-        ],
-        'couponStaffs' => [
-            'driver' => 'session',
-            'provider' => 'couponStaffs',
-        ],
-        'cardApplicationStaffs' => [
-            'driver' => 'session',
-            'provider' => 'cardApplicationStaffs',
-        ],
+//        'entryStaffs' => [
+//            'driver' => 'session',
+//            'provider' => 'entryStaffs',
+//        ],
+//        'couponStaffs' => [
+//            'driver' => 'session',
+//            'provider' => 'couponStaffs',
+//        ],
+//        'cardApplicationStaffs' => [
+//            'driver' => 'session',
+//            'provider' => 'cardApplicationStaffs',
+//        ],
+'staffs' => [
+    'driver' => 'session',
+    'provider' => 'staffs',
+],
     ],
 
     /*
@@ -84,15 +88,19 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Academic::class,
         ],
-        'entryStaffs' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\EntryStaff::class,
-        ],
-        'couponStaffs' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\CouponStaff::class,
-        ],
-        'cardApplicationStaffs' => [
+//        'entryStaffs' => [
+//            'driver' => 'eloquent',
+//            'model' => App\Models\EntryStaff::class,
+//        ],
+//        'couponStaffs' => [
+//            'driver' => 'eloquent',
+//            'model' => App\Models\CouponStaff::class,
+//        ],
+//        'cardApplicationStaffs' => [
+//            'driver' => 'eloquent',
+//            'model' => App\Models\CardApplicationStaff::class,
+//        ],
+'staffs' => [
             'driver' => 'eloquent',
             'model' => App\Models\CardApplicationStaff::class,
         ],

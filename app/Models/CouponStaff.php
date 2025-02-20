@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @mixin IdeHelperCouponStaff
  */
-class CouponStaff extends User
+class CouponStaff extends Staff
 {
     public function purchaseCoupon(): HasMany
     {

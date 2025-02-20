@@ -2,16 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin IdeHelperEntryStaff
  */
-class EntryStaff extends User
+class EntryStaff extends Staff
 {
-    use HasFactory;
-
     public function usageCoupon(): HasMany
     {
         return $this->hasMany(UsageCoupon::class);

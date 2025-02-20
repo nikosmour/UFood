@@ -19,7 +19,7 @@ class UserInfoController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('authWithTemporary:academics,entryStaffs,couponStaffs,cardApplicationStaffs');
+        $this->middleware('authWithTemporary:academics,staffs');
     }
 
     /**

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @mixin IdeHelperCardApplicationStaff
  */
-class CardApplicationStaff extends User
+class CardApplicationStaff extends Staff
 {
     public function cardApplication(): BelongsToMany
     {
