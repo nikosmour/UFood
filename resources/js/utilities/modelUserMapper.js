@@ -4,6 +4,8 @@ import Academic from "@models/Academic";
 import CouponStaff from "@models/CouponStaff";
 import EntryStaff from "@models/EntryStaff";
 import CardApplicationStaff from "@models/CardApplicationStaff";
+import Staff from "@models/Staff.js";
+import User from "@models/User.js";
 
 // Map of model names to JavaScript classes
 const modelMapping = {
@@ -11,6 +13,8 @@ const modelMapping = {
 	CouponStaff :          CouponStaff,
 	EntryStaff :           EntryStaff,
 	CardApplicationStaff : CardApplicationStaff,
+	Staff : Staff,
+	User :  User,
 };
 
 /**

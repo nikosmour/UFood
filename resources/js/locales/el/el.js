@@ -285,6 +285,7 @@ export const el = {
 		"STAFF_COUPON" :    "Προσωπικό κουπονιών",
 		"STAFF_CARD" :      "Προσωπικό αιτήσεων καρτών",
 		"STAFF_ENTRY" :     "Προσωπικό Εισόδου",
+		"STAFF" : "Προσωπικό",
 		"update" : "Αλλαγή από {oldStatus} σε {newStatus}",
 	},
 	"statistics" :            {

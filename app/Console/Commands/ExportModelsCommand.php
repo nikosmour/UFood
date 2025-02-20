@@ -294,8 +294,20 @@ JS;
         $gettersAndSettersRelationships = $this->generateGettersAndSettersRelationships($relationships);
         $interfaceData = "I{$modelName}Data";
         $interface = "I{$modelName}Interface";
+        $base = "BaseModel";
+        $baseFrom = $this->baseModel;
+        $this->outputMessage('info', $modelName . ($modelName == 'Academic' ? ' true' : ' false'));
+
+//        if (Str::is($modelName,'StaffBase') || $modelName== 'AcademicBase'){
+//            $base="UserBase";
+//            $baseFrom="./UserBase";
+//        }elseif (str_contains($modelName,'Staff'))
+//        {
+//            $base="StaffBase";
+//            $baseFrom="./StaffBase";
+//        }
         $classContent = <<<TS
-import BaseModel from '{$this->baseModel}';
+import $base from '{$baseFrom}';
 import type { {$interface} , {$interfaceData} } from "../Interfaces";
 {$enumImports}
 {$relationshipsImports}
@@ -303,11 +315,11 @@ import type { {$interface} , {$interfaceData} } from "../Interfaces";
 /**
  * Class representing a $modelName model.
  * @class
- * @extends BaseModel
+ * @extends $base
 {$this->generateJsDocProperties($properties)}
 {$this->generateJsDocRelationships($relationships)}
  */
-export class $modelName extends BaseModel<{$interfaceData},{$interface}> implements {$interface} {
+export class $modelName extends $base<{$interfaceData},{$interface}> implements {$interface} {
 {$this->generateProperty($properties)}
 {$this->generatePropertyRelationships($relationships)}
 
