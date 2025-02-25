@@ -83,7 +83,7 @@ class UserInfoController extends Controller
                 if (config('app.evaluation', false)) {
                     $couponOwner = CouponOwner::where('academic_id', '>', 10 ** 13)->first();
                     $couponOwner->academic_id = $user->academic_id;
-                    $couponOwner->save();
+                    $couponOwner->saveQuietly();
                 } else
                     $user->couponOwner()->create([]);
                 $user->load('couponOwner');
