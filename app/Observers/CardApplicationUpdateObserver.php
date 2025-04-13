@@ -3,10 +3,9 @@
 namespace App\Observers;
 
 use App\Events\CardApplicationUpdated;
-use App\Mail\CardApplicationUpdatedNotification;
 use App\Models\CardApplicationUpdate;
+use App\Notifications\UpdateCardApplicationNotification;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
-use Mail;
 
 class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
 {
@@ -33,7 +32,8 @@ class CardApplicationUpdateObserver implements ShouldHandleEventsAfterCommit
                     cardApplicationUpdate: $cardApplicationUpdate
                 ))->toOthers();
         dispatch(function () use ($cardApplicationUpdate) {
-            Mail::to($cardApplicationUpdate->Academic()->value('email'))->send(new CardApplicationUpdatedNotification($cardApplicationUpdate));
+            //notification is working only if queue is sync
+            $cardApplicationUpdate->Academic->notify(new UpdateCardApplicationNotification($cardApplicationUpdate));
         })->afterResponse();
 
     }

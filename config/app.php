@@ -208,5 +208,6 @@ return [
     ])->toArray(),
 
     'evaluation' => env('APP_EVALUATION', false),
+    'vonage' => env('APP_VONAGE', false),
 
 ];

@@ -11,6 +11,8 @@ updates and their corresponding issue numbers for easy reference.
 1. [Issue #001: Load Documents from Previous Application](#001)
 2. [Issue #002: Efficient validation for array of ids](#002)
 3. [Issue #003: Manage ids of documents that failed or succeed validation](#003)
+4. [Issue #004: Not managing correct the data that receive the step 1 of cardApplication create Application](#004)
+5. [Issue #005: Using notification to send mail and sms for card updates should work with queueing the notification](#005)
 
 ## Future Updates List
 
@@ -58,8 +60,9 @@ updates and their corresponding issue numbers for easy reference.
 - **Files that will impact?**
   - [DocumentEdit@saveApplication](../resources/js/pages/Card/DocumentEdit.vue)
 
-### `#004` - **Not managing correct the data that receive the step 1 of cardApplication create Application
-** <a id="004"></a>
+### `#004` - Not managing correct the data that receive the step 1 of cardApplication create Application
+
+<a id="004"></a>
 
 - **Description**:  
   Somehow is not updated the this.cardApplication on cardApplication.vue and need one more
@@ -70,3 +73,16 @@ updates and their corresponding issue numbers for easy reference.
 
 //impact #future (Issue #003) -
 //see more on /docs/future.md#003
+
+### `#005` - Using notification to send mail and sms for card updates should work with queueing the notification
+
+<a id="005"></a>
+
+- **Description**:  
+  Need to find why shouldQueue implementation make tho cardLastUpdate to not be save for later use and fix it or send
+  only emails
+- **Files that will impact?**
+  - [UpdateCardApplicationNotification](../app/Notifications/UpdateCardApplicationNotification.php)
+    =
+    //impact #future (Issue #003) -
+    //see more on /docs/future.md#003

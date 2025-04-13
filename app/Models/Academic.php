@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notification;
 
 /**
  * @mixin IdeHelperAcademic
@@ -59,5 +60,11 @@ class Academic extends User
     public function couponTransactions(): HasMany
     {
         return $this->hasMany(CouponTransaction::class, 'academic_id');
+    }
+
+    public function routeNotificationForVonage(Notification $notification): string
+    {
+        return '+306999999999';
+
     }
 }
